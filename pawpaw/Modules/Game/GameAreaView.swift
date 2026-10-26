@@ -25,6 +25,7 @@ final class GameAreaView: UIView {
         label.center = point(for: target.start)
         addSubview(label)
         targetViews[target.id] = label
+        SoundPlayer.shared.playAppear(for: target.kind)
 
         animatePath(of: target, on: label) { [weak self, weak label] in
             guard let self, let label, self.targetViews[target.id] === label else { return }
@@ -68,6 +69,7 @@ final class GameAreaView: UIView {
             label.removeFromSuperview()
         })
         playCatchEffects(points: points, at: position)
+        SoundPlayer.shared.play(.catchPop)
         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
     }
 
