@@ -27,15 +27,9 @@ final class GameAreaView: UIView {
         addSubview(label)
         targetViews[target.id] = label
 
-        let destination = point(for: target.end)
-        // The artwork faces up, so turn it to face the direction of travel.
-        let heading = atan2(destination.y - label.center.y, destination.x - label.center.x) + .pi / 2
-        label.transform = CGAffineTransform(rotationAngle: heading)
         UIView.animate(withDuration: 0.6) { label.alpha = 1 }
-        UIView.animate(withDuration: target.lifetime, delay: 0, options: [.curveLinear, .allowUserInteraction]) {
-            label.center = destination
-        } completion: { [weak self, weak label] finished in
-            guard finished, let self, let label, self.targetViews[target.id] === label else { return }
+        animatePath(of: target, on: label) { [weak self, weak label] in
+            guard let self, let label, self.targetViews[target.id] === label else { return }
             self.targetViews[target.id] = nil
             self.onExpire?(target.id)
             UIView.animate(withDuration: 0.6, animations: { label.alpha = 0 }, completion: { _ in
@@ -49,8 +43,11 @@ final class GameAreaView: UIView {
     func caught(id: UUID, points: Int) {
         guard let label = targetViews.removeValue(forKey: id) else { return }
         let position = label.layer.presentation()?.position ?? label.center
+        // Keep the heading the critter had when it was caught.
+        let heading = label.layer.presentation()?.affineTransform() ?? label.transform
         label.layer.removeAllAnimations()
         label.center = position
+        label.transform = heading
 
         // Glow, then a bouncy squash-and-stretch and a spinning pop out.
         label.layer.shadowColor = Theme.gold.cgColor
@@ -98,8 +95,8 @@ final class GameAreaView: UIView {
         playMissEffect(at: location)
     }
 
-    // MARK: Private
-    private func point(for normalized: CGPoint) -> CGPoint {
+    // MARK: Layout helpers
+    func point(for normalized: CGPoint) -> CGPoint {
         let inset = targetSize / 2 + 8
         let width = max(bounds.width - inset * 2, 0)
         let height = max(bounds.height - inset * 2, 0)

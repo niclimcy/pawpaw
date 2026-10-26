@@ -86,17 +86,15 @@ final class GameInteractor: GameInteractorInputProtocol {
         guard isRunning, activeTargets.count < maxActiveTargets else { return }
         let kind = randomKind()
         let start = randomPoint()
-        var end = randomPoint()
-        // Make sure the prey actually travels somewhere.
-        while hypot(end.x - start.x, end.y - start.y) < 0.3 {
-            end = randomPoint()
-        }
         let target = GameTarget(
             id: UUID(),
             kind: kind,
             start: start,
-            end: end,
-            lifetime: TimeInterval.random(in: kind.lifetimeRange)
+            legs: MovementPlanner.legs(
+                from: start,
+                style: kind.movementStyle,
+                duration: TimeInterval.random(in: kind.lifetimeRange)
+            )
         )
         activeTargets[target.id] = target
         presenter?.didSpawnTarget(target)

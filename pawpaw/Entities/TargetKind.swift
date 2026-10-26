@@ -45,6 +45,14 @@ enum TargetKind: CaseIterable {
         }
     }
 
+    var movementStyle: MovementStyle {
+        switch self {
+        case .mouse: return .dart
+        case .bug: return .wander
+        case .butterfly: return .flutter
+        }
+    }
+
     /// Relative chance of spawning.
     var weight: Int {
         switch self {
