@@ -23,7 +23,7 @@ extension GameViewController {
         homeConfig.baseForegroundColor = Theme.text
         let homeButton = UIButton(configuration: homeConfig)
         homeButton.accessibilityIdentifier = "homeButton"
-        homeButton.addTarget(self, action: #selector(homeTapped), for: .touchUpInside)
+        installHoldToExit(on: homeButton)
         homeButton.setContentHuggingPriority(.required, for: .horizontal)
 
         let hud = UIStackView(arrangedSubviews: [homeButton, scoreLabel, timeLabel])
@@ -39,6 +39,21 @@ extension GameViewController {
             hud.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             hud.heightAnchor.constraint(equalToConstant: 48)
         ])
+    }
+
+    /// Cats tap and brush the screen all the time, so leaving the game needs a deliberate hold.
+    func installHoldToExit(on button: UIButton) {
+        let hold = UILongPressGestureRecognizer(target: self, action: #selector(holdToExitChanged(_:)))
+        hold.minimumPressDuration = 1.5
+        button.addGestureRecognizer(hold)
+        button.accessibilityHint = "Press and hold to leave the game"
+    }
+
+    @objc func holdToExitChanged(_ gesture: UILongPressGestureRecognizer) {
+        // `.began` fires only after the full hold duration has passed.
+        guard gesture.state == .began else { return }
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        homeTapped()
     }
 
     func setupResultOverlay() {
@@ -75,11 +90,11 @@ extension GameViewController {
         againButton.addTarget(self, action: #selector(playAgainTapped), for: .touchUpInside)
 
         var menuConfig = UIButton.Configuration.plain()
-        menuConfig.title = "Home"
+        menuConfig.title = "Hold to go Home"
         menuConfig.baseForegroundColor = Theme.text
         let menuButton = UIButton(configuration: menuConfig)
         menuButton.accessibilityIdentifier = "resultHomeButton"
-        menuButton.addTarget(self, action: #selector(homeTapped), for: .touchUpInside)
+        installHoldToExit(on: menuButton)
 
         let stack = UIStackView(arrangedSubviews: [resultTitleLabel, resultDetailsLabel, againButton, menuButton])
         stack.axis = .vertical
