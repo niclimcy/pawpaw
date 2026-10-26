@@ -39,6 +39,10 @@ Game design choices that suit cats:
 - Critters stay on screen for several seconds and fade in and out slowly to catch the cat's attention.
 - Critters are large, drawn from above, and turn to face the direction they move.
 - The background is dark so the animations stand out.
+- Critters move like real prey: mice dart and freeze, bugs wander, butterflies flutter in arcs.
+- Critters emerge from the crate edge, and some duck out of sight during a freeze, then reappear. Hidden critters can't be caught.
+- Short prey sounds (squeak, rustle, flutter, catch) are synthesized in code by `SoundPlayer`.
+- Leaving the game needs a 1.5 second press-and-hold on the Home buttons, so paws can't exit by accident.
 
 The best score is saved on the device using `UserDefaults`.
 
@@ -137,4 +141,4 @@ The critter images (`critter_mouse`, `critter_bug`, `critter_butterfly`) are ori
 
 - There are no unit tests yet.
 - The app has not been tested on a physical device.
-- There is no sound.
+- Sounds are simple synthesized tones. Phone speakers can't play the ultrasonic range that cats hear.
