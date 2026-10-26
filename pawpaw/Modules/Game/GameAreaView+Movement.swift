@@ -21,6 +21,16 @@ extension GameAreaView {
         var rotations: [NSNumber] = []
         var rotationTimes: [NSNumber] = []
 
+        // Opacity: fade in on arrival, and vanish during hiding freezes.
+        let fade: TimeInterval = 0.2
+        var opacities: [NSNumber] = [0, 1]
+        var opacityTimes: [NSNumber] = [0, NSNumber(value: min(0.4, total) / total)]
+        func addOpacity(_ value: Double, at time: TimeInterval) {
+            let last = opacityTimes.last?.doubleValue ?? 0
+            opacities.append(NSNumber(value: value))
+            opacityTimes.append(NSNumber(value: max(last, min(time / total, 1))))
+        }
+
         var elapsed: TimeInterval = 0
         var heading: CGFloat = 0
         var previousPause: TimeInterval = 0
@@ -47,6 +57,12 @@ extension GameAreaView {
             positionTimes.append(NSNumber(value: elapsed / total))
 
             if leg.pause > 0 {
+                if leg.hides {
+                    addOpacity(1, at: elapsed)
+                    addOpacity(0, at: elapsed + fade)
+                    addOpacity(0, at: elapsed + leg.pause - fade)
+                    addOpacity(1, at: elapsed + leg.pause)
+                }
                 elapsed += leg.pause
                 positions.append(NSValue(cgPoint: destination))
                 positionTimes.append(NSNumber(value: elapsed / total))
@@ -68,13 +84,20 @@ extension GameAreaView {
         turn.keyTimes = rotationTimes
         turn.calculationMode = .linear
 
+        addOpacity(1, at: total)
+        let appear = CAKeyframeAnimation(keyPath: "opacity")
+        appear.values = opacities
+        appear.keyTimes = opacityTimes
+        appear.calculationMode = .linear
+
         let group = CAAnimationGroup()
-        group.animations = [move, turn]
+        group.animations = [move, turn, appear]
         group.duration = total
 
         // Model values describe the end state; the animation shows the journey.
         label.transform = CGAffineTransform(rotationAngle: heading)
         label.center = current
+        label.alpha = 1
 
         CATransaction.begin()
         CATransaction.setCompletionBlock(completion)

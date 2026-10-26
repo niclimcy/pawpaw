@@ -13,6 +13,8 @@ struct PathLeg: Equatable {
     let travel: TimeInterval
     /// Time spent frozen at the destination before the next leg starts.
     let pause: TimeInterval
+    /// The critter ducks out of sight during the freeze, then pops out again.
+    let hides: Bool
 }
 
 /// How a critter moves. Real prey moves in bursts and changes direction, which holds a cat's attention.
@@ -29,6 +31,15 @@ enum MovementStyle {
         case .dart: return 3...4
         case .wander: return 4...5
         case .flutter: return 6...8
+        }
+    }
+
+    /// Chance that a long enough freeze is spent hidden under the crate planks.
+    var hideChance: Double {
+        switch self {
+        case .dart: return 0.6
+        case .wander: return 0.3
+        case .flutter: return 0
         }
     }
 

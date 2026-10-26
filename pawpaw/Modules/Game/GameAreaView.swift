@@ -23,11 +23,9 @@ final class GameAreaView: UIView {
         label.layer.shadowOpacity = 0.6
         label.layer.shadowOffset = CGSize(width: 0, height: 4)
         label.center = point(for: target.start)
-        label.alpha = 0
         addSubview(label)
         targetViews[target.id] = label
 
-        UIView.animate(withDuration: 0.6) { label.alpha = 1 }
         animatePath(of: target, on: label) { [weak self, weak label] in
             guard let self, let label, self.targetViews[target.id] === label else { return }
             self.targetViews[target.id] = nil
@@ -86,6 +84,8 @@ final class GameAreaView: UIView {
         let location = touch.location(in: self)
         // Newest targets are on top, so check them first. Hit area is a bit generous for big paws.
         for (id, label) in targetViews.sorted(by: { subviews.firstIndex(of: $0.value) ?? 0 > subviews.firstIndex(of: $1.value) ?? 0 }) {
+            // Critters hiding under the planks can't be caught.
+            guard (label.layer.presentation()?.opacity ?? 1) > 0.5 else { continue }
             let frame = label.layer.presentation()?.frame ?? label.frame
             if frame.insetBy(dx: -12, dy: -12).contains(location) {
                 onTapTarget?(id)

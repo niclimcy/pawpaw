@@ -85,7 +85,8 @@ final class GameInteractor: GameInteractorInputProtocol {
     private func spawnTarget() {
         guard isRunning, activeTargets.count < maxActiveTargets else { return }
         let kind = randomKind()
-        let start = randomPoint()
+        // Prey emerges from the edge of the crate.
+        let start = randomEdgePoint()
         let target = GameTarget(
             id: UUID(),
             kind: kind,
@@ -131,6 +132,12 @@ final class GameInteractor: GameInteractorInputProtocol {
 
     private func randomPoint() -> CGPoint {
         CGPoint(x: CGFloat.random(in: 0...1), y: CGFloat.random(in: 0...1))
+    }
+
+    private func randomEdgePoint() -> CGPoint {
+        let along = CGFloat.random(in: 0...1)
+        let edge: CGFloat = Bool.random() ? 0 : 1
+        return Bool.random() ? CGPoint(x: edge, y: along) : CGPoint(x: along, y: edge)
     }
 
     private func invalidateTimers() {

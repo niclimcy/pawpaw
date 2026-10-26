@@ -8,6 +8,9 @@ import Foundation
 
 /// Builds stop-and-go paths inside the normalized (0...1) play field.
 enum MovementPlanner {
+    /// Shortest freeze that is long enough to fade out, wait unseen and fade back in.
+    static let minimumHidePause: TimeInterval = 0.6
+
     static func legs(from start: CGPoint, style: MovementStyle, duration: TimeInterval) -> [PathLeg] {
         let count = Int.random(in: style.legCount)
         let pauseTotal = count > 1 ? duration * style.pauseFraction : 0
@@ -25,10 +28,12 @@ enum MovementPlanner {
                 heading: &heading,
                 distance: Double.random(in: style.distanceRange)
             )
+            let pause = index < pauses.count ? pauses[index] : 0
             legs.append(PathLeg(
                 destination: destination,
                 travel: travels[index],
-                pause: index < pauses.count ? pauses[index] : 0
+                pause: pause,
+                hides: pause >= minimumHidePause && Double.random(in: 0..<1) < style.hideChance
             ))
             current = destination
         }
