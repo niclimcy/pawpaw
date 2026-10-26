@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Top-down cartoon mouse, facing up. Original artwork for Paw Paw. -->
+  <path d="M100 145 C 62 168, 150 160, 112 197" fill="none" stroke="#f4a6b0" stroke-width="6" stroke-linecap="round"/>
+  <ellipse cx="62" cy="138" rx="12" ry="8" fill="#f4a6b0" transform="rotate(-30 62 138)"/>
+  <ellipse cx="138" cy="138" rx="12" ry="8" fill="#f4a6b0" transform="rotate(30 138 138)"/>
+  <ellipse cx="100" cy="108" rx="42" ry="50" fill="#a4a8b6"/>
+  <ellipse cx="100" cy="112" rx="24" ry="34" fill="#bcc0cc"/>
+  <ellipse cx="66" cy="84" rx="12" ry="8" fill="#f4a6b0" transform="rotate(35 66 84)"/>
+  <ellipse cx="134" cy="84" rx="12" ry="8" fill="#f4a6b0" transform="rotate(-35 134 84)"/>
+  <circle cx="70" cy="52" r="17" fill="#a4a8b6"/>
+  <circle cx="70" cy="52" r="10" fill="#f4a6b0"/>
+  <circle cx="130" cy="52" r="17" fill="#a4a8b6"/>
+  <circle cx="130" cy="52" r="10" fill="#f4a6b0"/>
+  <path d="M100 14 C 126 22, 134 54, 120 76 C 110 88, 90 88, 80 76 C 66 54, 74 22, 100 14 Z" fill="#b6bac7"/>
+  <g stroke="#4a4a55" stroke-width="1.8" stroke-linecap="round">
+    <line x1="88" y1="28" x2="54" y2="18"/>
+    <line x1="88" y1="33" x2="52" y2="32"/>
+    <line x1="88" y1="38" x2="56" y2="46"/>
+    <line x1="112" y1="28" x2="146" y2="18"/>
+    <line x1="112" y1="33" x2="148" y2="32"/>
+    <line x1="112" y1="38" x2="144" y2="46"/>
+  </g>
+  <circle cx="88" cy="46" r="5" fill="#1d1d24"/>
+  <circle cx="112" cy="46" r="5" fill="#1d1d24"/>
+  <circle cx="86.5" cy="44.5" r="1.8" fill="#fff"/>
+  <circle cx="110.5" cy="44.5" r="1.8" fill="#fff"/>
+  <circle cx="100" cy="17" r="6" fill="#f08aa0"/>
+</svg>

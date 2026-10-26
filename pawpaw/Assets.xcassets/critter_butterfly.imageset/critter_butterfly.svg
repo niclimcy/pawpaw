@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Top-down cartoon butterfly, facing up. Original artwork for Paw Paw. -->
+  <defs>
+    <g id="wing">
+      <path d="M96 96 C 70 14, 6 22, 12 80 C 16 112, 66 118, 96 104 Z" fill="#9b5de5" stroke="#5b2a9e" stroke-width="3"/>
+      <path d="M96 108 C 66 120, 26 132, 40 172 C 56 198, 92 160, 96 128 Z" fill="#f15bb5" stroke="#a82a7a" stroke-width="3"/>
+      <circle cx="46" cy="58" r="14" fill="#fee440"/>
+      <circle cx="46" cy="58" r="6" fill="#9b5de5"/>
+      <circle cx="68" cy="88" r="7" fill="#fff" opacity="0.9"/>
+      <circle cx="26" cy="86" r="5" fill="#fff" opacity="0.9"/>
+      <circle cx="64" cy="150" r="8" fill="#fee440"/>
+    </g>
+  </defs>
+  <use href="#wing"/>
+  <use href="#wing" transform="translate(200 0) scale(-1 1)"/>
+  <path d="M92 40 C 84 18, 70 10, 62 14" fill="none" stroke="#2b2230" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M108 40 C 116 18, 130 10, 138 14" fill="none" stroke="#2b2230" stroke-width="3.5" stroke-linecap="round"/>
+  <circle cx="62" cy="14" r="4.5" fill="#2b2230"/>
+  <circle cx="138" cy="14" r="4.5" fill="#2b2230"/>
+  <ellipse cx="100" cy="112" rx="8" ry="52" fill="#2b2230"/>
+  <circle cx="100" cy="52" r="12" fill="#2b2230"/>
+  <circle cx="95" cy="49" r="3" fill="#fff"/>
+  <circle cx="105" cy="49" r="3" fill="#fff"/>
+</svg>

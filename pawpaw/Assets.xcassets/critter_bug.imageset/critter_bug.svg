@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Top-down cartoon ladybug, facing up. Original artwork for Paw Paw. -->
+  <g stroke="#1d1d24" stroke-width="6" stroke-linecap="round" fill="none">
+    <path d="M62 92 L28 78"/>
+    <path d="M60 118 L22 120"/>
+    <path d="M66 146 L34 168"/>
+    <path d="M138 92 L172 78"/>
+    <path d="M140 118 L178 120"/>
+    <path d="M134 146 L166 168"/>
+    <path d="M88 34 C 80 18, 70 14, 64 16"/>
+    <path d="M112 34 C 120 18, 130 14, 136 16"/>
+  </g>
+  <circle cx="64" cy="16" r="5" fill="#1d1d24"/>
+  <circle cx="136" cy="16" r="5" fill="#1d1d24"/>
+  <ellipse cx="100" cy="112" rx="56" ry="64" fill="#e8312f"/>
+  <path d="M60 70 C 70 60, 85 56, 100 56 C 80 80, 78 130, 84 172 C 66 160, 46 130, 44 104 C 44 90, 50 78, 60 70 Z" fill="#ff6a5c" opacity="0.55"/>
+  <line x1="100" y1="52" x2="100" y2="174" stroke="#1d1d24" stroke-width="5"/>
+  <circle cx="72" cy="90" r="11" fill="#1d1d24"/>
+  <circle cx="128" cy="90" r="11" fill="#1d1d24"/>
+  <circle cx="68" cy="130" r="9" fill="#1d1d24"/>
+  <circle cx="132" cy="130" r="9" fill="#1d1d24"/>
+  <circle cx="88" cy="154" r="6" fill="#1d1d24"/>
+  <circle cx="112" cy="154" r="6" fill="#1d1d24"/>
+  <path d="M68 52 C 68 30, 132 30, 132 52 C 120 60, 80 60, 68 52 Z" fill="#26262e"/>
+  <circle cx="86" cy="46" r="7" fill="#fff"/>
+  <circle cx="114" cy="46" r="7" fill="#fff"/>
+  <circle cx="87" cy="47" r="3.2" fill="#1d1d24"/>
+  <circle cx="113" cy="47" r="3.2" fill="#1d1d24"/>
+</svg>
