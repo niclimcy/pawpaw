@@ -28,7 +28,7 @@ final class StatsViewController: UIViewController, StatsViewProtocol {
 
     // MARK: Layout
     private func setupLayout() {
-        let title = Self.makeLabel(size: 38)
+        let title = Self.makeLabel(size: Theme.scaled(34))
         title.text = "Play Stats"
 
         let card = UIView()
@@ -64,18 +64,12 @@ final class StatsViewController: UIViewController, StatsViewProtocol {
         page.axis = .vertical
         page.alignment = .center
         page.spacing = 20
-        page.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(page)
+
+        // One centered column: scrolls on small phones and in landscape, capped in width on iPad.
+        embedCentered(page, maxWidth: 560)
 
         NSLayoutConstraint.activate([
-            page.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor),
-            page.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            page.leadingAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 24),
-            page.trailingAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -24),
-
-            card.widthAnchor.constraint(lessThanOrEqualToConstant: 440),
-            card.leadingAnchor.constraint(equalTo: page.leadingAnchor),
-            card.trailingAnchor.constraint(equalTo: page.trailingAnchor),
+            card.widthAnchor.constraint(equalTo: page.widthAnchor),
 
             content.topAnchor.constraint(equalTo: card.topAnchor, constant: 24),
             content.bottomAnchor.constraint(equalTo: card.bottomAnchor, constant: -24),
@@ -94,7 +88,13 @@ extension StatsViewController {
         config.baseForegroundColor = .white
         config.cornerStyle = .capsule
         config.contentInsets = NSDirectionalEdgeInsets(top: 14, leading: 36, bottom: 14, trailing: 36)
+        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
+            var outgoing = incoming
+            outgoing.font = Theme.roundedFont(size: Theme.scaled(20), weight: .bold)
+            return outgoing
+        }
         let button = UIButton(configuration: config)
+        button.heightAnchor.constraint(greaterThanOrEqualToConstant: Theme.minimumTapSize).isActive = true
         button.accessibilityIdentifier = "statsBackButton"
         button.addTarget(self, action: #selector(backTapped), for: .touchUpInside)
         return button
@@ -105,7 +105,14 @@ extension StatsViewController {
         var config = UIButton.Configuration.plain()
         config.title = "Hold to reset stats"
         config.baseForegroundColor = Theme.text.withAlphaComponent(0.75)
+        config.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
+        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
+            var outgoing = incoming
+            outgoing.font = Theme.roundedFont(size: Theme.scaled(16), weight: .bold)
+            return outgoing
+        }
         let button = UIButton(configuration: config)
+        button.heightAnchor.constraint(greaterThanOrEqualToConstant: Theme.minimumTapSize).isActive = true
         button.accessibilityIdentifier = "statsResetButton"
         button.accessibilityHint = "Press and hold to erase all play statistics"
         let hold = UILongPressGestureRecognizer(target: self, action: #selector(resetHeld(_:)))

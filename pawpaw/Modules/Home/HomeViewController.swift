@@ -12,7 +12,9 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     private let logoLabel: UILabel = {
         let label = UILabel()
         label.text = "🐾"
-        label.font = .systemFont(ofSize: 110)
+        label.font = .systemFont(ofSize: Theme.scaled(90))
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.5
         label.textAlignment = .center
         return label
     }()
@@ -20,16 +22,18 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Paw Paw"
-        label.font = Theme.roundedFont(size: 52)
+        label.font = Theme.roundedFont(size: Theme.scaled(48))
         label.textColor = Theme.text
         label.textAlignment = .center
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.6
         return label
     }()
 
     private let subtitleLabel: UILabel = {
         let label = UILabel()
         label.text = "Catch the mice, bugs and butterflies!"
-        label.font = Theme.roundedFont(size: 18, weight: .semibold)
+        label.font = Theme.roundedFont(size: Theme.scaled(18), weight: .semibold)
         label.textColor = Theme.text
         label.textAlignment = .center
         label.numberOfLines = 0
@@ -38,7 +42,7 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
 
     private let highScoreLabel: UILabel = {
         let label = UILabel()
-        label.font = Theme.roundedFont(size: 22, weight: .bold)
+        label.font = Theme.roundedFont(size: Theme.scaled(22), weight: .bold)
         label.textColor = Theme.text
         label.textAlignment = .center
         label.text = "Best: 0"
@@ -49,7 +53,7 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     private let ownerNoteLabel: UILabel = {
         let label = UILabel()
         label.text = "For owners: during play, press and hold the home button for 1.5 seconds to leave the game."
-        label.font = Theme.roundedFont(size: 14, weight: .semibold)
+        label.font = Theme.roundedFont(size: Theme.scaled(14), weight: .semibold)
         label.textColor = Theme.text.withAlphaComponent(0.75)
         label.textAlignment = .center
         label.numberOfLines = 0
@@ -59,16 +63,7 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     /// Short rounds suit kittens and seniors; relaxed play has no timer at all.
     private let modeControl: UISegmentedControl = {
         let control = UISegmentedControl(items: SessionMode.allCases.map(\.title))
-        control.selectedSegmentTintColor = Theme.accent
-        control.backgroundColor = Theme.panel
-        control.setTitleTextAttributes([
-            .foregroundColor: Theme.text,
-            .font: Theme.roundedFont(size: 16, weight: .bold)
-        ], for: .normal)
-        control.setTitleTextAttributes([
-            .foregroundColor: UIColor.white,
-            .font: Theme.roundedFont(size: 16, weight: .bold)
-        ], for: .selected)
+        Theme.styleSegmented(control, fontSize: 16)
         control.accessibilityIdentifier = "modeControl"
         return control
     }()
@@ -76,16 +71,7 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     /// Picks the playfield background; the Home screen previews the choice.
     private let themeControl: UISegmentedControl = {
         let control = UISegmentedControl(items: PlayfieldTheme.allCases.map(\.title))
-        control.selectedSegmentTintColor = Theme.accent
-        control.backgroundColor = Theme.panel
-        control.setTitleTextAttributes([
-            .foregroundColor: Theme.text,
-            .font: Theme.roundedFont(size: 14, weight: .bold)
-        ], for: .normal)
-        control.setTitleTextAttributes([
-            .foregroundColor: UIColor.white,
-            .font: Theme.roundedFont(size: 14, weight: .bold)
-        ], for: .selected)
+        Theme.styleSegmented(control, fontSize: 14)
         control.accessibilityIdentifier = "themeControl"
         return control
     }()
@@ -97,7 +83,14 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         config.image = UIImage(systemName: "chart.bar.fill")
         config.imagePadding = 6
         config.baseForegroundColor = Theme.text.withAlphaComponent(0.85)
+        config.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
+        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
+            var outgoing = incoming
+            outgoing.font = Theme.roundedFont(size: Theme.scaled(16), weight: .bold)
+            return outgoing
+        }
         let button = UIButton(configuration: config)
+        button.heightAnchor.constraint(greaterThanOrEqualToConstant: Theme.minimumTapSize).isActive = true
         button.accessibilityIdentifier = "statsButton"
         button.accessibilityHint = "Press and hold to open play statistics"
         return button
@@ -109,10 +102,12 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         config.baseBackgroundColor = Theme.accent
         config.baseForegroundColor = .white
         config.cornerStyle = .capsule
-        config.contentInsets = NSDirectionalEdgeInsets(top: 22, leading: 70, bottom: 22, trailing: 70)
+        config.contentInsets = NSDirectionalEdgeInsets(
+            top: Theme.scaled(20), leading: Theme.scaled(56), bottom: Theme.scaled(20), trailing: Theme.scaled(56)
+        )
         config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
             var outgoing = incoming
-            outgoing.font = Theme.roundedFont(size: 34)
+            outgoing.font = Theme.roundedFont(size: Theme.scaled(34))
             return outgoing
         }
         let button = UIButton(configuration: config)
@@ -139,25 +134,23 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     }
 
     private func setupLayout() {
-        let stack = UIStackView(arrangedSubviews: [logoLabel, titleLabel, subtitleLabel, modeControl, themeControl, highScoreLabel, playButton, statsButton])
+        let stack = UIStackView(arrangedSubviews: [
+            logoLabel, titleLabel, subtitleLabel, modeControl, themeControl,
+            highScoreLabel, playButton, statsButton, ownerNoteLabel
+        ])
         stack.axis = .vertical
         stack.alignment = .center
-        stack.spacing = 18
-        stack.setCustomSpacing(36, after: highScoreLabel)
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(stack)
+        stack.spacing = Theme.scaled(16)
+        stack.setCustomSpacing(Theme.scaled(28), after: highScoreLabel)
+        stack.setCustomSpacing(Theme.scaled(20), after: statsButton)
 
-        ownerNoteLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(ownerNoteLabel)
+        // The pickers and the note use the full column width; everything else stays centered.
+        for wide in [modeControl, themeControl, ownerNoteLabel] {
+            wide.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
+        }
 
-        NSLayoutConstraint.activate([
-            ownerNoteLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 24),
-            ownerNoteLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -24),
-            ownerNoteLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
-            stack.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor),
-            stack.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 24),
-            stack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -24)
-        ])
+        // Everything lives in one centered column that scrolls on small screens and is capped on iPad.
+        embedCentered(stack, maxWidth: 520)
     }
 
     @objc private func playTapped() {
