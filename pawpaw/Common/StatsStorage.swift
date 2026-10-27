@@ -14,10 +14,16 @@ protocol StatsStorage {
 
 final class UserDefaultsStatsStorage: StatsStorage {
     private let defaults: UserDefaults
-    private let key = "pawpaw.stats"
+    private let key: String
 
-    init(defaults: UserDefaults = .standard) {
+    init(defaults: UserDefaults = .standard, profileID: UUID) {
         self.defaults = defaults
+        self.key = Self.key(for: profileID)
+    }
+
+    /// Each cat has its own play history.
+    static func key(for profileID: UUID) -> String {
+        "pawpaw.\(profileID.uuidString).stats"
     }
 
     var stats: PlayStats {

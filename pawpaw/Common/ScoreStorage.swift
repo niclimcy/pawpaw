@@ -14,13 +14,21 @@ protocol ScoreStorage {
     func saveHighScore(_ score: Int, for mode: SessionMode)
 }
 
+/// The mode and theme are device-wide choices; best scores belong to one cat.
 final class UserDefaultsScoreStorage: ScoreStorage {
     private let defaults: UserDefaults
+    private let profileID: UUID
     private let modeKey = "pawpaw.selectedMode"
     private let themeKey = "pawpaw.selectedTheme"
 
-    init(defaults: UserDefaults = .standard) {
+    init(defaults: UserDefaults = .standard, profileID: UUID) {
         self.defaults = defaults
+        self.profileID = profileID
+    }
+
+    /// Forgets every best score of this cat.
+    func reset() {
+        SessionMode.allCases.forEach { defaults.removeObject(forKey: key(for: $0)) }
     }
 
     var selectedMode: SessionMode {
@@ -49,8 +57,7 @@ final class UserDefaultsScoreStorage: ScoreStorage {
         defaults.set(score, forKey: key(for: mode))
     }
 
-    /// The 60 second mode keeps the original key, so existing best scores survive the update.
     private func key(for mode: SessionMode) -> String {
-        mode == .standard ? "pawpaw.highScore" : "pawpaw.highScore.\(mode.rawValue)"
+        "pawpaw.\(profileID.uuidString).highScore.\(mode.rawValue)"
     }
 }

@@ -9,7 +9,9 @@ final class HomeRouter: HomeRouterProtocol {
     static func createModule() -> UIViewController {
         let view = HomeViewController()
         let presenter = HomePresenter()
-        let interactor = HomeInteractor(storage: UserDefaultsScoreStorage())
+        let interactor = HomeInteractor(
+            storage: UserDefaultsScoreStorage(profileID: UserDefaultsProfileStorage().activeProfile.id)
+        )
         let router = HomeRouter()
 
         view.presenter = presenter

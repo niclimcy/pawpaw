@@ -9,8 +9,13 @@ final class GameRouter: GameRouterProtocol {
     static func createModule(mode: SessionMode) -> UIViewController {
         let view = GameViewController()
         let presenter = GamePresenter()
-        let storage = UserDefaultsScoreStorage()
-        let interactor = GameInteractor(storage: storage, statsStorage: UserDefaultsStatsStorage(), mode: mode)
+        let profileID = UserDefaultsProfileStorage().activeProfile.id
+        let storage = UserDefaultsScoreStorage(profileID: profileID)
+        let interactor = GameInteractor(
+            storage: storage,
+            statsStorage: UserDefaultsStatsStorage(profileID: profileID),
+            mode: mode
+        )
         let router = GameRouter()
 
         view.theme = storage.selectedTheme
