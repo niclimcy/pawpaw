@@ -18,6 +18,7 @@ struct StatsViewModel: Equatable {
         let rounds: Int
     }
 
+    let title: String
     let summary: String
     let favorite: String
     /// The favorite critter's SVG name, or `nil` when nothing has been caught yet.
@@ -52,7 +53,7 @@ protocol StatsInteractorInputProtocol: AnyObject {
 }
 
 protocol StatsInteractorOutputProtocol: AnyObject {
-    func didFetchStats(_ stats: PlayStats, bestScores: [(mode: SessionMode, score: Int)])
+    func didFetchStats(_ stats: PlayStats, bestScores: [(mode: SessionMode, score: Int)], profile: CatProfile)
 }
 
 // MARK: - Router

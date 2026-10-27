@@ -27,12 +27,13 @@ final class StatsPresenter: StatsPresenterProtocol, StatsInteractorOutputProtoco
     }
 
     // MARK: StatsInteractorOutputProtocol
-    func didFetchStats(_ stats: PlayStats, bestScores: [(mode: SessionMode, score: Int)]) {
+    func didFetchStats(_ stats: PlayStats, bestScores: [(mode: SessionMode, score: Int)], profile: CatProfile) {
         let formatter = DateFormatter()
         formatter.setLocalizedDateFormatFromTemplate("EEE")
 
         let favoriteKind = stats.favoriteKind
         view?.showStats(StatsViewModel(
+            title: "\(profile.emoji) \(profile.name)'s Stats",
             summary: "\(stats.totalRounds) rounds · \(stats.totalCatches) catches",
             favorite: favoriteKind == nil ? "No favorite yet. Play a round!" : "Favorite catch:",
             favoriteImageName: favoriteKind?.imageName,

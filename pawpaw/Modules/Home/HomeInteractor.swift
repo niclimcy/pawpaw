@@ -7,10 +7,24 @@ import Foundation
 
 final class HomeInteractor: HomeInteractorInputProtocol {
     weak var presenter: HomeInteractorOutputProtocol?
-    private var storage: ScoreStorage
 
-    init(storage: ScoreStorage) {
-        self.storage = storage
+    private let profileStorage: ProfileStorage
+    private let makeScoreStorage: (UUID) -> ScoreStorage
+    private let makeStatsStorage: (UUID) -> StatsStorage
+
+    /// Storages are built per call because the active cat can change while Home stays open.
+    init(
+        profileStorage: ProfileStorage,
+        makeScoreStorage: @escaping (UUID) -> ScoreStorage,
+        makeStatsStorage: @escaping (UUID) -> StatsStorage
+    ) {
+        self.profileStorage = profileStorage
+        self.makeScoreStorage = makeScoreStorage
+        self.makeStatsStorage = makeStatsStorage
+    }
+
+    private var storage: ScoreStorage {
+        makeScoreStorage(profileStorage.activeProfile.id)
     }
 
     var selectedMode: SessionMode {
@@ -18,21 +32,27 @@ final class HomeInteractor: HomeInteractorInputProtocol {
     }
 
     func fetchState() {
-        let mode = storage.selectedMode
+        let profile = profileStorage.activeProfile
+        let scores = makeScoreStorage(profile.id)
+        let mode = scores.selectedMode
         presenter?.didFetchState(
             mode: mode,
-            theme: storage.selectedTheme,
-            highScore: mode.hasHighScore ? storage.highScore(for: mode) : nil
+            theme: scores.selectedTheme,
+            highScore: mode.hasHighScore ? scores.highScore(for: mode) : nil,
+            profile: profile,
+            favorite: makeStatsStorage(profile.id).stats.favoriteKind
         )
     }
 
     func selectTheme(_ theme: PlayfieldTheme) {
-        storage.selectedTheme = theme
+        var scores = storage
+        scores.selectedTheme = theme
         fetchState()
     }
 
     func selectMode(_ mode: SessionMode) {
-        storage.selectedMode = mode
+        var scores = storage
+        scores.selectedMode = mode
         fetchState()
     }
 }

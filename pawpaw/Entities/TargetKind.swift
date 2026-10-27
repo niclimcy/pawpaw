@@ -23,6 +23,17 @@ enum TargetKind: String, CaseIterable {
         }
     }
 
+    /// Plural name for sentences such as "Luna loves butterflies".
+    var pluralName: String {
+        switch self {
+        case .mouse: return "mice"
+        case .bug: return "bugs"
+        case .butterfly: return "butterflies"
+        case .cricket: return "crickets"
+        case .feather: return "feathers"
+        }
+    }
+
     /// Name of the top-down SVG artwork in the asset catalog.
     var imageName: String {
         switch self {

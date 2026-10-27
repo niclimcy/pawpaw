@@ -9,10 +9,11 @@ final class StatsRouter: StatsRouterProtocol {
     static func createModule() -> UIViewController {
         let view = StatsViewController()
         let presenter = StatsPresenter()
-        let profileID = UserDefaultsProfileStorage().activeProfile.id
+        let profile = UserDefaultsProfileStorage().activeProfile
         let interactor = StatsInteractor(
-            scoreStorage: UserDefaultsScoreStorage(profileID: profileID),
-            statsStorage: UserDefaultsStatsStorage(profileID: profileID)
+            profile: profile,
+            scoreStorage: UserDefaultsScoreStorage(profileID: profile.id),
+            statsStorage: UserDefaultsStatsStorage(profileID: profile.id)
         )
         let router = StatsRouter()
 

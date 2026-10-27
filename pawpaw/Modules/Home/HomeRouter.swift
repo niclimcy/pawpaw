@@ -10,7 +10,9 @@ final class HomeRouter: HomeRouterProtocol {
         let view = HomeViewController()
         let presenter = HomePresenter()
         let interactor = HomeInteractor(
-            storage: UserDefaultsScoreStorage(profileID: UserDefaultsProfileStorage().activeProfile.id)
+            profileStorage: UserDefaultsProfileStorage(),
+            makeScoreStorage: { UserDefaultsScoreStorage(profileID: $0) },
+            makeStatsStorage: { UserDefaultsStatsStorage(profileID: $0) }
         )
         let router = HomeRouter()
 
@@ -34,5 +36,10 @@ final class HomeRouter: HomeRouterProtocol {
     func navigateToStats(from view: HomeViewProtocol?) {
         guard let viewController = view as? UIViewController else { return }
         viewController.navigationController?.pushViewController(StatsRouter.createModule(), animated: true)
+    }
+
+    func navigateToProfiles(from view: HomeViewProtocol?) {
+        guard let viewController = view as? UIViewController else { return }
+        viewController.navigationController?.pushViewController(ProfilesRouter.createModule(), animated: true)
     }
 }

@@ -8,6 +8,7 @@ import UIKit
 final class StatsViewController: UIViewController, StatsViewProtocol {
     var presenter: StatsPresenterProtocol?
 
+    private let titleLabel = StatsViewController.makeLabel(size: Theme.scaled(34))
     private let summaryLabel = StatsViewController.makeLabel(size: 26)
     private let favoriteLabel = StatsViewController.makeLabel(size: 20, weight: .semibold)
     private let crittersStack = StatsViewController.makeRow()
@@ -28,7 +29,7 @@ final class StatsViewController: UIViewController, StatsViewProtocol {
 
     // MARK: Layout
     private func setupLayout() {
-        let title = Self.makeLabel(size: Theme.scaled(34))
+        let title = titleLabel
         title.text = "Play Stats"
 
         let card = UIView()
@@ -144,6 +145,7 @@ extension StatsViewController {
 // MARK: - StatsViewProtocol
 extension StatsViewController {
     func showStats(_ viewModel: StatsViewModel) {
+        titleLabel.text = viewModel.title
         summaryLabel.text = viewModel.summary
         favoriteLabel.attributedText = Self.favoriteText(viewModel.favorite, imageName: viewModel.favoriteImageName, font: favoriteLabel.font)
         bestScoresLabel.text = viewModel.bestScores.joined(separator: "   ")

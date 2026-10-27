@@ -40,6 +40,40 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         return label
     }()
 
+    /// The cat that is playing. Tapping it opens the profiles screen.
+    private let profileButton: UIButton = {
+        var config = UIButton.Configuration.tinted()
+        config.title = "🐱 My Cat"
+        config.image = UIImage(systemName: "chevron.down")
+        config.imagePlacement = .trailing
+        config.imagePadding = 8
+        config.baseBackgroundColor = Theme.text
+        config.baseForegroundColor = Theme.text
+        config.cornerStyle = .capsule
+        config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)
+        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
+            var outgoing = incoming
+            outgoing.font = Theme.roundedFont(size: Theme.scaled(20), weight: .bold)
+            return outgoing
+        }
+        let button = UIButton(configuration: config)
+        button.heightAnchor.constraint(greaterThanOrEqualToConstant: Theme.minimumTapSize).isActive = true
+        button.accessibilityIdentifier = "profileButton"
+        button.accessibilityHint = "Opens the list of cats"
+        return button
+    }()
+
+    /// "Luna loves butterflies", shown once the cat has caught something.
+    private let favoriteLabel: UILabel = {
+        let label = UILabel()
+        label.font = Theme.roundedFont(size: Theme.scaled(16), weight: .semibold)
+        label.textColor = Theme.text.withAlphaComponent(0.85)
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.isHidden = true
+        return label
+    }()
+
     private let highScoreLabel: UILabel = {
         let label = UILabel()
         label.font = Theme.roundedFont(size: Theme.scaled(22), weight: .bold)
@@ -121,6 +155,7 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         installBackground(theme: .wood)
         setupLayout()
         playButton.addTarget(self, action: #selector(playTapped), for: .touchUpInside)
+        profileButton.addTarget(self, action: #selector(profileTapped), for: .touchUpInside)
         modeControl.addTarget(self, action: #selector(modeChanged), for: .valueChanged)
         themeControl.addTarget(self, action: #selector(themeChanged), for: .valueChanged)
         let hold = UILongPressGestureRecognizer(target: self, action: #selector(statsHeld(_:)))
@@ -135,7 +170,7 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
 
     private func setupLayout() {
         let stack = UIStackView(arrangedSubviews: [
-            logoLabel, titleLabel, subtitleLabel, modeControl, themeControl,
+            logoLabel, titleLabel, subtitleLabel, profileButton, favoriteLabel, modeControl, themeControl,
             highScoreLabel, playButton, statsButton, ownerNoteLabel
         ])
         stack.axis = .vertical
@@ -155,6 +190,10 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
 
     @objc private func playTapped() {
         presenter?.didTapPlay()
+    }
+
+    @objc private func profileTapped() {
+        presenter?.didTapProfile()
     }
 
     @objc private func modeChanged() {
@@ -187,6 +226,12 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     func showHighScore(_ score: Int?) {
         highScoreLabel.isHidden = score == nil
         highScoreLabel.text = "Best: \(score ?? 0)"
+    }
+
+    func showProfile(title: String, favorite: String?) {
+        profileButton.configuration?.title = title
+        favoriteLabel.text = favorite
+        favoriteLabel.isHidden = favorite == nil
     }
 }
 

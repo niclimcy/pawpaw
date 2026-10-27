@@ -27,13 +27,27 @@ final class HomePresenter: HomePresenterProtocol, HomeInteractorOutputProtocol {
         router?.navigateToStats(from: view)
     }
 
+    func didTapProfile() {
+        router?.navigateToProfiles(from: view)
+    }
+
     func didSelectTheme(_ theme: PlayfieldTheme) {
         interactor?.selectTheme(theme)
     }
 
-    func didFetchState(mode: SessionMode, theme: PlayfieldTheme, highScore: Int?) {
+    func didFetchState(
+        mode: SessionMode,
+        theme: PlayfieldTheme,
+        highScore: Int?,
+        profile: CatProfile,
+        favorite: TargetKind?
+    ) {
         view?.showMode(mode)
         view?.showTheme(theme)
         view?.showHighScore(highScore)
+        view?.showProfile(
+            title: "\(profile.emoji) \(profile.name)",
+            favorite: favorite.map { "\(profile.name) loves \($0.pluralName)" }
+        )
     }
 }

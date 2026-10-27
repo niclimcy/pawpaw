@@ -12,6 +12,8 @@ protocol HomeViewProtocol: AnyObject {
     func showTheme(_ theme: PlayfieldTheme)
     /// `nil` hides the best score (relaxed mode has none).
     func showHighScore(_ score: Int?)
+    /// The cat that is playing, and a line about its favorite critter (`nil` before the first catch).
+    func showProfile(title: String, favorite: String?)
 }
 
 // MARK: - Presenter
@@ -25,6 +27,7 @@ protocol HomePresenterProtocol: AnyObject {
     func didSelectTheme(_ theme: PlayfieldTheme)
     func didTapPlay()
     func didRequestStats()
+    func didTapProfile()
 }
 
 // MARK: - Interactor
@@ -37,7 +40,13 @@ protocol HomeInteractorInputProtocol: AnyObject {
 }
 
 protocol HomeInteractorOutputProtocol: AnyObject {
-    func didFetchState(mode: SessionMode, theme: PlayfieldTheme, highScore: Int?)
+    func didFetchState(
+        mode: SessionMode,
+        theme: PlayfieldTheme,
+        highScore: Int?,
+        profile: CatProfile,
+        favorite: TargetKind?
+    )
 }
 
 // MARK: - Router
@@ -45,4 +54,5 @@ protocol HomeRouterProtocol: AnyObject {
     static func createModule() -> UIViewController
     func navigateToGame(from view: HomeViewProtocol?, mode: SessionMode)
     func navigateToStats(from view: HomeViewProtocol?)
+    func navigateToProfiles(from view: HomeViewProtocol?)
 }
