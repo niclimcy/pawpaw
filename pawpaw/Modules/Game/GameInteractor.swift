@@ -17,16 +17,19 @@ final class GameInteractor: GameInteractorInputProtocol {
 
     private let storage: ScoreStorage
     private let mode: SessionMode
+    private let statsStorage: StatsStorage
     private var activeTargets: [UUID: GameTarget] = [:]
     private var score = 0
     private var catches = 0
+    private var catchesByKind: [TargetKind: Int] = [:]
     private var timeRemaining = 0
     private var isRunning = false
     private var clockTimer: Timer?
     private var spawnTimer: Timer?
 
-    init(storage: ScoreStorage, mode: SessionMode) {
+    init(storage: ScoreStorage, statsStorage: StatsStorage, mode: SessionMode) {
         self.storage = storage
+        self.statsStorage = statsStorage
         self.mode = mode
     }
 
@@ -40,6 +43,7 @@ final class GameInteractor: GameInteractorInputProtocol {
         activeTargets.removeAll()
         score = 0
         catches = 0
+        catchesByKind = [:]
         timeRemaining = mode.duration ?? 0
         isRunning = true
 
@@ -59,6 +63,8 @@ final class GameInteractor: GameInteractorInputProtocol {
     }
 
     func stopGame() {
+        // Leaving mid-session (always the case in relaxed mode) still counts what the cat caught.
+        if isRunning { recordSession() }
         isRunning = false
         invalidateTimers()
         activeTargets.removeAll()
@@ -68,6 +74,7 @@ final class GameInteractor: GameInteractorInputProtocol {
         guard isRunning, let target = activeTargets.removeValue(forKey: id) else { return }
         score += target.kind.points
         catches += 1
+        catchesByKind[target.kind, default: 0] += 1
         presenter?.didCatchTarget(id: id, points: target.kind.points)
         presenter?.didUpdateScore(score)
     }
@@ -105,7 +112,14 @@ final class GameInteractor: GameInteractorInputProtocol {
         presenter?.didSpawnTarget(target)
     }
 
+    /// Adds this session to the lifetime stats. Sessions without a catch are skipped.
+    private func recordSession() {
+        guard catches > 0 else { return }
+        statsStorage.record(catches: catchesByKind)
+    }
+
     private func finishGame() {
+        recordSession()
         isRunning = false
         invalidateTimers()
         activeTargets.removeAll()

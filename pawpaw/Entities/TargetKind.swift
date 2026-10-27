@@ -6,7 +6,7 @@
 import Foundation
 
 /// The kinds of prey that can scurry across the screen.
-enum TargetKind: CaseIterable {
+enum TargetKind: String, CaseIterable {
     case mouse
     case bug
     case butterfly
