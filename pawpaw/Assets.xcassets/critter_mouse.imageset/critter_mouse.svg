@@ -1,28 +1,40 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
-  <!-- Top-down cartoon mouse, facing up. Original artwork for Paw Paw. -->
-  <path d="M100 145 C 62 168, 150 160, 112 197" fill="none" stroke="#f4a6b0" stroke-width="6" stroke-linecap="round"/>
-  <ellipse cx="62" cy="138" rx="12" ry="8" fill="#f4a6b0" transform="rotate(-30 62 138)"/>
-  <ellipse cx="138" cy="138" rx="12" ry="8" fill="#f4a6b0" transform="rotate(30 138 138)"/>
-  <ellipse cx="100" cy="108" rx="42" ry="50" fill="#a4a8b6"/>
-  <ellipse cx="100" cy="112" rx="24" ry="34" fill="#bcc0cc"/>
-  <ellipse cx="66" cy="84" rx="12" ry="8" fill="#f4a6b0" transform="rotate(35 66 84)"/>
-  <ellipse cx="134" cy="84" rx="12" ry="8" fill="#f4a6b0" transform="rotate(-35 134 84)"/>
-  <circle cx="70" cy="52" r="17" fill="#a4a8b6"/>
-  <circle cx="70" cy="52" r="10" fill="#f4a6b0"/>
-  <circle cx="130" cy="52" r="17" fill="#a4a8b6"/>
-  <circle cx="130" cy="52" r="10" fill="#f4a6b0"/>
-  <path d="M100 14 C 126 22, 134 54, 120 76 C 110 88, 90 88, 80 76 C 66 54, 74 22, 100 14 Z" fill="#b6bac7"/>
-  <g stroke="#4a4a55" stroke-width="1.8" stroke-linecap="round">
-    <line x1="88" y1="28" x2="54" y2="18"/>
-    <line x1="88" y1="33" x2="52" y2="32"/>
-    <line x1="88" y1="38" x2="56" y2="46"/>
-    <line x1="112" y1="28" x2="146" y2="18"/>
-    <line x1="112" y1="33" x2="148" y2="32"/>
-    <line x1="112" y1="38" x2="144" y2="46"/>
+  <!-- Top-down mouse in a soft outlined style, nose facing up. Original artwork for Paw Paw. -->
+  <g stroke="#6b4a3a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Long thin tail with a little tuft -->
+    <path d="M100 150 C 96 176, 138 170, 130 192" fill="none" stroke-width="7"/>
+    <path d="M100 150 C 96 176, 138 170, 130 192" fill="none" stroke="#c9967a" stroke-width="3.5"/>
+    <path d="M130 192 L122 199 M130 192 L131 200 M130 192 L138 198" fill="none" stroke-width="2.5"/>
+    <!-- Back feet -->
+    <ellipse cx="70" cy="152" rx="10" ry="15" fill="#f1b8a6" transform="rotate(-18 70 152)"/>
+    <ellipse cx="130" cy="152" rx="10" ry="15" fill="#f1b8a6" transform="rotate(18 130 152)"/>
+    <!-- Plump body -->
+    <ellipse cx="100" cy="118" rx="44" ry="52" fill="#d9a877"/>
+    <!-- Front paws tucked beside the head -->
+    <ellipse cx="68" cy="82" rx="8" ry="12" fill="#f1b8a6" transform="rotate(22 68 82)"/>
+    <ellipse cx="132" cy="82" rx="8" ry="12" fill="#f1b8a6" transform="rotate(-22 132 82)"/>
+    <!-- Round ears with pink insides -->
+    <circle cx="68" cy="52" r="18" fill="#d9a877"/>
+    <circle cx="68" cy="52" r="10" fill="#f1b8a6" stroke-width="2.5"/>
+    <circle cx="132" cy="52" r="18" fill="#d9a877"/>
+    <circle cx="132" cy="52" r="10" fill="#f1b8a6" stroke-width="2.5"/>
+    <!-- Head tapering to the nose -->
+    <path d="M100 10 C 120 12, 130 34, 128 56 C 126 76, 114 86, 100 86 C 86 86, 74 76, 72 56 C 70 34, 80 12, 100 10 Z" fill="#e3b787"/>
   </g>
-  <circle cx="88" cy="46" r="5" fill="#1d1d24"/>
-  <circle cx="112" cy="46" r="5" fill="#1d1d24"/>
-  <circle cx="86.5" cy="44.5" r="1.8" fill="#fff"/>
-  <circle cx="110.5" cy="44.5" r="1.8" fill="#fff"/>
-  <circle cx="100" cy="17" r="6" fill="#f08aa0"/>
+  <!-- Soft lighter patch on the back -->
+  <ellipse cx="100" cy="122" rx="22" ry="34" fill="#e8c297" opacity="0.8"/>
+  <!-- Bead eyes -->
+  <ellipse cx="85" cy="44" rx="4.8" ry="5.8" fill="#3a2a25"/>
+  <ellipse cx="115" cy="44" rx="4.8" ry="5.8" fill="#3a2a25"/>
+  <circle cx="83.6" cy="42" r="1.5" fill="#fff"/>
+  <circle cx="113.6" cy="42" r="1.5" fill="#fff"/>
+  <!-- Thin whiskers -->
+  <g stroke="#6b4a3a" stroke-width="1.6" stroke-linecap="round" opacity="0.85">
+    <line x1="88" y1="26" x2="62" y2="18"/>
+    <line x1="87" y1="31" x2="58" y2="30"/>
+    <line x1="112" y1="26" x2="138" y2="18"/>
+    <line x1="113" y1="31" x2="142" y2="30"/>
+  </g>
+  <!-- Small nose -->
+  <ellipse cx="100" cy="17" rx="5" ry="4" fill="#c9786f" stroke="#6b4a3a" stroke-width="2"/>
 </svg>
