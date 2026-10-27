@@ -24,6 +24,7 @@ protocol HomePresenterProtocol: AnyObject {
     func didSelectMode(_ mode: SessionMode)
     func didSelectTheme(_ theme: PlayfieldTheme)
     func didTapPlay()
+    func didRequestStats()
 }
 
 // MARK: - Interactor
@@ -43,4 +44,5 @@ protocol HomeInteractorOutputProtocol: AnyObject {
 protocol HomeRouterProtocol: AnyObject {
     static func createModule() -> UIViewController
     func navigateToGame(from view: HomeViewProtocol?, mode: SessionMode)
+    func navigateToStats(from view: HomeViewProtocol?)
 }

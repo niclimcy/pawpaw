@@ -28,4 +28,9 @@ final class HomeRouter: HomeRouterProtocol {
         let game = GameRouter.createModule(mode: mode)
         viewController.navigationController?.pushViewController(game, animated: true)
     }
+
+    func navigateToStats(from view: HomeViewProtocol?) {
+        guard let viewController = view as? UIViewController else { return }
+        viewController.navigationController?.pushViewController(StatsRouter.createModule(), animated: true)
+    }
 }

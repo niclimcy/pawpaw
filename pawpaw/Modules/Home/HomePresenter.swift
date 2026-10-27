@@ -23,6 +23,10 @@ final class HomePresenter: HomePresenterProtocol, HomeInteractorOutputProtocol {
         router?.navigateToGame(from: view, mode: mode)
     }
 
+    func didRequestStats() {
+        router?.navigateToStats(from: view)
+    }
+
     func didSelectTheme(_ theme: PlayfieldTheme) {
         interactor?.selectTheme(theme)
     }

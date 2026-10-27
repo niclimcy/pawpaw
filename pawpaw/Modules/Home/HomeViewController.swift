@@ -90,6 +90,19 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         return control
     }()
 
+    /// Owners only: a press-and-hold keeps paws out of the stats screen.
+    private let statsButton: UIButton = {
+        var config = UIButton.Configuration.plain()
+        config.title = "Hold for Stats"
+        config.image = UIImage(systemName: "chart.bar.fill")
+        config.imagePadding = 6
+        config.baseForegroundColor = Theme.text.withAlphaComponent(0.85)
+        let button = UIButton(configuration: config)
+        button.accessibilityIdentifier = "statsButton"
+        button.accessibilityHint = "Press and hold to open play statistics"
+        return button
+    }()
+
     private let playButton: UIButton = {
         var config = UIButton.Configuration.filled()
         config.title = "PLAY"
@@ -115,6 +128,9 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         playButton.addTarget(self, action: #selector(playTapped), for: .touchUpInside)
         modeControl.addTarget(self, action: #selector(modeChanged), for: .valueChanged)
         themeControl.addTarget(self, action: #selector(themeChanged), for: .valueChanged)
+        let hold = UILongPressGestureRecognizer(target: self, action: #selector(statsHeld(_:)))
+        hold.minimumPressDuration = 1.5
+        statsButton.addGestureRecognizer(hold)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -123,7 +139,7 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     }
 
     private func setupLayout() {
-        let stack = UIStackView(arrangedSubviews: [logoLabel, titleLabel, subtitleLabel, modeControl, themeControl, highScoreLabel, playButton])
+        let stack = UIStackView(arrangedSubviews: [logoLabel, titleLabel, subtitleLabel, modeControl, themeControl, highScoreLabel, playButton, statsButton])
         stack.axis = .vertical
         stack.alignment = .center
         stack.spacing = 18
@@ -150,6 +166,13 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
 
     @objc private func modeChanged() {
         presenter?.didSelectMode(SessionMode.allCases[modeControl.selectedSegmentIndex])
+    }
+
+    @objc private func statsHeld(_ gesture: UILongPressGestureRecognizer) {
+        // `.began` fires only after the full hold duration has passed.
+        guard gesture.state == .began else { return }
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        presenter?.didRequestStats()
     }
 
     @objc private func themeChanged() {
