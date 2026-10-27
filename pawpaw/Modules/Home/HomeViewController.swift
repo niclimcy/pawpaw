@@ -43,9 +43,8 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     /// The cat that is playing. Tapping it opens the profiles screen.
     private let profileButton: UIButton = {
         var config = UIButton.Configuration.tinted()
-        config.title = "🐱 My Cat"
-        config.image = UIImage(systemName: "chevron.down")
-        config.imagePlacement = .trailing
+        config.title = CatProfile.defaultName
+        config.imagePlacement = .leading
         config.imagePadding = 8
         config.baseBackgroundColor = Theme.text
         config.baseForegroundColor = Theme.text
@@ -228,8 +227,11 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         highScoreLabel.text = "Best: \(score ?? 0)"
     }
 
-    func showProfile(title: String, favorite: String?) {
-        profileButton.configuration?.title = title
+    func showProfile(name: String, face: CatFace, favorite: String?) {
+        profileButton.configuration?.title = name
+        profileButton.configuration?.image = face.image(side: Theme.scaled(34))
+        profileButton.configuration?.imagePlacement = .leading
+        profileButton.accessibilityLabel = "\(name), \(face.title). Opens the list of cats"
         favoriteLabel.text = favorite
         favoriteLabel.isHidden = favorite == nil
     }

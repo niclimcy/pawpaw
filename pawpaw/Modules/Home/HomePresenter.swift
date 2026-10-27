@@ -46,7 +46,8 @@ final class HomePresenter: HomePresenterProtocol, HomeInteractorOutputProtocol {
         view?.showTheme(theme)
         view?.showHighScore(highScore)
         view?.showProfile(
-            title: "\(profile.emoji) \(profile.name)",
+            name: profile.name,
+            face: profile.face,
             favorite: favorite.map { "\(profile.name) loves \($0.pluralName)" }
         )
     }

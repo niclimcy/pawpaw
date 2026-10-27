@@ -9,10 +9,10 @@ extension ProfilesViewController {
     /// A cat's button (tap to play as that cat) with a pencil beside it to rename or delete.
     func makeRow(_ row: ProfileRow) -> UIView {
         var config = row.isActive ? UIButton.Configuration.filled() : UIButton.Configuration.tinted()
-        config.title = row.title
+        config.title = row.isActive ? "\(row.name)  ✓" : row.name
         config.subtitle = row.subtitle
-        config.image = row.isActive ? UIImage(systemName: "checkmark.circle.fill") : nil
-        config.imagePadding = 8
+        config.image = row.face.image(side: Theme.scaled(52))
+        config.imagePadding = 14
         config.baseBackgroundColor = row.isActive ? Theme.accent : Theme.text
         config.baseForegroundColor = row.isActive ? .white : Theme.text
         config.cornerStyle = .large
@@ -34,6 +34,8 @@ extension ProfilesViewController {
         select.setContentHuggingPriority(.defaultLow, for: .horizontal)
         select.heightAnchor.constraint(greaterThanOrEqualToConstant: Theme.minimumTapSize).isActive = true
         select.accessibilityIdentifier = "profileRow"
+        select.accessibilityLabel = "\(row.name), \(row.face.title). \(row.subtitle)"
+        select.accessibilityTraits = row.isActive ? [.button, .selected] : .button
         select.addAction(UIAction { [weak self] _ in self?.presenter?.didSelectProfile(id: row.id) }, for: .touchUpInside)
 
         var editConfig = UIButton.Configuration.plain()
@@ -44,8 +46,8 @@ extension ProfilesViewController {
         edit.setContentHuggingPriority(.required, for: .horizontal)
         edit.setContentCompressionResistancePriority(.required, for: .horizontal)
         edit.widthAnchor.constraint(equalToConstant: Theme.minimumTapSize).isActive = true
-        edit.accessibilityLabel = "Edit \(row.title)"
-        edit.addAction(UIAction { [weak self] _ in self?.showEditAlert(for: row) }, for: .touchUpInside)
+        edit.accessibilityLabel = "Edit \(row.name)"
+        edit.addAction(UIAction { [weak self] _ in self?.showEditCard(for: row) }, for: .touchUpInside)
 
         let stack = UIStackView(arrangedSubviews: [select, edit])
         stack.axis = .horizontal
@@ -71,7 +73,7 @@ extension ProfilesViewController {
         let button = UIButton(configuration: config)
         button.heightAnchor.constraint(greaterThanOrEqualToConstant: Theme.minimumTapSize).isActive = true
         button.accessibilityIdentifier = "addCatButton"
-        button.addAction(UIAction { [weak self] _ in self?.showAddAlert() }, for: .touchUpInside)
+        button.addAction(UIAction { [weak self] _ in self?.showAddCard() }, for: .touchUpInside)
         return button
     }
 

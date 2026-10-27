@@ -33,7 +33,7 @@ final class StatsPresenter: StatsPresenterProtocol, StatsInteractorOutputProtoco
 
         let favoriteKind = stats.favoriteKind
         view?.showStats(StatsViewModel(
-            title: "\(profile.emoji) \(profile.name)'s Stats",
+            title: "\(profile.name)'s Stats",
             summary: "\(stats.totalRounds) rounds · \(stats.totalCatches) catches",
             favorite: favoriteKind == nil ? "No favorite yet. Play a round!" : "Favorite catch:",
             favoriteImageName: favoriteKind?.imageName,

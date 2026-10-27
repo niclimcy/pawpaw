@@ -14,7 +14,8 @@ struct ProfileEntry: Equatable {
 /// One line of the profiles list, already formatted as text.
 struct ProfileRow: Equatable {
     let id: UUID
-    let title: String
+    let name: String
+    let face: CatFace
     let subtitle: String
     let isActive: Bool
 }
@@ -35,8 +36,8 @@ protocol ProfilesPresenterProtocol: AnyObject {
     func viewWillAppear()
     func didTapBack()
     func didSelectProfile(id: UUID)
-    func didAddProfile(name: String)
-    func didRenameProfile(id: UUID, name: String)
+    func didAddProfile(name: String, face: CatFace)
+    func didUpdateProfile(id: UUID, name: String, face: CatFace)
     func didConfirmDelete(id: UUID)
 }
 
@@ -45,8 +46,8 @@ protocol ProfilesInteractorInputProtocol: AnyObject {
     var presenter: ProfilesInteractorOutputProtocol? { get set }
     func fetchProfiles()
     func selectProfile(id: UUID)
-    func addProfile(name: String)
-    func renameProfile(id: UUID, name: String)
+    func addProfile(name: String, face: CatFace)
+    func updateProfile(id: UUID, name: String, face: CatFace)
     func deleteProfile(id: UUID)
 }
 

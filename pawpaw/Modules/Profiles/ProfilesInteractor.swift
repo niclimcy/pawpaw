@@ -28,17 +28,14 @@ final class ProfilesInteractor: ProfilesInteractorInputProtocol {
         fetchProfiles()
     }
 
-    func addProfile(name: String) {
-        // Each new cat gets the next face in the list.
-        let faces = CatProfile.emojiChoices
-        let emoji = faces[profileStorage.profiles.count % faces.count]
-        guard let profile = profileStorage.add(name: name, emoji: emoji) else { return }
+    func addProfile(name: String, face: CatFace) {
+        guard let profile = profileStorage.add(name: name, face: face) else { return }
         profileStorage.setActive(profile.id)
         fetchProfiles()
     }
 
-    func renameProfile(id: UUID, name: String) {
-        profileStorage.rename(id, to: name)
+    func updateProfile(id: UUID, name: String, face: CatFace) {
+        profileStorage.update(id, name: name, face: face)
         fetchProfiles()
     }
 

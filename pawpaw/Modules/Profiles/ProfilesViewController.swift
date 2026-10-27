@@ -18,13 +18,55 @@ final class ProfilesViewController: UIViewController, ProfilesViewProtocol {
 
     /// False when only one cat is left, since the last cat can't be deleted.
     var canDelete = false
+    /// The themed card for adding and editing, shown over the list instead of a system alert.
+    let editor = ProfileEditorView()
+    private var editingID: UUID?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Theme.background
         installBackground(theme: .wood)
         setupLayout()
+        setupEditor()
     }
+
+    private func setupEditor() {
+        editor.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(editor)
+        NSLayoutConstraint.activate([
+            editor.topAnchor.constraint(equalTo: view.topAnchor),
+            editor.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            editor.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            editor.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+        editor.onSave = { [weak self] name, face in
+            guard let self else { return }
+            if let id = self.editingID {
+                self.presenter?.didUpdateProfile(id: id, name: name, face: face)
+            } else {
+                self.presenter?.didAddProfile(name: name, face: face)
+            }
+        }
+        editor.onDelete = { [weak self] in
+            guard let id = self?.editingID else { return }
+            self?.presenter?.didConfirmDelete(id: id)
+        }
+    }
+
+    func showAddCard() {
+        editingID = nil
+        // New cats start with a face no other cat is wearing, when one is free.
+        let free = CatFace.allCases.first { face in !usedFaces.contains(face) } ?? .orange
+        editor.present(adding: true, name: "", face: free, canDelete: false)
+    }
+
+    func showEditCard(for row: ProfileRow) {
+        editingID = row.id
+        editor.present(adding: false, name: row.name, face: row.face, canDelete: canDelete)
+    }
+
+    /// Faces already worn by a cat in the list.
+    private var usedFaces: Set<CatFace> = []
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -67,6 +109,7 @@ final class ProfilesViewController: UIViewController, ProfilesViewProtocol {
     // MARK: ProfilesViewProtocol
     func showProfiles(_ rows: [ProfileRow], canDelete: Bool) {
         self.canDelete = canDelete
+        usedFaces = Set(rows.map(\.face))
         listStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
         rows.forEach { listStack.addArrangedSubview(makeRow($0)) }
     }

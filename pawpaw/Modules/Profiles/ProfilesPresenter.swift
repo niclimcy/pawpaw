@@ -23,12 +23,12 @@ final class ProfilesPresenter: ProfilesPresenterProtocol, ProfilesInteractorOutp
         interactor?.selectProfile(id: id)
     }
 
-    func didAddProfile(name: String) {
-        interactor?.addProfile(name: name)
+    func didAddProfile(name: String, face: CatFace) {
+        interactor?.addProfile(name: name, face: face)
     }
 
-    func didRenameProfile(id: UUID, name: String) {
-        interactor?.renameProfile(id: id, name: name)
+    func didUpdateProfile(id: UUID, name: String, face: CatFace) {
+        interactor?.updateProfile(id: id, name: name, face: face)
     }
 
     func didConfirmDelete(id: UUID) {
@@ -40,7 +40,8 @@ final class ProfilesPresenter: ProfilesPresenterProtocol, ProfilesInteractorOutp
         let rows = entries.map { entry in
             ProfileRow(
                 id: entry.profile.id,
-                title: "\(entry.profile.emoji) \(entry.profile.name)",
+                name: entry.profile.name,
+                face: entry.profile.face,
                 subtitle: entry.favorite.map { "Loves \($0.pluralName)" } ?? "No favorite yet",
                 isActive: entry.profile.id == activeID
             )

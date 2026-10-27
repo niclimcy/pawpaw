@@ -11,8 +11,9 @@ protocol ProfileStorage {
     /// The cat that is playing now.
     var activeProfile: CatProfile { get }
     func setActive(_ id: UUID)
-    @discardableResult func add(name: String, emoji: String) -> CatProfile?
-    func rename(_ id: UUID, to name: String)
+    @discardableResult func add(name: String, face: CatFace) -> CatProfile?
+    /// Changes a cat's name and face. An empty name keeps the old one.
+    func update(_ id: UUID, name: String, face: CatFace)
     /// Removes a cat and its scores and stats. The last cat can't be deleted.
     func delete(_ id: UUID)
 }
@@ -46,18 +47,21 @@ final class UserDefaultsProfileStorage: ProfileStorage {
     }
 
     @discardableResult
-    func add(name: String, emoji: String) -> CatProfile? {
+    func add(name: String, face: CatFace) -> CatProfile? {
         guard let name = CatProfile.cleaned(name) else { return nil }
-        let profile = CatProfile(name: name, emoji: emoji)
+        let profile = CatProfile(name: name, face: face)
         save(profiles + [profile])
         return profile
     }
 
-    func rename(_ id: UUID, to name: String) {
-        guard let name = CatProfile.cleaned(name) else { return }
+    func update(_ id: UUID, name: String, face: CatFace) {
+        let cleanName = CatProfile.cleaned(name)
         save(profiles.map { profile in
             var copy = profile
-            if copy.id == id { copy.name = name }
+            if copy.id == id {
+                copy.name = cleanName ?? copy.name
+                copy.face = face
+            }
             return copy
         })
     }

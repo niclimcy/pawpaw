@@ -60,8 +60,8 @@ For owners:
 
 Cat profiles for multi-cat households:
 
-- Each cat has a name and a face, and its own best scores and play stats. The first launch after the update creates a "My Cat" profile that keeps your existing scores and stats.
-- The Home screen shows the active cat. Tap it to switch cats, add one, rename one or delete one. Deleting a cat erases its scores and stats, and the last cat can't be deleted.
+- Each cat has a name and a drawn headshot (orange tabby, gray tabby, black, white, calico or Siamese), and its own best scores and play stats. The first launch after the update creates a "My Cat" profile that keeps your existing scores and stats.
+- The Home screen shows the active cat. Tap it to switch cats, or to add or edit one. Adding and editing use a themed card on the wood panel with a name field and a face picker, not a system alert. Deleting a cat needs a 1.5 second hold, erases its scores and stats, and the last cat can't be deleted.
 - Home shows "Luna loves butterflies" once that cat has caught something, and the Stats screen is titled with the cat's name.
 - The session length and background are device settings shared by all cats.
 
@@ -129,7 +129,8 @@ Each module's protocols are declared in a `*Protocols.swift` file. The `createMo
 
 | File | Role |
 |---|---|
-| `ProfilesViewController` (+ `+Builders`, `+Alerts`) | List of cats with the active one checked, add, rename and delete |
+| `ProfilesViewController` (+ `+Builders`) | List of cats with their headshots and the active one checked |
+| `ProfileEditorView` (+ `+Layout`, `+Builders`) | The themed add/edit card: name field, face picker, Save, Cancel and hold-to-delete |
 | `ProfilesPresenter` | Turns the cats into display rows ("Loves butterflies") |
 | `ProfilesInteractor` | Selects, adds, renames and deletes cats, and reads each cat's favorite critter |
 | `ProfilesRouter` | Creates the module and returns to Home |
@@ -153,11 +154,13 @@ pawpaw/
 │   ├── SessionMode.swift     Session lengths (30 s, 60 s, 2 min, relaxed)
 │   ├── PlayfieldTheme.swift  Background choices
 │   ├── PlayStats.swift       Lifetime play history
-│   └── CatProfile.swift      A cat's name and face
+│   ├── CatProfile.swift      A cat's name and headshot
+│   └── CatFace.swift         The drawn cat headshots, one per coat colour
 ├── Common/
 │   ├── ProfileStorage.swift  Cats and the active cat, with first-launch migration (protocol + UserDefaults)
 │   ├── ScoreStorage.swift    Best scores per cat, session length and background (protocol + UserDefaults)
 │   ├── StatsStorage.swift    Play stats per cat (protocol + UserDefaults)
+│   ├── CatFace+Image.swift   Draws a headshot at a given size
 │   ├── Theme.swift           Colours and fonts
 │   ├── WoodCrateBackgroundView.swift   Drawn wooden crate background
 │   └── NatureBackgroundView.swift      Drawn grass, pond and snow backgrounds
@@ -171,7 +174,7 @@ pawpaw/
 
 ## Art
 
-The critter images (`critter_mouse`, `critter_bug`, `critter_butterfly`, `critter_cricket`, `critter_feather`) are original top-down SVGs drawn for this project. To use your own art, replace the SVG file inside each `.imageset` folder and keep the same filename. The backgrounds are drawn in code.
+The critter images (`critter_mouse`, `critter_bug`, `critter_butterfly`, `critter_cricket`, `critter_feather`) and the cat headshots (`cat_orange`, `cat_gray`, `cat_black`, `cat_white`, `cat_calico`, `cat_siamese`) are original SVGs drawn for this project. To use your own art, replace the SVG file inside each `.imageset` folder and keep the same filename. The backgrounds are drawn in code.
 
 ## Tweaking the game
 

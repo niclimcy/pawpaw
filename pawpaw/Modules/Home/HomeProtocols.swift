@@ -13,7 +13,7 @@ protocol HomeViewProtocol: AnyObject {
     /// `nil` hides the best score (relaxed mode has none).
     func showHighScore(_ score: Int?)
     /// The cat that is playing, and a line about its favorite critter (`nil` before the first catch).
-    func showProfile(title: String, favorite: String?)
+    func showProfile(name: String, face: CatFace, favorite: String?)
 }
 
 // MARK: - Presenter
