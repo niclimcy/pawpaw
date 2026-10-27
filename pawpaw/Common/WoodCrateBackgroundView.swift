@@ -108,16 +108,20 @@ final class WoodCrateBackgroundView: UIView {
 }
 
 extension UIViewController {
-    /// Puts the dark wooden crate behind everything else in the view.
-    func installWoodBackground() {
-        let wood = WoodCrateBackgroundView()
-        wood.translatesAutoresizingMaskIntoConstraints = false
-        view.insertSubview(wood, at: 0)
+    private static let backgroundTag = 9_002
+
+    /// Puts the theme's playfield behind everything else, replacing any earlier one.
+    func installBackground(theme: PlayfieldTheme) {
+        view.viewWithTag(Self.backgroundTag)?.removeFromSuperview()
+        let background: UIView = theme == .wood ? WoodCrateBackgroundView() : NatureBackgroundView(theme: theme)
+        background.tag = Self.backgroundTag
+        background.translatesAutoresizingMaskIntoConstraints = false
+        view.insertSubview(background, at: 0)
         NSLayoutConstraint.activate([
-            wood.topAnchor.constraint(equalTo: view.topAnchor),
-            wood.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            wood.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            wood.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            background.topAnchor.constraint(equalTo: view.topAnchor),
+            background.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            background.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            background.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
     }
 }

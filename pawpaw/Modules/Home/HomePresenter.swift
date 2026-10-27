@@ -23,8 +23,13 @@ final class HomePresenter: HomePresenterProtocol, HomeInteractorOutputProtocol {
         router?.navigateToGame(from: view, mode: mode)
     }
 
-    func didFetchState(mode: SessionMode, highScore: Int?) {
+    func didSelectTheme(_ theme: PlayfieldTheme) {
+        interactor?.selectTheme(theme)
+    }
+
+    func didFetchState(mode: SessionMode, theme: PlayfieldTheme, highScore: Int?) {
         view?.showMode(mode)
+        view?.showTheme(theme)
         view?.showHighScore(highScore)
     }
 }

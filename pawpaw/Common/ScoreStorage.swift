@@ -8,6 +8,8 @@ import Foundation
 protocol ScoreStorage {
     /// The mode the owner picked on the Home screen.
     var selectedMode: SessionMode { get set }
+    /// The playfield background picked on the Home screen.
+    var selectedTheme: PlayfieldTheme { get set }
     func highScore(for mode: SessionMode) -> Int
     func saveHighScore(_ score: Int, for mode: SessionMode)
 }
@@ -15,6 +17,7 @@ protocol ScoreStorage {
 final class UserDefaultsScoreStorage: ScoreStorage {
     private let defaults: UserDefaults
     private let modeKey = "pawpaw.selectedMode"
+    private let themeKey = "pawpaw.selectedTheme"
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
@@ -26,6 +29,15 @@ final class UserDefaultsScoreStorage: ScoreStorage {
         }
         set {
             defaults.set(newValue.rawValue, forKey: modeKey)
+        }
+    }
+
+    var selectedTheme: PlayfieldTheme {
+        get {
+            defaults.string(forKey: themeKey).flatMap(PlayfieldTheme.init(rawValue:)) ?? .wood
+        }
+        set {
+            defaults.set(newValue.rawValue, forKey: themeKey)
         }
     }
 

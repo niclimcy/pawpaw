@@ -7,6 +7,7 @@ import UIKit
 
 final class HomeViewController: UIViewController, HomeViewProtocol {
     var presenter: HomePresenterProtocol?
+    private var shownTheme: PlayfieldTheme = .wood
 
     private let logoLabel: UILabel = {
         let label = UILabel()
@@ -72,6 +73,23 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         return control
     }()
 
+    /// Picks the playfield background; the Home screen previews the choice.
+    private let themeControl: UISegmentedControl = {
+        let control = UISegmentedControl(items: PlayfieldTheme.allCases.map(\.title))
+        control.selectedSegmentTintColor = Theme.accent
+        control.backgroundColor = Theme.panel
+        control.setTitleTextAttributes([
+            .foregroundColor: Theme.text,
+            .font: Theme.roundedFont(size: 14, weight: .bold)
+        ], for: .normal)
+        control.setTitleTextAttributes([
+            .foregroundColor: UIColor.white,
+            .font: Theme.roundedFont(size: 14, weight: .bold)
+        ], for: .selected)
+        control.accessibilityIdentifier = "themeControl"
+        return control
+    }()
+
     private let playButton: UIButton = {
         var config = UIButton.Configuration.filled()
         config.title = "PLAY"
@@ -92,10 +110,11 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Theme.background
-        installWoodBackground()
+        installBackground(theme: .wood)
         setupLayout()
         playButton.addTarget(self, action: #selector(playTapped), for: .touchUpInside)
         modeControl.addTarget(self, action: #selector(modeChanged), for: .valueChanged)
+        themeControl.addTarget(self, action: #selector(themeChanged), for: .valueChanged)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -104,7 +123,7 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     }
 
     private func setupLayout() {
-        let stack = UIStackView(arrangedSubviews: [logoLabel, titleLabel, subtitleLabel, modeControl, highScoreLabel, playButton])
+        let stack = UIStackView(arrangedSubviews: [logoLabel, titleLabel, subtitleLabel, modeControl, themeControl, highScoreLabel, playButton])
         stack.axis = .vertical
         stack.alignment = .center
         stack.spacing = 18
@@ -133,9 +152,20 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         presenter?.didSelectMode(SessionMode.allCases[modeControl.selectedSegmentIndex])
     }
 
+    @objc private func themeChanged() {
+        presenter?.didSelectTheme(PlayfieldTheme.allCases[themeControl.selectedSegmentIndex])
+    }
+
     // MARK: HomeViewProtocol
     func showMode(_ mode: SessionMode) {
         modeControl.selectedSegmentIndex = SessionMode.allCases.firstIndex(of: mode) ?? 0
+    }
+
+    func showTheme(_ theme: PlayfieldTheme) {
+        themeControl.selectedSegmentIndex = PlayfieldTheme.allCases.firstIndex(of: theme) ?? 0
+        guard theme != shownTheme else { return }
+        shownTheme = theme
+        installBackground(theme: theme)
     }
 
     func showHighScore(_ score: Int?) {

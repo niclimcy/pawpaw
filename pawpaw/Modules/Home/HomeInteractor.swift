@@ -19,7 +19,16 @@ final class HomeInteractor: HomeInteractorInputProtocol {
 
     func fetchState() {
         let mode = storage.selectedMode
-        presenter?.didFetchState(mode: mode, highScore: mode.hasHighScore ? storage.highScore(for: mode) : nil)
+        presenter?.didFetchState(
+            mode: mode,
+            theme: storage.selectedTheme,
+            highScore: mode.hasHighScore ? storage.highScore(for: mode) : nil
+        )
+    }
+
+    func selectTheme(_ theme: PlayfieldTheme) {
+        storage.selectedTheme = theme
+        fetchState()
     }
 
     func selectMode(_ mode: SessionMode) {

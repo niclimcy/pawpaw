@@ -7,6 +7,8 @@ import UIKit
 
 final class GameViewController: UIViewController, GameViewProtocol {
     var presenter: GamePresenterProtocol?
+    /// The playfield background, chosen on the Home screen.
+    var theme: PlayfieldTheme = .wood
 
     let gameArea = GameAreaView()
 
@@ -35,8 +37,8 @@ final class GameViewController: UIViewController, GameViewProtocol {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Theme.background
-        installWoodBackground()
+        view.backgroundColor = theme.baseColor
+        installBackground(theme: theme)
         setupGameArea()
         setupHUD()
         setupResultOverlay()

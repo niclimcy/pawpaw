@@ -9,6 +9,7 @@ import UIKit
 protocol HomeViewProtocol: AnyObject {
     var presenter: HomePresenterProtocol? { get set }
     func showMode(_ mode: SessionMode)
+    func showTheme(_ theme: PlayfieldTheme)
     /// `nil` hides the best score (relaxed mode has none).
     func showHighScore(_ score: Int?)
 }
@@ -21,6 +22,7 @@ protocol HomePresenterProtocol: AnyObject {
 
     func viewWillAppear()
     func didSelectMode(_ mode: SessionMode)
+    func didSelectTheme(_ theme: PlayfieldTheme)
     func didTapPlay()
 }
 
@@ -30,10 +32,11 @@ protocol HomeInteractorInputProtocol: AnyObject {
     var selectedMode: SessionMode { get }
     func fetchState()
     func selectMode(_ mode: SessionMode)
+    func selectTheme(_ theme: PlayfieldTheme)
 }
 
 protocol HomeInteractorOutputProtocol: AnyObject {
-    func didFetchState(mode: SessionMode, highScore: Int?)
+    func didFetchState(mode: SessionMode, theme: PlayfieldTheme, highScore: Int?)
 }
 
 // MARK: - Router
