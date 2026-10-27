@@ -22,10 +22,10 @@ Built with **Swift** and **UIKit** (no storyboards or SwiftUI), following the **
 
 ## How to play
 
-1. Tap **PLAY** on the home screen.
-2. You have **60 seconds**. Tap the critters as they move across the screen.
+1. Pick a session length and a background on the home screen, then tap **PLAY**.
+2. Tap the critters as they move across the screen. A round lasts **30 seconds**, **60 seconds** (the default) or **2 minutes**. **Relaxed** mode has no timer and never ends.
 3. Each catch gives points, with a sparkle, ring and "+points" animation.
-4. When time is up, you see your score and your best score. Choose **Play Again** or **Home**.
+4. When time is up, you see your score and your best score for that session length. Choose **Play Again** or **Home**.
 
 | Critter | Points | Notes |
 |---|---|---|
@@ -47,13 +47,18 @@ Game design choices that suit cats:
 - Every paw counts: several touches at once are handled, and the hit area around each critter is generous.
 - Dragging a paw across a critter catches it, and leaves a trail of small ripples.
 - A missed tap makes the nearest critter jump away with a squeak, so the cat always gets a reaction.
+- Session lengths suit different cats: short rounds for kittens and seniors, and relaxed play with no timer for cats that like to take their time.
+- Backgrounds: wooden crate, grass, pond and snow. All are dark so the critters stand out.
 
 For owners:
 
 - Leaving the game needs a 1.5 second press-and-hold on the Home buttons, so paws can't exit by accident.
 - The Home screen explains this, and a quick tap on an exit button shows a short reminder.
+- The **Play Stats** screen shows total rounds and catches, catches per critter, a favorite critter, rounds over the last 7 days and the best score for each session length. Changes in play can hint at a change in mood or energy.
+- Opening Play Stats and resetting it both need a 1.5 second press-and-hold, and a reset also asks for confirmation. Resetting keeps the best scores.
+- Leaving a round early (always the case in relaxed mode) still counts the critters caught in the stats.
 
-The best score is saved on the device using `UserDefaults`.
+Settings, best scores and stats are saved on the device using `UserDefaults`. Each session length has its own best score. Relaxed mode has none.
 
 ## Requirements
 
@@ -89,10 +94,10 @@ Each module's protocols are declared in a `*Protocols.swift` file. The `createMo
 
 | File | Role |
 |---|---|
-| `HomeViewController` | Title, best score and the PLAY button |
-| `HomePresenter` | Asks for the best score and handles the PLAY tap |
-| `HomeInteractor` | Reads the best score from storage |
-| `HomeRouter` | Creates the module and pushes the Game screen |
+| `HomeViewController` | Title, session length and background pickers, best score, PLAY and Stats buttons |
+| `HomePresenter` | Passes the picks to the interactor, and handles the PLAY tap and the Stats hold |
+| `HomeInteractor` | Reads and saves the picked session length and background, and reads the best score |
+| `HomeRouter` | Creates the module and pushes the Game or Stats screen |
 
 ### Game module
 
@@ -101,8 +106,17 @@ Each module's protocols are declared in a `*Protocols.swift` file. The `createMo
 | `GameViewController` (+ `+Layout`) | Score and timer labels, home button, results card |
 | `GameAreaView` (+ `+Effects`, `+Rings`) | The play field: moves critters, detects taps, plays catch animations |
 | `GamePresenter` | Formats score, time and result text, and forwards taps |
-| `GameInteractor` | Game rules: 60 s clock, spawning (max 2 critters), scoring, saving the best score |
-| `GameRouter` | Creates the module and returns to Home |
+| `GameInteractor` | Game rules: the session clock (if any), spawning (max 2 critters), scoring, saving the best score and recording stats |
+| `GameRouter` | Creates the module for a session length and returns to Home |
+
+### Stats module
+
+| File | Role |
+|---|---|
+| `StatsViewController` (+ `+Builders`) | Totals, catches per critter, 7 day chart, best scores and the hold-to-reset button |
+| `StatsPresenter` | Turns the stats into display text |
+| `StatsInteractor` | Reads the stats and best scores, and resets the stats |
+| `StatsRouter` | Creates the module and returns to Home |
 
 ### Data flow example (catching a critter)
 
@@ -119,26 +133,33 @@ pawpaw/
 ├── Entities/
 │   ├── TargetKind.swift      Critter types: points, speed, spawn weight, image name
 │   ├── GameTarget.swift      A critter on screen (kind, path, lifetime)
-│   └── GameResult.swift      Final score summary
+│   ├── GameResult.swift      Final score summary
+│   ├── SessionMode.swift     Session lengths (30 s, 60 s, 2 min, relaxed)
+│   ├── PlayfieldTheme.swift  Background choices
+│   └── PlayStats.swift       Lifetime play history
 ├── Common/
-│   ├── ScoreStorage.swift    Best score protocol + UserDefaults implementation
+│   ├── ScoreStorage.swift    Best scores, session length and background (protocol + UserDefaults)
+│   ├── StatsStorage.swift    Play stats (protocol + UserDefaults)
 │   ├── Theme.swift           Colours and fonts
-│   └── WoodCrateBackgroundView.swift   Drawn wooden crate background
+│   ├── WoodCrateBackgroundView.swift   Drawn wooden crate background
+│   └── NatureBackgroundView.swift      Drawn grass, pond and snow backgrounds
 ├── Modules/
 │   ├── Home/                 Home screen (VIPER)
-│   └── Game/                 Game screen (VIPER)
+│   ├── Game/                 Game screen (VIPER)
+│   └── Stats/                Play stats screen (VIPER)
 └── Assets.xcassets/          App assets, including the critter SVGs
 ```
 
 ## Art
 
-The critter images (`critter_mouse`, `critter_bug`, `critter_butterfly`) are original top-down SVGs drawn for this project. To use your own art, replace the SVG file inside each `.imageset` folder and keep the same filename. The wooden crate background is drawn in code.
+The critter images (`critter_mouse`, `critter_bug`, `critter_butterfly`, `critter_cricket`, `critter_feather`) are original top-down SVGs drawn for this project. To use your own art, replace the SVG file inside each `.imageset` folder and keep the same filename. The backgrounds are drawn in code.
 
 ## Tweaking the game
 
 | What | Where |
 |---|---|
-| Round length | `GameInteractor.roundDuration` |
+| Session lengths | `SessionMode.duration` |
+| Background colours | `PlayfieldTheme.baseColor` |
 | Max critters on screen | `GameInteractor.maxActiveTargets` |
 | How often new critters spawn | `GameInteractor.spawnInterval` |
 | Points, time on screen and spawn odds per critter | `TargetKind.swift` |
