@@ -12,6 +12,21 @@ final class GameAreaView: UIView {
 
     private var targetViews: [UUID: UIImageView] = [:]
     private let targetSize: CGFloat = 126
+    /// Extra reach around a critter so a big paw still counts as a hit.
+    private let hitSlop: CGFloat = 28
+    /// Distance a dragging paw travels between trail ripples.
+    private let trailSpacing: CGFloat = 36
+    private var lastRipple: [ObjectIdentifier: CGPoint] = [:]
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        isMultipleTouchEnabled = true
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        isMultipleTouchEnabled = true
+    }
 
     func add(_ target: GameTarget) {
         let label = UIImageView(image: UIImage(named: target.kind.imageName))
@@ -82,19 +97,58 @@ final class GameAreaView: UIView {
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let touch = touches.first else { return }
-        let location = touch.location(in: self)
-        // Newest targets are on top, so check them first. Hit area is a bit generous for big paws.
-        for (id, label) in targetViews.sorted(by: { subviews.firstIndex(of: $0.value) ?? 0 > subviews.firstIndex(of: $1.value) ?? 0 }) {
+        // Every paw counts: a cat may touch with several toes at once.
+        for touch in touches {
+            let location = touch.location(in: self)
+            lastRipple[ObjectIdentifier(touch)] = location
+            if let id = targetID(at: location) {
+                onTapTarget?(id)
+            } else {
+                playMissEffect(at: location)
+            }
+        }
+    }
+
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for touch in touches {
+            let location = touch.location(in: self)
+            // A paw dragged across a critter catches it too.
+            if let id = targetID(at: location) {
+                onTapTarget?(id)
+                continue
+            }
+            // Leave a trail of small ripples behind a dragging paw.
+            let key = ObjectIdentifier(touch)
+            let last = lastRipple[key] ?? location
+            if hypot(location.x - last.x, location.y - last.y) >= trailSpacing {
+                lastRipple[key] = location
+                playTrailEffect(at: location)
+            }
+        }
+    }
+
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        touches.forEach { lastRipple[ObjectIdentifier($0)] = nil }
+    }
+
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        touches.forEach { lastRipple[ObjectIdentifier($0)] = nil }
+    }
+
+    /// The visible critter under `location`, newest (topmost) first.
+    private func targetID(at location: CGPoint) -> UUID? {
+        let ordered = targetViews.sorted {
+            (subviews.firstIndex(of: $0.value) ?? 0) > (subviews.firstIndex(of: $1.value) ?? 0)
+        }
+        for (id, label) in ordered {
             // Critters hiding under the planks can't be caught.
             guard (label.layer.presentation()?.opacity ?? 1) > 0.5 else { continue }
             let frame = label.layer.presentation()?.frame ?? label.frame
-            if frame.insetBy(dx: -12, dy: -12).contains(location) {
-                onTapTarget?(id)
-                return
+            if frame.insetBy(dx: -hitSlop, dy: -hitSlop).contains(location) {
+                return id
             }
         }
-        playMissEffect(at: location)
+        return nil
     }
 
     // MARK: Layout helpers

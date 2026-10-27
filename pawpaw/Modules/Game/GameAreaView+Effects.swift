@@ -47,6 +47,11 @@ extension GameAreaView {
         emitRing(at: position, color: Theme.text.withAlphaComponent(0.6), endRadius: 28, lineWidth: 2)
     }
 
+    /// A tiny, quickly fading ripple left behind a dragging paw.
+    func playTrailEffect(at position: CGPoint) {
+        emitRing(at: position, color: Theme.text.withAlphaComponent(0.35), endRadius: 18, lineWidth: 1.5)
+    }
+
     private func emitSparkles(at position: CGPoint, bigBurst: Bool) {
         let emitter = CAEmitterLayer()
         emitter.emitterPosition = position
