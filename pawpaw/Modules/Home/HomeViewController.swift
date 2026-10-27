@@ -44,6 +44,17 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         return label
     }()
 
+    /// A note for the human: cats can't leave the game by accident.
+    private let ownerNoteLabel: UILabel = {
+        let label = UILabel()
+        label.text = "For owners: during play, press and hold the home button for 1.5 seconds to leave the game."
+        label.font = Theme.roundedFont(size: 14, weight: .semibold)
+        label.textColor = Theme.text.withAlphaComponent(0.75)
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        return label
+    }()
+
     private let playButton: UIButton = {
         var config = UIButton.Configuration.filled()
         config.title = "PLAY"
@@ -83,7 +94,13 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         stack.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(stack)
 
+        ownerNoteLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(ownerNoteLabel)
+
         NSLayoutConstraint.activate([
+            ownerNoteLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 24),
+            ownerNoteLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -24),
+            ownerNoteLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
             stack.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor),
             stack.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 24),
             stack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -24)

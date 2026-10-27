@@ -47,6 +47,37 @@ extension GameViewController {
         hold.minimumPressDuration = 1.5
         button.addGestureRecognizer(hold)
         button.accessibilityHint = "Press and hold to leave the game"
+        // A quick tap does nothing, so tell the owner how to leave.
+        button.addTarget(self, action: #selector(showExitHint), for: .touchUpInside)
+    }
+
+    /// Short message for owners who tap an exit button instead of holding it.
+    @objc func showExitHint() {
+        let tag = 9_001
+        view.viewWithTag(tag)?.removeFromSuperview()
+
+        var config = UIButton.Configuration.filled()
+        config.title = "Press and hold for 1.5 seconds to leave"
+        config.baseBackgroundColor = Theme.panel
+        config.baseForegroundColor = Theme.text
+        config.cornerStyle = .capsule
+        config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 18, bottom: 10, trailing: 18)
+        let hint = UIButton(configuration: config)
+        hint.tag = tag
+        hint.isUserInteractionEnabled = false
+        hint.alpha = 0
+        hint.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(hint)
+        NSLayoutConstraint.activate([
+            hint.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            hint.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -24),
+            hint.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 16)
+        ])
+        UIView.animate(withDuration: 0.2, animations: { hint.alpha = 1 }, completion: { _ in
+            UIView.animate(withDuration: 0.4, delay: 2.0, options: [], animations: { hint.alpha = 0 }, completion: { _ in
+                hint.removeFromSuperview()
+            })
+        })
     }
 
     @objc func holdToExitChanged(_ gesture: UILongPressGestureRecognizer) {
