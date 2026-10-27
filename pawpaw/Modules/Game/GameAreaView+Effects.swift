@@ -47,6 +47,39 @@ extension GameAreaView {
         emitRing(at: position, color: Theme.text.withAlphaComponent(0.6), endRadius: 28, lineWidth: 2)
     }
 
+    /// The closest visible critter jumps away from a missed tap, so the cat still gets a reaction.
+    func startleNearestTarget(from location: CGPoint, label: UIView?) {
+        guard let label, let presentation = label.layer.presentation() else { return }
+        let center = presentation.position
+        var dx = center.x - location.x
+        var dy = center.y - location.y
+        let distance = max(hypot(dx, dy), 1)
+        dx /= distance
+        dy /= distance
+
+        // An additive hop on top of the running path animation, then a quick settle.
+        let hop = CAKeyframeAnimation(keyPath: "position")
+        hop.isAdditive = true
+        hop.values = [
+            CGPoint.zero,
+            CGPoint(x: dx * 46, y: dy * 46),
+            CGPoint(x: dx * 38, y: dy * 38),
+            CGPoint.zero
+        ].map { NSValue(cgPoint: $0) }
+        hop.keyTimes = [0, 0.3, 0.6, 1]
+        hop.duration = 0.35
+        hop.timingFunction = CAMediaTimingFunction(name: .easeOut)
+        label.layer.add(hop, forKey: "startle")
+
+        let squash = CAKeyframeAnimation(keyPath: "transform.scale")
+        squash.isAdditive = true
+        squash.values = [0, 0.18, 0]
+        squash.keyTimes = [0, 0.3, 1]
+        squash.duration = 0.35
+        label.layer.add(squash, forKey: "startleScale")
+        SoundPlayer.shared.play(.squeak)
+    }
+
     /// A tiny, quickly fading ripple left behind a dragging paw.
     func playTrailEffect(at position: CGPoint) {
         emitRing(at: position, color: Theme.text.withAlphaComponent(0.35), endRadius: 18, lineWidth: 1.5)

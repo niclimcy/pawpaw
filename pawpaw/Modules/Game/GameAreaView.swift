@@ -16,6 +16,8 @@ final class GameAreaView: UIView {
     private let hitSlop: CGFloat = 28
     /// Distance a dragging paw travels between trail ripples.
     private let trailSpacing: CGFloat = 36
+    /// How close a missed tap must land to make a critter jump.
+    private let startleRange: CGFloat = 220
     private var lastRipple: [ObjectIdentifier: CGPoint] = [:]
 
     override init(frame: CGRect) {
@@ -105,6 +107,7 @@ final class GameAreaView: UIView {
                 onTapTarget?(id)
             } else {
                 playMissEffect(at: location)
+                startleNearestTarget(from: location, label: nearestTargetView(to: location))
             }
         }
     }
@@ -133,6 +136,16 @@ final class GameAreaView: UIView {
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         touches.forEach { lastRipple[ObjectIdentifier($0)] = nil }
+    }
+
+    /// The closest visible critter within startle range of a missed tap.
+    private func nearestTargetView(to location: CGPoint) -> UIView? {
+        let candidates = targetViews.values.compactMap { label -> (UIView, CGFloat)? in
+            guard let presentation = label.layer.presentation(), presentation.opacity > 0.5 else { return nil }
+            let distance = hypot(presentation.position.x - location.x, presentation.position.y - location.y)
+            return distance <= startleRange ? (label, distance) : nil
+        }
+        return candidates.min { $0.1 < $1.1 }?.0
     }
 
     /// The visible critter under `location`, newest (topmost) first.
