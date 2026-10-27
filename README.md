@@ -32,6 +32,8 @@ Built with **Swift** and **UIKit** (no storyboards or SwiftUI), following the **
 | Mouse | 10 | Medium speed |
 | Ladybug | 5 | Slowest, most common |
 | Butterfly | 20 | Fastest and rare |
+| Cricket | 15 | Short sudden hops with brief stops |
+| Feather | 5 | Slow, gentle drifting curves |
 
 Game design choices that suit cats:
 
@@ -41,8 +43,15 @@ Game design choices that suit cats:
 - The background is dark so the animations stand out.
 - Critters move like real prey: mice dart and freeze, bugs wander, butterflies flutter in arcs.
 - Critters emerge from the crate edge, and some duck out of sight during a freeze, then reappear. Hidden critters can't be caught.
-- Short prey sounds (squeak, rustle, flutter, catch) are synthesized in code by `SoundPlayer`.
+- Short prey sounds (squeak, rustle, flutter, chirp, swish, catch) are synthesized in code by `SoundPlayer`.
+- Every paw counts: several touches at once are handled, and the hit area around each critter is generous.
+- Dragging a paw across a critter catches it, and leaves a trail of small ripples.
+- A missed tap makes the nearest critter jump away with a squeak, so the cat always gets a reaction.
+
+For owners:
+
 - Leaving the game needs a 1.5 second press-and-hold on the Home buttons, so paws can't exit by accident.
+- The Home screen explains this, and a quick tap on an exit button shows a short reminder.
 
 The best score is saved on the device using `UserDefaults`.
 
