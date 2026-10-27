@@ -10,6 +10,8 @@ enum GameSound: CaseIterable {
     case squeak
     case rustle
     case flutter
+    case chirp
+    case swish
     case catchPop
 }
 
@@ -43,6 +45,8 @@ final class SoundPlayer {
         case .mouse: play(.squeak)
         case .bug: play(.rustle)
         case .butterfly: play(.flutter)
+        case .cricket: play(.chirp)
+        case .feather: play(.swish)
         }
     }
 
@@ -55,6 +59,13 @@ final class SoundPlayer {
             return noiseBursts(duration: 0.4, burstRate: 14, volume: 0.35)
         case .flutter:
             return noiseBursts(duration: 0.35, burstRate: 28, volume: 0.25)
+        case .chirp:
+            // Three quick insect-like trills.
+            let trill = chirp(from: 4_200, to: 4_400, duration: 0.05, volume: 0.35)
+            let gap = [Float](repeating: 0, count: Int(0.03 * sampleRate))
+            return trill + gap + trill + gap + trill
+        case .swish:
+            return noiseBursts(duration: 0.3, burstRate: 4, volume: 0.15)
         case .catchPop:
             return chirp(from: 5_000, to: 2_600, duration: 0.09, volume: 0.5)
                 + chirp(from: 3_600, to: 2_000, duration: 0.11, volume: 0.45)
