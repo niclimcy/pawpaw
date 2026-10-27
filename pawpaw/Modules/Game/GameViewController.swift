@@ -105,6 +105,7 @@ final class GameViewController: UIViewController, GameViewProtocol {
     }
 }
 
+@available(iOS 17.0, *)
 #Preview {
     GameRouter.createModule(mode: .standard)
 }

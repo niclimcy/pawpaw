@@ -235,6 +235,7 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     }
 }
 
+@available(iOS 17.0, *)
 #Preview {
     HomeRouter.createModule()
 }

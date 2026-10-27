@@ -165,6 +165,7 @@ extension StatsViewController {
     }
 }
 
+@available(iOS 17.0, *)
 #Preview {
     StatsRouter.createModule()
 }

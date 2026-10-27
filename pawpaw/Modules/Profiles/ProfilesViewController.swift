@@ -72,6 +72,7 @@ final class ProfilesViewController: UIViewController, ProfilesViewProtocol {
     }
 }
 
+@available(iOS 17.0, *)
 #Preview {
     ProfilesRouter.createModule()
 }
