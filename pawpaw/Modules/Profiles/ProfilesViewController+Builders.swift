@@ -30,6 +30,8 @@ extension ProfilesViewController {
         }
         let select = UIButton(configuration: config)
         select.contentHorizontalAlignment = .leading
+        // The cat takes all the spare width; the pencil stays small.
+        select.setContentHuggingPriority(.defaultLow, for: .horizontal)
         select.heightAnchor.constraint(greaterThanOrEqualToConstant: Theme.minimumTapSize).isActive = true
         select.accessibilityIdentifier = "profileRow"
         select.addAction(UIAction { [weak self] _ in self?.presenter?.didSelectProfile(id: row.id) }, for: .touchUpInside)
@@ -37,14 +39,18 @@ extension ProfilesViewController {
         var editConfig = UIButton.Configuration.plain()
         editConfig.image = UIImage(systemName: "pencil")
         editConfig.baseForegroundColor = Theme.text
+        editConfig.contentInsets = .zero
         let edit = UIButton(configuration: editConfig)
-        edit.widthAnchor.constraint(greaterThanOrEqualToConstant: Theme.minimumTapSize).isActive = true
+        edit.setContentHuggingPriority(.required, for: .horizontal)
+        edit.setContentCompressionResistancePriority(.required, for: .horizontal)
+        edit.widthAnchor.constraint(equalToConstant: Theme.minimumTapSize).isActive = true
         edit.accessibilityLabel = "Edit \(row.title)"
         edit.addAction(UIAction { [weak self] _ in self?.showEditAlert(for: row) }, for: .touchUpInside)
 
         let stack = UIStackView(arrangedSubviews: [select, edit])
         stack.axis = .horizontal
-        stack.spacing = 8
+        stack.alignment = .fill
+        stack.spacing = 4
         return stack
     }
 
