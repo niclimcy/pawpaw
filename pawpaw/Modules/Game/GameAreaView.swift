@@ -52,10 +52,11 @@ final class GameAreaView: UIView {
     /// A reset critter view, reused from an earlier critter when one is available.
     private func dequeueTargetView() -> UIImageView {
         let label = recycledViews.popLast() ?? UIImageView()
+        // Reset the transform first: setting a frame on a rotated or scaled view distorts its bounds.
+        label.transform = .identity
         label.frame = CGRect(origin: .zero, size: CGSize(width: targetSize, height: targetSize))
         label.contentMode = .scaleAspectFit
         label.isUserInteractionEnabled = false
-        label.transform = .identity
         label.alpha = 1
         label.isHidden = false
         label.layer.shadowColor = UIColor.black.cgColor
@@ -69,6 +70,7 @@ final class GameAreaView: UIView {
     private func recycle(_ label: UIImageView) {
         label.layer.removeAllAnimations()
         label.removeFromSuperview()
+        label.transform = .identity
         label.image = nil
         recycledViews.append(label)
     }
