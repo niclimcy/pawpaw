@@ -38,11 +38,11 @@ Built with **Swift** and **UIKit** (no storyboards or SwiftUI), following the **
 Game design choices that suit cats:
 
 - At most **2 critters** on screen at once, so a cat can focus on one thing.
-- Critters stay on screen for several seconds and fade in and out slowly to catch the cat's attention.
+- Critters stay on screen for several seconds. They never fade: they run in from beyond the screen edge and run off it again, and the views are reused for the next critter.
 - Critters are large, drawn from above, and turn to face the direction they move.
 - The background is dark so the animations stand out.
 - Critters move like real prey: mice dart and freeze, bugs wander, butterflies flutter in arcs.
-- Critters emerge from the crate edge, and some duck out of sight during a freeze, then reappear. Hidden critters can't be caught.
+- Critters emerge from the screen edge, and some run off the nearest edge during a freeze, wait out of sight, then run back. Critters that are off-screen can't be caught.
 - Short prey sounds (squeak, rustle, flutter, chirp, swish, catch) are synthesized in code by `SoundPlayer`.
 - Every paw counts: several touches at once are handled, and the hit area around each critter is generous.
 - Dragging a paw across a critter catches it, and leaves a trail of small ripples.
@@ -58,7 +58,14 @@ For owners:
 - Opening Play Stats and resetting it both need a 1.5 second press-and-hold, and a reset also asks for confirmation. Resetting keeps the best scores.
 - Leaving a round early (always the case in relaxed mode) still counts the critters caught in the stats.
 
-Settings, best scores and stats are saved on the device using `UserDefaults`. Each session length has its own best score. Relaxed mode has none.
+Cat profiles for multi-cat households:
+
+- Each cat has a name and a face, and its own best scores and play stats. The first launch after the update creates a "My Cat" profile that keeps your existing scores and stats.
+- The Home screen shows the active cat. Tap it to switch cats, add one, rename one or delete one. Deleting a cat erases its scores and stats, and the last cat can't be deleted.
+- Home shows "Luna loves butterflies" once that cat has caught something, and the Stats screen is titled with the cat's name.
+- The session length and background are device settings shared by all cats.
+
+Settings, best scores and stats are saved on the device using `UserDefaults`. Each session length has its own best score for each cat. Relaxed mode has none.
 
 ## Requirements
 
@@ -94,10 +101,10 @@ Each module's protocols are declared in a `*Protocols.swift` file. The `createMo
 
 | File | Role |
 |---|---|
-| `HomeViewController` | Title, session length and background pickers, best score, PLAY and Stats buttons |
-| `HomePresenter` | Passes the picks to the interactor, and handles the PLAY tap and the Stats hold |
-| `HomeInteractor` | Reads and saves the picked session length and background, and reads the best score |
-| `HomeRouter` | Creates the module and pushes the Game or Stats screen |
+| `HomeViewController` | Title, active cat button, session length and background pickers, best score, PLAY and Stats buttons |
+| `HomePresenter` | Passes the picks to the interactor, and handles the PLAY tap, the cat button and the Stats hold |
+| `HomeInteractor` | Reads and saves the picked session length and background, and reads the active cat, its best score and its favorite critter |
+| `HomeRouter` | Creates the module and pushes the Game, Stats or Profiles screen |
 
 ### Game module
 
@@ -118,6 +125,15 @@ Each module's protocols are declared in a `*Protocols.swift` file. The `createMo
 | `StatsInteractor` | Reads the stats and best scores, and resets the stats |
 | `StatsRouter` | Creates the module and returns to Home |
 
+### Profiles module
+
+| File | Role |
+|---|---|
+| `ProfilesViewController` (+ `+Builders`, `+Alerts`) | List of cats with the active one checked, add, rename and delete |
+| `ProfilesPresenter` | Turns the cats into display rows ("Loves butterflies") |
+| `ProfilesInteractor` | Selects, adds, renames and deletes cats, and reads each cat's favorite critter |
+| `ProfilesRouter` | Creates the module and returns to Home |
+
 ### Data flow example (catching a critter)
 
 1. `GameAreaView` detects a tap on a critter and calls `onTapTarget`.
@@ -136,17 +152,20 @@ pawpaw/
 │   ├── GameResult.swift      Final score summary
 │   ├── SessionMode.swift     Session lengths (30 s, 60 s, 2 min, relaxed)
 │   ├── PlayfieldTheme.swift  Background choices
-│   └── PlayStats.swift       Lifetime play history
+│   ├── PlayStats.swift       Lifetime play history
+│   └── CatProfile.swift      A cat's name and face
 ├── Common/
-│   ├── ScoreStorage.swift    Best scores, session length and background (protocol + UserDefaults)
-│   ├── StatsStorage.swift    Play stats (protocol + UserDefaults)
+│   ├── ProfileStorage.swift  Cats and the active cat, with first-launch migration (protocol + UserDefaults)
+│   ├── ScoreStorage.swift    Best scores per cat, session length and background (protocol + UserDefaults)
+│   ├── StatsStorage.swift    Play stats per cat (protocol + UserDefaults)
 │   ├── Theme.swift           Colours and fonts
 │   ├── WoodCrateBackgroundView.swift   Drawn wooden crate background
 │   └── NatureBackgroundView.swift      Drawn grass, pond and snow backgrounds
 ├── Modules/
 │   ├── Home/                 Home screen (VIPER)
 │   ├── Game/                 Game screen (VIPER)
-│   └── Stats/                Play stats screen (VIPER)
+│   ├── Stats/                Play stats screen (VIPER)
+│   └── Profiles/             Cat profiles screen (VIPER)
 └── Assets.xcassets/          App assets, including the critter SVGs
 ```
 
