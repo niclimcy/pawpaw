@@ -57,6 +57,7 @@ For owners:
 - The **Play Stats** screen shows total rounds and catches, catches per critter, a favorite critter, rounds over the last 7 days and the best score for each session length. Changes in play can hint at a change in mood or energy.
 - Opening Play Stats and resetting it both need a 1.5 second press-and-hold, and a reset also asks for confirmation. Resetting keeps the best scores.
 - Leaving a round early (always the case in relaxed mode) still counts the critters caught in the stats.
+- The screen stays on during a round, so it won't dim or lock while the cat plays. When the result card appears, the device can sleep normally again.
 
 Cat profiles for multi-cat households:
 

@@ -55,11 +55,23 @@ final class GameViewController: UIViewController, GameViewProtocol {
         presenter?.viewDidLoad()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // A cat won't touch the screen to keep it awake, so stop it dimming or locking mid-round.
+        setScreenAwake(true)
+    }
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        setScreenAwake(false)
         if isMovingFromParent || isBeingDismissed {
             presenter?.viewWillDisappear()
         }
+    }
+
+    /// Keeps the screen on while critters are running. The result card lets it sleep again.
+    private func setScreenAwake(_ awake: Bool) {
+        UIApplication.shared.isIdleTimerDisabled = awake
     }
 
     // MARK: Actions
@@ -98,10 +110,13 @@ final class GameViewController: UIViewController, GameViewProtocol {
         resultOverlay.alpha = 0
         resultOverlay.isHidden = false
         UIView.animate(withDuration: 0.25) { self.resultOverlay.alpha = 1 }
+        // The round is over: if nobody comes back, the device can sleep as usual.
+        setScreenAwake(false)
     }
 
     func hideResult() {
         resultOverlay.isHidden = true
+        setScreenAwake(true)
     }
 }
 
