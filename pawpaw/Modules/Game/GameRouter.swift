@@ -6,10 +6,10 @@
 import UIKit
 
 final class GameRouter: GameRouterProtocol {
-    static func createModule() -> UIViewController {
+    static func createModule(mode: SessionMode) -> UIViewController {
         let view = GameViewController()
         let presenter = GamePresenter()
-        let interactor = GameInteractor(storage: UserDefaultsScoreStorage())
+        let interactor = GameInteractor(storage: UserDefaultsScoreStorage(), mode: mode)
         let router = GameRouter()
 
         view.presenter = presenter

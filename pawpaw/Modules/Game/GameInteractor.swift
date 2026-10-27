@@ -8,7 +8,6 @@ import Foundation
 
 /// Holds the game rules: timers, spawning, scoring and high score persistence.
 final class GameInteractor: GameInteractorInputProtocol {
-    static let roundDuration = 60
     /// Cats focus on one thing at a time, so never show more than two critters at once.
     private let maxActiveTargets = 2
     /// How often we check for a free slot to spawn a new critter into.
@@ -17,16 +16,18 @@ final class GameInteractor: GameInteractorInputProtocol {
     weak var presenter: GameInteractorOutputProtocol?
 
     private let storage: ScoreStorage
+    private let mode: SessionMode
     private var activeTargets: [UUID: GameTarget] = [:]
     private var score = 0
     private var catches = 0
-    private var timeRemaining = GameInteractor.roundDuration
+    private var timeRemaining = 0
     private var isRunning = false
     private var clockTimer: Timer?
     private var spawnTimer: Timer?
 
-    init(storage: ScoreStorage) {
+    init(storage: ScoreStorage, mode: SessionMode) {
         self.storage = storage
+        self.mode = mode
     }
 
     deinit {
@@ -39,14 +40,17 @@ final class GameInteractor: GameInteractorInputProtocol {
         activeTargets.removeAll()
         score = 0
         catches = 0
-        timeRemaining = GameInteractor.roundDuration
+        timeRemaining = mode.duration ?? 0
         isRunning = true
 
         presenter?.didUpdateScore(score)
-        presenter?.didUpdateTimeRemaining(timeRemaining)
+        // Relaxed play has no clock, so the view shows an open-ended symbol instead.
+        presenter?.didUpdateTimeRemaining(mode.duration == nil ? nil : timeRemaining)
 
-        clockTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
-            self?.tick()
+        if mode.duration != nil {
+            clockTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+                self?.tick()
+            }
         }
         spawnTimer = Timer.scheduledTimer(withTimeInterval: spawnInterval, repeats: true) { [weak self] _ in
             self?.spawnTarget()
@@ -106,10 +110,10 @@ final class GameInteractor: GameInteractorInputProtocol {
         invalidateTimers()
         activeTargets.removeAll()
 
-        let previousBest = storage.highScore
-        let isNewHighScore = score > previousBest
+        let previousBest = storage.highScore(for: mode)
+        let isNewHighScore = mode.hasHighScore && score > previousBest
         if isNewHighScore {
-            storage.saveHighScore(score)
+            storage.saveHighScore(score, for: mode)
         }
         let result = GameResult(
             score: score,

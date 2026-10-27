@@ -55,6 +55,23 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         return label
     }()
 
+    /// Short rounds suit kittens and seniors; relaxed play has no timer at all.
+    private let modeControl: UISegmentedControl = {
+        let control = UISegmentedControl(items: SessionMode.allCases.map(\.title))
+        control.selectedSegmentTintColor = Theme.accent
+        control.backgroundColor = Theme.panel
+        control.setTitleTextAttributes([
+            .foregroundColor: Theme.text,
+            .font: Theme.roundedFont(size: 16, weight: .bold)
+        ], for: .normal)
+        control.setTitleTextAttributes([
+            .foregroundColor: UIColor.white,
+            .font: Theme.roundedFont(size: 16, weight: .bold)
+        ], for: .selected)
+        control.accessibilityIdentifier = "modeControl"
+        return control
+    }()
+
     private let playButton: UIButton = {
         var config = UIButton.Configuration.filled()
         config.title = "PLAY"
@@ -78,6 +95,7 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         installWoodBackground()
         setupLayout()
         playButton.addTarget(self, action: #selector(playTapped), for: .touchUpInside)
+        modeControl.addTarget(self, action: #selector(modeChanged), for: .valueChanged)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -86,7 +104,7 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     }
 
     private func setupLayout() {
-        let stack = UIStackView(arrangedSubviews: [logoLabel, titleLabel, subtitleLabel, highScoreLabel, playButton])
+        let stack = UIStackView(arrangedSubviews: [logoLabel, titleLabel, subtitleLabel, modeControl, highScoreLabel, playButton])
         stack.axis = .vertical
         stack.alignment = .center
         stack.spacing = 18
@@ -111,9 +129,18 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         presenter?.didTapPlay()
     }
 
+    @objc private func modeChanged() {
+        presenter?.didSelectMode(SessionMode.allCases[modeControl.selectedSegmentIndex])
+    }
+
     // MARK: HomeViewProtocol
-    func showHighScore(_ score: Int) {
-        highScoreLabel.text = "Best: \(score)"
+    func showMode(_ mode: SessionMode) {
+        modeControl.selectedSegmentIndex = SessionMode.allCases.firstIndex(of: mode) ?? 0
+    }
+
+    func showHighScore(_ score: Int?) {
+        highScoreLabel.isHidden = score == nil
+        highScoreLabel.text = "Best: \(score ?? 0)"
     }
 }
 

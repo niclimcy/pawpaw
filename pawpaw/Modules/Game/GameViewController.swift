@@ -23,7 +23,7 @@ final class GameViewController: UIViewController, GameViewProtocol {
         label.font = Theme.roundedFont(size: 24)
         label.textColor = Theme.text
         label.textAlignment = .right
-        label.text = "⏱ \(GameInteractor.roundDuration)"
+        label.text = "⏱"
         return label
     }()
 
@@ -104,5 +104,5 @@ final class GameViewController: UIViewController, GameViewProtocol {
 }
 
 #Preview {
-    GameRouter.createModule()
+    GameRouter.createModule(mode: .standard)
 }

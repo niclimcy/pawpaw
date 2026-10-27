@@ -43,8 +43,8 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorOutputProtocol {
         view?.showScore("Score: \(score)")
     }
 
-    func didUpdateTimeRemaining(_ seconds: Int) {
-        view?.showTime("⏱ \(seconds)")
+    func didUpdateTimeRemaining(_ seconds: Int?) {
+        view?.showTime(seconds.map { "⏱ \($0)" } ?? "⏱ ∞")
     }
 
     func didSpawnTarget(_ target: GameTarget) {

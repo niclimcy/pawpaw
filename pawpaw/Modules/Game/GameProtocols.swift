@@ -44,7 +44,8 @@ protocol GameInteractorInputProtocol: AnyObject {
 
 protocol GameInteractorOutputProtocol: AnyObject {
     func didUpdateScore(_ score: Int)
-    func didUpdateTimeRemaining(_ seconds: Int)
+    /// `nil` means the session has no timer (relaxed mode).
+    func didUpdateTimeRemaining(_ seconds: Int?)
     func didSpawnTarget(_ target: GameTarget)
     func didCatchTarget(id: UUID, points: Int)
     func didFinishGame(_ result: GameResult)
@@ -52,6 +53,6 @@ protocol GameInteractorOutputProtocol: AnyObject {
 
 // MARK: - Router
 protocol GameRouterProtocol: AnyObject {
-    static func createModule() -> UIViewController
+    static func createModule(mode: SessionMode) -> UIViewController
     func navigateToHome(from view: GameViewProtocol?)
 }

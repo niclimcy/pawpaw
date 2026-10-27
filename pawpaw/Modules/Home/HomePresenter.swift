@@ -11,14 +11,20 @@ final class HomePresenter: HomePresenterProtocol, HomeInteractorOutputProtocol {
     var router: HomeRouterProtocol?
 
     func viewWillAppear() {
-        interactor?.fetchHighScore()
+        interactor?.fetchState()
+    }
+
+    func didSelectMode(_ mode: SessionMode) {
+        interactor?.selectMode(mode)
     }
 
     func didTapPlay() {
-        router?.navigateToGame(from: view)
+        guard let mode = interactor?.selectedMode else { return }
+        router?.navigateToGame(from: view, mode: mode)
     }
 
-    func didFetchHighScore(_ score: Int) {
-        view?.showHighScore(score)
+    func didFetchState(mode: SessionMode, highScore: Int?) {
+        view?.showMode(mode)
+        view?.showHighScore(highScore)
     }
 }
