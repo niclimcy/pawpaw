@@ -8,8 +8,10 @@ import Foundation
 
 /// Builds stop-and-go paths inside the normalized (0...1) play field.
 enum MovementPlanner {
-    /// Shortest freeze that is long enough to fade out, wait unseen and fade back in.
-    static let minimumHidePause: TimeInterval = 0.6
+    /// Time a hiding critter takes to run off the edge, and the same again to come back.
+    static let hideTravel: TimeInterval = 0.4
+    /// Shortest freeze that is long enough to run off the edge, wait unseen and run back.
+    static let minimumHidePause: TimeInterval = 1.0
     /// Time spent running off the edge at the end of a journey.
     static let exitTravel: TimeInterval = 0.9
 

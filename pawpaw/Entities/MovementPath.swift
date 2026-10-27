@@ -13,7 +13,7 @@ struct PathLeg: Equatable {
     let travel: TimeInterval
     /// Time spent frozen at the destination before the next leg starts.
     let pause: TimeInterval
-    /// The critter ducks out of sight during the freeze, then pops out again.
+    /// The critter runs off the nearest edge during the freeze, then comes back.
     let hides: Bool
     /// The critter runs off the edge of the field and out of sight, ending its journey.
     var exits: Bool = false
@@ -42,7 +42,7 @@ enum MovementStyle {
         }
     }
 
-    /// Chance that a long enough freeze is spent hidden under the crate planks.
+    /// Chance that a long enough freeze is spent out of sight beyond the edge.
     var hideChance: Double {
         switch self {
         case .dart: return 0.6

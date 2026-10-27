@@ -22,14 +22,9 @@ extension GameAreaView {
         var rotations: [NSNumber] = []
         var rotationTimes: [NSNumber] = []
 
-        // Opacity only changes while ducking under the planks during a hiding freeze.
-        let fade: TimeInterval = 0.2
-        var opacities: [NSNumber] = [1]
-        var opacityTimes: [NSNumber] = [0]
-        func addOpacity(_ value: Double, at time: TimeInterval) {
-            let last = opacityTimes.last?.doubleValue ?? 0
-            opacities.append(NSNumber(value: value))
-            opacityTimes.append(NSNumber(value: max(last, min(time / total, 1))))
+        func addRotation(_ value: CGFloat, at time: TimeInterval) {
+            rotations.append(NSNumber(value: Double(value)))
+            rotationTimes.append(NSNumber(value: time / total))
         }
 
         var elapsed: TimeInterval = 0
@@ -59,10 +54,23 @@ extension GameAreaView {
 
             if leg.pause > 0 {
                 if leg.hides {
-                    addOpacity(1, at: elapsed)
-                    addOpacity(0, at: elapsed + fade)
-                    addOpacity(0, at: elapsed + leg.pause - fade)
-                    addOpacity(1, at: elapsed + leg.pause)
+                    // Hide by running off the nearest edge, waiting out of sight, then running back.
+                    let edge = hideEdgePoint(from: destination)
+                    var outHeading = atan2(edge.y - destination.y, edge.x - destination.x) + .pi / 2
+                    while outHeading - heading > .pi { outHeading -= 2 * .pi }
+                    while outHeading - heading < -.pi { outHeading += 2 * .pi }
+                    let returnHeading = outHeading + .pi
+                    let hideTravel = MovementPlanner.hideTravel
+
+                    addRotation(outHeading, at: elapsed + 0.1)
+                    addRotation(outHeading, at: elapsed + hideTravel)
+                    addRotation(returnHeading, at: elapsed + leg.pause - hideTravel)
+                    addRotation(returnHeading, at: elapsed + leg.pause - 0.12)
+                    positions.append(NSValue(cgPoint: edge))
+                    positionTimes.append(NSNumber(value: (elapsed + hideTravel) / total))
+                    positions.append(NSValue(cgPoint: edge))
+                    positionTimes.append(NSNumber(value: (elapsed + leg.pause - hideTravel) / total))
+                    heading = returnHeading
                 }
                 elapsed += leg.pause
                 positions.append(NSValue(cgPoint: destination))
@@ -85,14 +93,8 @@ extension GameAreaView {
         turn.keyTimes = rotationTimes
         turn.calculationMode = .linear
 
-        addOpacity(1, at: total)
-        let appear = CAKeyframeAnimation(keyPath: "opacity")
-        appear.values = opacities
-        appear.keyTimes = opacityTimes
-        appear.calculationMode = .linear
-
         let group = CAAnimationGroup()
-        group.animations = [move, turn, appear]
+        group.animations = [move, turn]
         group.duration = total
 
         // Model values describe the end state; the animation shows the journey.
@@ -104,6 +106,18 @@ extension GameAreaView {
         CATransaction.setCompletionBlock(completion)
         label.layer.add(group, forKey: "path")
         CATransaction.commit()
+    }
+
+    /// A spot just beyond the edge nearest to `point`, where a hiding critter waits out of sight.
+    func hideEdgePoint(from point: CGPoint) -> CGPoint {
+        let margin = targetSize * 0.75
+        let gaps = [point.x, bounds.width - point.x, point.y, bounds.height - point.y]
+        switch gaps.firstIndex(of: gaps.min() ?? 0) {
+        case 0: return CGPoint(x: -margin, y: point.y)
+        case 1: return CGPoint(x: bounds.width + margin, y: point.y)
+        case 2: return CGPoint(x: point.x, y: -margin)
+        default: return CGPoint(x: point.x, y: bounds.height + margin)
+        }
     }
 
     /// Like `point(for:)`, but a point on the border is pushed far enough out that the critter is fully off-screen.
