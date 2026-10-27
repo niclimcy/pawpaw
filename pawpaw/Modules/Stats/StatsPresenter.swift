@@ -31,12 +31,13 @@ final class StatsPresenter: StatsPresenterProtocol, StatsInteractorOutputProtoco
         let formatter = DateFormatter()
         formatter.setLocalizedDateFormatFromTemplate("EEE")
 
-        let favorite = stats.favoriteKind.map { "Favorite catch: \($0.emoji)" } ?? "No favorite yet. Play a round!"
+        let favoriteKind = stats.favoriteKind
         view?.showStats(StatsViewModel(
             summary: "\(stats.totalRounds) rounds · \(stats.totalCatches) catches",
-            favorite: favorite,
+            favorite: favoriteKind == nil ? "No favorite yet. Play a round!" : "Favorite catch:",
+            favoriteImageName: favoriteKind?.imageName,
             critters: TargetKind.allCases.map {
-                StatsViewModel.CritterRow(emoji: $0.emoji, catches: "\(stats.catches(of: $0))")
+                StatsViewModel.CritterRow(imageName: $0.imageName, catches: "\(stats.catches(of: $0))")
             },
             days: stats.recentRounds(days: historyDays).map {
                 StatsViewModel.DayRow(label: formatter.string(from: $0.date), rounds: $0.rounds)

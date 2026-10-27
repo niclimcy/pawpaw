@@ -15,6 +15,21 @@ extension StatsViewController {
         return label
     }
 
+    /// "Favorite catch:" followed by the critter's artwork, sized to the text.
+    static func favoriteText(_ text: String, imageName: String?, font: UIFont) -> NSAttributedString {
+        let result = NSMutableAttributedString(string: text, attributes: [
+            .font: font,
+            .foregroundColor: Theme.text
+        ])
+        guard let imageName, let image = UIImage(named: imageName) else { return result }
+        let attachment = NSTextAttachment(image: image)
+        let side = font.lineHeight * 1.6
+        attachment.bounds = CGRect(x: 0, y: -side * 0.3, width: side, height: side)
+        result.append(NSAttributedString(string: " "))
+        result.append(NSAttributedString(attachment: attachment))
+        return result
+    }
+
     static func makeRow() -> UIStackView {
         let stack = UIStackView()
         stack.axis = .horizontal
@@ -24,12 +39,18 @@ extension StatsViewController {
         return stack
     }
 
-    static func makeColumn(top: String, topSize: CGFloat, bottom: String) -> UIView {
-        let topLabel = makeLabel(size: topSize)
-        topLabel.text = top
+    /// A critter's artwork over its catch count.
+    static func makeColumn(imageName: String, size: CGFloat, bottom: String) -> UIView {
+        let imageView = UIImageView(image: UIImage(named: imageName))
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.widthAnchor.constraint(equalToConstant: size).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: size).isActive = true
+        imageView.isAccessibilityElement = false
+
         let bottomLabel = makeLabel(size: 18, weight: .bold)
         bottomLabel.text = bottom
-        let column = UIStackView(arrangedSubviews: [topLabel, bottomLabel])
+        let column = UIStackView(arrangedSubviews: [imageView, bottomLabel])
         column.axis = .vertical
         column.alignment = .center
         column.spacing = 2

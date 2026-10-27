@@ -8,7 +8,8 @@ import UIKit
 /// Everything the stats screen shows, already formatted as text.
 struct StatsViewModel: Equatable {
     struct CritterRow: Equatable {
-        let emoji: String
+        /// Name of the critter's SVG in the asset catalog.
+        let imageName: String
         let catches: String
     }
 
@@ -19,6 +20,8 @@ struct StatsViewModel: Equatable {
 
     let summary: String
     let favorite: String
+    /// The favorite critter's SVG name, or `nil` when nothing has been caught yet.
+    let favoriteImageName: String?
     let critters: [CritterRow]
     let days: [DayRow]
     let bestScores: [String]

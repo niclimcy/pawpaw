@@ -145,12 +145,14 @@ extension StatsViewController {
 extension StatsViewController {
     func showStats(_ viewModel: StatsViewModel) {
         summaryLabel.text = viewModel.summary
-        favoriteLabel.text = viewModel.favorite
+        favoriteLabel.attributedText = Self.favoriteText(viewModel.favorite, imageName: viewModel.favoriteImageName, font: favoriteLabel.font)
         bestScoresLabel.text = viewModel.bestScores.joined(separator: "   ")
 
         crittersStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
         for row in viewModel.critters {
-            crittersStack.addArrangedSubview(Self.makeColumn(top: row.emoji, topSize: 30, bottom: row.catches))
+            crittersStack.addArrangedSubview(
+                Self.makeColumn(imageName: row.imageName, size: Theme.scaled(44), bottom: row.catches)
+            )
         }
 
         daysStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
