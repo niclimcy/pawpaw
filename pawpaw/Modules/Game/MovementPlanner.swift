@@ -10,6 +10,8 @@ import Foundation
 enum MovementPlanner {
     /// Shortest freeze that is long enough to fade out, wait unseen and fade back in.
     static let minimumHidePause: TimeInterval = 0.6
+    /// Time spent running off the edge at the end of a journey.
+    static let exitTravel: TimeInterval = 0.9
 
     static func legs(from start: CGPoint, style: MovementStyle, duration: TimeInterval) -> [PathLeg] {
         let count = Int.random(in: style.legCount)
@@ -37,7 +39,26 @@ enum MovementPlanner {
             ))
             current = destination
         }
+        // Critters leave the way real prey does: they run off the edge instead of vanishing.
+        legs.append(PathLeg(
+            destination: nearestEdgePoint(to: current),
+            travel: exitTravel,
+            pause: 0,
+            hides: false,
+            exits: true
+        ))
         return legs
+    }
+
+    /// The point on the field's border closest to `point`.
+    private static func nearestEdgePoint(to point: CGPoint) -> CGPoint {
+        let gaps = [point.x, 1 - point.x, point.y, 1 - point.y]
+        switch gaps.firstIndex(of: gaps.min() ?? 0) {
+        case 0: return CGPoint(x: 0, y: point.y)
+        case 1: return CGPoint(x: 1, y: point.y)
+        case 2: return CGPoint(x: point.x, y: 0)
+        default: return CGPoint(x: point.x, y: 1)
+        }
     }
 
     /// Splits `total` into `parts` slightly uneven pieces that add up to `total`.

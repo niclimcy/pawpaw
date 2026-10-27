@@ -15,6 +15,8 @@ struct PathLeg: Equatable {
     let pause: TimeInterval
     /// The critter ducks out of sight during the freeze, then pops out again.
     let hides: Bool
+    /// The critter runs off the edge of the field and out of sight, ending its journey.
+    var exits: Bool = false
 }
 
 /// How a critter moves. Real prey moves in bursts and changes direction, which holds a cat's attention.

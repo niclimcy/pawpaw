@@ -15,16 +15,17 @@ extension GameAreaView {
             return
         }
 
-        var current = point(for: target.start)
+        // Critters slide in from beyond the edge instead of fading in.
+        var current = offscreenPoint(for: target.start)
         var positions = [NSValue(cgPoint: current)]
         var positionTimes: [NSNumber] = [0]
         var rotations: [NSNumber] = []
         var rotationTimes: [NSNumber] = []
 
-        // Opacity: fade in on arrival, and vanish during hiding freezes.
+        // Opacity only changes while ducking under the planks during a hiding freeze.
         let fade: TimeInterval = 0.2
-        var opacities: [NSNumber] = [0, 1]
-        var opacityTimes: [NSNumber] = [0, NSNumber(value: min(0.4, total) / total)]
+        var opacities: [NSNumber] = [1]
+        var opacityTimes: [NSNumber] = [0]
         func addOpacity(_ value: Double, at time: TimeInterval) {
             let last = opacityTimes.last?.doubleValue ?? 0
             opacities.append(NSNumber(value: value))
@@ -35,7 +36,7 @@ extension GameAreaView {
         var heading: CGFloat = 0
         var previousPause: TimeInterval = 0
         for (index, leg) in target.legs.enumerated() {
-            let destination = point(for: leg.destination)
+            let destination = leg.exits ? offscreenPoint(for: leg.destination) : point(for: leg.destination)
             // The artwork faces up, so turn it to face the direction of travel.
             var legHeading = atan2(destination.y - current.y, destination.x - current.x) + .pi / 2
             if index > 0 {
@@ -103,5 +104,16 @@ extension GameAreaView {
         CATransaction.setCompletionBlock(completion)
         label.layer.add(group, forKey: "path")
         CATransaction.commit()
+    }
+
+    /// Like `point(for:)`, but a point on the border is pushed far enough out that the critter is fully off-screen.
+    func offscreenPoint(for normalized: CGPoint) -> CGPoint {
+        var result = point(for: normalized)
+        let margin = targetSize * 0.75
+        if normalized.x <= 0 { result.x = -margin }
+        if normalized.x >= 1 { result.x = bounds.width + margin }
+        if normalized.y <= 0 { result.y = -margin }
+        if normalized.y >= 1 { result.y = bounds.height + margin }
+        return result
     }
 }

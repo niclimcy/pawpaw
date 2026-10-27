@@ -11,7 +11,9 @@ final class GameAreaView: UIView {
     var onTapTarget: ((UUID) -> Void)?
 
     private var targetViews: [UUID: UIImageView] = [:]
-    private let targetSize: CGFloat = 126
+    /// Views of critters that left the screen or were caught, kept for the next spawn.
+    private var recycledViews: [UIImageView] = []
+    let targetSize: CGFloat = 126
     /// Extra reach around a critter so a big paw still counts as a hit.
     private let hitSlop: CGFloat = 28
     /// Distance a dragging paw travels between trail ripples.
@@ -31,27 +33,50 @@ final class GameAreaView: UIView {
     }
 
     func add(_ target: GameTarget) {
-        let label = UIImageView(image: UIImage(named: target.kind.imageName))
-        label.frame = CGRect(origin: .zero, size: CGSize(width: targetSize, height: targetSize))
-        label.contentMode = .scaleAspectFit
-        label.isUserInteractionEnabled = false
-        label.layer.shadowColor = UIColor.black.cgColor
-        label.layer.shadowRadius = 6
-        label.layer.shadowOpacity = 0.6
-        label.layer.shadowOffset = CGSize(width: 0, height: 4)
-        label.center = point(for: target.start)
+        let label = dequeueTargetView()
+        label.image = UIImage(named: target.kind.imageName)
+        label.center = offscreenPoint(for: target.start)
         addSubview(label)
         targetViews[target.id] = label
         SoundPlayer.shared.playAppear(for: target.kind)
 
         animatePath(of: target, on: label) { [weak self, weak label] in
             guard let self, let label, self.targetViews[target.id] === label else { return }
+            // The critter has run off the edge: free its slot and keep the view for the next one.
             self.targetViews[target.id] = nil
+            self.recycle(label)
             self.onExpire?(target.id)
-            UIView.animate(withDuration: 0.6, animations: { label.alpha = 0 }, completion: { _ in
-                label.removeFromSuperview()
-            })
         }
+    }
+
+    /// A reset critter view, reused from an earlier critter when one is available.
+    private func dequeueTargetView() -> UIImageView {
+        let label = recycledViews.popLast() ?? UIImageView()
+        label.frame = CGRect(origin: .zero, size: CGSize(width: targetSize, height: targetSize))
+        label.contentMode = .scaleAspectFit
+        label.isUserInteractionEnabled = false
+        label.transform = .identity
+        label.alpha = 1
+        label.isHidden = false
+        label.layer.shadowColor = UIColor.black.cgColor
+        label.layer.shadowRadius = 6
+        label.layer.shadowOpacity = 0.6
+        label.layer.shadowOffset = CGSize(width: 0, height: 4)
+        return label
+    }
+
+    /// Takes a critter view off the field, wipes its animations and stores it for reuse.
+    private func recycle(_ label: UIImageView) {
+        label.layer.removeAllAnimations()
+        label.removeFromSuperview()
+        label.image = nil
+        recycledViews.append(label)
+    }
+
+    /// Whether any part of the critter is currently inside the play field.
+    private func isOnScreen(_ label: UIView) -> Bool {
+        let frame = label.layer.presentation()?.frame ?? label.frame
+        return bounds.intersects(frame)
     }
 
     var onExpire: ((UUID) -> Void)?
@@ -82,8 +107,8 @@ final class GameAreaView: UIView {
                 label.transform = base.scaledBy(x: 0.1, y: 0.1).rotated(by: .pi)
                 label.alpha = 0
             }
-        }, completion: { _ in
-            label.removeFromSuperview()
+        }, completion: { [weak self] _ in
+            self?.recycle(label)
         })
         playCatchEffects(points: points, at: position)
         SoundPlayer.shared.play(.catchPop)
@@ -91,10 +116,7 @@ final class GameAreaView: UIView {
     }
 
     func removeAllTargets() {
-        targetViews.values.forEach {
-            $0.layer.removeAllAnimations()
-            $0.removeFromSuperview()
-        }
+        targetViews.values.forEach { recycle($0) }
         targetViews.removeAll()
     }
 
@@ -141,7 +163,7 @@ final class GameAreaView: UIView {
     /// The closest visible critter within startle range of a missed tap.
     private func nearestTargetView(to location: CGPoint) -> UIView? {
         let candidates = targetViews.values.compactMap { label -> (UIView, CGFloat)? in
-            guard let presentation = label.layer.presentation(), presentation.opacity > 0.5 else { return nil }
+            guard let presentation = label.layer.presentation(), presentation.opacity > 0.5, isOnScreen(label) else { return nil }
             let distance = hypot(presentation.position.x - location.x, presentation.position.y - location.y)
             return distance <= startleRange ? (label, distance) : nil
         }
@@ -155,7 +177,7 @@ final class GameAreaView: UIView {
         }
         for (id, label) in ordered {
             // Critters hiding under the planks can't be caught.
-            guard (label.layer.presentation()?.opacity ?? 1) > 0.5 else { continue }
+            guard (label.layer.presentation()?.opacity ?? 1) > 0.5, isOnScreen(label) else { continue }
             let frame = label.layer.presentation()?.frame ?? label.frame
             if frame.insetBy(dx: -hitSlop, dy: -hitSlop).contains(location) {
                 return id
