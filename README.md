@@ -35,6 +35,7 @@ Built with **Swift** and **UIKit** (no storyboards or SwiftUI), following the **
 | Cricket | 15 | Short sudden hops with brief stops |
 | Feather | 5 | Slow, gentle drifting curves |
 | Laser dot | 25 | Silent glowing red dot that streaks across the field and stops dead |
+| Fish | 15 | Glides and dives out of sight. Only appears on the **Pond** background |
 
 Game design choices that suit cats:
 
@@ -49,7 +50,7 @@ Game design choices that suit cats:
 - Dragging a paw across a critter catches it, and leaves a trail of small ripples.
 - A missed tap makes the nearest critter jump away with a squeak, so the cat always gets a reaction.
 - Session lengths suit different cats: short rounds for kittens and seniors, and relaxed play with no timer for cats that like to take their time.
-- Backgrounds: wooden crate, grass, pond and snow. All are dark so the critters stand out.
+- Backgrounds: wooden crate, grass, pond and snow. All are dark so the critters stand out. Some critters only live on one background (`TargetKind.exclusiveTheme`), such as the fish in the pond.
 
 For owners:
 
@@ -176,7 +177,7 @@ pawpaw/
 
 ## Art
 
-The critter images (`critter_mouse`, `critter_bug`, `critter_butterfly`, `critter_cricket`, `critter_feather`, `critter_laser`) and the cat headshots (`cat_orange`, `cat_gray`, `cat_black`, `cat_white`, `cat_calico`, `cat_siamese`) are original SVGs drawn for this project. To use your own art, replace the SVG file inside each `.imageset` folder and keep the same filename. The backgrounds are drawn in code.
+The critter images (`critter_mouse`, `critter_bug`, `critter_butterfly`, `critter_cricket`, `critter_feather`, `critter_laser`, `critter_fish`) and the cat headshots (`cat_orange`, `cat_gray`, `cat_black`, `cat_white`, `cat_calico`, `cat_siamese`) are original SVGs drawn for this project. To use your own art, replace the SVG file inside each `.imageset` folder and keep the same filename. The backgrounds are drawn in code.
 
 ## Tweaking the game
 

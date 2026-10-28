@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Top-down cartoon koi, facing up. Original artwork for Paw Paw. -->
+  <path d="M100 150 C 80 168, 66 186, 70 194 C 84 188, 94 178, 100 166 C 106 178, 116 188, 130 194 C 134 186, 120 168, 100 150 Z" fill="#f07a2a"/>
+  <path d="M70 92 C 48 96, 36 112, 38 124 C 52 120, 64 112, 72 104 Z" fill="#f59a4a"/>
+  <path d="M130 92 C 152 96, 164 112, 162 124 C 148 120, 136 112, 128 104 Z" fill="#f59a4a"/>
+  <ellipse cx="100" cy="96" rx="32" ry="62" fill="#ff8c33"/>
+  <ellipse cx="100" cy="110" rx="18" ry="22" fill="#ffffff" opacity="0.85"/>
+  <ellipse cx="92" cy="72" rx="10" ry="14" fill="#ffffff" opacity="0.85"/>
+  <path d="M100 140 C 96 150, 96 156, 100 160 C 104 156, 104 150, 100 140 Z" fill="#d9601a"/>
+  <circle cx="84" cy="46" r="7" fill="#ffffff"/>
+  <circle cx="116" cy="46" r="7" fill="#ffffff"/>
+  <circle cx="84" cy="45" r="3.4" fill="#1d1d24"/>
+  <circle cx="116" cy="45" r="3.4" fill="#1d1d24"/>
+</svg>

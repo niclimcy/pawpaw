@@ -18,6 +18,8 @@ final class GameInteractor: GameInteractorInputProtocol {
     private let storage: ScoreStorage
     private let mode: SessionMode
     private let statsStorage: StatsStorage
+    /// Critters that can spawn on this background (fish only live in the pond).
+    private let spawnableKinds: [TargetKind]
     private var activeTargets: [UUID: GameTarget] = [:]
     private var score = 0
     private var catches = 0
@@ -27,10 +29,11 @@ final class GameInteractor: GameInteractorInputProtocol {
     private var clockTimer: Timer?
     private var spawnTimer: Timer?
 
-    init(storage: ScoreStorage, statsStorage: StatsStorage, mode: SessionMode) {
+    init(storage: ScoreStorage, statsStorage: StatsStorage, mode: SessionMode, theme: PlayfieldTheme) {
         self.storage = storage
         self.statsStorage = statsStorage
         self.mode = mode
+        self.spawnableKinds = TargetKind.allCases.filter { $0.canAppear(on: theme) }
     }
 
     deinit {
@@ -139,9 +142,10 @@ final class GameInteractor: GameInteractorInputProtocol {
     }
 
     private func randomKind() -> TargetKind {
-        let total = TargetKind.allCases.reduce(0) { $0 + $1.weight }
+        let total = spawnableKinds.reduce(0) { $0 + $1.weight }
+        guard total > 0 else { return .mouse }
         var roll = Int.random(in: 0..<total)
-        for kind in TargetKind.allCases {
+        for kind in spawnableKinds {
             if roll < kind.weight { return kind }
             roll -= kind.weight
         }

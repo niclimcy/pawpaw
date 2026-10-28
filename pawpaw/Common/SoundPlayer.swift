@@ -49,6 +49,8 @@ final class SoundPlayer {
         case .feather: play(.swish)
         // A laser pointer is silent; the cat follows it with its eyes alone.
         case .laser: break
+        // A soft splash, like a fish breaking the surface.
+        case .fish: play(.swish)
         }
     }
 

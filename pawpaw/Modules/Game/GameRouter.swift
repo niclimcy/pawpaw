@@ -14,7 +14,8 @@ final class GameRouter: GameRouterProtocol {
         let interactor = GameInteractor(
             storage: storage,
             statsStorage: UserDefaultsStatsStorage(profileID: profileID),
-            mode: mode
+            mode: mode,
+            theme: storage.selectedTheme
         )
         let router = GameRouter()
 
