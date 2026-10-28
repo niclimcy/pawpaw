@@ -15,8 +15,9 @@ extension GameAreaView {
             return
         }
 
-        // Critters slide in from beyond the edge instead of fading in.
-        var current = offscreenPoint(for: target.start)
+        // Critters slide in from beyond the edge; fish rise from the depths where they start.
+        let surfaces = target.kind.movementStyle.surfaces
+        var current = surfaces ? point(for: target.start) : offscreenPoint(for: target.start)
         var positions = [NSValue(cgPoint: current)]
         var positionTimes: [NSNumber] = [0]
         var rotations: [NSNumber] = []
@@ -105,16 +106,50 @@ extension GameAreaView {
         let group = CAAnimationGroup()
         group.animations = turns ? [move, turn] : [move]
         group.duration = total
+        if surfaces {
+            group.animations?.append(surfacingFade(total: total))
+            // Ending inside the pond, so hold the faded-out last frame until the view is recycled.
+            group.fillMode = .forwards
+            group.isRemovedOnCompletion = false
+        }
 
         // Model values describe the end state; the animation shows the journey.
         label.transform = turns ? CGAffineTransform(rotationAngle: heading) : .identity
         label.center = current
-        label.alpha = 1
+        label.alpha = surfaces ? CGFloat(Self.underwaterOpacity) : 1
 
         CATransaction.begin()
         CATransaction.setCompletionBlock(completion)
         label.layer.add(group, forKey: "path")
         CATransaction.commit()
+
+        if surfaces {
+            addTailSwish(to: label)
+            emitRing(at: point(for: target.start), color: Self.waterRippleColor, endRadius: 70, lineWidth: 2)
+        }
+    }
+
+    /// Fish are seen through the water, so even at their shallowest they stay a little faded.
+    static let underwaterOpacity: Float = 0.78
+    static let waterRippleColor = UIColor(red: 0.6, green: 0.85, blue: 1, alpha: 0.6)
+
+    /// Rise out of the dark water, swim, then sink away. While mostly faded the fish can't be caught.
+    private func surfacingFade(total: TimeInterval) -> CAKeyframeAnimation {
+        let fadeTime = min(0.8, total / 4)
+        let fade = CAKeyframeAnimation(keyPath: "opacity")
+        fade.values = [0, Self.underwaterOpacity, Self.underwaterOpacity, 0]
+        fade.keyTimes = [0, NSNumber(value: fadeTime / total), NSNumber(value: 1 - fadeTime / total), 1]
+        return fade
+    }
+
+    /// A gentle side-to-side sway on top of the heading, like a tail sweeping through water.
+    private func addTailSwish(to label: UIView) {
+        let swish = CAKeyframeAnimation(keyPath: "transform.rotation.z")
+        swish.isAdditive = true
+        swish.values = [0, 0.14, 0, -0.14, 0]
+        swish.duration = 0.7
+        swish.repeatCount = .infinity
+        label.layer.add(swish, forKey: "swish")
     }
 
     /// Where a critter under a hiding spot pokes out to: half of it shows past the spot's edge.

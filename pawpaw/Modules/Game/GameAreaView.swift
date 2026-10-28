@@ -49,7 +49,16 @@ final class GameAreaView: UIView {
             label.layer.shadowOpacity = 0.9
             label.layer.shadowOffset = .zero
         }
-        label.center = offscreenPoint(for: target.start)
+        let surfaces = target.kind.movementStyle.surfaces
+        if surfaces {
+            // Under the water there is no hard shadow, just a faint dark-blue blur.
+            label.layer.shadowColor = UIColor(red: 0, green: 0.05, blue: 0.15, alpha: 1).cgColor
+            label.layer.shadowRadius = 10
+            label.layer.shadowOpacity = 0.5
+            label.layer.shadowOffset = .zero
+            label.alpha = 0
+        }
+        label.center = surfaces ? point(for: target.start) : offscreenPoint(for: target.start)
         // Critters move beneath the hiding spots so they can vanish under them.
         if let lowestSpot = hidingSpotViews.first {
             insertSubview(label, belowSubview: lowestSpot)

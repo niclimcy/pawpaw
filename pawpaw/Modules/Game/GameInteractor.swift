@@ -127,8 +127,8 @@ final class GameInteractor: GameInteractorInputProtocol {
     private func spawnTarget() {
         guard isRunning, activeTargets.count < maxActiveTargets else { return }
         let kind = randomKind()
-        // Prey emerges from the edge of the crate.
-        let start = randomEdgePoint()
+        // Prey emerges from the edge of the crate; fish rise from somewhere inside the pond.
+        let start = kind.movementStyle.surfaces ? randomInnerPoint() : randomEdgePoint()
         let target = GameTarget(
             id: UUID(),
             kind: kind,
@@ -181,8 +181,9 @@ final class GameInteractor: GameInteractorInputProtocol {
         return .mouse
     }
 
-    private func randomPoint() -> CGPoint {
-        CGPoint(x: CGFloat.random(in: 0...1), y: CGFloat.random(in: 0...1))
+    /// A spot well inside the field, away from the edges.
+    private func randomInnerPoint() -> CGPoint {
+        CGPoint(x: CGFloat.random(in: 0.2...0.8), y: CGFloat.random(in: 0.2...0.8))
     }
 
     private func randomEdgePoint() -> CGPoint {

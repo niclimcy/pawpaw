@@ -35,12 +35,17 @@ enum MovementStyle {
     case drift
     /// Lightning-fast streaks across the field with dead stops, like a laser pointer.
     case zip
-    /// Smooth gliding with short hovers and the odd dive out of sight (fish).
+    /// Smooth, curving glides with brief hovers. Rises from the depths and sinks back instead of using the edges (fish).
     case swim
+
+    /// Appears by rising up from under the water and leaves by sinking, instead of running in from an edge.
+    var surfaces: Bool {
+        self == .swim
+    }
 
     var legCount: ClosedRange<Int> {
         switch self {
-        case .swim: return 4...6
+        case .swim: return 5...7
         case .dart: return 3...4
         case .wander: return 4...5
         case .flutter: return 6...8
@@ -53,7 +58,7 @@ enum MovementStyle {
     /// Chance that a long enough freeze is spent out of sight beyond the edge.
     var hideChance: Double {
         switch self {
-        case .swim: return 0.4
+        case .swim: return 0
         case .dart: return 0.6
         case .wander: return 0.3
         case .flutter: return 0
@@ -69,15 +74,14 @@ enum MovementStyle {
         case .dart: return 0.5
         case .wander: return 0.4
         case .hop: return 0.3
-        case .swim: return 0.4
-        case .flutter, .drift, .zip: return 0
+        case .swim, .flutter, .drift, .zip: return 0
         }
     }
 
     /// Share of the lifetime spent frozen between legs.
     var pauseFraction: Double {
         switch self {
-        case .swim: return 0.25
+        case .swim: return 0.15
         case .dart: return 0.4
         case .wander: return 0.15
         case .flutter: return 0
@@ -90,7 +94,7 @@ enum MovementStyle {
     /// Normalized distance covered by one leg.
     var distanceRange: ClosedRange<Double> {
         switch self {
-        case .swim: return 0.2...0.4
+        case .swim: return 0.15...0.3
         case .dart: return 0.25...0.5
         case .wander: return 0.15...0.3
         case .flutter: return 0.15...0.3
@@ -103,7 +107,7 @@ enum MovementStyle {
     /// Radians the heading changes between legs.
     var turnRange: ClosedRange<Double> {
         switch self {
-        case .swim: return 0.3...1.2
+        case .swim: return 0.25...0.7
         case .dart: return 0.3...2.4
         case .wander: return 0.2...1.0
         case .flutter: return 0.5...1.2

@@ -35,7 +35,7 @@ Built with **Swift** and **UIKit** (no storyboards or SwiftUI), following the **
 | Cricket | 15 | Short sudden hops with brief stops |
 | Feather | 5 | Slow, gentle drifting curves |
 | Laser dot | 25 | Silent glowing red dot that streaks across the field and stops dead |
-| Fish | 15 | Glides and dives out of sight. Only appears on the **Pond** background |
+| Fish | 15 | A koi seen through the water. It rises from the depths with a ripple, glides in gentle curves with a swishing tail, then sinks away. It can only be caught while near the surface. Only appears on the **Pond** background |
 
 Game design choices that suit cats:
 

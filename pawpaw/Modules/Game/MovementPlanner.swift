@@ -71,6 +71,8 @@ enum MovementPlanner {
             ))
             current = destination
         }
+        // Fish sink back into the depths where they are; the view fades them out.
+        if style.surfaces { return legs }
         // Critters leave the way real prey does: they run off the edge instead of vanishing.
         legs.append(PathLeg(
             destination: nearestEdgePoint(to: current),
