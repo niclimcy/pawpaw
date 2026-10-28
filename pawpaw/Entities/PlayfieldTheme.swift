@@ -23,8 +23,11 @@ enum PlayfieldTheme: String, CaseIterable {
     }
 
     /// Whether critters that move with `style` may hide under this background's hiding spots.
+    /// Critters that never take cover (the laser dot, which is light shining on top of everything, and
+    /// fliers like butterflies and feathers) always pass over the spots instead of under them.
     /// Only fish slip under lily pads; land critters would have to walk on water to reach them.
     func allowsCover(for style: MovementStyle) -> Bool {
+        guard style.coverChance > 0 else { return false }
         switch self {
         case .pond: return style == .swim
         case .wood, .grass, .snow: return style != .swim
