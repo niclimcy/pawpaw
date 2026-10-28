@@ -1,10 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
   <!-- Top-down koi seen through the water, facing up. Original artwork for Paw Paw. -->
-  <path d="M100 146 C 92 160, 72 172, 64 192 C 80 188, 92 180, 100 170 C 108 180, 120 188, 136 192 C 128 172, 108 160, 100 146 Z" fill="#f5a35c" opacity="0.9"/>
+  <path d="M93 144 C 84 160, 76 176, 80 190 Q 100 200, 120 190 C 124 176, 116 160, 107 144 Z" fill="#f5a35c" opacity="0.9"/>
+  <path d="M100 152 L100 188 M92 156 L86 184 M108 156 L114 184" stroke="#e08a45" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
   <path d="M70 70 C 50 72, 38 86, 36 100 C 50 96, 62 88, 70 82 Z" fill="#f8d9bf" opacity="0.85"/>
   <path d="M130 70 C 150 72, 162 86, 164 100 C 150 96, 138 88, 130 82 Z" fill="#f8d9bf" opacity="0.85"/>
-  <path d="M78 112 C 66 116, 60 126, 60 134 C 70 130, 78 124, 82 120 Z" fill="#f8d9bf" opacity="0.85"/>
-  <path d="M122 112 C 134 116, 140 126, 140 134 C 130 130, 122 124, 118 120 Z" fill="#f8d9bf" opacity="0.85"/>
   <path d="M100 22 C 124 24, 136 56, 134 84 C 132 112, 116 136, 104 152 L 96 152 C 84 136, 68 112, 66 84 C 64 56, 76 24, 100 22 Z" fill="#f4efe6"/>
   <ellipse cx="100" cy="58" rx="22" ry="16" fill="#f26b1d"/>
   <ellipse cx="88" cy="100" rx="13" ry="19" fill="#f26b1d"/>

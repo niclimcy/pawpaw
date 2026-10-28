@@ -22,6 +22,15 @@ enum PlayfieldTheme: String, CaseIterable {
         }
     }
 
+    /// Whether critters that move with `style` may hide under this background's hiding spots.
+    /// Only fish slip under lily pads; land critters would have to walk on water to reach them.
+    func allowsCover(for style: MovementStyle) -> Bool {
+        switch self {
+        case .pond: return style == .swim
+        case .wood, .grass, .snow: return style != .swim
+        }
+    }
+
     /// Fill colour under whatever the theme draws on top.
     var baseColor: UIColor {
         switch self {

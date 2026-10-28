@@ -59,8 +59,9 @@ final class GameAreaView: UIView {
             label.alpha = 0
         }
         label.center = surfaces ? point(for: target.start) : offscreenPoint(for: target.start)
-        // Critters move beneath the hiding spots so they can vanish under them.
-        if let lowestSpot = hidingSpotViews.first {
+        // Critters that can hide move beneath the spots so they vanish under them. The rest pass over the top,
+        // such as a mouse crossing a lily pad.
+        if let lowestSpot = hidingSpotViews.first, theme.allowsCover(for: target.kind.movementStyle) {
             insertSubview(label, belowSubview: lowestSpot)
         } else {
             addSubview(label)
@@ -106,11 +107,16 @@ final class GameAreaView: UIView {
     /// Whether any part of the critter is currently inside the play field and not tucked under a hiding spot.
     private func isOnScreen(_ label: UIView) -> Bool {
         let frame = label.layer.presentation()?.frame ?? label.frame
-        return bounds.intersects(frame) && !isUnderCover(frame)
+        return bounds.intersects(frame) && !isUnderCover(label, frame: frame)
     }
 
     /// True while the critter's middle is under a hiding spot, so most of it is out of sight.
-    private func isUnderCover(_ frame: CGRect) -> Bool {
+    /// Critters drawn above the spots are never hidden by them.
+    private func isUnderCover(_ label: UIView, frame: CGRect) -> Bool {
+        guard let lowestSpot = hidingSpotViews.first,
+              let labelIndex = subviews.firstIndex(of: label),
+              let spotIndex = subviews.firstIndex(of: lowestSpot),
+              labelIndex < spotIndex else { return false }
         let center = CGPoint(x: frame.midX, y: frame.midY)
         return hidingSpotViews.contains { spot in
             hypot(spot.center.x - center.x, spot.center.y - center.y) < hidingSpotSize * 0.3

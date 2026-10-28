@@ -74,7 +74,9 @@ enum MovementStyle {
         case .dart: return 0.5
         case .wander: return 0.4
         case .hop: return 0.3
-        case .swim, .flutter, .drift, .zip: return 0
+        // Fish hover often but briefly, so each hover has a smaller chance of ending under a lily pad.
+        case .swim: return 0.3
+        case .flutter, .drift, .zip: return 0
         }
     }
 

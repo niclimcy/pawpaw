@@ -14,6 +14,8 @@ enum MovementPlanner {
     static let minimumHidePause: TimeInterval = 1.0
     /// Time spent running off the edge at the end of a journey.
     static let exitTravel: TimeInterval = 0.9
+    /// Shortest wait under a hiding spot: long enough to peek out twice.
+    static let minimumCoverPause: TimeInterval = 1.6
 
     /// Normalized centers for `count` hiding spots, away from the edges and from each other.
     static func hidingSpots(count: Int) -> [CGPoint] {
@@ -43,15 +45,22 @@ enum MovementPlanner {
         var legs: [PathLeg] = []
         var current = start
         var heading = Double.random(in: 0..<(2 * .pi))
+        var hasTakenCover = false
         for index in 0..<count {
-            let pause = index < pauses.count ? pauses[index] : 0
+            let hasPause = index < pauses.count
+            var pause = hasPause ? pauses[index] : 0
             let longFreeze = pause >= minimumHidePause
+            // Land critters only take cover during a long freeze; a fish can glide under a lily pad on any hover.
+            let mayTakeCover = hasPause && !hasTakenCover && (longFreeze || style.surfaces)
             let destination: CGPoint
             let underCover: Bool
-            if longFreeze, let spot = coverSpots.randomElement(), Double.random(in: 0..<1) < style.coverChance {
-                // Run for cover, like a mouse ducking under a box.
+            if mayTakeCover, let spot = coverSpots.randomElement(), Double.random(in: 0..<1) < style.coverChance {
+                // Run for cover, like a mouse ducking under a box or a koi under a lily pad.
                 destination = spot
                 underCover = true
+                hasTakenCover = true
+                // Stay long enough to peek out twice. This makes the journey a little longer.
+                pause = max(pause, minimumCoverPause)
                 heading = atan2(Double(spot.y - current.y), Double(spot.x - current.x))
             } else {
                 heading += Double.random(in: style.turnRange) * (Bool.random() ? 1 : -1)

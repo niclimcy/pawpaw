@@ -20,6 +20,8 @@ final class GameInteractor: GameInteractorInputProtocol {
     private let statsStorage: StatsStorage
     /// Critters that can spawn on this background (fish only live in the pond).
     private let spawnableKinds: [TargetKind]
+    /// Decides which critters can use the hiding spots (only fish go under lily pads).
+    private let theme: PlayfieldTheme
     private var activeTargets: [UUID: GameTarget] = [:]
     private var score = 0
     private var catches = 0
@@ -45,6 +47,7 @@ final class GameInteractor: GameInteractorInputProtocol {
         self.storage = storage
         self.statsStorage = statsStorage
         self.mode = mode
+        self.theme = theme
         let suited = enabledKinds.filter { $0.canAppear(on: theme) }
         // If the cat's picks don't live on this background (only fish, on the crate), play with everything
         // that does, so the field is never empty.
@@ -137,7 +140,7 @@ final class GameInteractor: GameInteractorInputProtocol {
                 from: start,
                 style: kind.movementStyle,
                 duration: difficulty.lifetime(for: TimeInterval.random(in: kind.lifetimeRange)),
-                coverSpots: hidingSpots
+                coverSpots: theme.allowsCover(for: kind.movementStyle) ? hidingSpots : []
             )
         )
         activeTargets[target.id] = target
