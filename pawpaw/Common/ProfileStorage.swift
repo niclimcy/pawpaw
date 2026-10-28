@@ -14,6 +14,8 @@ protocol ProfileStorage {
     @discardableResult func add(name: String, face: CatFace) -> CatProfile?
     /// Changes a cat's name and face. An empty name keeps the old one.
     func update(_ id: UUID, name: String, face: CatFace)
+    /// Sets which critters stay out of a cat's rounds. At least one critter always stays on.
+    func setDisabledKinds(_ kinds: Set<TargetKind>, for id: UUID)
     /// Removes a cat and its scores and stats. The last cat can't be deleted.
     func delete(_ id: UUID)
 }
@@ -62,6 +64,16 @@ final class UserDefaultsProfileStorage: ProfileStorage {
                 copy.name = cleanName ?? copy.name
                 copy.face = face
             }
+            return copy
+        })
+    }
+
+    func setDisabledKinds(_ kinds: Set<TargetKind>, for id: UUID) {
+        // Turning every critter off would leave an empty playfield, so ignore that.
+        guard kinds.count < TargetKind.allCases.count else { return }
+        save(profiles.map { profile in
+            var copy = profile
+            if copy.id == id { copy.disabledKinds = kinds }
             return copy
         })
     }

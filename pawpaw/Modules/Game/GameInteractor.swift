@@ -39,12 +39,16 @@ final class GameInteractor: GameInteractorInputProtocol {
         statsStorage: StatsStorage,
         mode: SessionMode,
         theme: PlayfieldTheme,
+        enabledKinds: [TargetKind] = TargetKind.allCases,
         adaptiveDifficulty: Bool = true
     ) {
         self.storage = storage
         self.statsStorage = statsStorage
         self.mode = mode
-        self.spawnableKinds = TargetKind.allCases.filter { $0.canAppear(on: theme) }
+        let suited = enabledKinds.filter { $0.canAppear(on: theme) }
+        // If the cat's picks don't live on this background (only fish, on the crate), play with everything
+        // that does, so the field is never empty.
+        self.spawnableKinds = suited.isEmpty ? TargetKind.allCases.filter { $0.canAppear(on: theme) } : suited
         self.difficulty = DifficultyTuner(isEnabled: adaptiveDifficulty)
     }
 

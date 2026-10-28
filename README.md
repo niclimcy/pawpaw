@@ -69,6 +69,7 @@ Cat profiles for multi-cat households:
 - The Home screen shows the active cat. Tap it to switch cats, or to add or edit one. Adding and editing use a themed card on the wood panel with a name field and a face picker, not a system alert. Deleting a cat needs a 1.5 second hold, erases its scores and stats, and the last cat can't be deleted.
 - Home shows "Luna loves butterflies" once that cat has caught something, and the Stats screen is titled with the cat's name.
 - The session length and background are device settings shared by all cats.
+- Each cat can have its own critters. The add/edit card has a **Critters to play with** grid: tap a critter to turn it off for that cat (for example, Luna only likes mice and feathers). At least one critter always stays on. If a cat's picks can't appear on the chosen background (only fish, on the crate), every critter that suits that background plays instead.
 
 Settings, best scores and stats are saved on the device using `UserDefaults`. Each session length has its own best score for each cat. Relaxed mode has none.
 
@@ -138,7 +139,7 @@ Each module's protocols are declared in a `*Protocols.swift` file. The `createMo
 | File | Role |
 |---|---|
 | `ProfilesViewController` (+ `+Builders`) | List of cats with their headshots and the active one checked |
-| `ProfileEditorView` (+ `+Layout`, `+Builders`) | The themed add/edit card: name field, face picker, Save, Cancel and hold-to-delete |
+| `ProfileEditorView` (+ `+Layout`, `+Builders`) | The themed add/edit card: name field, face picker, critter on/off grid, Save, Cancel and hold-to-delete |
 | `ProfilesPresenter` | Turns the cats into display rows ("Loves butterflies") |
 | `ProfilesInteractor` | Selects, adds, renames and deletes cats, and reads each cat's favorite critter |
 | `ProfilesRouter` | Creates the module and returns to Home |

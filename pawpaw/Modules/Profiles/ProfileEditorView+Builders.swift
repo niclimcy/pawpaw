@@ -66,6 +66,57 @@ extension ProfileEditorView {
         return button
     }
 
+    /// "Critters to play with", then every critter in a grid of four. Tap one to turn it on or off.
+    func makeCritterPicker() -> UIView {
+        let heading = UILabel()
+        heading.text = "Critters to play with"
+        heading.font = Theme.roundedFont(size: Theme.scaled(16), weight: .bold)
+        heading.textColor = Theme.text
+        heading.textAlignment = .center
+
+        let kinds = TargetKind.allCases
+        let perRow = 4
+        let rows = stride(from: 0, to: kinds.count, by: perRow).map { start -> UIStackView in
+            var buttons: [UIView] = kinds[start..<min(start + perRow, kinds.count)].map(makeCritterButton)
+            // Keep every button the same size when the last row is short.
+            while buttons.count < perRow { buttons.append(UIView()) }
+            let row = UIStackView(arrangedSubviews: buttons)
+            row.axis = .horizontal
+            row.distribution = .fillEqually
+            row.spacing = 8
+            return row
+        }
+        let stack = UIStackView(arrangedSubviews: [heading] + rows)
+        stack.axis = .vertical
+        stack.spacing = 8
+        return stack
+    }
+
+    private func makeCritterButton(_ kind: TargetKind) -> UIButton {
+        let button = UIButton(type: .custom)
+        button.layer.cornerRadius = 14
+        button.layer.borderWidth = 2
+        button.accessibilityLabel = kind.pluralName.capitalized
+        button.accessibilityHint = "Turns \(kind.pluralName) on or off for this cat"
+        button.accessibilityIdentifier = "critter_\(kind.rawValue)"
+        button.heightAnchor.constraint(equalTo: button.widthAnchor).isActive = true
+        button.addAction(UIAction { [weak self] _ in self?.toggle(kind) }, for: .touchUpInside)
+
+        let picture = UIImageView(image: UIImage(named: kind.imageName))
+        picture.contentMode = .scaleAspectFit
+        picture.isUserInteractionEnabled = false
+        picture.translatesAutoresizingMaskIntoConstraints = false
+        button.addSubview(picture)
+        NSLayoutConstraint.activate([
+            picture.topAnchor.constraint(equalTo: button.topAnchor, constant: 6),
+            picture.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: -6),
+            picture.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 6),
+            picture.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -6)
+        ])
+        critterButtons[kind] = button
+        return button
+    }
+
     func makeSaveButton() -> UIButton {
         var config = UIButton.Configuration.filled()
         config.title = "Save"

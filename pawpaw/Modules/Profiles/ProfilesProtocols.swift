@@ -18,6 +18,8 @@ struct ProfileRow: Equatable {
     let face: CatFace
     let subtitle: String
     let isActive: Bool
+    /// Critters turned off for this cat, so the edit card can show them.
+    var disabledKinds: Set<TargetKind> = []
 }
 
 // MARK: - View
@@ -36,8 +38,8 @@ protocol ProfilesPresenterProtocol: AnyObject {
     func viewWillAppear()
     func didTapBack()
     func didSelectProfile(id: UUID)
-    func didAddProfile(name: String, face: CatFace)
-    func didUpdateProfile(id: UUID, name: String, face: CatFace)
+    func didAddProfile(name: String, face: CatFace, disabledKinds: Set<TargetKind>)
+    func didUpdateProfile(id: UUID, name: String, face: CatFace, disabledKinds: Set<TargetKind>)
     func didConfirmDelete(id: UUID)
 }
 
@@ -46,8 +48,8 @@ protocol ProfilesInteractorInputProtocol: AnyObject {
     var presenter: ProfilesInteractorOutputProtocol? { get set }
     func fetchProfiles()
     func selectProfile(id: UUID)
-    func addProfile(name: String, face: CatFace)
-    func updateProfile(id: UUID, name: String, face: CatFace)
+    func addProfile(name: String, face: CatFace, disabledKinds: Set<TargetKind>)
+    func updateProfile(id: UUID, name: String, face: CatFace, disabledKinds: Set<TargetKind>)
     func deleteProfile(id: UUID)
 }
 

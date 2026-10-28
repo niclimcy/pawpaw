@@ -28,14 +28,16 @@ final class ProfilesInteractor: ProfilesInteractorInputProtocol {
         fetchProfiles()
     }
 
-    func addProfile(name: String, face: CatFace) {
+    func addProfile(name: String, face: CatFace, disabledKinds: Set<TargetKind>) {
         guard let profile = profileStorage.add(name: name, face: face) else { return }
+        profileStorage.setDisabledKinds(disabledKinds, for: profile.id)
         profileStorage.setActive(profile.id)
         fetchProfiles()
     }
 
-    func updateProfile(id: UUID, name: String, face: CatFace) {
+    func updateProfile(id: UUID, name: String, face: CatFace, disabledKinds: Set<TargetKind>) {
         profileStorage.update(id, name: name, face: face)
+        profileStorage.setDisabledKinds(disabledKinds, for: id)
         fetchProfiles()
     }
 

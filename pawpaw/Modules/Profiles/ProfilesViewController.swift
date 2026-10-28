@@ -39,12 +39,12 @@ final class ProfilesViewController: UIViewController, ProfilesViewProtocol {
             editor.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             editor.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
-        editor.onSave = { [weak self] name, face in
+        editor.onSave = { [weak self] name, face, disabledKinds in
             guard let self else { return }
             if let id = self.editingID {
-                self.presenter?.didUpdateProfile(id: id, name: name, face: face)
+                self.presenter?.didUpdateProfile(id: id, name: name, face: face, disabledKinds: disabledKinds)
             } else {
-                self.presenter?.didAddProfile(name: name, face: face)
+                self.presenter?.didAddProfile(name: name, face: face, disabledKinds: disabledKinds)
             }
         }
         editor.onDelete = { [weak self] in
@@ -62,7 +62,7 @@ final class ProfilesViewController: UIViewController, ProfilesViewProtocol {
 
     func showEditCard(for row: ProfileRow) {
         editingID = row.id
-        editor.present(adding: false, name: row.name, face: row.face, canDelete: canDelete)
+        editor.present(adding: false, name: row.name, face: row.face, disabledKinds: row.disabledKinds, canDelete: canDelete)
     }
 
     /// Faces already worn by a cat in the list.

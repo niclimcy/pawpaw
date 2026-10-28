@@ -8,7 +8,8 @@ import UIKit
 /// A wood-styled card over the profiles list to add a cat or edit one. It replaces system alerts,
 /// so the game's look stays the same all the way through.
 final class ProfileEditorView: UIView, UITextFieldDelegate {
-    var onSave: ((String, CatFace) -> Void)?
+    /// Name, face and the critters turned off for this cat.
+    var onSave: ((String, CatFace, Set<TargetKind>) -> Void)?
     var onDelete: (() -> Void)?
 
     let titleLabel = UILabel()
@@ -17,6 +18,9 @@ final class ProfileEditorView: UIView, UITextFieldDelegate {
     var deleteButton = UIButton(type: .system)
     var faceButtons: [CatFace: UIButton] = [:]
     var selectedFace: CatFace = .orange
+    var critterButtons: [TargetKind: UIButton] = [:]
+    /// Critters this cat won't see. Tapping a critter in the card toggles it.
+    var disabledKinds: Set<TargetKind> = []
     private var isAdding = true
 
     override init(frame: CGRect) {
@@ -30,12 +34,14 @@ final class ProfileEditorView: UIView, UITextFieldDelegate {
     }
 
     // MARK: Showing
-    func present(adding: Bool, name: String, face: CatFace, canDelete: Bool) {
+    func present(adding: Bool, name: String, face: CatFace, disabledKinds: Set<TargetKind> = [], canDelete: Bool) {
         isAdding = adding
         titleLabel.text = adding ? "Add a cat" : "Edit cat"
         nameField.text = name
         deleteButton.isHidden = adding || !canDelete
         select(face)
+        self.disabledKinds = disabledKinds
+        refreshCritters()
         isHidden = false
         alpha = 0
         UIView.animate(withDuration: 0.2) { self.alpha = 1 }
@@ -61,6 +67,32 @@ final class ProfileEditorView: UIView, UITextFieldDelegate {
         }
     }
 
+    /// Turns a critter on or off for this cat. The last critter that is on can't be turned off.
+    func toggle(_ kind: TargetKind) {
+        if disabledKinds.contains(kind) {
+            disabledKinds.remove(kind)
+        } else if disabledKinds.count + 1 < TargetKind.allCases.count {
+            disabledKinds.insert(kind)
+        } else {
+            shake(critterButtons[kind])
+            return
+        }
+        refreshCritters()
+    }
+
+    private func refreshCritters() {
+        for (kind, button) in critterButtons {
+            let isOn = !disabledKinds.contains(kind)
+            button.alpha = isOn ? 1 : 0.35
+            button.layer.borderColor = (isOn ? Theme.gold : UIColor.clear).cgColor
+            button.backgroundColor = isOn
+                ? Theme.accent.withAlphaComponent(0.25)
+                : Theme.background.withAlphaComponent(0.5)
+            button.accessibilityValue = isOn ? "On" : "Off"
+            button.accessibilityTraits = isOn ? [.button, .selected] : .button
+        }
+    }
+
     // MARK: Actions
     @objc func saveTapped() {
         let name = nameField.text ?? ""
@@ -71,7 +103,7 @@ final class ProfileEditorView: UIView, UITextFieldDelegate {
             return
         }
         dismiss()
-        onSave?(name, selectedFace)
+        onSave?(name, selectedFace, disabledKinds)
     }
 
     @objc func cancelTapped() {
@@ -87,10 +119,14 @@ final class ProfileEditorView: UIView, UITextFieldDelegate {
     }
 
     private func shakeNameField() {
+        shake(nameField)
+    }
+
+    private func shake(_ view: UIView?) {
         let shake = CAKeyframeAnimation(keyPath: "transform.translation.x")
         shake.values = [0, -8, 8, -5, 5, 0]
         shake.duration = 0.3
-        nameField.layer.add(shake, forKey: "shake")
+        view?.layer.add(shake, forKey: "shake")
     }
 
     // MARK: UITextFieldDelegate
