@@ -9,6 +9,8 @@ import UIKit
 /// target's *presentation* (on-screen) frame instead of its final model frame.
 final class GameAreaView: UIView {
     var onTapTarget: ((UUID) -> Void)?
+    /// A touch that started on empty space (drags across empty space don't count).
+    var onMiss: (() -> Void)?
 
     private var targetViews: [UUID: UIImageView] = [:]
     /// Views of critters that left the screen or were caught, kept for the next spawn.
@@ -137,6 +139,7 @@ final class GameAreaView: UIView {
             if let id = targetID(at: location) {
                 onTapTarget?(id)
             } else {
+                onMiss?()
                 playMissEffect(at: location)
                 startleNearestTarget(from: location, label: nearestTargetView(to: location))
             }

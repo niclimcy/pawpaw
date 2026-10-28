@@ -28,6 +28,8 @@ protocol GamePresenterProtocol: AnyObject {
     func viewWillDisappear()
     func didTapTarget(id: UUID)
     func didExpireTarget(id: UUID)
+    /// A paw landed on empty space.
+    func didMissTap()
     func didTapPlayAgain()
     func didTapHome()
 }
@@ -40,6 +42,7 @@ protocol GameInteractorInputProtocol: AnyObject {
     func stopGame()
     func catchTarget(id: UUID)
     func expireTarget(id: UUID)
+    func missTap()
 }
 
 protocol GameInteractorOutputProtocol: AnyObject {

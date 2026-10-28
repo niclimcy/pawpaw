@@ -27,6 +27,10 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorOutputProtocol {
         interactor?.expireTarget(id: id)
     }
 
+    func didMissTap() {
+        interactor?.missTap()
+    }
+
     func didTapPlayAgain() {
         view?.hideResult()
         view?.clearTargets()

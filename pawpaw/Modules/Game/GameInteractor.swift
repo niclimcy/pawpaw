@@ -28,12 +28,21 @@ final class GameInteractor: GameInteractorInputProtocol {
     private var isRunning = false
     private var clockTimer: Timer?
     private var spawnTimer: Timer?
+    /// Speeds critters up for a cat that catches a lot, and slows them for one that keeps missing.
+    private var difficulty: DifficultyTuner
 
-    init(storage: ScoreStorage, statsStorage: StatsStorage, mode: SessionMode, theme: PlayfieldTheme) {
+    init(
+        storage: ScoreStorage,
+        statsStorage: StatsStorage,
+        mode: SessionMode,
+        theme: PlayfieldTheme,
+        adaptiveDifficulty: Bool = true
+    ) {
         self.storage = storage
         self.statsStorage = statsStorage
         self.mode = mode
         self.spawnableKinds = TargetKind.allCases.filter { $0.canAppear(on: theme) }
+        self.difficulty = DifficultyTuner(isEnabled: adaptiveDifficulty)
     }
 
     deinit {
@@ -47,6 +56,7 @@ final class GameInteractor: GameInteractorInputProtocol {
         score = 0
         catches = 0
         catchesByKind = [:]
+        difficulty.reset()
         timeRemaining = mode.duration ?? 0
         isRunning = true
 
@@ -78,12 +88,20 @@ final class GameInteractor: GameInteractorInputProtocol {
         score += target.kind.points
         catches += 1
         catchesByKind[target.kind, default: 0] += 1
+        difficulty.recordCatch()
         presenter?.didCatchTarget(id: id, points: target.kind.points)
         presenter?.didUpdateScore(score)
     }
 
     func expireTarget(id: UUID) {
-        activeTargets.removeValue(forKey: id)
+        // Only a critter that ran off untouched counts as an escape.
+        guard isRunning, activeTargets.removeValue(forKey: id) != nil else { return }
+        difficulty.recordEscape()
+    }
+
+    func missTap() {
+        guard isRunning else { return }
+        difficulty.recordMiss()
     }
 
     // MARK: Private
@@ -108,7 +126,7 @@ final class GameInteractor: GameInteractorInputProtocol {
             legs: MovementPlanner.legs(
                 from: start,
                 style: kind.movementStyle,
-                duration: TimeInterval.random(in: kind.lifetimeRange)
+                duration: difficulty.lifetime(for: TimeInterval.random(in: kind.lifetimeRange))
             )
         )
         activeTargets[target.id] = target

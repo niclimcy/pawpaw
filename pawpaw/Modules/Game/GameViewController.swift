@@ -45,6 +45,7 @@ final class GameViewController: UIViewController, GameViewProtocol {
 
         gameArea.onTapTarget = { [weak self] id in self?.presenter?.didTapTarget(id: id) }
         gameArea.onExpire = { [weak self] id in self?.presenter?.didExpireTarget(id: id) }
+        gameArea.onMiss = { [weak self] in self?.presenter?.didMissTap() }
     }
 
     override func viewDidAppear(_ animated: Bool) {
