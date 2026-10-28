@@ -52,9 +52,7 @@ extension GameViewController {
 
     /// Cats tap and brush the screen all the time, so leaving the game needs a deliberate hold.
     func installHoldToExit(on button: UIButton) {
-        let hold = UILongPressGestureRecognizer(target: self, action: #selector(holdToExitChanged(_:)))
-        hold.minimumPressDuration = 1.5
-        button.addGestureRecognizer(hold)
+        button.addGestureRecognizer(UILongPressGestureRecognizer.holdToConfirm(self, #selector(holdToExitChanged(_:))))
         button.accessibilityHint = "Press and hold to leave the game"
         // A quick tap does nothing, so tell the owner how to leave.
         button.addTarget(self, action: #selector(showExitHint), for: .touchUpInside)
@@ -65,19 +63,15 @@ extension GameViewController {
         let tag = 9_001
         view.viewWithTag(tag)?.removeFromSuperview()
 
-        var config = UIButton.Configuration.filled()
-        config.title = "Press and hold for 1.5 seconds to leave"
-        config.baseBackgroundColor = Theme.panel
-        config.baseForegroundColor = Theme.text
-        config.cornerStyle = .capsule
-        config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 18, bottom: 10, trailing: 18)
-        config.titleAlignment = .center
-        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-            var outgoing = incoming
-            outgoing.font = Theme.roundedFont(size: Theme.scaled(16), weight: .bold)
-            return outgoing
-        }
-        let hint = UIButton(configuration: config)
+        let message = "Press and hold for \(Theme.holdDurationText) to leave"
+        let hint = Theme.filledButton(
+            title: message,
+            fontSize: 16,
+            background: Theme.panel,
+            foreground: Theme.text,
+            insets: NSDirectionalEdgeInsets(top: 10, leading: 18, bottom: 10, trailing: 18)
+        )
+        hint.configuration?.titleAlignment = .center
         hint.tag = tag
         hint.isUserInteractionEnabled = false
         hint.alpha = 0
@@ -90,6 +84,7 @@ extension GameViewController {
             hint.leadingAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             hint.trailingAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
         ])
+        UIAccessibility.post(notification: .announcement, argument: message)
         UIView.animate(withDuration: 0.2, animations: { hint.alpha = 1 }, completion: { _ in
             UIView.animate(withDuration: 0.4, delay: 2.0, options: [], animations: { hint.alpha = 0 }, completion: { _ in
                 hint.removeFromSuperview()
@@ -101,58 +96,38 @@ extension GameViewController {
         // `.began` fires only after the full hold duration has passed.
         guard gesture.state == .began else { return }
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        homeTapped()
+        leaveGame()
     }
 
     func setupResultOverlay() {
         resultOverlay.backgroundColor = UIColor.black.withAlphaComponent(0.45)
         resultOverlay.isHidden = true
         resultOverlay.translatesAutoresizingMaskIntoConstraints = false
+        // While the result is up, VoiceOver stays on the card instead of the playfield and HUD behind it.
+        resultOverlay.accessibilityViewIsModal = true
         view.addSubview(resultOverlay)
 
         let card = UIView()
-        card.backgroundColor = Theme.panel
-        card.layer.borderWidth = 3
-        card.layer.borderColor = Theme.gold.withAlphaComponent(0.6).cgColor
-        card.layer.cornerRadius = 28
+        Theme.styleCard(card)
 
         resultTitleLabel.font = Theme.roundedFont(size: Theme.scaled(34))
+        resultTitleLabel.adjustsFontForContentSizeCategory = true
         resultTitleLabel.textColor = Theme.text
         resultTitleLabel.textAlignment = .center
         resultTitleLabel.numberOfLines = 0
+        resultTitleLabel.accessibilityTraits = .header
 
         resultDetailsLabel.font = Theme.roundedFont(size: Theme.scaled(20), weight: .semibold)
+        resultDetailsLabel.adjustsFontForContentSizeCategory = true
         resultDetailsLabel.textColor = Theme.text
         resultDetailsLabel.textAlignment = .center
         resultDetailsLabel.numberOfLines = 0
 
-        var againConfig = UIButton.Configuration.filled()
-        againConfig.title = "Play Again"
-        againConfig.baseBackgroundColor = Theme.accent
-        againConfig.baseForegroundColor = .white
-        againConfig.cornerStyle = .capsule
-        againConfig.contentInsets = NSDirectionalEdgeInsets(top: 14, leading: 36, bottom: 14, trailing: 36)
-        againConfig.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-            var outgoing = incoming
-            outgoing.font = Theme.roundedFont(size: Theme.scaled(20), weight: .bold)
-            return outgoing
-        }
-        let againButton = UIButton(configuration: againConfig)
-        againButton.heightAnchor.constraint(greaterThanOrEqualToConstant: Theme.minimumTapSize).isActive = true
+        let againButton = Theme.filledButton(title: "Play Again")
         againButton.accessibilityIdentifier = "playAgainButton"
         againButton.addTarget(self, action: #selector(playAgainTapped), for: .touchUpInside)
 
-        var menuConfig = UIButton.Configuration.plain()
-        menuConfig.title = "Hold to go Home"
-        menuConfig.baseForegroundColor = Theme.text
-        menuConfig.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
-        menuConfig.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-            var outgoing = incoming
-            outgoing.font = Theme.roundedFont(size: Theme.scaled(17), weight: .bold)
-            return outgoing
-        }
-        let menuButton = UIButton(configuration: menuConfig)
-        menuButton.heightAnchor.constraint(greaterThanOrEqualToConstant: Theme.minimumTapSize).isActive = true
+        let menuButton = Theme.plainButton(title: "Hold to go Home", fontSize: 17, foreground: Theme.text)
         menuButton.accessibilityIdentifier = "resultHomeButton"
         installHoldToExit(on: menuButton)
 

@@ -5,28 +5,13 @@
 
 import UIKit
 
-/// Deterministic random numbers so the wood grain doesn't change on every redraw.
-private struct SeededGenerator: RandomNumberGenerator {
-    private var state: UInt64
-    init(seed: UInt64) { state = seed }
-    mutating func next() -> UInt64 {
-        state &+= 0x9E3779B97F4A7C15
-        var z = state
-        z = (z ^ (z >> 30)) &* 0xBF58476D1CE4E5B9
-        z = (z ^ (z >> 27)) &* 0x94D049BB133111EB
-        return z ^ (z >> 31)
-    }
-}
-
 /// Draws a dark wooden crate: horizontal planks with grain, seams, nails and a vignette.
-final class WoodCrateBackgroundView: UIView {
+/// A fixed seed keeps the grain the same every time it is drawn.
+final class WoodCrateBackgroundView: CachedBackgroundView {
     private let plankHeight: CGFloat = 96
 
-    override init(frame: CGRect) {
+    override init(frame: CGRect = .zero) {
         super.init(frame: frame)
-        isOpaque = true
-        isUserInteractionEnabled = false
-        contentMode = .redraw
         backgroundColor = Theme.background
     }
 
@@ -34,19 +19,22 @@ final class WoodCrateBackgroundView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func draw(_ rect: CGRect) {
-        guard let ctx = UIGraphicsGetCurrentContext() else { return }
+    override func drawBackground(in ctx: CGContext, size: CGSize) {
+        let bounds = CGRect(origin: .zero, size: size)
+        Theme.background.setFill()
+        ctx.fill(bounds)
         var rng = SeededGenerator(seed: 42)
 
         let plankCount = Int(ceil(bounds.height / plankHeight))
         for index in 0..<plankCount {
             let plank = CGRect(x: 0, y: CGFloat(index) * plankHeight, width: bounds.width, height: plankHeight)
-            drawPlank(plank, in: ctx, rng: &rng)
+            drawPlank(plank, width: bounds.width, in: ctx, rng: &rng)
         }
-        drawVignette(in: ctx)
+        Self.drawVignette(in: ctx, size: size, darkness: 0.55)
     }
 
-    private func drawPlank(_ plank: CGRect, in ctx: CGContext, rng: inout SeededGenerator) {
+    private func drawPlank(_ plank: CGRect, width: CGFloat, in ctx: CGContext, rng: inout SeededGenerator) {
+        let bounds = CGRect(x: 0, y: 0, width: width, height: plank.maxY)
         // Base tone, varied per plank.
         let shade = CGFloat.random(in: -0.025...0.035, using: &rng)
         UIColor(red: 0.20 + shade, green: 0.125 + shade * 0.7, blue: 0.075 + shade * 0.4, alpha: 1).setFill()
@@ -68,8 +56,9 @@ final class WoodCrateBackgroundView: UIView {
             path.stroke()
         }
 
-        // A knot or two.
-        for _ in 0..<Int.random(in: 0...1, using: &rng) {
+        // A knot or two, on fields wide enough to hold one between the nails.
+        let knots = Int.random(in: 0...1, using: &rng)
+        for _ in 0..<(bounds.width > 120 ? knots : 0) {
             let size = CGFloat.random(in: 14...26, using: &rng)
             let knot = CGRect(x: CGFloat.random(in: 40...(bounds.width - 60), using: &rng),
                               y: plank.midY - size / 2 + CGFloat.random(in: -10...10, using: &rng),
@@ -96,14 +85,6 @@ final class WoodCrateBackgroundView: UIView {
             UIColor(white: 0.6, alpha: 0.8).setFill()
             UIBezierPath(ovalIn: CGRect(x: nail.minX + 2, y: nail.minY + 2, width: 3, height: 3)).fill()
         }
-    }
-
-    private func drawVignette(in ctx: CGContext) {
-        let colors = [UIColor.clear.cgColor, UIColor.black.withAlphaComponent(0.55).cgColor] as CFArray
-        guard let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: colors, locations: [0.45, 1]) else { return }
-        let center = CGPoint(x: bounds.midX, y: bounds.midY)
-        let radius = hypot(bounds.width, bounds.height) / 2
-        ctx.drawRadialGradient(gradient, startCenter: center, startRadius: 0, endCenter: center, endRadius: radius, options: [])
     }
 }
 

@@ -7,8 +7,9 @@ import Foundation
 
 protocol StatsStorage {
     var stats: PlayStats { get }
-    /// Adds a finished session's catches to the lifetime totals.
-    func record(catches: [TargetKind: Int])
+    /// Adds catches to the lifetime totals. A round is saved in parts when it is interrupted, so only
+    /// the first part passes `isNewRound`, and the round is counted once.
+    func record(catches: [TargetKind: Int], isNewRound: Bool)
     func reset()
 }
 
@@ -27,14 +28,18 @@ final class UserDefaultsStatsStorage: StatsStorage {
     }
 
     var stats: PlayStats {
-        guard let data = defaults.data(forKey: key),
-              let stats = try? JSONDecoder().decode(PlayStats.self, from: data) else { return PlayStats() }
-        return stats
+        guard let data = defaults.data(forKey: key) else { return PlayStats() }
+        do {
+            return try JSONDecoder().decode(PlayStats.self, from: data)
+        } catch {
+            Log.storageFailure("Couldn't read play stats, starting from zero", error: error)
+            return PlayStats()
+        }
     }
 
-    func record(catches: [TargetKind: Int]) {
+    func record(catches: [TargetKind: Int], isNewRound: Bool) {
         var updated = stats
-        updated.record(catches: catches)
+        updated.record(catches: catches, isNewRound: isNewRound)
         save(updated)
     }
 
@@ -43,7 +48,10 @@ final class UserDefaultsStatsStorage: StatsStorage {
     }
 
     private func save(_ stats: PlayStats) {
-        guard let data = try? JSONEncoder().encode(stats) else { return }
-        defaults.set(data, forKey: key)
+        do {
+            defaults.set(try JSONEncoder().encode(stats), forKey: key)
+        } catch {
+            Log.storageFailure("Couldn't save play stats", error: error)
+        }
     }
 }

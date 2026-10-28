@@ -14,12 +14,15 @@ struct PlayStats: Codable, Equatable {
     /// Rounds played per day, keyed by `PlayStats.dayKey(for:)`.
     var roundsByDay: [String: Int] = [:]
 
-    /// The critter caught most often, if any.
+    /// The critter caught most often, if any. A tie goes to the critter listed first in `TargetKind`,
+    /// so the favorite doesn't change from one launch to the next.
     var favoriteKind: TargetKind? {
-        catchesByKind
-            .filter { $0.value > 0 }
-            .max { $0.value < $1.value }
-            .flatMap { TargetKind(rawValue: $0.key) }
+        var best: (kind: TargetKind, catches: Int)?
+        for kind in TargetKind.allCases {
+            let count = catches(of: kind)
+            if count > (best?.catches ?? 0) { best = (kind, count) }
+        }
+        return best?.kind
     }
 
     func catches(of kind: TargetKind) -> Int {
@@ -34,13 +37,20 @@ struct PlayStats: Codable, Equatable {
         }
     }
 
-    /// Adds one finished session to the totals.
-    mutating func record(catches: [TargetKind: Int], on date: Date = Date(), calendar: Calendar = .current) {
-        totalRounds += 1
+    /// Adds catches to the totals. `isNewRound` is false when adding more of a round that was already
+    /// counted (it was saved when the app was interrupted), so the round isn't counted twice.
+    mutating func record(
+        catches: [TargetKind: Int],
+        isNewRound: Bool = true,
+        on date: Date = Date(),
+        calendar: Calendar = .current
+    ) {
         for (kind, count) in catches {
             totalCatches += count
             catchesByKind[kind.rawValue, default: 0] += count
         }
+        guard isNewRound else { return }
+        totalRounds += 1
         roundsByDay[Self.dayKey(for: date, calendar: calendar), default: 0] += 1
     }
 

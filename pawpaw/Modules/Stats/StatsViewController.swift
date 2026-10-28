@@ -31,12 +31,10 @@ final class StatsViewController: UIViewController, StatsViewProtocol {
     private func setupLayout() {
         let title = titleLabel
         title.text = "Play Stats"
+        title.accessibilityTraits = .header
 
         let card = UIView()
-        card.backgroundColor = Theme.panel
-        card.layer.borderWidth = 3
-        card.layer.borderColor = Theme.gold.withAlphaComponent(0.6).cgColor
-        card.layer.cornerRadius = 28
+        Theme.styleCard(card)
         card.translatesAutoresizingMaskIntoConstraints = false
 
         let crittersTitle = Self.makeLabel(size: 16, weight: .bold)
@@ -45,6 +43,7 @@ final class StatsViewController: UIViewController, StatsViewProtocol {
         daysTitle.text = "Rounds in the last 7 days"
         let bestTitle = Self.makeLabel(size: 16, weight: .bold)
         bestTitle.text = "Best scores"
+        [crittersTitle, daysTitle, bestTitle].forEach { $0.accessibilityTraits = .header }
 
         let content = UIStackView(arrangedSubviews: [
             summaryLabel, favoriteLabel,
@@ -83,19 +82,7 @@ final class StatsViewController: UIViewController, StatsViewProtocol {
 // MARK: - Buttons and actions
 extension StatsViewController {
     fileprivate func makeBackButton() -> UIButton {
-        var config = UIButton.Configuration.filled()
-        config.title = "Back"
-        config.baseBackgroundColor = Theme.accent
-        config.baseForegroundColor = .white
-        config.cornerStyle = .capsule
-        config.contentInsets = NSDirectionalEdgeInsets(top: 14, leading: 36, bottom: 14, trailing: 36)
-        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-            var outgoing = incoming
-            outgoing.font = Theme.roundedFont(size: Theme.scaled(20), weight: .bold)
-            return outgoing
-        }
-        let button = UIButton(configuration: config)
-        button.heightAnchor.constraint(greaterThanOrEqualToConstant: Theme.minimumTapSize).isActive = true
+        let button = Theme.filledButton(title: "Back")
         button.accessibilityIdentifier = "statsBackButton"
         button.addTarget(self, action: #selector(backTapped), for: .touchUpInside)
         return button
@@ -103,22 +90,10 @@ extension StatsViewController {
 
     /// Erasing history is deliberate, so the button needs a hold before it asks for confirmation.
     fileprivate func makeResetButton() -> UIButton {
-        var config = UIButton.Configuration.plain()
-        config.title = "Hold to reset stats"
-        config.baseForegroundColor = Theme.text.withAlphaComponent(0.75)
-        config.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
-        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-            var outgoing = incoming
-            outgoing.font = Theme.roundedFont(size: Theme.scaled(16), weight: .bold)
-            return outgoing
-        }
-        let button = UIButton(configuration: config)
-        button.heightAnchor.constraint(greaterThanOrEqualToConstant: Theme.minimumTapSize).isActive = true
+        let button = Theme.plainButton(title: "Hold to reset stats", foreground: Theme.text.withAlphaComponent(0.75))
         button.accessibilityIdentifier = "statsResetButton"
         button.accessibilityHint = "Press and hold to erase all play statistics"
-        let hold = UILongPressGestureRecognizer(target: self, action: #selector(resetHeld(_:)))
-        hold.minimumPressDuration = 1.5
-        button.addGestureRecognizer(hold)
+        button.addGestureRecognizer(UILongPressGestureRecognizer.holdToConfirm(self, #selector(resetHeld(_:))))
         return button
     }
 
@@ -150,17 +125,21 @@ extension StatsViewController {
         favoriteLabel.attributedText = Self.favoriteText(viewModel.favorite, imageName: viewModel.favoriteImageName, font: favoriteLabel.font)
         bestScoresLabel.text = viewModel.bestScores.joined(separator: "   ")
 
+        favoriteLabel.accessibilityLabel = viewModel.favoriteAccessibilityLabel
+
         crittersStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
         for row in viewModel.critters {
-            crittersStack.addArrangedSubview(
-                Self.makeColumn(imageName: row.imageName, size: Theme.scaled(44), bottom: row.catches)
-            )
+            let column = Self.makeColumn(imageName: row.imageName, size: Theme.scaled(44), bottom: row.catches)
+            column.accessibilityLabel = row.accessibilityLabel
+            crittersStack.addArrangedSubview(column)
         }
 
         daysStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
         let maxRounds = max(viewModel.days.map(\.rounds).max() ?? 0, 1)
         for day in viewModel.days {
-            daysStack.addArrangedSubview(Self.makeBar(label: day.label, rounds: day.rounds, maxRounds: maxRounds))
+            let bar = Self.makeBar(label: day.label, rounds: day.rounds, maxRounds: maxRounds)
+            bar.accessibilityLabel = day.accessibilityLabel
+            daysStack.addArrangedSubview(bar)
         }
     }
 }

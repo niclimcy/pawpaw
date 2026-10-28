@@ -29,6 +29,13 @@ struct CatProfile: Codable, Equatable, Identifiable {
         TargetKind.allCases.filter { !disabledKinds.contains($0) }
     }
 
+    /// Whether a cat with these critters turned off still has something to play with on every background.
+    /// At least one critter that isn't tied to one background (unlike the pond-only fish) must stay on,
+    /// so a round never has to bring back critters the owner turned off.
+    static func isPlayable(disabledKinds: Set<TargetKind>) -> Bool {
+        TargetKind.allCases.contains { $0.exclusiveTheme == nil && !disabledKinds.contains($0) }
+    }
+
     private enum CodingKeys: String, CodingKey {
         case id, name, face, disabledKinds
     }

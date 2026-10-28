@@ -11,6 +11,7 @@ final class HomeRouter: HomeRouterProtocol {
         let presenter = HomePresenter()
         let interactor = HomeInteractor(
             profileStorage: UserDefaultsProfileStorage(),
+            settings: UserDefaultsSettingsStorage(),
             makeScoreStorage: { UserDefaultsScoreStorage(profileID: $0) },
             makeStatsStorage: { UserDefaultsStatsStorage(profileID: $0) }
         )

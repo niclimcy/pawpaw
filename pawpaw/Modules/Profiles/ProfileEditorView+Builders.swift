@@ -8,6 +8,7 @@ import UIKit
 extension ProfileEditorView {
     func makeNameField() -> UITextField {
         nameField.font = Theme.roundedFont(size: Theme.scaled(22), weight: .bold)
+        nameField.adjustsFontForContentSizeCategory = true
         nameField.textColor = Theme.text
         nameField.tintColor = Theme.gold
         nameField.textAlignment = .center
@@ -71,8 +72,19 @@ extension ProfileEditorView {
         let heading = UILabel()
         heading.text = "Critters to play with"
         heading.font = Theme.roundedFont(size: Theme.scaled(16), weight: .bold)
+        heading.adjustsFontForContentSizeCategory = true
         heading.textColor = Theme.text
         heading.textAlignment = .center
+        heading.numberOfLines = 0
+        heading.accessibilityTraits = .header
+
+        critterHintLabel.text = "Keep at least one critter that isn't a fish on. Fish only swim in the pond."
+        critterHintLabel.font = Theme.roundedFont(size: Theme.scaled(14), weight: .semibold)
+        critterHintLabel.adjustsFontForContentSizeCategory = true
+        critterHintLabel.textColor = Theme.gold
+        critterHintLabel.textAlignment = .center
+        critterHintLabel.numberOfLines = 0
+        critterHintLabel.isHidden = true
 
         let kinds = TargetKind.allCases
         let perRow = 4
@@ -86,7 +98,7 @@ extension ProfileEditorView {
             row.spacing = 8
             return row
         }
-        let stack = UIStackView(arrangedSubviews: [heading] + rows)
+        let stack = UIStackView(arrangedSubviews: [heading] + rows + [critterHintLabel])
         stack.axis = .vertical
         stack.spacing = 8
         return stack
@@ -118,58 +130,27 @@ extension ProfileEditorView {
     }
 
     func makeSaveButton() -> UIButton {
-        var config = UIButton.Configuration.filled()
-        config.title = "Save"
-        config.baseBackgroundColor = Theme.accent
-        config.baseForegroundColor = .white
-        config.cornerStyle = .capsule
-        config.contentInsets = NSDirectionalEdgeInsets(top: 14, leading: 36, bottom: 14, trailing: 36)
-        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-            var outgoing = incoming
-            outgoing.font = Theme.roundedFont(size: Theme.scaled(20), weight: .bold)
-            return outgoing
-        }
-        let button = UIButton(configuration: config)
-        button.heightAnchor.constraint(greaterThanOrEqualToConstant: Theme.minimumTapSize).isActive = true
+        let button = Theme.filledButton(title: "Save")
         button.accessibilityIdentifier = "saveCatButton"
         button.addTarget(self, action: #selector(saveTapped), for: .touchUpInside)
         return button
     }
 
     func makeCancelButton() -> UIButton {
-        let button = makePlainButton(title: "Cancel", image: nil)
+        let button = Theme.plainButton(title: "Cancel")
         button.accessibilityIdentifier = "cancelCatButton"
         button.addTarget(self, action: #selector(cancelTapped), for: .touchUpInside)
         return button
     }
 
-    /// Deleting erases a cat's history, so it needs a 1.5 second hold, like leaving the game.
+    /// Deleting erases a cat's history, so it needs a hold (`Theme.holdDuration`), like leaving the game.
     func makeDeleteButton() -> UIButton {
-        let button = makePlainButton(title: "Hold to delete this cat", image: "trash")
+        let button = Theme.plainButton(title: "Hold to delete this cat", image: "trash")
         button.isHidden = true
         button.accessibilityIdentifier = "deleteCatButton"
         button.accessibilityHint = "Press and hold to erase this cat, its best scores and its stats"
-        let hold = UILongPressGestureRecognizer(target: self, action: #selector(deleteHeld(_:)))
-        hold.minimumPressDuration = 1.5
-        button.addGestureRecognizer(hold)
+        button.addGestureRecognizer(UILongPressGestureRecognizer.holdToConfirm(self, #selector(deleteHeld(_:))))
         deleteButton = button
-        return button
-    }
-
-    private func makePlainButton(title: String, image: String?) -> UIButton {
-        var config = UIButton.Configuration.plain()
-        config.title = title
-        config.image = image.flatMap { UIImage(systemName: $0) }
-        config.imagePadding = 6
-        config.baseForegroundColor = Theme.text.withAlphaComponent(0.8)
-        config.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
-        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-            var outgoing = incoming
-            outgoing.font = Theme.roundedFont(size: Theme.scaled(16), weight: .bold)
-            return outgoing
-        }
-        let button = UIButton(configuration: config)
-        button.heightAnchor.constraint(greaterThanOrEqualToConstant: Theme.minimumTapSize).isActive = true
         return button
     }
 }

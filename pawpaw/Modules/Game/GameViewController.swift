@@ -34,6 +34,10 @@ final class GameViewController: UIViewController, GameViewProtocol {
     let resultDetailsLabel = UILabel()
 
     private var hasStarted = false
+    /// Whether the result card is up, so coming back from the background doesn't keep the screen awake.
+    private var isShowingResult = false
+    /// The navigation controller's swipe-back gestures, switched off while playing and restored on the way out.
+    private var disabledPopGestures: [UIGestureRecognizer] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,15 +50,28 @@ final class GameViewController: UIViewController, GameViewProtocol {
 
         gameArea.onTapTarget = { [weak self] id in self?.presenter?.didTapTarget(id: id) }
         gameArea.onExpire = { [weak self] id in self?.presenter?.didExpireTarget(id: id) }
+        gameArea.onDiscard = { [weak self] id in self?.presenter?.didDiscardTarget(id: id) }
         gameArea.onMiss = { [weak self] in self?.presenter?.didMissTap() }
+
+        // A call, Control Center or the app switcher pauses the round so it doesn't run on unseen.
+        let center = NotificationCenter.default
+        center.addObserver(
+            self, selector: #selector(appWillResignActive),
+            name: UIApplication.willResignActiveNotification, object: nil
+        )
+        center.addObserver(
+            self, selector: #selector(appDidBecomeActive),
+            name: UIApplication.didBecomeActiveNotification, object: nil
+        )
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        disableSwipeBack()
         // Start once layout is final so targets map to the real play area size.
         guard !hasStarted else { return }
         hasStarted = true
-        presenter?.viewDidLoad()
+        presenter?.viewDidBecomeReady()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -66,6 +83,7 @@ final class GameViewController: UIViewController, GameViewProtocol {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         setScreenAwake(false)
+        restoreSwipeBack()
         if isMovingFromParent || isBeingDismissed {
             presenter?.viewWillDisappear()
         }
@@ -76,8 +94,36 @@ final class GameViewController: UIViewController, GameViewProtocol {
         UIApplication.shared.isIdleTimerDisabled = awake
     }
 
+    /// A paw sweeping across the screen must never leave the game, so the edge swipe and the iOS 26
+    /// full-screen swipe back are off while playing. The hold on the home button is the only way out.
+    private func disableSwipeBack() {
+        guard disabledPopGestures.isEmpty, let navigation = navigationController else { return }
+        var gestures = [navigation.interactivePopGestureRecognizer]
+        if #available(iOS 26.0, *) {
+            gestures.append(navigation.interactiveContentPopGestureRecognizer)
+        }
+        disabledPopGestures = gestures.compactMap { $0 }.filter(\.isEnabled)
+        disabledPopGestures.forEach { $0.isEnabled = false }
+    }
+
+    private func restoreSwipeBack() {
+        disabledPopGestures.forEach { $0.isEnabled = true }
+        disabledPopGestures = []
+    }
+
+    // MARK: App lifecycle
+    @objc private func appWillResignActive() {
+        presenter?.appWillResignActive()
+    }
+
+    @objc private func appDidBecomeActive() {
+        // Only resume when this screen is the one showing.
+        guard hasStarted, viewIfLoaded?.window != nil else { return }
+        presenter?.appDidBecomeActive()
+    }
+
     // MARK: Actions
-    @objc func homeTapped() {
+    func leaveGame() {
         presenter?.didTapHome()
     }
 
@@ -115,14 +161,27 @@ final class GameViewController: UIViewController, GameViewProtocol {
         resultDetailsLabel.text = details
         resultOverlay.alpha = 0
         resultOverlay.isHidden = false
+        isShowingResult = true
         UIView.animate(withDuration: 0.25) { self.resultOverlay.alpha = 1 }
         // The round is over: if nobody comes back, the device can sleep as usual.
         setScreenAwake(false)
+        // VoiceOver moves to the result and can't wander onto the playfield behind it.
+        UIAccessibility.post(notification: .screenChanged, argument: resultTitleLabel)
     }
 
     func hideResult() {
         resultOverlay.isHidden = true
+        isShowingResult = false
         setScreenAwake(true)
+        UIAccessibility.post(notification: .screenChanged, argument: nil)
+    }
+
+    func showPaused() {
+        setScreenAwake(false)
+    }
+
+    func showResumed() {
+        setScreenAwake(!isShowingResult)
     }
 }
 

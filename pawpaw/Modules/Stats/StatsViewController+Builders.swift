@@ -9,6 +9,7 @@ extension StatsViewController {
     static func makeLabel(size: CGFloat, weight: UIFont.Weight = .heavy) -> UILabel {
         let label = UILabel()
         label.font = Theme.roundedFont(size: size, weight: weight)
+        label.adjustsFontForContentSizeCategory = true
         label.textColor = Theme.text
         label.textAlignment = .center
         label.numberOfLines = 0
@@ -39,7 +40,7 @@ extension StatsViewController {
         return stack
     }
 
-    /// A critter's artwork over its catch count.
+    /// A critter's artwork over its catch count. VoiceOver reads the column as one element; set its label.
     static func makeColumn(imageName: String, size: CGFloat, bottom: String) -> UIView {
         let imageView = UIImageView(image: UIImage(named: imageName))
         imageView.contentMode = .scaleAspectFit
@@ -54,10 +55,12 @@ extension StatsViewController {
         column.axis = .vertical
         column.alignment = .center
         column.spacing = 2
+        column.isAccessibilityElement = true
         return column
     }
 
     /// A vertical bar whose height is proportional to the rounds played that day.
+    /// VoiceOver reads the bar as one element; set its label.
     static func makeBar(label: String, rounds: Int, maxRounds: Int) -> UIView {
         let maxHeight: CGFloat = 70
         let bar = UIView()
@@ -77,6 +80,7 @@ extension StatsViewController {
         column.axis = .vertical
         column.alignment = .center
         column.spacing = 4
+        column.isAccessibilityElement = true
         return column
     }
 }

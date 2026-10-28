@@ -18,16 +18,8 @@ extension ProfilesViewController {
         config.cornerStyle = .large
         config.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
         config.titleAlignment = .leading
-        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-            var outgoing = incoming
-            outgoing.font = Theme.roundedFont(size: Theme.scaled(22), weight: .bold)
-            return outgoing
-        }
-        config.subtitleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-            var outgoing = incoming
-            outgoing.font = Theme.roundedFont(size: Theme.scaled(14), weight: .semibold)
-            return outgoing
-        }
+        config.titleTextAttributesTransformer = Theme.fontTransformer(size: 22, weight: .bold)
+        config.subtitleTextAttributesTransformer = Theme.fontTransformer(size: 14, weight: .semibold)
         let select = UIButton(configuration: config)
         select.contentHorizontalAlignment = .leading
         // The cat takes all the spare width; the pencil stays small.
@@ -57,40 +49,21 @@ extension ProfilesViewController {
     }
 
     func makeAddButton() -> UIButton {
-        var config = UIButton.Configuration.filled()
-        config.title = "Add a cat"
-        config.image = UIImage(systemName: "plus")
-        config.imagePadding = 6
-        config.baseBackgroundColor = Theme.panel
-        config.baseForegroundColor = Theme.text
-        config.cornerStyle = .capsule
-        config.contentInsets = NSDirectionalEdgeInsets(top: 14, leading: 28, bottom: 14, trailing: 28)
-        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-            var outgoing = incoming
-            outgoing.font = Theme.roundedFont(size: Theme.scaled(18), weight: .bold)
-            return outgoing
-        }
-        let button = UIButton(configuration: config)
-        button.heightAnchor.constraint(greaterThanOrEqualToConstant: Theme.minimumTapSize).isActive = true
+        let button = Theme.filledButton(
+            title: "Add a cat",
+            image: "plus",
+            fontSize: 18,
+            background: Theme.panel,
+            foreground: Theme.text,
+            insets: NSDirectionalEdgeInsets(top: 14, leading: 28, bottom: 14, trailing: 28)
+        )
         button.accessibilityIdentifier = "addCatButton"
         button.addAction(UIAction { [weak self] _ in self?.showAddCard() }, for: .touchUpInside)
         return button
     }
 
     func makeBackButton() -> UIButton {
-        var config = UIButton.Configuration.filled()
-        config.title = "Back"
-        config.baseBackgroundColor = Theme.accent
-        config.baseForegroundColor = .white
-        config.cornerStyle = .capsule
-        config.contentInsets = NSDirectionalEdgeInsets(top: 14, leading: 36, bottom: 14, trailing: 36)
-        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-            var outgoing = incoming
-            outgoing.font = Theme.roundedFont(size: Theme.scaled(20), weight: .bold)
-            return outgoing
-        }
-        let button = UIButton(configuration: config)
-        button.heightAnchor.constraint(greaterThanOrEqualToConstant: Theme.minimumTapSize).isActive = true
+        let button = Theme.filledButton(title: "Back")
         button.accessibilityIdentifier = "profilesBackButton"
         button.addAction(UIAction { [weak self] _ in self?.presenter?.didTapBack() }, for: .touchUpInside)
         return button

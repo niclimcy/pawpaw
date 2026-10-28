@@ -25,7 +25,7 @@ Built with **Swift** and **UIKit** (no storyboards or SwiftUI), following the **
 1. Pick a session length and a background on the home screen, then tap **PLAY**.
 2. Tap the critters as they move across the screen. A round lasts **30 seconds**, **60 seconds** (the default) or **2 minutes**. **Relaxed** mode has no timer and never ends.
 3. Each catch gives points, with a sparkle, ring and "+points" animation.
-4. When time is up, you see your score and your best score for that session length. Choose **Play Again** or **Home**.
+4. When time is up, you see your score and your best score for that session length. Choose **Play Again**, or press and hold **Hold to go Home**.
 
 | Critter | Points | Notes |
 |---|---|---|
@@ -40,7 +40,7 @@ Built with **Swift** and **UIKit** (no storyboards or SwiftUI), following the **
 Game design choices that suit cats:
 
 - At most **2 critters** on screen at once, so a cat can focus on one thing.
-- Critters stay on screen for several seconds. They never fade: they run in from beyond the screen edge and run off it again, and the views are reused for the next critter.
+- Critters stay on screen for several seconds. Land critters and fliers never fade: they run in from beyond the screen edge and run off it again. Only the fish fades, as it rises from and sinks back into the pond. The views are reused for the next critter.
 - Critters are large, drawn from above, and turn to face the direction they move.
 - The background is dark so the animations stand out.
 - Critters move like real prey: mice dart and freeze, bugs wander, butterflies flutter in arcs.
@@ -61,6 +61,10 @@ For owners:
 - The **Play Stats** screen shows total rounds and catches, catches per critter, a favorite critter, rounds over the last 7 days and the best score for each session length. Changes in play can hint at a change in mood or energy.
 - Opening Play Stats and resetting it both need a 1.5 second press-and-hold, and a reset also asks for confirmation. Resetting keeps the best scores.
 - Leaving a round early (always the case in relaxed mode) still counts the critters caught in the stats.
+- A phone call, Control Center or switching apps pauses the round: the clock stops, the critters on screen slip away and the catches so far are saved, in case the app is closed. Play picks up where it left off when you come back, and the round still counts once in the stats.
+- Rotating the device or resizing the app mid-round moves the hiding spots to match. Critters already running slip away (they don't count as escapes) and new ones come in.
+- The edge swipe back is turned off during a round, so a sweeping paw can't leave the game.
+- Text follows the Dynamic Type size setting. VoiceOver reads the Stats chart and critter counts, and stays on the result card or the add/edit card while it is open.
 - The screen stays on during a round, so it won't dim or lock while the cat plays. When the result card appears, the device can sleep normally again.
 
 Cat profiles for multi-cat households:
@@ -69,7 +73,7 @@ Cat profiles for multi-cat households:
 - The Home screen shows the active cat. Tap it to switch cats, or to add or edit one. Adding and editing use a themed card on the wood panel with a name field and a face picker, not a system alert. Deleting a cat needs a 1.5 second hold, erases its scores and stats, and the last cat can't be deleted.
 - Home shows "Luna loves butterflies" once that cat has caught something, and the Stats screen is titled with the cat's name.
 - The session length and background are device settings shared by all cats.
-- Each cat can have its own critters. The add/edit card has a **Critters to play with** grid: tap a critter to turn it off for that cat (for example, Luna only likes mice and feathers). At least one critter always stays on. If a cat's picks can't appear on the chosen background (only fish, on the crate), every critter that suits that background plays instead.
+- Each cat can have its own critters. The add/edit card has a **Critters to play with** grid: tap a critter to turn it off for that cat (for example, Luna only likes mice and feathers). At least one critter that lives on every background (anything but the fish) always stays on, so every background has something to play with, and critters you turned off never come back. A short note explains this if you try to turn off the last one.
 
 Settings, best scores and stats are saved on the device using `UserDefaults`. Each session length has its own best score for each cat. Relaxed mode has none.
 
@@ -159,6 +163,7 @@ pawpaw/
 ├── Entities/
 │   ├── TargetKind.swift      Critter types: points, speed, spawn weight, image name
 │   ├── GameTarget.swift      A critter on screen (kind, path, lifetime)
+│   ├── MovementPath.swift    Path legs and each critter's movement style
 │   ├── GameResult.swift      Final score summary
 │   ├── SessionMode.swift     Session lengths (30 s, 60 s, 2 min, relaxed)
 │   ├── PlayfieldTheme.swift  Background choices
@@ -167,10 +172,16 @@ pawpaw/
 │   └── CatFace.swift         The drawn cat headshots, one per coat colour
 ├── Common/
 │   ├── ProfileStorage.swift  Cats and the active cat, with first-launch migration (protocol + UserDefaults)
-│   ├── ScoreStorage.swift    Best scores per cat, session length and background (protocol + UserDefaults)
+│   ├── SettingsStorage.swift Session length and background picked on Home, shared by all cats (protocol + UserDefaults)
+│   ├── ScoreStorage.swift    Best scores per cat and session length (protocol + UserDefaults)
 │   ├── StatsStorage.swift    Play stats per cat (protocol + UserDefaults)
+│   ├── Log.swift             Unified logging for storage failures the app recovers from
 │   ├── CatFace+Image.swift   Draws a headshot at a given size
-│   ├── Theme.swift           Colours and fonts
+│   ├── Theme.swift           Colours, fonts, card and button styles, the hold-to-confirm duration
+│   ├── ScrollingLayout.swift Centered, scrolling column used by every menu screen
+│   ├── SoundPlayer.swift     Synthesized prey sounds
+│   ├── SeededGenerator.swift Repeatable random numbers for the drawn backgrounds
+│   ├── CachedBackgroundView.swift      Renders a background once per size and reuses the image
 │   ├── WoodCrateBackgroundView.swift   Drawn wooden crate background
 │   └── NatureBackgroundView.swift      Drawn grass, pond and snow backgrounds
 ├── Modules/
@@ -197,6 +208,7 @@ The critter images (`critter_mouse`, `critter_bug`, `critter_butterfly`, `critte
 | Critter size | `GameAreaView.targetSize` |
 | Sparkle amount | `count:` values in `GameAreaView+Effects.swift` |
 | Colours | `Theme.swift` |
+| Press-and-hold time for exits, stats and deleting | `Theme.holdDuration` |
 
 ## Limitations
 

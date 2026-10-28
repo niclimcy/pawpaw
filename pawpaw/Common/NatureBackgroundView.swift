@@ -5,29 +5,15 @@
 
 import UIKit
 
-/// Deterministic random numbers so the scenery doesn't change on every redraw.
-private struct SceneryGenerator: RandomNumberGenerator {
-    private var state: UInt64
-    init(seed: UInt64) { state = seed }
-    mutating func next() -> UInt64 {
-        state &+= 0x9E3779B97F4A7C15
-        var z = state
-        z = (z ^ (z >> 30)) &* 0xBF58476D1CE4E5B9
-        z = (z ^ (z >> 27)) &* 0x94D049BB133111EB
-        return z ^ (z >> 31)
-    }
-}
-
 /// Draws the grass, pond and snow playfields. The wooden crate has its own view.
-final class NatureBackgroundView: UIView {
+/// A fixed seed keeps the scenery the same every time it is drawn.
+final class NatureBackgroundView: CachedBackgroundView {
+    /// Grass, pond or snow; the crate uses `WoodCrateBackgroundView`.
     private let theme: PlayfieldTheme
 
     init(theme: PlayfieldTheme) {
         self.theme = theme
         super.init(frame: .zero)
-        isOpaque = true
-        isUserInteractionEnabled = false
-        contentMode = .redraw
         backgroundColor = theme.baseColor
     }
 
@@ -35,23 +21,27 @@ final class NatureBackgroundView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func draw(_ rect: CGRect) {
-        guard let ctx = UIGraphicsGetCurrentContext() else { return }
-        var rng = SceneryGenerator(seed: 7)
+    override var drawingKey: String {
+        "nature-\(theme.rawValue)"
+    }
+
+    override func drawBackground(in ctx: CGContext, size: CGSize) {
+        var rng = SeededGenerator(seed: 7)
         theme.baseColor.setFill()
-        ctx.fill(bounds)
+        ctx.fill(CGRect(origin: .zero, size: size))
 
         switch theme {
+        case .grass: drawGrass(size: size, rng: &rng)
+        case .pond: drawPond(size: size, rng: &rng)
+        case .snow: drawSnow(size: size, rng: &rng)
         case .wood: break
-        case .grass: drawGrass(rng: &rng)
-        case .pond: drawPond(rng: &rng)
-        case .snow: drawSnow(rng: &rng)
         }
-        drawVignette(in: ctx)
+        Self.drawVignette(in: ctx, size: size, darkness: 0.5)
     }
 
     /// Short blades in a few greens, leaning slightly.
-    private func drawGrass(rng: inout SceneryGenerator) {
+    private func drawGrass(size: CGSize, rng: inout SeededGenerator) {
+        let bounds = CGRect(origin: .zero, size: size)
         let greens = [
             UIColor(red: 0.12, green: 0.28, blue: 0.12, alpha: 1),
             UIColor(red: 0.16, green: 0.34, blue: 0.14, alpha: 1),
@@ -79,7 +69,8 @@ final class NatureBackgroundView: UIView {
     }
 
     /// Soft concentric ripples and a few lily pads on dark water.
-    private func drawPond(rng: inout SceneryGenerator) {
+    private func drawPond(size: CGSize, rng: inout SeededGenerator) {
+        let bounds = CGRect(origin: .zero, size: size)
         for _ in 0..<14 {
             let center = CGPoint(
                 x: CGFloat.random(in: 0...bounds.width, using: &rng),
@@ -97,22 +88,23 @@ final class NatureBackgroundView: UIView {
             }
         }
         for _ in 0..<7 {
-            let size = CGFloat.random(in: 26...44, using: &rng)
+            let padSize = CGFloat.random(in: 26...44, using: &rng)
             let pad = CGRect(
                 x: CGFloat.random(in: 0...bounds.width, using: &rng),
                 y: CGFloat.random(in: 0...bounds.height, using: &rng),
-                width: size, height: size * 0.85
+                width: padSize, height: padSize * 0.85
             )
             UIColor(red: 0.12, green: 0.34, blue: 0.22, alpha: 0.9).setFill()
             UIBezierPath(ovalIn: pad).fill()
             UIColor(red: 0.04, green: 0.12, blue: 0.20, alpha: 1).setFill()
             // A small notch makes it read as a lily pad.
-            UIBezierPath(rect: CGRect(x: pad.midX, y: pad.midY - 1.5, width: size / 2, height: 3)).fill()
+            UIBezierPath(rect: CGRect(x: pad.midX, y: pad.midY - 1.5, width: padSize / 2, height: 3)).fill()
         }
     }
 
     /// Drifts of snowflakes and a few soft mounds.
-    private func drawSnow(rng: inout SceneryGenerator) {
+    private func drawSnow(size: CGSize, rng: inout SeededGenerator) {
+        let bounds = CGRect(origin: .zero, size: size)
         for _ in 0..<9 {
             let width = CGFloat.random(in: 90...220, using: &rng)
             let mound = CGRect(
@@ -125,22 +117,14 @@ final class NatureBackgroundView: UIView {
         }
         let flakes = Int(bounds.width * bounds.height / 3_000)
         for _ in 0..<flakes {
-            let size = CGFloat.random(in: 1.5...4, using: &rng)
+            let flakeSize = CGFloat.random(in: 1.5...4, using: &rng)
             let flake = CGRect(
                 x: CGFloat.random(in: 0...bounds.width, using: &rng),
                 y: CGFloat.random(in: 0...bounds.height, using: &rng),
-                width: size, height: size
+                width: flakeSize, height: flakeSize
             )
             UIColor.white.withAlphaComponent(CGFloat.random(in: 0.2...0.6, using: &rng)).setFill()
             UIBezierPath(ovalIn: flake).fill()
         }
-    }
-
-    private func drawVignette(in ctx: CGContext) {
-        let colors = [UIColor.clear.cgColor, UIColor.black.withAlphaComponent(0.5).cgColor] as CFArray
-        guard let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: colors, locations: [0.45, 1]) else { return }
-        let center = CGPoint(x: bounds.midX, y: bounds.midY)
-        let radius = hypot(bounds.width, bounds.height) / 2
-        ctx.drawRadialGradient(gradient, startCenter: center, startRadius: 0, endCenter: center, endRadius: radius, options: [])
     }
 }

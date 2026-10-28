@@ -78,14 +78,14 @@ final class ProfilesViewController: UIViewController, ProfilesViewProtocol {
         let title = UILabel()
         title.text = "Your Cats"
         title.font = Theme.roundedFont(size: Theme.scaled(34))
+        title.adjustsFontForContentSizeCategory = true
         title.textColor = Theme.text
         title.textAlignment = .center
+        title.numberOfLines = 0
+        title.accessibilityTraits = .header
 
         let card = UIView()
-        card.backgroundColor = Theme.panel
-        card.layer.borderWidth = 3
-        card.layer.borderColor = Theme.gold.withAlphaComponent(0.6).cgColor
-        card.layer.cornerRadius = 28
+        Theme.styleCard(card)
         card.translatesAutoresizingMaskIntoConstraints = false
 
         listStack.translatesAutoresizingMaskIntoConstraints = false

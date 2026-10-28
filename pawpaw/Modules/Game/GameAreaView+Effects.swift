@@ -48,8 +48,8 @@ extension GameAreaView {
     }
 
     /// The closest visible critter jumps away from a missed tap, so the cat still gets a reaction.
-    func startleNearestTarget(from location: CGPoint, label: UIView?) {
-        guard let label, let presentation = label.layer.presentation() else { return }
+    func startleNearestTarget(from location: CGPoint, critter: UIView?) {
+        guard let critter, let presentation = critter.layer.presentation() else { return }
         let center = presentation.position
         var dx = center.x - location.x
         var dy = center.y - location.y
@@ -69,14 +69,14 @@ extension GameAreaView {
         hop.keyTimes = [0, 0.3, 0.6, 1]
         hop.duration = 0.35
         hop.timingFunction = CAMediaTimingFunction(name: .easeOut)
-        label.layer.add(hop, forKey: "startle")
+        critter.layer.add(hop, forKey: "startle")
 
         let squash = CAKeyframeAnimation(keyPath: "transform.scale")
         squash.isAdditive = true
         squash.values = [0, 0.18, 0]
         squash.keyTimes = [0, 0.3, 1]
         squash.duration = 0.35
-        label.layer.add(squash, forKey: "startleScale")
+        critter.layer.add(squash, forKey: "startleScale")
         SoundPlayer.shared.play(.squeak)
     }
 

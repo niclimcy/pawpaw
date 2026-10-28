@@ -7,8 +7,8 @@ import UIKit
 
 /// Stop-and-go movement: one keyframe animation drives both position and heading.
 extension GameAreaView {
-    /// Moves `label` along the target's legs, freezing between them, and calls `completion` when done or cancelled.
-    func animatePath(of target: GameTarget, on label: UIView, completion: @escaping () -> Void) {
+    /// Moves `critter` along the target's legs, freezing between them, and calls `completion` when done or cancelled.
+    func animatePath(of target: GameTarget, on critter: UIView, completion: @escaping () -> Void) {
         let total = target.lifetime
         guard total > 0, !target.legs.isEmpty else {
             completion()
@@ -114,17 +114,17 @@ extension GameAreaView {
         }
 
         // Model values describe the end state; the animation shows the journey.
-        label.transform = turns ? CGAffineTransform(rotationAngle: heading) : .identity
-        label.center = current
-        label.alpha = surfaces ? CGFloat(Self.underwaterOpacity) : 1
+        critter.transform = turns ? CGAffineTransform(rotationAngle: heading) : .identity
+        critter.center = current
+        critter.alpha = surfaces ? CGFloat(Self.underwaterOpacity) : 1
 
         CATransaction.begin()
         CATransaction.setCompletionBlock(completion)
-        label.layer.add(group, forKey: "path")
+        critter.layer.add(group, forKey: "path")
         CATransaction.commit()
 
         if surfaces {
-            addTailSwish(to: label)
+            addTailSwish(to: critter)
             emitRing(at: point(for: target.start), color: Self.waterRippleColor, endRadius: 70, lineWidth: 2)
         }
     }
@@ -143,13 +143,13 @@ extension GameAreaView {
     }
 
     /// A gentle side-to-side sway on top of the heading, like a tail sweeping through water.
-    private func addTailSwish(to label: UIView) {
+    private func addTailSwish(to critter: UIView) {
         let swish = CAKeyframeAnimation(keyPath: "transform.rotation.z")
         swish.isAdditive = true
         swish.values = [0, 0.14, 0, -0.14, 0]
         swish.duration = 0.7
         swish.repeatCount = .infinity
-        label.layer.add(swish, forKey: "swish")
+        critter.layer.add(swish, forKey: "swish")
     }
 
     /// Where a critter under a hiding spot pokes out to: half of it shows past the spot's edge.

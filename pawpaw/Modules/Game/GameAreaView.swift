@@ -9,6 +9,11 @@ import UIKit
 /// target's *presentation* (on-screen) frame instead of its final model frame.
 final class GameAreaView: UIView {
     var onTapTarget: ((UUID) -> Void)?
+    /// A critter ran off untouched.
+    var onExpire: ((UUID) -> Void)?
+    /// A critter was taken off the field by the view itself (the field changed size), so it is neither
+    /// caught nor escaped.
+    var onDiscard: ((UUID) -> Void)?
     /// A touch that started on empty space (drags across empty space don't count).
     var onMiss: (() -> Void)?
 
@@ -17,6 +22,10 @@ final class GameAreaView: UIView {
     /// Side of a hiding spot. Larger than a critter so one fits fully underneath.
     let hidingSpotSize: CGFloat = 170
     private var hidingSpotViews: [HidingSpotView] = []
+    /// Normalized centers of the hiding spots, so they can be placed again when the field changes size.
+    private var hidingSpotPoints: [CGPoint] = []
+    /// The size the spots and running critters were laid out for.
+    private var laidOutSize: CGSize = .zero
     private var targetViews: [UUID: UIImageView] = [:]
     /// Views of critters that left the screen or were caught, kept for the next spawn.
     private var recycledViews: [UIImageView] = []
@@ -39,84 +48,101 @@ final class GameAreaView: UIView {
         isMultipleTouchEnabled = true
     }
 
+    /// Rotation or a split-screen resize changes the field's size. Positions are normalized, so the spots
+    /// move to match. A running critter's path was laid out for the old size and can't be rescaled mid-flight,
+    /// so it slips away (it doesn't count as an escape) and a fresh one comes in at the next spawn.
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        guard bounds.size != laidOutSize else { return }
+        let hadLayout = laidOutSize != .zero
+        laidOutSize = bounds.size
+        placeHidingSpots()
+        guard hadLayout else { return }
+        for (id, critter) in targetViews {
+            targetViews[id] = nil
+            recycle(critter)
+            onDiscard?(id)
+        }
+    }
+
     func add(_ target: GameTarget) {
-        let label = dequeueTargetView()
-        label.image = UIImage(named: target.kind.imageName)
+        let critter = dequeueTargetView()
+        critter.image = UIImage(named: target.kind.imageName)
         if target.kind.glows {
             // Light on the surface glows instead of casting a shadow.
-            label.layer.shadowColor = UIColor.red.cgColor
-            label.layer.shadowRadius = 14
-            label.layer.shadowOpacity = 0.9
-            label.layer.shadowOffset = .zero
+            critter.layer.shadowColor = UIColor.red.cgColor
+            critter.layer.shadowRadius = 14
+            critter.layer.shadowOpacity = 0.9
+            critter.layer.shadowOffset = .zero
         }
         let surfaces = target.kind.movementStyle.surfaces
         if surfaces {
             // Under the water there is no hard shadow, just a faint dark-blue blur.
-            label.layer.shadowColor = UIColor(red: 0, green: 0.05, blue: 0.15, alpha: 1).cgColor
-            label.layer.shadowRadius = 10
-            label.layer.shadowOpacity = 0.5
-            label.layer.shadowOffset = .zero
-            label.alpha = 0
+            critter.layer.shadowColor = UIColor(red: 0, green: 0.05, blue: 0.15, alpha: 1).cgColor
+            critter.layer.shadowRadius = 10
+            critter.layer.shadowOpacity = 0.5
+            critter.layer.shadowOffset = .zero
+            critter.alpha = 0
         }
-        label.center = surfaces ? point(for: target.start) : offscreenPoint(for: target.start)
+        critter.center = surfaces ? point(for: target.start) : offscreenPoint(for: target.start)
         // Critters that can hide move beneath the spots so they vanish under them. The rest pass over the top,
         // such as a mouse crossing a lily pad.
         if let lowestSpot = hidingSpotViews.first, theme.allowsCover(for: target.kind.movementStyle) {
-            insertSubview(label, belowSubview: lowestSpot)
+            insertSubview(critter, belowSubview: lowestSpot)
         } else {
-            addSubview(label)
+            addSubview(critter)
         }
-        targetViews[target.id] = label
+        targetViews[target.id] = critter
         SoundPlayer.shared.playAppear(for: target.kind)
 
-        animatePath(of: target, on: label) { [weak self, weak label] in
-            guard let self, let label, self.targetViews[target.id] === label else { return }
+        animatePath(of: target, on: critter) { [weak self, weak critter] in
+            guard let self, let critter, self.targetViews[target.id] === critter else { return }
             // The critter has run off the edge: free its slot and keep the view for the next one.
             self.targetViews[target.id] = nil
-            self.recycle(label)
+            self.recycle(critter)
             self.onExpire?(target.id)
         }
     }
 
     /// A reset critter view, reused from an earlier critter when one is available.
     private func dequeueTargetView() -> UIImageView {
-        let label = recycledViews.popLast() ?? UIImageView()
+        let critter = recycledViews.popLast() ?? UIImageView()
         // Reset the transform first: setting a frame on a rotated or scaled view distorts its bounds.
-        label.transform = .identity
-        label.frame = CGRect(origin: .zero, size: CGSize(width: targetSize, height: targetSize))
-        label.contentMode = .scaleAspectFit
-        label.isUserInteractionEnabled = false
-        label.alpha = 1
-        label.isHidden = false
-        label.layer.shadowColor = UIColor.black.cgColor
-        label.layer.shadowRadius = 6
-        label.layer.shadowOpacity = 0.6
-        label.layer.shadowOffset = CGSize(width: 0, height: 4)
-        return label
+        critter.transform = .identity
+        critter.frame = CGRect(origin: .zero, size: CGSize(width: targetSize, height: targetSize))
+        critter.contentMode = .scaleAspectFit
+        critter.isUserInteractionEnabled = false
+        critter.alpha = 1
+        critter.isHidden = false
+        critter.layer.shadowColor = UIColor.black.cgColor
+        critter.layer.shadowRadius = 6
+        critter.layer.shadowOpacity = 0.6
+        critter.layer.shadowOffset = CGSize(width: 0, height: 4)
+        return critter
     }
 
     /// Takes a critter view off the field, wipes its animations and stores it for reuse.
-    private func recycle(_ label: UIImageView) {
-        label.layer.removeAllAnimations()
-        label.removeFromSuperview()
-        label.transform = .identity
-        label.image = nil
-        recycledViews.append(label)
+    private func recycle(_ critter: UIImageView) {
+        critter.layer.removeAllAnimations()
+        critter.removeFromSuperview()
+        critter.transform = .identity
+        critter.image = nil
+        recycledViews.append(critter)
     }
 
     /// Whether any part of the critter is currently inside the play field and not tucked under a hiding spot.
-    private func isOnScreen(_ label: UIView) -> Bool {
-        let frame = label.layer.presentation()?.frame ?? label.frame
-        return bounds.intersects(frame) && !isUnderCover(label, frame: frame)
+    private func isOnScreen(_ critter: UIView) -> Bool {
+        let frame = critter.layer.presentation()?.frame ?? critter.frame
+        return bounds.intersects(frame) && !isUnderCover(critter, frame: frame)
     }
 
     /// True while the critter's middle is under a hiding spot, so most of it is out of sight.
     /// Critters drawn above the spots are never hidden by them.
-    private func isUnderCover(_ label: UIView, frame: CGRect) -> Bool {
+    private func isUnderCover(_ critter: UIView, frame: CGRect) -> Bool {
         guard let lowestSpot = hidingSpotViews.first,
-              let labelIndex = subviews.firstIndex(of: label),
+              let critterIndex = subviews.firstIndex(of: critter),
               let spotIndex = subviews.firstIndex(of: lowestSpot),
-              labelIndex < spotIndex else { return false }
+              critterIndex < spotIndex else { return false }
         let center = CGPoint(x: frame.midX, y: frame.midY)
         return hidingSpotViews.contains { spot in
             hypot(spot.center.x - center.x, spot.center.y - center.y) < hidingSpotSize * 0.3
@@ -126,45 +152,51 @@ final class GameAreaView: UIView {
     /// Replaces the hiding spots with new ones at the given normalized positions.
     func showHidingSpots(at points: [CGPoint]) {
         hidingSpotViews.forEach { $0.removeFromSuperview() }
-        hidingSpotViews = points.map { normalized in
+        hidingSpotPoints = points
+        hidingSpotViews = points.map { _ in
             let spot = HidingSpotView(theme: theme)
             spot.frame = CGRect(x: 0, y: 0, width: hidingSpotSize, height: hidingSpotSize)
-            spot.center = point(for: normalized)
             addSubview(spot)
             return spot
         }
+        placeHidingSpots()
     }
 
-    var onExpire: ((UUID) -> Void)?
+    /// Puts each spot at its normalized position for the current size.
+    private func placeHidingSpots() {
+        for (spot, normalized) in zip(hidingSpotViews, hidingSpotPoints) {
+            spot.center = point(for: normalized)
+        }
+    }
 
     func caught(id: UUID, points: Int) {
-        guard let label = targetViews.removeValue(forKey: id) else { return }
-        let position = label.layer.presentation()?.position ?? label.center
+        guard let critter = targetViews.removeValue(forKey: id) else { return }
+        let position = critter.layer.presentation()?.position ?? critter.center
         // Keep the heading the critter had when it was caught.
-        let heading = label.layer.presentation()?.affineTransform() ?? label.transform
-        label.layer.removeAllAnimations()
-        label.center = position
-        label.transform = heading
+        let heading = critter.layer.presentation()?.affineTransform() ?? critter.transform
+        critter.layer.removeAllAnimations()
+        critter.center = position
+        critter.transform = heading
 
         // Glow, then a bouncy squash-and-stretch and a spinning pop out.
-        label.layer.shadowColor = Theme.gold.cgColor
-        label.layer.shadowRadius = 18
-        label.layer.shadowOpacity = 1
-        label.layer.shadowOffset = .zero
-        let base = label.transform
+        critter.layer.shadowColor = Theme.gold.cgColor
+        critter.layer.shadowRadius = 18
+        critter.layer.shadowOpacity = 1
+        critter.layer.shadowOffset = .zero
+        let base = critter.transform
         UIView.animateKeyframes(withDuration: 0.4, delay: 0, options: [], animations: {
             UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.25) {
-                label.transform = base.scaledBy(x: 0.7, y: 1.3)
+                critter.transform = base.scaledBy(x: 0.7, y: 1.3)
             }
             UIView.addKeyframe(withRelativeStartTime: 0.25, relativeDuration: 0.35) {
-                label.transform = base.scaledBy(x: 1.6, y: 1.6).rotated(by: .pi / 5)
+                critter.transform = base.scaledBy(x: 1.6, y: 1.6).rotated(by: .pi / 5)
             }
             UIView.addKeyframe(withRelativeStartTime: 0.6, relativeDuration: 0.4) {
-                label.transform = base.scaledBy(x: 0.1, y: 0.1).rotated(by: .pi)
-                label.alpha = 0
+                critter.transform = base.scaledBy(x: 0.1, y: 0.1).rotated(by: .pi)
+                critter.alpha = 0
             }
         }, completion: { [weak self] _ in
-            self?.recycle(label)
+            self?.recycle(critter)
         })
         playCatchEffects(points: points, at: position)
         SoundPlayer.shared.play(.catchPop)
@@ -186,7 +218,7 @@ final class GameAreaView: UIView {
             } else {
                 onMiss?()
                 playMissEffect(at: location)
-                startleNearestTarget(from: location, label: nearestTargetView(to: location))
+                startleNearestTarget(from: location, critter: nearestTargetView(to: location))
             }
         }
     }
@@ -219,10 +251,10 @@ final class GameAreaView: UIView {
 
     /// The closest visible critter within startle range of a missed tap.
     private func nearestTargetView(to location: CGPoint) -> UIView? {
-        let candidates = targetViews.values.compactMap { label -> (UIView, CGFloat)? in
-            guard let presentation = label.layer.presentation(), presentation.opacity > 0.5, isOnScreen(label) else { return nil }
+        let candidates = targetViews.values.compactMap { critter -> (UIView, CGFloat)? in
+            guard let presentation = critter.layer.presentation(), presentation.opacity > 0.5, isOnScreen(critter) else { return nil }
             let distance = hypot(presentation.position.x - location.x, presentation.position.y - location.y)
-            return distance <= startleRange ? (label, distance) : nil
+            return distance <= startleRange ? (critter, distance) : nil
         }
         return candidates.min { $0.1 < $1.1 }?.0
     }
@@ -232,10 +264,10 @@ final class GameAreaView: UIView {
         let ordered = targetViews.sorted {
             (subviews.firstIndex(of: $0.value) ?? 0) > (subviews.firstIndex(of: $1.value) ?? 0)
         }
-        for (id, label) in ordered {
+        for (id, critter) in ordered {
             // Critters hiding under the planks can't be caught.
-            guard (label.layer.presentation()?.opacity ?? 1) > 0.5, isOnScreen(label) else { continue }
-            let frame = label.layer.presentation()?.frame ?? label.frame
+            guard (critter.layer.presentation()?.opacity ?? 1) > 0.5, isOnScreen(critter) else { continue }
+            let frame = critter.layer.presentation()?.frame ?? critter.frame
             if frame.insetBy(dx: -hitSlop, dy: -hitSlop).contains(location) {
                 return id
             }

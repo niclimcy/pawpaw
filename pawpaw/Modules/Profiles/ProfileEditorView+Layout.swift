@@ -9,16 +9,18 @@ extension ProfileEditorView {
     func build() {
         backgroundColor = UIColor.black.withAlphaComponent(0.55)
         isHidden = true
+        // While the card is up, VoiceOver can't reach the list behind it.
+        accessibilityViewIsModal = true
 
         let card = UIView()
-        card.backgroundColor = Theme.panel
-        card.layer.borderWidth = 3
-        card.layer.borderColor = Theme.gold.withAlphaComponent(0.6).cgColor
-        card.layer.cornerRadius = 28
+        Theme.styleCard(card)
 
         titleLabel.font = Theme.roundedFont(size: Theme.scaled(30))
+        titleLabel.adjustsFontForContentSizeCategory = true
         titleLabel.textColor = Theme.text
         titleLabel.textAlignment = .center
+        titleLabel.numberOfLines = 0
+        titleLabel.accessibilityTraits = .header
 
         let saveButton = makeSaveButton()
         let stack = UIStackView(arrangedSubviews: [

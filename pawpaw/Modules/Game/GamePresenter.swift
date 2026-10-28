@@ -11,12 +11,20 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorOutputProtocol {
     var router: GameRouterProtocol?
 
     // MARK: GamePresenterProtocol
-    func viewDidLoad() {
+    func viewDidBecomeReady() {
         interactor?.startGame()
     }
 
     func viewWillDisappear() {
         interactor?.stopGame()
+    }
+
+    func appWillResignActive() {
+        interactor?.pauseGame()
+    }
+
+    func appDidBecomeActive() {
+        interactor?.resumeGame()
     }
 
     func didTapTarget(id: UUID) {
@@ -25,6 +33,10 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorOutputProtocol {
 
     func didExpireTarget(id: UUID) {
         interactor?.expireTarget(id: id)
+    }
+
+    func didDiscardTarget(id: UUID) {
+        interactor?.discardTarget(id: id)
     }
 
     func didMissTap() {
@@ -66,7 +78,17 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorOutputProtocol {
     func didFinishGame(_ result: GameResult) {
         view?.clearTargets()
         let title = result.isNewHighScore ? "New Best! 🎉" : "Time's Up!"
-        let details = "You caught \(result.catches) critters\nScore: \(result.score)\nBest: \(result.highScore)"
+        let critters = result.catches == 1 ? "critter" : "critters"
+        let details = "You caught \(result.catches) \(critters)\nScore: \(result.score)\nBest: \(result.highScore)"
         view?.showResult(title: title, details: details)
+    }
+
+    func didPause() {
+        view?.clearTargets()
+        view?.showPaused()
+    }
+
+    func didResume() {
+        view?.showResumed()
     }
 }

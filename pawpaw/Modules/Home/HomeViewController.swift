@@ -16,27 +16,24 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         label.adjustsFontSizeToFitWidth = true
         label.minimumScaleFactor = 0.5
         label.textAlignment = .center
+        // Decoration only.
+        label.isAccessibilityElement = false
         return label
     }()
 
     private let titleLabel: UILabel = {
-        let label = UILabel()
+        let label = HomeViewController.makeLabel(size: 48)
         label.text = "Paw Paw"
-        label.font = Theme.roundedFont(size: Theme.scaled(48))
-        label.textColor = Theme.text
-        label.textAlignment = .center
+        label.numberOfLines = 1
         label.adjustsFontSizeToFitWidth = true
         label.minimumScaleFactor = 0.6
+        label.accessibilityTraits = .header
         return label
     }()
 
     private let subtitleLabel: UILabel = {
-        let label = UILabel()
+        let label = HomeViewController.makeLabel(size: 18, weight: .semibold)
         label.text = "Catch the mice, bugs and butterflies!"
-        label.font = Theme.roundedFont(size: Theme.scaled(18), weight: .semibold)
-        label.textColor = Theme.text
-        label.textAlignment = .center
-        label.numberOfLines = 0
         return label
     }()
 
@@ -50,11 +47,7 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         config.baseForegroundColor = Theme.text
         config.cornerStyle = .capsule
         config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)
-        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-            var outgoing = incoming
-            outgoing.font = Theme.roundedFont(size: Theme.scaled(20), weight: .bold)
-            return outgoing
-        }
+        config.titleTextAttributesTransformer = Theme.fontTransformer(size: 20, weight: .bold)
         let button = UIButton(configuration: config)
         button.heightAnchor.constraint(greaterThanOrEqualToConstant: Theme.minimumTapSize).isActive = true
         button.accessibilityIdentifier = "profileButton"
@@ -64,89 +57,83 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
 
     /// "Luna loves butterflies", shown once the cat has caught something.
     private let favoriteLabel: UILabel = {
-        let label = UILabel()
-        label.font = Theme.roundedFont(size: Theme.scaled(16), weight: .semibold)
+        let label = HomeViewController.makeLabel(size: 16, weight: .semibold)
         label.textColor = Theme.text.withAlphaComponent(0.85)
-        label.textAlignment = .center
-        label.numberOfLines = 0
         label.isHidden = true
         return label
     }()
 
     private let highScoreLabel: UILabel = {
-        let label = UILabel()
-        label.font = Theme.roundedFont(size: Theme.scaled(22), weight: .bold)
-        label.textColor = Theme.text
-        label.textAlignment = .center
+        let label = HomeViewController.makeLabel(size: 22, weight: .bold)
         label.text = "Best: 0"
         return label
     }()
 
     /// A note for the human: cats can't leave the game by accident.
     private let ownerNoteLabel: UILabel = {
-        let label = UILabel()
-        label.text = "For owners: during play, press and hold the home button for 1.5 seconds to leave the game."
-        label.font = Theme.roundedFont(size: Theme.scaled(14), weight: .semibold)
+        let label = HomeViewController.makeLabel(size: 14, weight: .semibold)
+        label.text = "For owners: during play, press and hold the home button for \(Theme.holdDurationText) to leave the game."
         label.textColor = Theme.text.withAlphaComponent(0.75)
-        label.textAlignment = .center
-        label.numberOfLines = 0
         return label
     }()
+
+    /// Design sizes of the picker titles, kept so they can be re-applied when the text size changes.
+    private static let modeFontSize: CGFloat = 16
+    private static let themeFontSize: CGFloat = 14
 
     /// Short rounds suit kittens and seniors; relaxed play has no timer at all.
     private let modeControl: UISegmentedControl = {
         let control = UISegmentedControl(items: SessionMode.allCases.map(\.title))
-        Theme.styleSegmented(control, fontSize: 16)
+        Theme.styleSegmented(control, fontSize: HomeViewController.modeFontSize)
         control.accessibilityIdentifier = "modeControl"
+        control.accessibilityLabel = "Session length"
         return control
     }()
 
     /// Picks the playfield background; the Home screen previews the choice.
     private let themeControl: UISegmentedControl = {
         let control = UISegmentedControl(items: PlayfieldTheme.allCases.map(\.title))
-        Theme.styleSegmented(control, fontSize: 14)
+        Theme.styleSegmented(control, fontSize: HomeViewController.themeFontSize)
         control.accessibilityIdentifier = "themeControl"
+        control.accessibilityLabel = "Background"
         return control
     }()
 
     /// Owners only: a press-and-hold keeps paws out of the stats screen.
     private let statsButton: UIButton = {
-        var config = UIButton.Configuration.plain()
-        config.title = "Hold for Stats"
-        config.image = UIImage(systemName: "chart.bar.fill")
-        config.imagePadding = 6
-        config.baseForegroundColor = Theme.text.withAlphaComponent(0.85)
-        config.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
-        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-            var outgoing = incoming
-            outgoing.font = Theme.roundedFont(size: Theme.scaled(16), weight: .bold)
-            return outgoing
-        }
-        let button = UIButton(configuration: config)
-        button.heightAnchor.constraint(greaterThanOrEqualToConstant: Theme.minimumTapSize).isActive = true
+        let button = Theme.plainButton(
+            title: "Hold for Stats",
+            image: "chart.bar.fill",
+            foreground: Theme.text.withAlphaComponent(0.85)
+        )
         button.accessibilityIdentifier = "statsButton"
         button.accessibilityHint = "Press and hold to open play statistics"
         return button
     }()
 
     private let playButton: UIButton = {
-        var config = UIButton.Configuration.filled()
-        config.title = "PLAY"
-        config.baseBackgroundColor = Theme.accent
-        config.baseForegroundColor = .white
-        config.cornerStyle = .capsule
-        config.contentInsets = NSDirectionalEdgeInsets(
-            top: Theme.scaled(20), leading: Theme.scaled(56), bottom: Theme.scaled(20), trailing: Theme.scaled(56)
+        let button = Theme.filledButton(
+            title: "PLAY",
+            fontSize: 34,
+            weight: .heavy,
+            insets: NSDirectionalEdgeInsets(
+                top: Theme.scaled(20), leading: Theme.scaled(56), bottom: Theme.scaled(20), trailing: Theme.scaled(56)
+            )
         )
-        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-            var outgoing = incoming
-            outgoing.font = Theme.roundedFont(size: Theme.scaled(34))
-            return outgoing
-        }
-        let button = UIButton(configuration: config)
         button.accessibilityIdentifier = "playButton"
         return button
     }()
+
+    /// A centered, wrapping label in the rounded font that follows Dynamic Type.
+    private static func makeLabel(size: CGFloat, weight: UIFont.Weight = .heavy) -> UILabel {
+        let label = UILabel()
+        label.font = Theme.roundedFont(size: Theme.scaled(size), weight: weight)
+        label.adjustsFontForContentSizeCategory = true
+        label.textColor = Theme.text
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        return label
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -157,14 +144,24 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         profileButton.addTarget(self, action: #selector(profileTapped), for: .touchUpInside)
         modeControl.addTarget(self, action: #selector(modeChanged), for: .valueChanged)
         themeControl.addTarget(self, action: #selector(themeChanged), for: .valueChanged)
-        let hold = UILongPressGestureRecognizer(target: self, action: #selector(statsHeld(_:)))
-        hold.minimumPressDuration = 1.5
-        statsButton.addGestureRecognizer(hold)
+        statsButton.addGestureRecognizer(UILongPressGestureRecognizer.holdToConfirm(self, #selector(statsHeld(_:))))
+        // Segmented controls don't pick up a new text size on their own.
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(contentSizeChanged),
+            name: UIContentSizeCategory.didChangeNotification,
+            object: nil
+        )
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         presenter?.viewWillAppear()
+    }
+
+    @objc private func contentSizeChanged() {
+        Theme.applySegmentedFonts(to: modeControl, fontSize: Self.modeFontSize)
+        Theme.applySegmentedFonts(to: themeControl, fontSize: Self.themeFontSize)
     }
 
     private func setupLayout() {
@@ -178,8 +175,8 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         stack.setCustomSpacing(Theme.scaled(28), after: highScoreLabel)
         stack.setCustomSpacing(Theme.scaled(20), after: statsButton)
 
-        // The pickers and the note use the full column width; everything else stays centered.
-        for wide in [modeControl, themeControl, ownerNoteLabel] {
+        // The pickers and the text use the full column width; everything else stays centered.
+        for wide in [modeControl, themeControl, subtitleLabel, favoriteLabel, ownerNoteLabel] {
             wide.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
         }
 
