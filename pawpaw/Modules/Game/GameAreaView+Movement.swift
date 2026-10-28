@@ -93,12 +93,14 @@ extension GameAreaView {
         turn.keyTimes = rotationTimes
         turn.calculationMode = .linear
 
+        // Round critters such as the laser dot look the same from every side, so only some turn.
+        let turns = target.kind.turnsToFaceMovement
         let group = CAAnimationGroup()
-        group.animations = [move, turn]
+        group.animations = turns ? [move, turn] : [move]
         group.duration = total
 
         // Model values describe the end state; the animation shows the journey.
-        label.transform = CGAffineTransform(rotationAngle: heading)
+        label.transform = turns ? CGAffineTransform(rotationAngle: heading) : .identity
         label.center = current
         label.alpha = 1
 

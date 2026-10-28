@@ -47,6 +47,8 @@ final class SoundPlayer {
         case .butterfly: play(.flutter)
         case .cricket: play(.chirp)
         case .feather: play(.swish)
+        // A laser pointer is silent; the cat follows it with its eyes alone.
+        case .laser: break
         }
     }
 

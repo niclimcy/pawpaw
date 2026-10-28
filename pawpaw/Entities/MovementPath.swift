@@ -31,6 +31,8 @@ enum MovementStyle {
     case hop
     /// Slow, gentle curves that never stop, like a feather on a breeze.
     case drift
+    /// Lightning-fast streaks across the field with dead stops, like a laser pointer.
+    case zip
 
     var legCount: ClosedRange<Int> {
         switch self {
@@ -39,6 +41,7 @@ enum MovementStyle {
         case .flutter: return 6...8
         case .hop: return 6...8
         case .drift: return 4...5
+        case .zip: return 5...7
         }
     }
 
@@ -50,6 +53,7 @@ enum MovementStyle {
         case .flutter: return 0
         case .hop: return 0.2
         case .drift: return 0
+        case .zip: return 0
         }
     }
 
@@ -61,6 +65,7 @@ enum MovementStyle {
         case .flutter: return 0
         case .hop: return 0.3
         case .drift: return 0
+        case .zip: return 0.6
         }
     }
 
@@ -72,6 +77,7 @@ enum MovementStyle {
         case .flutter: return 0.15...0.3
         case .hop: return 0.12...0.22
         case .drift: return 0.2...0.35
+        case .zip: return 0.35...0.7
         }
     }
 
@@ -83,6 +89,7 @@ enum MovementStyle {
         case .flutter: return 0.5...1.2
         case .hop: return 0.4...2.0
         case .drift: return 0.2...0.6
+        case .zip: return 1.0...3.0
         }
     }
 }

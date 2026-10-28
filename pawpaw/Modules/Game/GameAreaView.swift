@@ -35,6 +35,13 @@ final class GameAreaView: UIView {
     func add(_ target: GameTarget) {
         let label = dequeueTargetView()
         label.image = UIImage(named: target.kind.imageName)
+        if target.kind.glows {
+            // Light on the surface glows instead of casting a shadow.
+            label.layer.shadowColor = UIColor.red.cgColor
+            label.layer.shadowRadius = 14
+            label.layer.shadowOpacity = 0.9
+            label.layer.shadowOffset = .zero
+        }
         label.center = offscreenPoint(for: target.start)
         addSubview(label)
         targetViews[target.id] = label

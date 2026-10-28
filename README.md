@@ -34,6 +34,7 @@ Built with **Swift** and **UIKit** (no storyboards or SwiftUI), following the **
 | Butterfly | 20 | Fastest and rare |
 | Cricket | 15 | Short sudden hops with brief stops |
 | Feather | 5 | Slow, gentle drifting curves |
+| Laser dot | 25 | Silent glowing red dot that streaks across the field and stops dead |
 
 Game design choices that suit cats:
 
@@ -43,7 +44,7 @@ Game design choices that suit cats:
 - The background is dark so the animations stand out.
 - Critters move like real prey: mice dart and freeze, bugs wander, butterflies flutter in arcs.
 - Critters emerge from the screen edge, and some run off the nearest edge during a freeze, wait out of sight, then run back. Critters that are off-screen can't be caught.
-- Short prey sounds (squeak, rustle, flutter, chirp, swish, catch) are synthesized in code by `SoundPlayer`.
+- Short prey sounds (squeak, rustle, flutter, chirp, swish, catch) are synthesized in code by `SoundPlayer`. The laser dot is silent, like a real laser pointer.
 - Every paw counts: several touches at once are handled, and the hit area around each critter is generous.
 - Dragging a paw across a critter catches it, and leaves a trail of small ripples.
 - A missed tap makes the nearest critter jump away with a squeak, so the cat always gets a reaction.
@@ -175,7 +176,7 @@ pawpaw/
 
 ## Art
 
-The critter images (`critter_mouse`, `critter_bug`, `critter_butterfly`, `critter_cricket`, `critter_feather`) and the cat headshots (`cat_orange`, `cat_gray`, `cat_black`, `cat_white`, `cat_calico`, `cat_siamese`) are original SVGs drawn for this project. To use your own art, replace the SVG file inside each `.imageset` folder and keep the same filename. The backgrounds are drawn in code.
+The critter images (`critter_mouse`, `critter_bug`, `critter_butterfly`, `critter_cricket`, `critter_feather`, `critter_laser`) and the cat headshots (`cat_orange`, `cat_gray`, `cat_black`, `cat_white`, `cat_calico`, `cat_siamese`) are original SVGs drawn for this project. To use your own art, replace the SVG file inside each `.imageset` folder and keep the same filename. The backgrounds are drawn in code.
 
 ## Tweaking the game
 
