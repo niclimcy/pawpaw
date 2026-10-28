@@ -12,6 +12,11 @@ final class GameAreaView: UIView {
     /// A touch that started on empty space (drags across empty space don't count).
     var onMiss: (() -> Void)?
 
+    /// The background the hiding spots are drawn for.
+    var theme: PlayfieldTheme = .wood
+    /// Side of a hiding spot. Larger than a critter so one fits fully underneath.
+    let hidingSpotSize: CGFloat = 170
+    private var hidingSpotViews: [HidingSpotView] = []
     private var targetViews: [UUID: UIImageView] = [:]
     /// Views of critters that left the screen or were caught, kept for the next spawn.
     private var recycledViews: [UIImageView] = []
@@ -45,7 +50,12 @@ final class GameAreaView: UIView {
             label.layer.shadowOffset = .zero
         }
         label.center = offscreenPoint(for: target.start)
-        addSubview(label)
+        // Critters move beneath the hiding spots so they can vanish under them.
+        if let lowestSpot = hidingSpotViews.first {
+            insertSubview(label, belowSubview: lowestSpot)
+        } else {
+            addSubview(label)
+        }
         targetViews[target.id] = label
         SoundPlayer.shared.playAppear(for: target.kind)
 
@@ -84,10 +94,30 @@ final class GameAreaView: UIView {
         recycledViews.append(label)
     }
 
-    /// Whether any part of the critter is currently inside the play field.
+    /// Whether any part of the critter is currently inside the play field and not tucked under a hiding spot.
     private func isOnScreen(_ label: UIView) -> Bool {
         let frame = label.layer.presentation()?.frame ?? label.frame
-        return bounds.intersects(frame)
+        return bounds.intersects(frame) && !isUnderCover(frame)
+    }
+
+    /// True while the critter's middle is under a hiding spot, so most of it is out of sight.
+    private func isUnderCover(_ frame: CGRect) -> Bool {
+        let center = CGPoint(x: frame.midX, y: frame.midY)
+        return hidingSpotViews.contains { spot in
+            hypot(spot.center.x - center.x, spot.center.y - center.y) < hidingSpotSize * 0.3
+        }
+    }
+
+    /// Replaces the hiding spots with new ones at the given normalized positions.
+    func showHidingSpots(at points: [CGPoint]) {
+        hidingSpotViews.forEach { $0.removeFromSuperview() }
+        hidingSpotViews = points.map { normalized in
+            let spot = HidingSpotView(theme: theme)
+            spot.frame = CGRect(x: 0, y: 0, width: hidingSpotSize, height: hidingSpotSize)
+            spot.center = point(for: normalized)
+            addSubview(spot)
+            return spot
+        }
     }
 
     var onExpire: ((UUID) -> Void)?

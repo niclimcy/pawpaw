@@ -30,6 +30,9 @@ final class GameInteractor: GameInteractorInputProtocol {
     private var spawnTimer: Timer?
     /// Speeds critters up for a cat that catches a lot, and slows them for one that keeps missing.
     private var difficulty: DifficultyTuner
+    /// How many spots critters can duck under each round.
+    private let hidingSpotCount = 2
+    private var hidingSpots: [CGPoint] = []
 
     init(
         storage: ScoreStorage,
@@ -59,7 +62,10 @@ final class GameInteractor: GameInteractorInputProtocol {
         difficulty.reset()
         timeRemaining = mode.duration ?? 0
         isRunning = true
+        // New hiding spots every round keep the playfield fresh.
+        hidingSpots = MovementPlanner.hidingSpots(count: hidingSpotCount)
 
+        presenter?.didPlaceHidingSpots(hidingSpots)
         presenter?.didUpdateScore(score)
         // Relaxed play has no clock, so the view shows an open-ended symbol instead.
         presenter?.didUpdateTimeRemaining(mode.duration == nil ? nil : timeRemaining)
@@ -126,7 +132,8 @@ final class GameInteractor: GameInteractorInputProtocol {
             legs: MovementPlanner.legs(
                 from: start,
                 style: kind.movementStyle,
-                duration: difficulty.lifetime(for: TimeInterval.random(in: kind.lifetimeRange))
+                duration: difficulty.lifetime(for: TimeInterval.random(in: kind.lifetimeRange)),
+                coverSpots: hidingSpots
             )
         )
         activeTargets[target.id] = target

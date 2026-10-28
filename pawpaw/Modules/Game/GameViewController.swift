@@ -39,6 +39,7 @@ final class GameViewController: UIViewController, GameViewProtocol {
         super.viewDidLoad()
         view.backgroundColor = theme.baseColor
         installBackground(theme: theme)
+        gameArea.theme = theme
         setupGameArea()
         setupHUD()
         setupResultOverlay()
@@ -95,6 +96,10 @@ final class GameViewController: UIViewController, GameViewProtocol {
 
     func showTarget(_ target: GameTarget) {
         gameArea.add(target)
+    }
+
+    func showHidingSpots(_ points: [CGPoint]) {
+        gameArea.showHidingSpots(at: points)
     }
 
     func showCatch(targetID: UUID, points: Int) {

@@ -17,6 +17,8 @@ struct PathLeg: Equatable {
     let hides: Bool
     /// The critter runs off the edge of the field and out of sight, ending its journey.
     var exits: Bool = false
+    /// The destination is a hiding spot: the critter waits under it during the freeze and peeks out.
+    var underCover: Bool = false
 }
 
 /// How a critter moves. Real prey moves in bursts and changes direction, which holds a cat's attention.
@@ -58,6 +60,17 @@ enum MovementStyle {
         case .hop: return 0.2
         case .drift: return 0
         case .zip: return 0
+        }
+    }
+
+    /// Chance that a long enough freeze is spent under a hiding spot, peeking out.
+    var coverChance: Double {
+        switch self {
+        case .dart: return 0.5
+        case .wander: return 0.4
+        case .hop: return 0.3
+        case .swim: return 0.4
+        case .flutter, .drift, .zip: return 0
         }
     }
 

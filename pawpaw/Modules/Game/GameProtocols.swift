@@ -12,6 +12,8 @@ protocol GameViewProtocol: AnyObject {
     func showScore(_ text: String)
     func showTime(_ text: String)
     func showTarget(_ target: GameTarget)
+    /// Normalized (0...1) centers of the spots critters can hide under.
+    func showHidingSpots(_ points: [CGPoint])
     func showCatch(targetID: UUID, points: Int)
     func clearTargets()
     func showResult(title: String, details: String)
@@ -50,6 +52,7 @@ protocol GameInteractorOutputProtocol: AnyObject {
     /// `nil` means the session has no timer (relaxed mode).
     func didUpdateTimeRemaining(_ seconds: Int?)
     func didSpawnTarget(_ target: GameTarget)
+    func didPlaceHidingSpots(_ points: [CGPoint])
     func didCatchTarget(id: UUID, points: Int)
     func didFinishGame(_ result: GameResult)
 }

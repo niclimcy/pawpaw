@@ -71,6 +71,13 @@ extension GameAreaView {
                     positions.append(NSValue(cgPoint: edge))
                     positionTimes.append(NSNumber(value: (elapsed + leg.pause - hideTravel) / total))
                     heading = returnHeading
+                } else if leg.underCover {
+                    // Wait under the hiding spot, poking out twice to tease the cat.
+                    let peek = peekPoint(from: destination)
+                    for (fraction, point) in [(0.3, peek), (0.45, destination), (0.65, peek), (0.8, destination)] {
+                        positions.append(NSValue(cgPoint: point))
+                        positionTimes.append(NSNumber(value: (elapsed + leg.pause * fraction) / total))
+                    }
                 }
                 elapsed += leg.pause
                 positions.append(NSValue(cgPoint: destination))
@@ -108,6 +115,13 @@ extension GameAreaView {
         CATransaction.setCompletionBlock(completion)
         label.layer.add(group, forKey: "path")
         CATransaction.commit()
+    }
+
+    /// Where a critter under a hiding spot pokes out to: half of it shows past the spot's edge.
+    func peekPoint(from point: CGPoint) -> CGPoint {
+        let angle = CGFloat.random(in: 0..<(2 * .pi))
+        let reach = hidingSpotSize / 2
+        return CGPoint(x: point.x + cos(angle) * reach, y: point.y + sin(angle) * reach)
     }
 
     /// A spot just beyond the edge nearest to `point`, where a hiding critter waits out of sight.

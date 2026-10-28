@@ -55,6 +55,10 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorOutputProtocol {
         view?.showTarget(target)
     }
 
+    func didPlaceHidingSpots(_ points: [CGPoint]) {
+        view?.showHidingSpots(points)
+    }
+
     func didCatchTarget(id: UUID, points: Int) {
         view?.showCatch(targetID: id, points: points)
     }

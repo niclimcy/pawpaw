@@ -49,6 +49,7 @@ Game design choices that suit cats:
 - Every paw counts: several touches at once are handled, and the hit area around each critter is generous.
 - Dragging a paw across a critter catches it, and leaves a trail of small ripples.
 - A missed tap makes the nearest critter jump away with a squeak, so the cat always gets a reaction.
+- Each round places two hiding spots that suit the background: a cardboard box on the crate, a leaf pile on grass, a lily pad on the pond and a snow mound on snow. Mice, bugs, crickets and fish sometimes run under one during a freeze and peek out twice before running on. A critter tucked under a spot can't be caught, but one that is peeking out can.
 - The pace adapts to the cat (`DifficultyTuner`): each catch makes critters a little quicker, and escapes or missed taps slow them down, within 0.75× to 1.3× of normal speed. Every round starts at normal speed.
 - Session lengths suit different cats: short rounds for kittens and seniors, and relaxed play with no timer for cats that like to take their time.
 - Backgrounds: wooden crate, grass, pond and snow. All are dark so the critters stand out. Some critters only live on one background (`TargetKind.exclusiveTheme`), such as the fish in the pond.
@@ -119,6 +120,8 @@ Each module's protocols are declared in a `*Protocols.swift` file. The `createMo
 | `GamePresenter` | Formats score, time and result text, and forwards taps |
 | `GameInteractor` | Game rules: the session clock (if any), spawning (max 2 critters), scoring, saving the best score and recording stats |
 | `DifficultyTuner` | Speeds critters up or slows them down based on catches, escapes and misses |
+| `MovementPlanner` | Builds each critter's stop-and-go path, places the hiding spots and sends critters under them |
+| `HidingSpotView` | Draws the box, leaf pile, lily pad or snow mound that critters hide under |
 | `GameRouter` | Creates the module for a session length and returns to Home |
 
 ### Stats module
