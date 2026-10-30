@@ -9,6 +9,7 @@ struct StatsViewModel: Equatable {
     struct CritterRow: Equatable {
         let imageName: String
         let catches: String
+        let isEmpty: Bool
         let accessibilityLabel: String
     }
 
@@ -18,14 +19,21 @@ struct StatsViewModel: Equatable {
         let accessibilityLabel: String
     }
 
+    /// A headline number with a short caption underneath.
+    struct Metric: Equatable {
+        let value: String
+        let caption: String
+        let accessibilityLabel: String
+    }
+
     let title: String
-    let summary: String
-    let favorite: String
+    let rounds: Metric
+    let catches: Metric
     let favoriteImageName: String?
     let favoriteAccessibilityLabel: String
     let critters: [CritterRow]
     let days: [DayRow]
-    let bestScores: [String]
+    let bestScores: [Metric]
 }
 
 // MARK: - View
