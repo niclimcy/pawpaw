@@ -1,0 +1,25 @@
+pawpaw/Modules/Game/GameAreaView.swift
+  s_3da41da6e3aa1f::t_af75593b1aa21a 80,177,255-261
+pawpaw/Common/SoundPlayer.swift
+  s_3da41da6e3aa1f::t_59de82474cbe0f 22-25,32-37,41-47,52,54-58,60,70,72,98-99,101-103,105,112,114-115
+README.md
+  s_3da41da6e3aa1f::t_6d62e8d7c6a96c 52
+pawpaw/Modules/Game/GameAreaView+Effects.swift
+  s_3da41da6e3aa1f::t_07a26c00859652 77
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e45494adb1447852e153ed9f68a95a1e898a045d",
+  "prompts": {},
+  "sessions": {
+    "s_3da41da6e3aa1f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0476bc75-adc3-47c7-b30f-61c394b06834",
+        "model": "anthropic/claude-opus-5.5"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
