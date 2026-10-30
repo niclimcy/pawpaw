@@ -1,0 +1,14 @@
+README.md
+  h_36695e5767c2ad 11-13,17-19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fbc4d892bed4a7a8afa9ab5fb3ab92a76c6f9929",
+  "prompts": {},
+  "humans": {
+    "h_36695e5767c2ad": {
+      "author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
