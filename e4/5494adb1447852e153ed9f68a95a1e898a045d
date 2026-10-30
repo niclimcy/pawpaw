@@ -4,8 +4,17 @@ pawpaw/Common/SoundPlayer.swift
   s_3da41da6e3aa1f::t_59de82474cbe0f 22-25,32-37,41-47,52,54-58,60,70,72,98-99,101-103,105,112,114-115
 README.md
   s_3da41da6e3aa1f::t_6d62e8d7c6a96c 52
+  s_3da41da6e3aa1f::t_f118150da9de83 50
 pawpaw/Modules/Game/GameAreaView+Effects.swift
   s_3da41da6e3aa1f::t_07a26c00859652 77
+pawpaw/Modules/Game/MovementPlanner.swift
+  s_3da41da6e3aa1f::t_f118150da9de83 17-22
+pawpaw/Modules/Game/GameInteractor.swift
+  s_3da41da6e3aa1f::t_f118150da9de83 179-180
+pawpaw/Modules/Game/GameAreaView+Movement.swift
+  s_3da41da6e3aa1f::t_f118150da9de83 32-37,50-52
+pawpaw/Entities/GameTarget.swift
+  s_3da41da6e3aa1f::t_f118150da9de83 15-16,19
 ---
 {
   "schema_version": "authorship/3.0.0",
