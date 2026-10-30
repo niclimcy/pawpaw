@@ -176,7 +176,8 @@ final class GameInteractor: GameInteractorInputProtocol {
                 style: kind.movementStyle,
                 duration: difficulty.lifetime(for: TimeInterval.random(in: kind.lifetimeRange)),
                 coverSpots: theme.allowsCover(for: kind.movementStyle) ? hidingSpots : []
-            )
+            ),
+            leadIn: MovementPlanner.leadIn(for: kind.movementStyle)
         )
         activeTargets[target.id] = target
         presenter?.didSpawnTarget(target)

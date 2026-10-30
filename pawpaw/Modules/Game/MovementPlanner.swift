@@ -14,6 +14,12 @@ enum MovementPlanner {
     static let exitTravel: TimeInterval = 0.9
     /// Long enough to peek out twice.
     static let minimumCoverPause: TimeInterval = 1.6
+    /// Edge critters wait off-screen this long while their sound plays, then run in.
+    static let leadInRange: ClosedRange<TimeInterval> = 0.5...0.8
+
+    static func leadIn(for style: MovementStyle) -> TimeInterval {
+        style.surfaces ? 0 : TimeInterval.random(in: leadInRange)
+    }
 
     static func hidingSpots(count: Int) -> [CGPoint] {
         var spots: [CGPoint] = []

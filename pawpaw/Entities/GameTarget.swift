@@ -12,8 +12,10 @@ struct GameTarget: Equatable {
     let kind: TargetKind
     let start: CGPoint
     let legs: [PathLeg]
+    /// Time spent waiting off-screen at `start` before the first leg.
+    var leadIn: TimeInterval = 0
 
     var lifetime: TimeInterval {
-        legs.reduce(0) { $0 + $1.travel + $1.pause }
+        legs.reduce(leadIn) { $0 + $1.travel + $1.pause }
     }
 }

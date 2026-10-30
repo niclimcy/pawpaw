@@ -29,7 +29,12 @@ extension GameAreaView {
             rotationTimes.append(NSNumber(value: time / total))
         }
 
-        var elapsed: TimeInterval = 0
+        // Hold off-screen at the start while the appear sound plays.
+        var elapsed = target.leadIn
+        if elapsed > 0 {
+            positions.append(NSValue(cgPoint: current))
+            positionTimes.append(NSNumber(value: elapsed / total))
+        }
         var heading: CGFloat = 0
         var previousPause: TimeInterval = 0
         for (index, leg) in target.legs.enumerated() {
@@ -42,6 +47,9 @@ extension GameAreaView {
             }
             heading = legHeading
 
+            if index == 0, elapsed > 0 {
+                addRotation(heading, at: 0)
+            }
             // After a pause, turn on the spot; otherwise curve into the new heading.
             if index == 0 || previousPause > 0 {
                 rotations.append(NSNumber(value: Double(heading)))

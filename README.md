@@ -47,6 +47,7 @@ Game design choices that suit cats:
 - Critters animate at up to 120 Hz on ProMotion screens. Cats follow motion closely and can notice flicker that people miss, so smoother movement looks more like real prey.
 - Critters move like real prey: mice dart and freeze, bugs wander, butterflies flutter in arcs.
 - Frozen critters aren't perfectly still. Mice, bugs and crickets give 1 to 3 quick twitches (a small turn or shuffle) at random moments during a freeze, and the laser dot jitters like a hand-held pointer. A sudden twitch after stillness is what sets off a cat's stalk, wiggle and pounce.
+- Before a land critter or flier runs in, it waits just beyond the edge for about half a second while its sound plays from that side, like prey rustling out of sight. This gives the cat time to turn toward the sound and get ready to pounce. The laser dot waits silently.
 - Critters emerge from the screen edge, and some run off the nearest edge during a freeze, wait out of sight, then run back. Critters that are off-screen can't be caught.
 - Short prey sounds (squeak, rustle, flutter, chirp, swish, catch) are synthesized in code by `SoundPlayer`. Cats pinpoint sounds and turn their ears toward them, so each sound is panned left or right to where the critter is. The rustle and flutter lean toward 6–12 kHz, near the 8 kHz peak of a cat's hearing. The laser dot is silent, like a real laser pointer.
 - Every paw counts: several touches at once are handled, and the hit area around each critter is generous.
