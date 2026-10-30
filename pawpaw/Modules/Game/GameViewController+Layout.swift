@@ -60,7 +60,7 @@ extension GameViewController {
         let tag = 9_001
         view.viewWithTag(tag)?.removeFromSuperview()
 
-        let message = "Press and hold for \(Theme.holdDurationText) to leave"
+        let message = "Press and hold to leave"
         let hint = Theme.filledButton(
             title: message,
             fontSize: 16,

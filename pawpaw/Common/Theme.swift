@@ -17,10 +17,6 @@ enum Theme {
     /// Long enough that a paw can't trigger owner-only actions by accident.
     static let holdDuration: TimeInterval = 1.5
 
-    static var holdDurationText: String {
-        "\(String(format: "%g", holdDuration)) seconds"
-    }
-
     /// Cap on Dynamic Type growth so layouts don't break.
     static let maxTextScale: CGFloat = 1.5
 

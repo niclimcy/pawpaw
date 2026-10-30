@@ -80,7 +80,7 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     private let ownerNoteLabel: UILabel = {
         let label = HomeViewController.makeLabel(size: 14, weight: .semibold)
         label.text =
-            "For owners: during play, press and hold the home button for \(Theme.holdDurationText) to leave the game."
+            "For owners: during play, press and hold the home button to leave the game."
         label.textColor = Theme.text.withAlphaComponent(0.75)
         return label
     }()
