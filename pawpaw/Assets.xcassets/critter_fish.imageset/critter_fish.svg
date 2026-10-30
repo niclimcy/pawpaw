@@ -1,14 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
   <!-- Top-down koi seen through the water, facing up. Original artwork for Paw Paw. -->
-  <path d="M93 144 C 84 160, 76 176, 80 190 Q 100 200, 120 190 C 124 176, 116 160, 107 144 Z" fill="#f5a35c" opacity="0.9"/>
-  <path d="M100 152 L100 188 M92 156 L86 184 M108 156 L114 184" stroke="#e08a45" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
-  <path d="M70 70 C 50 72, 38 86, 36 100 C 50 96, 62 88, 70 82 Z" fill="#f8d9bf" opacity="0.85"/>
-  <path d="M130 70 C 150 72, 162 86, 164 100 C 150 96, 138 88, 130 82 Z" fill="#f8d9bf" opacity="0.85"/>
-  <path d="M100 22 C 124 24, 136 56, 134 84 C 132 112, 116 136, 104 152 L 96 152 C 84 136, 68 112, 66 84 C 64 56, 76 24, 100 22 Z" fill="#f4efe6"/>
-  <ellipse cx="100" cy="58" rx="22" ry="16" fill="#f26b1d"/>
-  <ellipse cx="88" cy="100" rx="13" ry="19" fill="#f26b1d"/>
-  <ellipse cx="113" cy="124" rx="9" ry="13" fill="#f26b1d"/>
-  <path d="M100 72 L100 142" stroke="#d8cfc0" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.7"/>
+  <!-- Mostly white, kohaku style, with a pale rim so it stands out by brightness in the dark pond. -->
+  <path d="M93 144 C 84 160, 76 176, 80 190 Q 100 200, 120 190 C 124 176, 116 160, 107 144 Z" fill="#fff1e0" stroke="#ffffff" stroke-width="2.5" opacity="0.95"/>
+  <path d="M100 152 L100 188 M92 156 L86 184 M108 156 L114 184" stroke="#f5a35c" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.7"/>
+  <path d="M70 70 C 50 72, 38 86, 36 100 C 50 96, 62 88, 70 82 Z" fill="#fff6ea" stroke="#ffffff" stroke-width="2" opacity="0.95"/>
+  <path d="M130 70 C 150 72, 162 86, 164 100 C 150 96, 138 88, 130 82 Z" fill="#fff6ea" stroke="#ffffff" stroke-width="2" opacity="0.95"/>
+  <path d="M100 22 C 124 24, 136 56, 134 84 C 132 112, 116 136, 104 152 L 96 152 C 84 136, 68 112, 66 84 C 64 56, 76 24, 100 22 Z" fill="#fbf8f2" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/>
+  <ellipse cx="100" cy="60" rx="19" ry="14" fill="#f26b1d"/>
+  <ellipse cx="88" cy="100" rx="11" ry="17" fill="#f26b1d"/>
+  <ellipse cx="113" cy="124" rx="8" ry="11" fill="#f26b1d"/>
+  <path d="M100 76 L100 142" stroke="#e2dacb" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.6"/>
   <circle cx="82" cy="38" r="5" fill="#1d1d24"/>
   <circle cx="118" cy="38" r="5" fill="#1d1d24"/>
 </svg>

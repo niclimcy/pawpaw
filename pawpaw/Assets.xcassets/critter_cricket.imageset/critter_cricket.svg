@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
   <!-- Top-down cartoon cricket, facing up. Original artwork for Paw Paw. -->
-  <g stroke="#1d1d24" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+  <g stroke="#d9b878" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none">
     <path d="M88 40 C 80 20, 66 10, 54 12"/>
     <path d="M112 40 C 120 20, 134 10, 146 12"/>
     <path d="M72 84 L40 66"/>
@@ -10,10 +10,10 @@
     <path d="M80 150 L56 190"/>
     <path d="M120 150 L144 190"/>
   </g>
-  <ellipse cx="100" cy="132" rx="38" ry="52" fill="#6b4a2b" stroke="#1d1d24" stroke-width="5"/>
-  <path d="M76 110 C 80 90, 120 90, 124 110 L 120 170 C 110 180, 90 180, 80 170 Z" fill="#8a6339" opacity="0.8"/>
-  <line x1="100" y1="96" x2="100" y2="176" stroke="#1d1d24" stroke-width="4"/>
-  <ellipse cx="100" cy="66" rx="30" ry="32" fill="#4f3720" stroke="#1d1d24" stroke-width="5"/>
+  <ellipse cx="100" cy="132" rx="38" ry="52" fill="#a8803f" stroke="#3a2a18" stroke-width="5"/>
+  <path d="M76 110 C 80 90, 120 90, 124 110 L 120 170 C 110 180, 90 180, 80 170 Z" fill="#cfa862" opacity="0.8"/>
+  <line x1="100" y1="96" x2="100" y2="176" stroke="#3a2a18" stroke-width="4"/>
+  <ellipse cx="100" cy="66" rx="30" ry="32" fill="#8c6a36" stroke="#3a2a18" stroke-width="5"/>
   <circle cx="87" cy="58" r="8" fill="#fff"/>
   <circle cx="113" cy="58" r="8" fill="#fff"/>
   <circle cx="88" cy="59" r="3.5" fill="#1d1d24"/>

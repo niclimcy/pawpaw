@@ -15,8 +15,8 @@
   <use href="#wing" transform="translate(200 0) scale(-1 1)"/>
   <path d="M92 40 C 84 18, 70 10, 62 14" fill="none" stroke="#2b2230" stroke-width="3.5" stroke-linecap="round"/>
   <path d="M108 40 C 116 18, 130 10, 138 14" fill="none" stroke="#2b2230" stroke-width="3.5" stroke-linecap="round"/>
-  <circle cx="62" cy="14" r="4.5" fill="#2b2230"/>
-  <circle cx="138" cy="14" r="4.5" fill="#2b2230"/>
+  <circle cx="62" cy="14" r="5" fill="#fee440"/>
+  <circle cx="138" cy="14" r="5" fill="#fee440"/>
   <ellipse cx="100" cy="112" rx="8" ry="52" fill="#2b2230"/>
   <circle cx="100" cy="52" r="12" fill="#2b2230"/>
   <circle cx="95" cy="49" r="3" fill="#fff"/>

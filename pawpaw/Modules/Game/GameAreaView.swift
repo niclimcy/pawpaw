@@ -55,9 +55,10 @@ final class GameAreaView: UIView {
         let critter = dequeueTargetView()
         critter.image = UIImage(named: target.kind.imageName)
         if target.kind.glows {
-            critter.layer.shadowColor = UIColor.red.cgColor
-            critter.layer.shadowRadius = 14
-            critter.layer.shadowOpacity = 0.9
+            // A light red glow reads by brightness to cats, who see pure red as dull.
+            critter.layer.shadowColor = UIColor(red: 1, green: 0.45, blue: 0.42, alpha: 1).cgColor
+            critter.layer.shadowRadius = 22
+            critter.layer.shadowOpacity = 1
             critter.layer.shadowOffset = .zero
         }
         let surfaces = target.kind.movementStyle.surfaces
