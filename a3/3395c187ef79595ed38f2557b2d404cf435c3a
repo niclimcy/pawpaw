@@ -1,0 +1,21 @@
+pawpaw/Modules/Stats/StatsViewController.swift
+  s_0fa18a0bfb88fc::t_86a773d44848bf 10,20-21
+pawpaw/Modules/Stats/StatsRouter.swift
+  s_0fa18a0bfb88fc::t_86a773d44848bf 20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a33395c187ef79595ed38f2557b2d404cf435c3a",
+  "prompts": {},
+  "sessions": {
+    "s_0fa18a0bfb88fc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2cad35e9-7ced-4715-9dcf-1aa043504069",
+        "model": "anthropic/claude-opus-5.5"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
