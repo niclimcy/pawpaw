@@ -1,0 +1,132 @@
+pawpaw/Common/NatureBackgroundView.swift
+  s_59f2d880168466::t_e139d1b412e0ea 8
+pawpaw/Modules/Game/MovementPlanner.swift
+  s_59f2d880168466::t_d3a9677b6d115c 108
+  s_59f2d880168466::t_c30b19513b40f9 57
+  s_59f2d880168466::t_7510844a8f1757 120
+  s_59f2d880168466::t_f0b9d5d89c1b03 9,11,15
+  s_59f2d880168466::t_cda7f3ffcdeec5 78
+  s_59f2d880168466::t_13f06220847961 100
+pawpaw/Entities/TargetKind.swift
+  s_59f2d880168466::t_618d850b6c17b2 98
+  s_59f2d880168466::t_ec0ed85726fe52 17
+  s_59f2d880168466::t_4b3dd27474253a 73
+pawpaw/Modules/Game/GameInteractor.swift
+  s_59f2d880168466::t_45b0731409ad70 174
+  s_59f2d880168466::t_cfb78b14476b8b 94,96
+  s_59f2d880168466::t_202685e92f5784 25,32,44,51
+pawpaw/Modules/Game/GameAreaView+Movement.swift
+  s_59f2d880168466::t_b15365385e5628 105
+  s_59f2d880168466::t_1521661bf6d6f3 9
+  s_59f2d880168466::t_0519699b9b9369 42
+  s_59f2d880168466::t_9215163d1c489d 34
+  s_59f2d880168466::t_b6d6326ac97e73 85
+  s_59f2d880168466::t_49ead25b3e02ef 162
+pawpaw/Common/StatsStorage.swift
+  s_59f2d880168466::t_863733bcee442a 10
+pawpaw/Modules/Game/DifficultyTuner.swift
+  s_59f2d880168466::t_27af0ff3edc1e9 8,13,16
+pawpaw/Modules/Home/HomeProtocols.swift
+  s_59f2d880168466::t_e5969cbfba7cf0 13
+pawpaw/Common/SettingsStorage.swift
+  s_59f2d880168466::t_66207e500e76c0 8,16
+pawpaw/Entities/SessionMode.swift
+  s_59f2d880168466::t_02cdde6b240782 14
+pawpaw/Modules/Game/GameProtocols.swift
+  s_59f2d880168466::t_9ff9f513cb9c37 61,67
+  s_59f2d880168466::t_868375e63966f6 15,31,38
+pawpaw/Common/WoodCrateBackgroundView.swift
+  s_59f2d880168466::t_a27e89ae72798f 88
+  s_59f2d880168466::t_9f4d71fba59c88 55
+pawpaw/Common/ProfileStorage.swift
+  s_59f2d880168466::t_f72a05e8d79255 111
+  s_59f2d880168466::t_7543fb24052cb0 35
+  s_59f2d880168466::t_1ef8fec8ec0048 119
+  s_59f2d880168466::t_a8f410ec66325a 9,14,16,18
+pawpaw/Modules/Profiles/ProfileEditorView+Layout.swift
+  s_59f2d880168466::t_7c85d5baafbd73 44
+pawpaw/Entities/MovementPath.swift
+  s_59f2d880168466::t_c4e9025cc88ca2 95
+  s_59f2d880168466::t_bf6e101fb6b1b7 10,13,15,17,19,32
+pawpaw/Entities/GameTarget.swift
+  s_59f2d880168466::t_8b8c222b7c5844 9
+pawpaw/SceneDelegate.swift
+  s_59f2d880168466::t_e2f20e9c2ddf21 14
+pawpaw/Common/CachedBackgroundView.swift
+  s_59f2d880168466::t_032264b5909a3f 29,34
+  s_59f2d880168466::t_0146f7cad1e584 8
+pawpaw/Common/Theme.swift
+  s_59f2d880168466::t_3c884e223acd7f 17,24,42,49
+  s_59f2d880168466::t_cbfad5dc4b1cc2 114
+pawpaw/Modules/Stats/StatsViewController+Builders.swift
+  s_59f2d880168466::t_d1d047423f571c 43
+  s_59f2d880168466::t_ce6bd28185170d 62
+  s_59f2d880168466::t_c934267107f50e 19
+pawpaw/Modules/Profiles/ProfileEditorView.swift
+  s_59f2d880168466::t_3497ad90922d48 146
+  s_59f2d880168466::t_05389f5baebc27 88
+  s_59f2d880168466::t_cf0b980ff19c73 9,16
+  s_59f2d880168466::t_968d27989e27e8 112,114
+pawpaw/Entities/PlayStats.swift
+  s_59f2d880168466::t_9e7f1661dc3fd2 38
+  s_59f2d880168466::t_ceeaeaad8235a4 11,13,16
+  s_59f2d880168466::t_82bd09d9eef1c6 30
+pawpaw/Common/ScrollingLayout.swift
+  s_59f2d880168466::t_cf360d8337305c 9-10
+  s_59f2d880168466::t_72302234d052c6 27
+pawpaw/Modules/Profiles/ProfileEditorView+Builders.swift
+  s_59f2d880168466::t_194a497f7fbddf 91
+pawpaw/Entities/CatProfile.swift
+  s_59f2d880168466::t_4ab0c5e438c68d 56
+  s_59f2d880168466::t_4743f7911f46ca 28
+  s_59f2d880168466::t_779a2dd49c001d 37,43
+pawpaw/Modules/Game/GameAreaView.swift
+  s_59f2d880168466::t_4474eb8d5db67d 39
+  s_59f2d880168466::t_3c4ed2dc946b74 91
+  s_59f2d880168466::t_a562c3dc355565 118
+  s_59f2d880168466::t_893954c5e9a8d2 8,12
+  s_59f2d880168466::t_277b0d77d62a1c 72
+  s_59f2d880168466::t_a0a549883f1835 232
+pawpaw/Modules/Game/GameAreaView+Effects.swift
+  s_59f2d880168466::t_34a8db5f741c72 57
+  s_59f2d880168466::t_a55606419a62d6 47
+pawpaw/Common/CatFace+Image.swift
+  s_59f2d880168466::t_495b0fbabd1722 9
+pawpaw/Entities/PlayfieldTheme.swift
+  s_59f2d880168466::t_3b58b8cf67d960 23
+pawpaw/Modules/Profiles/ProfilesViewController.swift
+  s_59f2d880168466::t_1e1a51de18c7ee 22
+pawpaw/AppDelegate.swift
+  s_59f2d880168466::t_6b0a3e68e857cd 13,17
+pawpaw/Modules/Game/GameViewController+Layout.swift
+  s_59f2d880168466::t_bfdf0958486c33 94
+  s_59f2d880168466::t_e2118d90fe4cb6 52
+pawpaw/Common/SeededGenerator.swift
+  s_59f2d880168466::t_9912fd6ac28fb3 8
+pawpaw/Modules/Home/HomeInteractor.swift
+  s_59f2d880168466::t_30c1894ebfe330 16
+pawpaw/Modules/Game/GameViewController.swift
+  s_59f2d880168466::t_833b9e6a9ebe70 67
+  s_59f2d880168466::t_51e02dc2439ddd 91
+pawpaw/Common/SoundPlayer.swift
+  s_59f2d880168466::t_e4c8a9d385ba07 86
+  s_59f2d880168466::t_7cfa7bffdc0208 102
+  s_59f2d880168466::t_a80f3de1edda66 17
+  s_59f2d880168466::t_6131fd642a9195 74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "99291d2023d90bace2fb889fac752bf55dc52684",
+  "prompts": {},
+  "sessions": {
+    "s_59f2d880168466": {
+      "agent_id": {
+        "tool": "cline",
+        "id": "conv_1793344469927_yditc76",
+        "model": "unknown"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
