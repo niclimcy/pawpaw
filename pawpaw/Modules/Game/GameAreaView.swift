@@ -53,11 +53,13 @@ final class GameAreaView: UIView {
 
     func add(_ target: GameTarget) {
         let critter = dequeueTargetView()
-        critter.image = UIImage(named: target.kind.imageName)
+        let side = targetSize * target.variant.scale
+        critter.bounds.size = CGSize(width: side, height: side)
+        critter.image = image(for: target.kind, variant: target.variant)
         if target.kind.glows {
             // A light red glow reads by brightness to cats, who see pure red as dull.
             critter.layer.shadowColor = UIColor(red: 1, green: 0.45, blue: 0.42, alpha: 1).cgColor
-            critter.layer.shadowRadius = 22
+            critter.layer.shadowRadius = 22 * target.variant.scale
             critter.layer.shadowOpacity = 1
             critter.layer.shadowOffset = .zero
         }
@@ -107,6 +109,7 @@ final class GameAreaView: UIView {
         critter.layer.removeAllAnimations()
         critter.removeFromSuperview()
         critter.transform = .identity
+        critter.bounds.size = CGSize(width: targetSize, height: targetSize)
         critter.image = nil
         recycledViews.append(critter)
     }

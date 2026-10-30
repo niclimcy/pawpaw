@@ -55,6 +55,7 @@ Game design choices that suit cats:
 - A missed tap makes the nearest critter jump away with a squeak, so the cat always gets a reaction.
 - Each round places two hiding spots that suit the background: a cardboard box on the crate, a leaf pile on grass, a lily pad on the pond and a snow mound on snow. On land, mice, bugs and crickets sometimes run under one during a freeze. On the pond only fish glide under the lily pads, and the land critters keep moving past them. The laser dot, butterflies and feathers never hide, so they always pass over the hiding spots. A hiding critter peeks out twice before moving on. A critter tucked under a spot can't be caught, but one that is peeking out can.
 - The pace adapts to the cat (`DifficultyTuner`): each catch makes critters a little quicker, and escapes or missed taps slow them down, within 0.75× to 1.3× of normal speed. Every round starts at normal speed.
+- Critters get a fresh look when the cat gets used to them. Cats lose interest in a toy within minutes, and a new colour brings the play back (Hall, Bradshaw & Robinson, 2002). After **3 catches in a row** of the same critter, the next ones of that kind come in a new look (`CritterVariant`), cycling through paler, bluer and larger yellow versions. Cats see blue, yellow and brightness well but reds look dull to them, so the looks change those. The laser dot stays red, and only its size and glow change. Every round starts with the usual looks.
 - Session lengths suit different cats: short rounds for kittens and seniors, and relaxed play with no timer for cats that like to take their time.
 - Backgrounds: wooden crate, grass, pond and snow. All are dark so the critters stand out. Some critters only live on one background (`TargetKind.exclusiveTheme`), such as the fish in the pond.
 
@@ -128,9 +129,9 @@ Each module's protocols are declared in a `*Protocols.swift` file. The `createMo
 | File | Role |
 |---|---|
 | `GameViewController` (+ `+Layout`, `+Countdown`, `+ExitTip`) | Score and timer labels, home button, 3-2-1 countdown, owner exit tip, results card |
-| `GameAreaView` (+ `+Effects`, `+Rings`) | The play field: moves critters, detects taps, plays catch animations |
+| `GameAreaView` (+ `+Effects`, `+Rings`, `+Variants`) | The play field: moves critters, detects taps, plays catch animations, draws each critter's look |
 | `GamePresenter` | Formats score, time and result text, and forwards taps |
-| `GameInteractor` | Game rules: the session clock (if any), spawning (max 2 critters), scoring, saving the best score and recording stats |
+| `GameInteractor` | Game rules: the session clock (if any), spawning (max 2 critters), scoring, refreshing a critter's look after a catch streak, saving the best score and recording stats |
 | `DifficultyTuner` | Speeds critters up or slows them down based on catches, escapes and misses |
 | `MovementPlanner` | Builds each critter's stop-and-go path, places the hiding spots and sends critters under them |
 | `HidingSpotView` | Draws the box, leaf pile, lily pad or snow mound that critters hide under |
@@ -178,7 +179,8 @@ pawpaw/
 ├── AppDelegate.swift, SceneDelegate.swift   App start (opens Onboarding on a new install, otherwise Home)
 ├── Entities/
 │   ├── TargetKind.swift      Critter types: points, speed, spawn weight, image name
-│   ├── GameTarget.swift      A critter on screen (kind, path, lifetime)
+│   ├── GameTarget.swift      A critter on screen (kind, path, lifetime, look)
+│   ├── CritterVariant.swift  Fresh critter looks (size and colour) for when the cat gets used to one
 │   ├── MovementPath.swift    Path legs and each critter's movement style
 │   ├── GameResult.swift      Final score summary
 │   ├── SessionMode.swift     Session lengths (30 s, 60 s, 2 min, relaxed)
@@ -226,6 +228,7 @@ The critter images (`critter_mouse`, `critter_bug`, `critter_butterfly`, `critte
 | How often new critters spawn | `GameInteractor.spawnInterval` |
 | Points, time on screen and spawn odds per critter | `TargetKind.swift` |
 | Critter size | `GameAreaView.targetSize` |
+| Catches in a row before a critter's look changes, and the looks | `GameInteractor.habituationStreak`, `CritterVariant.swift` |
 | Sparkle amount | `count:` values in `GameAreaView+Effects.swift` |
 | Colours | `Theme.swift` |
 | Press-and-hold time for exits, resetting stats and deleting | `Theme.holdDuration` |

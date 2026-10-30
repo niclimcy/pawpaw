@@ -14,6 +14,7 @@ struct GameTarget: Equatable {
     let legs: [PathLeg]
     /// Time spent waiting off-screen at `start` before the first leg.
     var leadIn: TimeInterval = 0
+    var variant: CritterVariant = .standard
 
     var lifetime: TimeInterval {
         legs.reduce(leadIn) { $0 + $1.travel + $1.pause }

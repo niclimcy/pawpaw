@@ -10,6 +10,8 @@ final class GameInteractor: GameInteractorInputProtocol {
     static let maxActiveTargets = 2
     static let spawnInterval: TimeInterval = 1.0
     static let hidingSpotCount = 2
+    /// Catches of one kind in a row before that kind gets a new look.
+    static let habituationStreak = 3
 
     weak var presenter: GameInteractorOutputProtocol?
 
@@ -32,6 +34,10 @@ final class GameInteractor: GameInteractorInputProtocol {
     private var spawnTimer: Timer?
     private var difficulty = DifficultyTuner()
     private var hidingSpots: [CGPoint] = []
+    private var lastCaughtKind: TargetKind?
+    private var catchStreak = 0
+    /// How many times each kind's look has been refreshed this round.
+    private var refreshes: [TargetKind: Int] = [:]
 
     private var isPlaying: Bool {
         isRunning && !isPaused
@@ -77,6 +83,9 @@ final class GameInteractor: GameInteractorInputProtocol {
         unsavedCatches = [:]
         roundIsRecorded = false
         difficulty.reset()
+        lastCaughtKind = nil
+        catchStreak = 0
+        refreshes = [:]
         timeRemaining = mode.duration ?? 0
         isRunning = true
         isPaused = false
@@ -123,6 +132,7 @@ final class GameInteractor: GameInteractorInputProtocol {
         catches += 1
         unsavedCatches[target.kind, default: 0] += 1
         difficulty.recordCatch()
+        recordStreak(of: target.kind)
         presenter?.didCatchTarget(id: id, points: target.kind.points)
         presenter?.didUpdateScore(score)
     }
@@ -177,10 +187,20 @@ final class GameInteractor: GameInteractorInputProtocol {
                 duration: difficulty.lifetime(for: TimeInterval.random(in: kind.lifetimeRange)),
                 coverSpots: theme.allowsCover(for: kind.movementStyle) ? hidingSpots : []
             ),
-            leadIn: MovementPlanner.leadIn(for: kind.movementStyle)
+            leadIn: MovementPlanner.leadIn(for: kind.movementStyle),
+            variant: CritterVariant.cycled(refreshes[kind, default: 0])
         )
         activeTargets[target.id] = target
         presenter?.didSpawnTarget(target)
+    }
+
+    /// Cats get used to prey they keep catching, and a new look restores interest (Hall, Bradshaw & Robinson, 2002).
+    private func recordStreak(of kind: TargetKind) {
+        catchStreak = kind == lastCaughtKind ? catchStreak + 1 : 1
+        lastCaughtKind = kind
+        guard catchStreak >= Self.habituationStreak else { return }
+        refreshes[kind, default: 0] += 1
+        catchStreak = 0
     }
 
     /// Rounds without a catch aren't recorded.
