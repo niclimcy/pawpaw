@@ -14,12 +14,15 @@ extension GameAreaView {
             return
         }
 
-        let surfaces = target.kind.movementStyle.surfaces
+        let style = target.kind.movementStyle
+        let surfaces = style.surfaces
+        let turns = target.kind.turnsToFaceMovement
         var current = surfaces ? point(for: target.start) : offscreenPoint(for: target.start)
         var positions = [NSValue(cgPoint: current)]
         var positionTimes: [NSNumber] = [0]
         var rotations: [NSNumber] = []
         var rotationTimes: [NSNumber] = []
+        var twitches: [Twitch] = []
 
         func addRotation(_ value: CGFloat, at time: TimeInterval) {
             rotations.append(NSNumber(value: Double(value)))
@@ -74,6 +77,8 @@ extension GameAreaView {
                         positions.append(NSValue(cgPoint: point))
                         positionTimes.append(NSNumber(value: (elapsed + leg.pause * fraction) / total))
                     }
+                } else {
+                    twitches += self.twitches(from: elapsed, during: leg.pause, style: style, turns: turns)
                 }
                 elapsed += leg.pause
                 positions.append(NSValue(cgPoint: destination))
@@ -96,9 +101,10 @@ extension GameAreaView {
         turn.keyTimes = rotationTimes
         turn.calculationMode = .linear
 
-        let turns = target.kind.turnsToFaceMovement
         let group = CAAnimationGroup()
-        group.animations = turns ? [move, turn] : [move]
+        var animations: [CAAnimation] = turns ? [move, turn] : [move]
+        animations += twitchAnimations(for: twitches, style: style, total: total)
+        group.animations = animations
         group.duration = total
         // Cats track motion closely and notice flicker above 60 Hz, so ask ProMotion screens for 120 Hz.
         group.preferredFrameRateRange = CAFrameRateRange(minimum: 80, maximum: 120, preferred: 120)

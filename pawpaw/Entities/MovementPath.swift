@@ -104,4 +104,25 @@ enum MovementStyle {
         case .zip: return 1.0...3.0
         }
     }
+
+    /// Radians of the quick jiggle during a freeze, like a whisker or tail flick. 0 for none.
+    var twitchAngle: Double {
+        switch self {
+        case .dart: return 0.18
+        case .wander: return 0.12
+        case .hop: return 0.15
+        case .flutter, .drift, .zip, .swim: return 0
+        }
+    }
+
+    /// Points of the tiny shuffle during a freeze. The laser's is the jitter of a hand-held pointer. 0 for none.
+    var twitchShift: Double {
+        switch self {
+        case .dart: return 3
+        case .wander: return 1.5
+        case .hop: return 2.5
+        case .zip: return 2
+        case .flutter, .drift, .swim: return 0
+        }
+    }
 }

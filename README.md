@@ -46,6 +46,7 @@ Game design choices that suit cats:
 - Critters are coloured for cat vision. Cats are dichromats and see reds as dull brown-gray, so critters stand out by brightness and blue–yellow contrast: pale rims on the ladybug, a mostly white koi and a near-white core on the laser dot.
 - Critters animate at up to 120 Hz on ProMotion screens. Cats follow motion closely and can notice flicker that people miss, so smoother movement looks more like real prey.
 - Critters move like real prey: mice dart and freeze, bugs wander, butterflies flutter in arcs.
+- Frozen critters aren't perfectly still. Mice, bugs and crickets give 1 to 3 quick twitches (a small turn or shuffle) at random moments during a freeze, and the laser dot jitters like a hand-held pointer. A sudden twitch after stillness is what sets off a cat's stalk, wiggle and pounce.
 - Critters emerge from the screen edge, and some run off the nearest edge during a freeze, wait out of sight, then run back. Critters that are off-screen can't be caught.
 - Short prey sounds (squeak, rustle, flutter, chirp, swish, catch) are synthesized in code by `SoundPlayer`. The laser dot is silent, like a real laser pointer.
 - Every paw counts: several touches at once are handled, and the hit area around each critter is generous.
