@@ -1,0 +1,35 @@
+pawpaw/Modules/Stats/StatsPresenter.swift
+  s_d6db007d78bcd4::t_a103e8732eeb8e 38-47,49,55,66-72
+pawpaw/Modules/Stats/StatsViewController+Builders.swift
+  s_d6db007d78bcd4::t_0f59e8389a85f0 32-45,56-72,74-79,98,100-111,113-117,119,124-125,129-135,137-142,145,153,155,157,159,161,163,168
+  s_d6db007d78bcd4::t_c16aa0c92c782e 87
+  s_d6db007d78bcd4::t_30d322047aa7d4 9-11,13-16,80-81,99,112,123,128,143-144,150
+  s_d6db007d78bcd4::t_7195becc11f551 82-86,92-97
+  s_d6db007d78bcd4::t_2e03f2bb262b71 12,17-21,73,136
+  s_d6db007d78bcd4::t_1e25fd06165dfd 48-52,55
+pawpaw/Modules/Stats/StatsViewController.swift
+  s_d6db007d78bcd4::t_1e25fd06165dfd 12,15,54
+  s_d6db007d78bcd4::t_7195becc11f551 13-14,41,43,45,47,53,59,67,124-135,138-141,143-148
+  s_d6db007d78bcd4::t_c16aa0c92c782e 74-77
+  s_d6db007d78bcd4::t_30d322047aa7d4 55,58,142
+  s_d6db007d78bcd4::t_2e03f2bb262b71 49,52,66,70
+  s_d6db007d78bcd4::t_a1693f375a16c0 39,42,44,46,56-57
+pawpaw/Modules/Stats/StatsProtocols.swift
+  s_d6db007d78bcd4::t_a103e8732eeb8e 12,22-28,30-31,36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c8d8f3fbc8e9c207db9b543531b1e065227ec90d",
+  "prompts": {},
+  "sessions": {
+    "s_d6db007d78bcd4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "11e0bd5b-1a64-41f6-8b8d-f01c3982047d",
+        "model": "anthropic/claude-sonnet-5.5"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
