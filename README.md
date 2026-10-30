@@ -18,6 +18,8 @@ Built with **Swift** and **UIKit** (no storyboards or SwiftUI), following the **
 |:---:|:---:|:---:|:---:|
 | <img src="previews/ipad-home.png" alt="Paw Paw home screen on iPad" width="220"> | <img src="previews/ipad-gameplay.png" alt="Paw Paw gameplay on iPad" width="220"> | <img src="previews/ipad-stats.png" alt="Paw Paw stats on iPad" width="220"> | <img src="previews/ipad-profiles.png" alt="Paw Paw profiles on iPad" width="220"> |
 
+https://github.com/user-attachments/assets/c6d73b0f-b67b-4074-b8f8-06a64ae1cf5a
+
 ## How to play
 
 1. Pick a round length and a playground (background) on the home screen, then tap **PLAY**. A 3-2-1 countdown starts the round.
