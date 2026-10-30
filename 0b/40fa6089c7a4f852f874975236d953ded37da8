@@ -1,0 +1,23 @@
+pawpaw/Info.plist
+  s_3da41da6e3aa1f::t_0b328b690cb0f4 5-6
+pawpaw/Modules/Game/GameAreaView+Movement.swift
+  s_3da41da6e3aa1f::t_f7c15d470c8d93 103-104
+README.md
+  s_3da41da6e3aa1f::t_058a646b12018a 46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0b40fa6089c7a4f852f874975236d953ded37da8",
+  "prompts": {},
+  "sessions": {
+    "s_3da41da6e3aa1f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0476bc75-adc3-47c7-b30f-61c394b06834",
+        "model": "anthropic/claude-opus-5.5"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
