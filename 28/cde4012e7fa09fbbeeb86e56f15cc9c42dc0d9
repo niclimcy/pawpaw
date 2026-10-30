@@ -1,0 +1,35 @@
+pawpaw/Assets.xcassets/critter_ribbon.imageset/Contents.json
+  s_3da41da6e3aa1f::t_8132600ed5f755 1-15
+pawpaw/Assets.xcassets/critter_ribbon.imageset/critter_ribbon.svg
+  s_3da41da6e3aa1f::t_3eb34319d9f90a 1-17
+README.md
+  s_3da41da6e3aa1f::t_039fe0534eea2c 39,48,50,54,215
+pawpaw/Common/SoundPlayer.swift
+  s_3da41da6e3aa1f::t_9f5e8e27e81b89 14,51,70-72
+pawpaw/Modules/Game/MovementPlanner.swift
+  s_3da41da6e3aa1f::t_678eb41a4a094f 45,62-65
+pawpaw/Entities/TargetKind.swift
+  s_3da41da6e3aa1f::t_a2971e18c27ed6 16,35,48,61,87,100,114
+pawpaw/Modules/Stats/StatsViewController+Builders.swift
+  s_3da41da6e3aa1f::t_b9b412929c30f6 80-81
+pawpaw/Modules/Game/GameAreaView+Movement.swift
+  s_3da41da6e3aa1f::t_fb93675abfff2d 92-93,126-128,151-160
+pawpaw/Entities/MovementPath.swift
+  s_3da41da6e3aa1f::t_bee3252c48432f 31,38-42,52,65,75,88,101,105,115
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "28cde4012e7fa09fbbeeb86e56f15cc9c42dc0d9",
+  "prompts": {},
+  "sessions": {
+    "s_3da41da6e3aa1f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0476bc75-adc3-47c7-b30f-61c394b06834",
+        "model": "anthropic/claude-opus-5.5"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
