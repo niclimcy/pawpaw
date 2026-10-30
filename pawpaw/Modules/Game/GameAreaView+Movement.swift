@@ -102,7 +102,8 @@ extension GameAreaView {
         let move = CAKeyframeAnimation(keyPath: "position")
         move.values = positions
         move.keyTimes = positionTimes
-        move.calculationMode = .linear
+        // A smoothed path turns the zigzag legs into S-curves.
+        move.calculationMode = target.kind.movementStyle.slithers ? .cubic : .linear
 
         let turn = CAKeyframeAnimation(keyPath: "transform.rotation.z")
         turn.values = rotations
@@ -136,6 +137,9 @@ extension GameAreaView {
             addTailSwish(to: critter)
             emitRing(at: point(for: target.start), color: Self.waterRippleColor, endRadius: 70, lineWidth: 2)
         }
+        if target.kind.movementStyle.slithers {
+            addSlither(to: critter)
+        }
     }
 
     static let underwaterOpacity: Float = 0.78
@@ -156,6 +160,16 @@ extension GameAreaView {
         swish.duration = 0.7
         swish.repeatCount = .infinity
         critter.layer.add(swish, forKey: "swish")
+    }
+
+    /// A slower, wider sway than the tail swish, so the whole ribbon seems to weave.
+    private func addSlither(to critter: UIView) {
+        let sway = CAKeyframeAnimation(keyPath: "transform.rotation.z")
+        sway.isAdditive = true
+        sway.values = [0, 0.3, 0, -0.3, 0]
+        sway.duration = 1.0
+        sway.repeatCount = .infinity
+        critter.layer.add(sway, forKey: "slither")
     }
 
     func peekPoint(from point: CGPoint) -> CGPoint {

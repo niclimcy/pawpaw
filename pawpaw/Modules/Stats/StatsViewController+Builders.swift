@@ -77,8 +77,8 @@ extension StatsViewController {
         return tile
     }
 
-    /// All seven fit on one row on phones.
-    static var crittersPerRow: Int { isPad ? 4 : 7 }
+    /// Two even rows of four.
+    static var crittersPerRow: Int { 4 }
 
     /// Rows of critter tiles, each centered so a short last row doesn't hug the left edge.
     static func makeCrittersStack() -> UIStackView {

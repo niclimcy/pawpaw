@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Top-down wand-toy ribbon, leading end facing up. Original artwork for Paw Paw. -->
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M100 22 C 146 46, 146 78, 100 100 C 54 122, 54 154, 100 180" stroke="#1d1d24" stroke-width="26"/>
+    <path d="M100 22 C 146 46, 146 78, 100 100 C 54 122, 54 154, 100 180" stroke="#f7d23e" stroke-width="18"/>
+    <path d="M100 22 C 146 46, 146 78, 100 100 C 54 122, 54 154, 100 180" stroke="#3f7fe8" stroke-width="5"/>
+  </g>
+  <!-- Frayed tail end -->
+  <g stroke="#f7d23e" stroke-width="4" stroke-linecap="round" fill="none">
+    <path d="M100 180 L92 196"/>
+    <path d="M100 180 L100 198"/>
+    <path d="M100 180 L108 196"/>
+  </g>
+  <!-- Knot where the string meets the wand -->
+  <circle cx="100" cy="18" r="13" fill="#3f7fe8" stroke="#1d1d24" stroke-width="5"/>
+  <circle cx="96" cy="14" r="4" fill="#bcd6ff"/>
+</svg>

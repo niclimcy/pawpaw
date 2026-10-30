@@ -48,6 +48,7 @@ enum MovementPlanner {
         var current = start
         var heading = Double.random(in: 0..<(2 * .pi))
         var hasTakenCover = false
+        let firstTurn: Double = Bool.random() ? 1 : -1
         for index in 0..<count {
             let hasPause = index < pauses.count
             var pause = hasPause ? pauses[index] : 0
@@ -64,7 +65,10 @@ enum MovementPlanner {
                 pause = max(pause, minimumCoverPause)
                 heading = atan2(Double(spot.y - current.y), Double(spot.x - current.x))
             } else {
-                heading += Double.random(in: style.turnRange) * (Bool.random() ? 1 : -1)
+                let turn: Double = style.slithers
+                    ? firstTurn * (index.isMultiple(of: 2) ? 1 : -1)
+                    : (Bool.random() ? 1 : -1)
+                heading += Double.random(in: style.turnRange) * turn
                 destination = nextPoint(
                     from: current,
                     heading: &heading,

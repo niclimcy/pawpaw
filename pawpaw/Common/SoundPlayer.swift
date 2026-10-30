@@ -11,6 +11,7 @@ enum GameSound: CaseIterable {
     case flutter
     case chirp
     case swish
+    case whisper
     case catchPop
 }
 
@@ -58,6 +59,7 @@ final class SoundPlayer {
         case .feather: play(.swish, pan: pan)
         case .laser: break
         case .fish: play(.swish, pan: pan)
+        case .ribbon: play(.whisper, pan: pan)
         }
     }
 
@@ -76,6 +78,9 @@ final class SoundPlayer {
             return trill + gap + trill + gap + trill
         case .swish:
             return noiseBursts(duration: 0.3, burstRate: 4, volume: 0.15)
+        case .whisper:
+            // One long, soft swoosh, like a string drawn across the floor.
+            return noiseBursts(duration: 0.5, burstRate: 1, volume: 0.13)
         case .catchPop:
             return chirp(from: 5_000, to: 2_600, duration: 0.09, volume: 0.5)
                 + chirp(from: 3_600, to: 2_000, duration: 0.11, volume: 0.45)
