@@ -100,6 +100,8 @@ extension GameAreaView {
         let group = CAAnimationGroup()
         group.animations = turns ? [move, turn] : [move]
         group.duration = total
+        // Cats track motion closely and notice flicker above 60 Hz, so ask ProMotion screens for 120 Hz.
+        group.preferredFrameRateRange = CAFrameRateRange(minimum: 80, maximum: 120, preferred: 120)
         if surfaces {
             group.animations?.append(surfacingFade(total: total))
             // Hold the faded-out final frame until the view is recycled.

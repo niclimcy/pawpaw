@@ -43,6 +43,7 @@ Game design choices that suit cats:
 - Critters stay on screen for several seconds. Land critters and fliers never fade: they run in from beyond the screen edge and run off it again. Only the fish fades, as it rises from and sinks back into the pond. The views are reused for the next critter.
 - Critters are large, drawn from above, and turn to face the direction they move.
 - The background is dark so the animations stand out.
+- Critters animate at up to 120 Hz on ProMotion screens. Cats follow motion closely and can notice flicker that people miss, so smoother movement looks more like real prey.
 - Critters move like real prey: mice dart and freeze, bugs wander, butterflies flutter in arcs.
 - Critters emerge from the screen edge, and some run off the nearest edge during a freeze, wait out of sight, then run back. Critters that are off-screen can't be caught.
 - Short prey sounds (squeak, rustle, flutter, chirp, swish, catch) are synthesized in code by `SoundPlayer`. The laser dot is silent, like a real laser pointer.
