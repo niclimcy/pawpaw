@@ -57,7 +57,7 @@ final class GameInteractor: GameInteractorInputProtocol {
         self.mode = mode
         self.theme = theme
         let suited = enabledKinds.filter { $0.canAppear(on: theme) }
-        // Only empty for legacy profiles with just the fish enabled; fall back to every suitable critter.
+        // Only empty for legacy profiles with just single-theme critters enabled; fall back to every suitable critter.
         self.spawnableKinds = suited.isEmpty ? TargetKind.allCases.filter { $0.canAppear(on: theme) } : suited
     }
 

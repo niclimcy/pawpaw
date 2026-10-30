@@ -38,6 +38,7 @@ Built with **Swift** and **UIKit** (no storyboards or SwiftUI), following the **
 | Fish | 15 | A koi seen through the water. It rises from the depths with a ripple, glides in gentle curves with a swishing tail, then sinks away. It can only be caught while near the surface. Only appears on the **Pond** background |
 | Ribbon | 10 | The string on a wand toy. It slithers along in snake-like S-curves and never stops, with a soft whisper |
 | Bird | 20 | A small bird seen from above. It hops in short bursts and stops to peck, then may suddenly flap off fast in a long straight line. Tweets as it lands |
+| Lizard | 15 | A gecko that scurries in fast, straight dashes, then freezes and does little push-ups. Can hide under a leaf pile. Only appears on the **Grass** background |
 
 Game design choices that suit cats:
 
@@ -47,19 +48,19 @@ Game design choices that suit cats:
 - The background is dark so the animations stand out.
 - Critters are coloured for cat vision. Cats are dichromats and see reds as dull brown-gray, so critters stand out by brightness and blue–yellow contrast: pale rims on the ladybug, a mostly white koi and a near-white core on the laser dot.
 - Critters animate at up to 120 Hz on ProMotion screens. Cats follow motion closely and can notice flicker that people miss, so smoother movement looks more like real prey.
-- Critters move like real prey: mice dart and freeze, bugs wander, butterflies flutter in arcs, and ribbons snake along like the string on a wand toy, and birds hop, peck and fly off.
+- Critters move like real prey: mice dart and freeze, bugs wander, butterflies flutter in arcs, ribbons snake along like the string on a wand toy, birds hop, peck and fly off, and lizards dash and freeze.
 - Frozen critters aren't perfectly still. Mice, bugs and crickets give 1 to 3 quick twitches (a small turn or shuffle) at random moments during a freeze, and the laser dot jitters like a hand-held pointer. A sudden twitch after stillness is what sets off a cat's stalk, wiggle and pounce.
 - Before a land critter or flier runs in, it waits just beyond the edge for about half a second while its sound plays from that side, like prey rustling out of sight. This gives the cat time to turn toward the sound and get ready to pounce. The laser dot waits silently.
 - Critters emerge from the screen edge, and some run off the nearest edge during a freeze, wait out of sight, then run back. Critters that are off-screen can't be caught.
-- Short prey sounds (squeak, rustle, flutter, chirp, swish, whisper, tweet, catch) are synthesized in code by `SoundPlayer`. Cats pinpoint sounds and turn their ears toward them, so each sound is panned left or right to where the critter is. The rustle and flutter lean toward 6–12 kHz, near the 8 kHz peak of a cat's hearing. The laser dot is silent, like a real laser pointer.
+- Short prey sounds (squeak, rustle, flutter, chirp, swish, whisper, tweet, skitter, catch) are synthesized in code by `SoundPlayer`. Cats pinpoint sounds and turn their ears toward them, so each sound is panned left or right to where the critter is. The rustle and flutter lean toward 6–12 kHz, near the 8 kHz peak of a cat's hearing. The laser dot is silent, like a real laser pointer.
 - Every paw counts: several touches at once are handled, and the hit area around each critter is generous.
 - Dragging a paw across a critter catches it, and leaves a trail of small ripples.
 - A missed tap makes the nearest critter jump away with a squeak, so the cat always gets a reaction.
-- Each round places two hiding spots that suit the background: a cardboard box on the crate, a leaf pile on grass, a lily pad on the pond and a snow mound on snow. On land, mice, bugs and crickets sometimes run under one during a freeze. On the pond only fish glide under the lily pads, and the land critters keep moving past them. The laser dot, butterflies, feathers, ribbons and birds never hide, so they always pass over the hiding spots. A hiding critter peeks out twice before moving on. A critter tucked under a spot can't be caught, but one that is peeking out can.
+- Each round places two hiding spots that suit the background: a cardboard box on the crate, a leaf pile on grass, a lily pad on the pond and a snow mound on snow. On land, mice, bugs, crickets and lizards sometimes run under one during a freeze. On the pond only fish glide under the lily pads, and the land critters keep moving past them. The laser dot, butterflies, feathers, ribbons and birds never hide, so they always pass over the hiding spots. A hiding critter peeks out twice before moving on. A critter tucked under a spot can't be caught, but one that is peeking out can.
 - The pace adapts to the cat (`DifficultyTuner`): each catch makes critters a little quicker, and escapes or missed taps slow them down, within 0.75× to 1.3× of normal speed. Every round starts at normal speed.
 - Critters get a fresh look when the cat gets used to them. Cats lose interest in a toy within minutes, and a new colour brings the play back (Hall, Bradshaw & Robinson, 2002). After **3 catches in a row** of the same critter, the next ones of that kind come in a new look (`CritterVariant`), cycling through paler, bluer and larger yellow versions. Cats see blue, yellow and brightness well but reds look dull to them, so the looks change those. The laser dot stays red, and only its size and glow change. Every round starts with the usual looks.
 - Session lengths suit different cats: short rounds for kittens and seniors, and relaxed play with no timer for cats that like to take their time.
-- Backgrounds: wooden crate, grass, pond and snow. All are dark so the critters stand out. Some critters only live on one background (`TargetKind.exclusiveTheme`), such as the fish in the pond.
+- Backgrounds: wooden crate, grass, pond and snow. All are dark so the critters stand out. Some critters only live on one background (`TargetKind.exclusiveTheme`), such as the fish in the pond and the lizard on grass.
 
 For owners:
 
@@ -82,7 +83,7 @@ Cat profiles for multi-cat households:
 - The Home screen shows the active cat. Tap it to switch cats, or to add or edit one. Adding and editing use a themed card on the wood panel with a name field and a face picker, not a system alert. Deleting a cat needs a 1.5 second hold, erases its scores and stats, and the last cat can't be deleted.
 - The cat chip on Home shows "Loves butterflies" under the name once that cat has caught something, and the Stats screen is titled with the cat's name.
 - The session length and background are device settings shared by all cats.
-- Each cat can have its own critters. The add/edit card has a **Critters to play with** grid: tap a critter to turn it off for that cat (for example, Luna only likes mice and feathers). At least one critter that lives on every background (anything but the fish) always stays on, so every background has something to play with, and critters you turned off never come back. A short note explains this if you try to turn off the last one.
+- Each cat can have its own critters. The add/edit card has a **Critters to play with** grid: tap a critter to turn it off for that cat (for example, Luna only likes mice and feathers). At least one critter that lives on every background (anything but the fish and the lizard) always stays on, so every background has something to play with, and critters you turned off never come back. A short note explains this if you try to turn off the last one.
 
 Settings, best scores and stats are saved on the device using `UserDefaults`. Each session length has its own best score for each cat. Relaxed mode has none.
 
@@ -218,7 +219,7 @@ pawpaw/
 
 ## Art
 
-The critter images (`critter_mouse`, `critter_bug`, `critter_butterfly`, `critter_cricket`, `critter_feather`, `critter_laser`, `critter_fish`, `critter_ribbon`, `critter_bird`) and the cat headshots (`cat_orange`, `cat_gray`, `cat_black`, `cat_white`, `cat_calico`, `cat_siamese`) are original SVGs drawn for this project, as is the Home screen logo (`logo_paw`), which matches the paw on the app icon. To use your own art, replace the SVG file inside each `.imageset` folder and keep the same filename. The backgrounds are drawn in code.
+The critter images (`critter_mouse`, `critter_bug`, `critter_butterfly`, `critter_cricket`, `critter_feather`, `critter_laser`, `critter_fish`, `critter_ribbon`, `critter_bird`, `critter_lizard`) and the cat headshots (`cat_orange`, `cat_gray`, `cat_black`, `cat_white`, `cat_calico`, `cat_siamese`) are original SVGs drawn for this project, as is the Home screen logo (`logo_paw`), which matches the paw on the app icon. To use your own art, replace the SVG file inside each `.imageset` folder and keep the same filename. The backgrounds are drawn in code.
 
 ## Tweaking the game
 

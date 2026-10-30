@@ -13,6 +13,7 @@ enum GameSound: CaseIterable {
     case swish
     case whisper
     case tweet
+    case skitter
     case catchPop
 }
 
@@ -62,6 +63,7 @@ final class SoundPlayer {
         case .fish: play(.swish, pan: pan)
         case .ribbon: play(.whisper, pan: pan)
         case .bird: play(.tweet, pan: pan)
+        case .lizard: play(.skitter, pan: pan)
         }
     }
 
@@ -90,6 +92,9 @@ final class SoundPlayer {
                 + gap
                 + chirp(from: 3_600, to: 5_600, duration: 0.06, volume: 0.3)
                 + chirp(from: 5_600, to: 4_400, duration: 0.05, volume: 0.25)
+        case .skitter:
+            // Shorter and lighter than the rustle, like small feet in dry leaves.
+            return noiseBursts(duration: 0.25, burstRate: 20, volume: 0.22)
         case .catchPop:
             return chirp(from: 5_000, to: 2_600, duration: 0.09, volume: 0.5)
                 + chirp(from: 3_600, to: 2_000, duration: 0.11, volume: 0.45)

@@ -30,6 +30,7 @@ enum MovementStyle {
     case swim
     case slither
     case peck
+    case scurry
 
     /// Fades in and out in place instead of entering and leaving via an edge.
     var surfaces: Bool {
@@ -44,6 +45,11 @@ enum MovementStyle {
     /// Bobs its head forward during each pause.
     var pecks: Bool {
         self == .peck
+    }
+
+    /// Bobs up and down during a freeze, like a lizard doing push-ups.
+    var doesPushUps: Bool {
+        self == .scurry
     }
 
     /// Leaves in a fast straight flight across the field, sometimes before its path is done.
@@ -62,6 +68,7 @@ enum MovementStyle {
         case .zip: return 5...7
         case .slither: return 7...9
         case .peck: return 7...9
+        case .scurry: return 4...6
         }
     }
 
@@ -76,6 +83,7 @@ enum MovementStyle {
         case .zip: return 0
         case .slither: return 0
         case .peck: return 0
+        case .scurry: return 0.3
         }
     }
 
@@ -85,6 +93,7 @@ enum MovementStyle {
         case .wander: return 0.4
         case .hop: return 0.3
         case .swim: return 0.3
+        case .scurry: return 0.5
         case .flutter, .drift, .zip, .slither, .peck: return 0
         }
     }
@@ -100,6 +109,7 @@ enum MovementStyle {
         case .zip: return 0.6
         case .slither: return 0
         case .peck: return 0.45
+        case .scurry: return 0.55
         }
     }
 
@@ -114,6 +124,7 @@ enum MovementStyle {
         case .zip: return 0.35...0.7
         case .slither: return 0.12...0.22
         case .peck: return 0.06...0.14
+        case .scurry: return 0.2...0.4
         }
     }
 
@@ -129,6 +140,7 @@ enum MovementStyle {
         case .zip: return 1.0...3.0
         case .slither: return 0.8...1.4
         case .peck: return 0.3...1.6
+        case .scurry: return 0.3...2.0
         }
     }
 
@@ -138,7 +150,7 @@ enum MovementStyle {
         case .dart: return 0.18
         case .wander: return 0.12
         case .hop: return 0.15
-        case .flutter, .drift, .zip, .swim, .slither, .peck: return 0
+        case .flutter, .drift, .zip, .swim, .slither, .peck, .scurry: return 0
         }
     }
 
@@ -149,7 +161,7 @@ enum MovementStyle {
         case .wander: return 1.5
         case .hop: return 2.5
         case .zip: return 2
-        case .flutter, .drift, .swim, .slither, .peck: return 0
+        case .flutter, .drift, .swim, .slither, .peck, .scurry: return 0
         }
     }
 }

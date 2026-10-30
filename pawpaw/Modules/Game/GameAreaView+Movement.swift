@@ -23,6 +23,8 @@ extension GameAreaView {
         var rotations: [NSNumber] = []
         var rotationTimes: [NSNumber] = []
         var twitches: [Twitch] = []
+        var bobs: [NSNumber] = [0]
+        var bobTimes: [NSNumber] = [0]
 
         func addRotation(_ value: CGFloat, at time: TimeInterval) {
             rotations.append(NSNumber(value: Double(value)))
@@ -91,6 +93,11 @@ extension GameAreaView {
                         positions.append(NSValue(cgPoint: point))
                         positionTimes.append(NSNumber(value: (elapsed + leg.pause * fraction) / total))
                     }
+                } else if style.doesPushUps {
+                    for (fraction, lift) in [(0.3, 0.0), (0.4, 0.08), (0.5, 0.0), (0.6, 0.08), (0.7, 0.0)] {
+                        bobs.append(NSNumber(value: lift))
+                        bobTimes.append(NSNumber(value: (elapsed + leg.pause * fraction) / total))
+                    }
                 } else {
                     twitches += self.twitches(from: elapsed, during: leg.pause, style: style, turns: turns)
                 }
@@ -123,6 +130,17 @@ extension GameAreaView {
         group.duration = total
         // Cats track motion closely and notice flicker above 60 Hz, so ask ProMotion screens for 120 Hz.
         group.preferredFrameRateRange = CAFrameRateRange(minimum: 80, maximum: 120, preferred: 120)
+        if style.doesPushUps {
+            bobs.append(0)
+            bobTimes.append(1)
+            // Additive, so the body seems to rise toward the camera on top of the turn.
+            let pushUps = CAKeyframeAnimation(keyPath: "transform.scale")
+            pushUps.isAdditive = true
+            pushUps.values = bobs
+            pushUps.keyTimes = bobTimes
+            pushUps.calculationMode = .linear
+            group.animations?.append(pushUps)
+        }
         if surfaces {
             group.animations?.append(surfacingFade(total: total))
             // Hold the faded-out final frame until the view is recycled.

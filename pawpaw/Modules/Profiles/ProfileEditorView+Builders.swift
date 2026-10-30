@@ -21,7 +21,7 @@ extension ProfileEditorView {
         heading.numberOfLines = 0
         heading.accessibilityTraits = .header
 
-        critterHintLabel.text = "Keep at least one critter that isn't a fish on. Fish only swim in the pond."
+        critterHintLabel.text = "Keep at least one critter that isn't a fish or a lizard on. Fish only swim in the pond, and lizards only live on grass."
         critterHintLabel.font = Theme.roundedFont(size: Theme.scaled(14), weight: .semibold)
         critterHintLabel.adjustsFontForContentSizeCategory = true
         critterHintLabel.textColor = Theme.gold

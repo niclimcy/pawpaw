@@ -15,11 +15,13 @@ enum TargetKind: String, CaseIterable {
     case fish
     case ribbon
     case bird
+    case lizard
 
     /// The only theme this critter appears on; `nil` means every theme.
     var exclusiveTheme: PlayfieldTheme? {
         switch self {
         case .fish: return .pond
+        case .lizard: return .grass
         default: return nil
         }
     }
@@ -35,6 +37,7 @@ enum TargetKind: String, CaseIterable {
         case .fish: return "fish"
         case .ribbon: return "ribbons"
         case .bird: return "birds"
+        case .lizard: return "lizards"
         }
     }
 
@@ -49,6 +52,7 @@ enum TargetKind: String, CaseIterable {
         case .fish: return "critter_fish"
         case .ribbon: return "critter_ribbon"
         case .bird: return "critter_bird"
+        case .lizard: return "critter_lizard"
         }
     }
 
@@ -63,6 +67,7 @@ enum TargetKind: String, CaseIterable {
         case .fish: return 15
         case .ribbon: return 10
         case .bird: return 20
+        case .lizard: return 15
         }
     }
 
@@ -90,6 +95,7 @@ enum TargetKind: String, CaseIterable {
         case .fish: return 5.0...7.0
         case .ribbon: return 6.0...8.0
         case .bird: return 5.0...7.0
+        case .lizard: return 4.5...6.0
         }
     }
 
@@ -104,6 +110,7 @@ enum TargetKind: String, CaseIterable {
         case .fish: return .swim
         case .ribbon: return .slither
         case .bird: return .peck
+        case .lizard: return .scurry
         }
     }
 
@@ -119,6 +126,7 @@ enum TargetKind: String, CaseIterable {
         case .fish: return 4
         case .ribbon: return 3
         case .bird: return 2
+        case .lizard: return 4
         }
     }
 }
