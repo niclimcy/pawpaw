@@ -1,0 +1,27 @@
+pawpaw/Assets.xcassets/logo_paw.imageset/Contents.json
+  s_e842679494b167::t_82a8a3afaa8e50 1-15
+pawpaw/Modules/Home/HomeViewController.swift
+  s_e842679494b167::t_2c05a8c85f741a 12-21
+  s_e842679494b167::t_b0142c18df15e2 216
+  s_e842679494b167::t_ea086f7a138b48 217-218
+README.md
+  s_e842679494b167::t_1b117cd08639e5 197
+pawpaw/Assets.xcassets/logo_paw.imageset/logo_paw.svg
+  s_e842679494b167::t_fe13ee35451207 1-20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "dec76d6006d4586a0ca0a5a9f67cb429616eacbf",
+  "prompts": {},
+  "sessions": {
+    "s_e842679494b167": {
+      "agent_id": {
+        "tool": "cline",
+        "id": "conv_1793343179203_kg8dymr",
+        "model": "unknown"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
