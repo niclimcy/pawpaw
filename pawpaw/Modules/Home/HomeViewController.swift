@@ -9,16 +9,16 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     var presenter: HomePresenterProtocol?
     private var shownTheme: PlayfieldTheme = .wood
 
-    private let logoLabel: UILabel = {
-        let label = UILabel()
-        label.text = "🐾"
-        label.font = .systemFont(ofSize: Theme.scaled(90))
-        label.adjustsFontSizeToFitWidth = true
-        label.minimumScaleFactor = 0.5
-        label.textAlignment = .center
-        // Decoration only.
-        label.isAccessibilityElement = false
-        return label
+    private let logoView: UIImageView = {
+        let view = UIImageView(image: UIImage(named: "logo_paw"))
+        view.contentMode = .scaleAspectFit
+        let height = Theme.scaled(80)
+        let aspect = view.image.map { $0.size.width / $0.size.height } ?? 1
+        view.heightAnchor.constraint(equalToConstant: height).isActive = true
+        view.widthAnchor.constraint(equalToConstant: height * aspect).isActive =
+            true
+        view.isAccessibilityElement = false
+        return view
     }()
 
     private let titleLabel: UILabel = {
@@ -46,10 +46,20 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         config.baseBackgroundColor = Theme.text
         config.baseForegroundColor = Theme.text
         config.cornerStyle = .capsule
-        config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)
-        config.titleTextAttributesTransformer = Theme.fontTransformer(size: 20, weight: .bold)
+        config.contentInsets = NSDirectionalEdgeInsets(
+            top: 10,
+            leading: 20,
+            bottom: 10,
+            trailing: 20
+        )
+        config.titleTextAttributesTransformer = Theme.fontTransformer(
+            size: 20,
+            weight: .bold
+        )
         let button = UIButton(configuration: config)
-        button.heightAnchor.constraint(greaterThanOrEqualToConstant: Theme.minimumTapSize).isActive = true
+        button.heightAnchor.constraint(
+            greaterThanOrEqualToConstant: Theme.minimumTapSize
+        ).isActive = true
         button.accessibilityIdentifier = "profileButton"
         button.accessibilityHint = "Opens the list of cats"
         return button
@@ -72,7 +82,8 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     /// A note for the human: cats can't leave the game by accident.
     private let ownerNoteLabel: UILabel = {
         let label = HomeViewController.makeLabel(size: 14, weight: .semibold)
-        label.text = "For owners: during play, press and hold the home button for \(Theme.holdDurationText) to leave the game."
+        label.text =
+            "For owners: during play, press and hold the home button for \(Theme.holdDurationText) to leave the game."
         label.textColor = Theme.text.withAlphaComponent(0.75)
         return label
     }()
@@ -83,7 +94,9 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
 
     /// Short rounds suit kittens and seniors; relaxed play has no timer at all.
     private let modeControl: UISegmentedControl = {
-        let control = UISegmentedControl(items: SessionMode.allCases.map(\.title))
+        let control = UISegmentedControl(
+            items: SessionMode.allCases.map(\.title)
+        )
         Theme.styleSegmented(control, fontSize: HomeViewController.modeFontSize)
         control.accessibilityIdentifier = "modeControl"
         control.accessibilityLabel = "Session length"
@@ -92,8 +105,13 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
 
     /// Picks the playfield background; the Home screen previews the choice.
     private let themeControl: UISegmentedControl = {
-        let control = UISegmentedControl(items: PlayfieldTheme.allCases.map(\.title))
-        Theme.styleSegmented(control, fontSize: HomeViewController.themeFontSize)
+        let control = UISegmentedControl(
+            items: PlayfieldTheme.allCases.map(\.title)
+        )
+        Theme.styleSegmented(
+            control,
+            fontSize: HomeViewController.themeFontSize
+        )
         control.accessibilityIdentifier = "themeControl"
         control.accessibilityLabel = "Background"
         return control
@@ -117,7 +135,10 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
             fontSize: 34,
             weight: .heavy,
             insets: NSDirectionalEdgeInsets(
-                top: Theme.scaled(20), leading: Theme.scaled(56), bottom: Theme.scaled(20), trailing: Theme.scaled(56)
+                top: Theme.scaled(20),
+                leading: Theme.scaled(56),
+                bottom: Theme.scaled(20),
+                trailing: Theme.scaled(56)
             )
         )
         button.accessibilityIdentifier = "playButton"
@@ -125,7 +146,9 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     }()
 
     /// A centered, wrapping label in the rounded font that follows Dynamic Type.
-    private static func makeLabel(size: CGFloat, weight: UIFont.Weight = .heavy) -> UILabel {
+    private static func makeLabel(size: CGFloat, weight: UIFont.Weight = .heavy)
+        -> UILabel
+    {
         let label = UILabel()
         label.font = Theme.roundedFont(size: Theme.scaled(size), weight: weight)
         label.adjustsFontForContentSizeCategory = true
@@ -140,11 +163,32 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         view.backgroundColor = Theme.background
         installBackground(theme: .wood)
         setupLayout()
-        playButton.addTarget(self, action: #selector(playTapped), for: .touchUpInside)
-        profileButton.addTarget(self, action: #selector(profileTapped), for: .touchUpInside)
-        modeControl.addTarget(self, action: #selector(modeChanged), for: .valueChanged)
-        themeControl.addTarget(self, action: #selector(themeChanged), for: .valueChanged)
-        statsButton.addGestureRecognizer(UILongPressGestureRecognizer.holdToConfirm(self, #selector(statsHeld(_:))))
+        playButton.addTarget(
+            self,
+            action: #selector(playTapped),
+            for: .touchUpInside
+        )
+        profileButton.addTarget(
+            self,
+            action: #selector(profileTapped),
+            for: .touchUpInside
+        )
+        modeControl.addTarget(
+            self,
+            action: #selector(modeChanged),
+            for: .valueChanged
+        )
+        themeControl.addTarget(
+            self,
+            action: #selector(themeChanged),
+            for: .valueChanged
+        )
+        statsButton.addGestureRecognizer(
+            UILongPressGestureRecognizer.holdToConfirm(
+                self,
+                #selector(statsHeld(_:))
+            )
+        )
         // Segmented controls don't pick up a new text size on their own.
         NotificationCenter.default.addObserver(
             self,
@@ -161,13 +205,17 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
 
     @objc private func contentSizeChanged() {
         Theme.applySegmentedFonts(to: modeControl, fontSize: Self.modeFontSize)
-        Theme.applySegmentedFonts(to: themeControl, fontSize: Self.themeFontSize)
+        Theme.applySegmentedFonts(
+            to: themeControl,
+            fontSize: Self.themeFontSize
+        )
     }
 
     private func setupLayout() {
         let stack = UIStackView(arrangedSubviews: [
-            logoLabel, titleLabel, subtitleLabel, profileButton, favoriteLabel, modeControl, themeControl,
-            highScoreLabel, playButton, statsButton, ownerNoteLabel
+            logoView, titleLabel, subtitleLabel, profileButton, favoriteLabel,
+            modeControl, themeControl,
+            highScoreLabel, playButton, statsButton, ownerNoteLabel,
         ])
         stack.axis = .vertical
         stack.alignment = .center
@@ -176,8 +224,12 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         stack.setCustomSpacing(Theme.scaled(20), after: statsButton)
 
         // The pickers and the text use the full column width; everything else stays centered.
-        for wide in [modeControl, themeControl, subtitleLabel, favoriteLabel, ownerNoteLabel] {
-            wide.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
+        for wide in [
+            modeControl, themeControl, subtitleLabel, favoriteLabel,
+            ownerNoteLabel,
+        ] {
+            wide.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive =
+                true
         }
 
         // Everything lives in one centered column that scrolls on small screens and is capped on iPad.
@@ -193,7 +245,9 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     }
 
     @objc private func modeChanged() {
-        presenter?.didSelectMode(SessionMode.allCases[modeControl.selectedSegmentIndex])
+        presenter?.didSelectMode(
+            SessionMode.allCases[modeControl.selectedSegmentIndex]
+        )
     }
 
     @objc private func statsHeld(_ gesture: UILongPressGestureRecognizer) {
@@ -204,16 +258,20 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     }
 
     @objc private func themeChanged() {
-        presenter?.didSelectTheme(PlayfieldTheme.allCases[themeControl.selectedSegmentIndex])
+        presenter?.didSelectTheme(
+            PlayfieldTheme.allCases[themeControl.selectedSegmentIndex]
+        )
     }
 
     // MARK: HomeViewProtocol
     func showMode(_ mode: SessionMode) {
-        modeControl.selectedSegmentIndex = SessionMode.allCases.firstIndex(of: mode) ?? 0
+        modeControl.selectedSegmentIndex =
+            SessionMode.allCases.firstIndex(of: mode) ?? 0
     }
 
     func showTheme(_ theme: PlayfieldTheme) {
-        themeControl.selectedSegmentIndex = PlayfieldTheme.allCases.firstIndex(of: theme) ?? 0
+        themeControl.selectedSegmentIndex =
+            PlayfieldTheme.allCases.firstIndex(of: theme) ?? 0
         guard theme != shownTheme else { return }
         shownTheme = theme
         installBackground(theme: theme)
@@ -228,7 +286,8 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         profileButton.configuration?.title = name
         profileButton.configuration?.image = face.image(side: Theme.scaled(34))
         profileButton.configuration?.imagePlacement = .leading
-        profileButton.accessibilityLabel = "\(name), \(face.title). Opens the list of cats"
+        profileButton.accessibilityLabel =
+            "\(name), \(face.title). Opens the list of cats"
         favoriteLabel.text = favorite
         favoriteLabel.isHidden = favorite == nil
     }

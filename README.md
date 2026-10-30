@@ -194,7 +194,7 @@ pawpaw/
 
 ## Art
 
-The critter images (`critter_mouse`, `critter_bug`, `critter_butterfly`, `critter_cricket`, `critter_feather`, `critter_laser`, `critter_fish`) and the cat headshots (`cat_orange`, `cat_gray`, `cat_black`, `cat_white`, `cat_calico`, `cat_siamese`) are original SVGs drawn for this project. To use your own art, replace the SVG file inside each `.imageset` folder and keep the same filename. The backgrounds are drawn in code.
+The critter images (`critter_mouse`, `critter_bug`, `critter_butterfly`, `critter_cricket`, `critter_feather`, `critter_laser`, `critter_fish`) and the cat headshots (`cat_orange`, `cat_gray`, `cat_black`, `cat_white`, `cat_calico`, `cat_siamese`) are original SVGs drawn for this project, as is the Home screen logo (`logo_paw`), which matches the paw on the app icon. To use your own art, replace the SVG file inside each `.imageset` folder and keep the same filename. The backgrounds are drawn in code.
 
 ## Tweaking the game
 
