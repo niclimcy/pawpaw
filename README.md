@@ -56,6 +56,7 @@ Game design choices that suit cats:
 
 For owners:
 
+- The first launch on a new install shows a short intro: the game is for your cat, set up a round and then step back, and hold 🏠 to leave. The last step names your cat and picks its face. Every critter starts on, and you can change that later in Your Cats. You can skip the intro, and you can skip the cat setup too (the cat stays "My Cat"). Devices that already have cats, scores or stats go straight to Home.
 - Leaving the game needs a 1.5 second press-and-hold on the Home buttons, so paws can't exit by accident. A ring fills around the button while it's held, so you can see the hold working.
 - Every round starts with a short 3-2-1 countdown, which gives you time to set the device down. Until you've left a round once with the hold, the countdown also shows an "Owners: press and hold 🏠 to leave" tip pointing at the house button. A quick tap on an exit button shows a short reminder.
 - The Home screen is for owners, so everything on it is a normal tap: the cat chip and the Stats button in the top bar, the round length and playground picker, and PLAY.
@@ -145,10 +146,19 @@ Each module's protocols are declared in a `*Protocols.swift` file. The `createMo
 | File | Role |
 |---|---|
 | `ProfilesViewController` (+ `+Builders`) | List of cats with their headshots and the active one checked |
-| `ProfileEditorView` (+ `+Layout`, `+Builders`) | The themed add/edit card: name field, face picker, critter on/off grid, Save, Cancel and hold-to-delete |
+| `ProfileEditorView` (+ `+Layout`, `+Builders`) | The themed add/edit card: name field, face picker (`CatNameField`, `CatFacePicker`), critter on/off grid, Save, Cancel and hold-to-delete |
 | `ProfilesPresenter` | Turns the cats into display rows ("Loves butterflies") |
 | `ProfilesInteractor` | Selects, adds, renames and deletes cats, and reads each cat's favorite critter |
 | `ProfilesRouter` | Creates the module and returns to Home |
+
+### Onboarding module
+
+| File | Role |
+|---|---|
+| `OnboardingViewController` | One card with page dots, Next, Skip, and a Back button in the corner. The intro pages come first, then the cat setup (name field and face picker) |
+| `OnboardingPresenter` | The intro text and the current step. It checks that a name was entered. Skip goes to the cat setup, not past it |
+| `OnboardingInteractor` | Renames the first cat, sets its face, and marks onboarding as done |
+| `OnboardingRouter` | Creates the module. `SceneDelegate` shows it instead of Home on a new install, then swaps to Home when it finishes |
 
 ### Data flow example (catching a critter)
 
@@ -161,7 +171,7 @@ Each module's protocols are declared in a `*Protocols.swift` file. The `createMo
 
 ```
 pawpaw/
-├── AppDelegate.swift, SceneDelegate.swift   App start (opens the Home module)
+├── AppDelegate.swift, SceneDelegate.swift   App start (opens Onboarding on a new install, otherwise Home)
 ├── Entities/
 │   ├── TargetKind.swift      Critter types: points, speed, spawn weight, image name
 │   ├── GameTarget.swift      A critter on screen (kind, path, lifetime)
@@ -174,12 +184,14 @@ pawpaw/
 │   └── CatFace.swift         The drawn cat headshots, one per coat colour
 ├── Common/
 │   ├── ProfileStorage.swift  Cats and the active cat, with first-launch migration (protocol + UserDefaults)
-│   ├── SettingsStorage.swift Session length and background picked on Home, shared by all cats (protocol + UserDefaults)
+│   ├── SettingsStorage.swift Session length, background and onboarding/tip flags, shared by all cats (protocol + UserDefaults)
 │   ├── ScoreStorage.swift    Best scores per cat and session length (protocol + UserDefaults)
 │   ├── StatsStorage.swift    Play stats per cat (protocol + UserDefaults)
 │   ├── Log.swift             Unified logging for storage failures the app recovers from
 │   ├── CatFace+Image.swift   Draws a headshot at a given size
 │   ├── Theme.swift           Colours, fonts, card and button styles, the hold-to-confirm duration
+│   ├── CatNameField.swift    Themed name field that limits name length (shared by the add/edit card and onboarding)
+│   ├── CatFacePicker.swift   Grid of cat headshots to pick from
 │   ├── HoldToConfirm.swift   Press-and-hold buttons with a filling progress ring
 │   ├── ScrollingLayout.swift Centered, scrolling column used by every menu screen
 │   ├── SoundPlayer.swift     Synthesized prey sounds
@@ -191,7 +203,8 @@ pawpaw/
 │   ├── Home/                 Home screen (VIPER)
 │   ├── Game/                 Game screen (VIPER)
 │   ├── Stats/                Play stats screen (VIPER)
-│   └── Profiles/             Cat profiles screen (VIPER)
+│   ├── Profiles/             Cat profiles screen (VIPER)
+│   └── Onboarding/           First-run intro and cat setup (VIPER)
 └── Assets.xcassets/          App assets, including the critter SVGs
 ```
 

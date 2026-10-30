@@ -7,63 +7,8 @@ import UIKit
 
 extension ProfileEditorView {
     func makeNameField() -> UITextField {
-        nameField.font = Theme.roundedFont(size: Theme.scaled(22), weight: .bold)
-        nameField.adjustsFontForContentSizeCategory = true
-        nameField.textColor = Theme.text
-        nameField.tintColor = Theme.gold
-        nameField.textAlignment = .center
-        nameField.backgroundColor = Theme.background
-        nameField.layer.cornerRadius = 16
-        nameField.attributedPlaceholder = NSAttributedString(
-            string: "Your cat's name",
-            attributes: [.foregroundColor: Theme.text.withAlphaComponent(0.45)]
-        )
-        nameField.returnKeyType = .done
-        nameField.autocapitalizationType = .words
         nameField.delegate = self
-        nameField.accessibilityIdentifier = "catNameField"
-        nameField.heightAnchor.constraint(greaterThanOrEqualToConstant: max(Theme.minimumTapSize, Theme.scaled(52))).isActive = true
         return nameField
-    }
-
-    func makeFacePicker() -> UIView {
-        let faces = CatFace.allCases
-        let rows = stride(from: 0, to: faces.count, by: 3).map { start in
-            let row = UIStackView(arrangedSubviews: faces[start..<min(start + 3, faces.count)].map(makeFaceButton))
-            row.axis = .horizontal
-            row.distribution = .fillEqually
-            row.spacing = 10
-            return row
-        }
-        let grid = UIStackView(arrangedSubviews: rows)
-        grid.axis = .vertical
-        grid.spacing = 10
-        return grid
-    }
-
-    private func makeFaceButton(_ face: CatFace) -> UIButton {
-        let button = UIButton(type: .custom)
-        button.layer.cornerRadius = 18
-        button.layer.borderWidth = 3
-        button.layer.borderColor = UIColor.clear.cgColor
-        button.accessibilityLabel = face.title
-        button.accessibilityIdentifier = "face_\(face.rawValue)"
-        button.heightAnchor.constraint(equalTo: button.widthAnchor).isActive = true
-        button.addAction(UIAction { [weak self] _ in self?.select(face) }, for: .touchUpInside)
-
-        let picture = UIImageView(image: UIImage(named: face.imageName))
-        picture.contentMode = .scaleAspectFit
-        picture.isUserInteractionEnabled = false
-        picture.translatesAutoresizingMaskIntoConstraints = false
-        button.addSubview(picture)
-        NSLayoutConstraint.activate([
-            picture.topAnchor.constraint(equalTo: button.topAnchor, constant: 6),
-            picture.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: -6),
-            picture.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 6),
-            picture.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -6)
-        ])
-        faceButtons[face] = button
-        return button
     }
 
     func makeCritterPicker() -> UIView {

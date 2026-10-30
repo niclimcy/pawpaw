@@ -23,7 +23,7 @@ extension ProfileEditorView {
 
         let saveButton = makeSaveButton()
         let stack = UIStackView(arrangedSubviews: [
-            titleLabel, makeNameField(), makeFacePicker(), makeCritterPicker(),
+            titleLabel, makeNameField(), facePicker, makeCritterPicker(),
             saveButton, makeCancelButton(), makeDeleteButton()
         ])
         stack.axis = .vertical

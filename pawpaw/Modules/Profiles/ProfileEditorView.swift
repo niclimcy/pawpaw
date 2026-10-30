@@ -11,12 +11,11 @@ final class ProfileEditorView: UIView, UITextFieldDelegate {
     var onDelete: (() -> Void)?
 
     let titleLabel = UILabel()
-    let nameField = UITextField()
+    let nameField = CatNameField()
+    let facePicker = CatFacePicker()
     let critterHintLabel = UILabel()
     /// Replaced by the real button in `build()`.
     var deleteButton = UIButton(type: .system)
-    var faceButtons: [CatFace: UIButton] = [:]
-    var selectedFace: CatFace = .orange
     var critterButtons: [TargetKind: UIButton] = [:]
     var disabledKinds: Set<TargetKind> = []
     private var isAdding = true
@@ -37,7 +36,7 @@ final class ProfileEditorView: UIView, UITextFieldDelegate {
         titleLabel.text = adding ? "Add a cat" : "Edit cat"
         nameField.text = name
         deleteButton.isHidden = adding || !canDelete
-        select(face)
+        facePicker.select(face)
         self.disabledKinds = disabledKinds
         critterHintLabel.isHidden = true
         refreshCritters()
@@ -59,18 +58,6 @@ final class ProfileEditorView: UIView, UITextFieldDelegate {
     override func accessibilityPerformEscape() -> Bool {
         cancelTapped()
         return true
-    }
-
-    func select(_ face: CatFace) {
-        selectedFace = face
-        for (candidate, button) in faceButtons {
-            let isSelected = candidate == face
-            button.layer.borderColor = (isSelected ? Theme.gold : UIColor.clear).cgColor
-            button.backgroundColor = isSelected
-                ? Theme.accent.withAlphaComponent(0.35)
-                : Theme.background.withAlphaComponent(0.5)
-            button.accessibilityTraits = isSelected ? [.button, .selected] : .button
-        }
     }
 
     func toggle(_ kind: TargetKind) {
@@ -116,7 +103,7 @@ final class ProfileEditorView: UIView, UITextFieldDelegate {
             return
         }
         dismiss()
-        onSave?(name, selectedFace, disabledKinds)
+        onSave?(name, facePicker.selectedFace, disabledKinds)
     }
 
     @objc func cancelTapped() {
@@ -139,20 +126,7 @@ final class ProfileEditorView: UIView, UITextFieldDelegate {
 
     // MARK: UITextFieldDelegate
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let current = textField.text ?? ""
-        guard let swiftRange = Range(range, in: current) else { return true }
-        let proposed = current.replacingCharacters(in: swiftRange, with: string)
-        if proposed.count <= CatProfile.maxNameLength { return true }
-        // Too long (usually a paste): insert as much as fits rather than rejecting it all.
-        let room = CatProfile.maxNameLength - (current.count - current[swiftRange].count)
-        guard room > 0 else { return false }
-        let kept = String(string.prefix(room))
-        textField.text = current.replacingCharacters(in: swiftRange, with: kept)
-        let caretOffset = current.distance(from: current.startIndex, to: swiftRange.lowerBound) + kept.count
-        if let caret = textField.position(from: textField.beginningOfDocument, offset: caretOffset) {
-            textField.selectedTextRange = textField.textRange(from: caret, to: caret)
-        }
-        return false
+        nameField.shouldChangeCharacters(in: range, replacementString: string)
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

@@ -45,6 +45,9 @@ extension UIViewController {
             content.centerYAnchor.constraint(equalTo: container.centerYAnchor),
             content.topAnchor.constraint(greaterThanOrEqualTo: container.topAnchor, constant: margin),
             content.bottomAnchor.constraint(lessThanOrEqualTo: container.bottomAnchor, constant: -margin),
+            // Required, so text that wants one long line can't push the content past the margins.
+            content.leadingAnchor.constraint(greaterThanOrEqualTo: container.leadingAnchor, constant: margin),
+            content.trailingAnchor.constraint(lessThanOrEqualTo: container.trailingAnchor, constant: -margin),
             content.widthAnchor.constraint(lessThanOrEqualToConstant: maxWidth),
             fillWidth
         ])
