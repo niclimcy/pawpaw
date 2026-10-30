@@ -12,6 +12,9 @@ enum MovementPlanner {
     static let hideTravel: TimeInterval = 0.4
     static let minimumHidePause: TimeInterval = 1.0
     static let exitTravel: TimeInterval = 0.9
+    /// Fliers cross most of the field in this time.
+    static let flightTravel: TimeInterval = 0.6
+    static let earlyFlightChance = 0.4
     /// Long enough to peek out twice.
     static let minimumCoverPause: TimeInterval = 1.6
     /// Edge critters wait off-screen this long while their sound plays, then run in.
@@ -49,7 +52,11 @@ enum MovementPlanner {
         var heading = Double.random(in: 0..<(2 * .pi))
         var hasTakenCover = false
         let firstTurn: Double = Bool.random() ? 1 : -1
-        for index in 0..<count {
+        // Fliers sometimes take off early, which shortens the path.
+        let lastIndex = style.fliesOff && Double.random(in: 0..<1) < earlyFlightChance
+            ? Int.random(in: 2..<max(count, 3))
+            : count - 1
+        for index in 0...lastIndex {
             let hasPause = index < pauses.count
             var pause = hasPause ? pauses[index] : 0
             let longFreeze = pause >= minimumHidePause
@@ -85,11 +92,11 @@ enum MovementPlanner {
             ))
             current = destination
         }
-        // Surfacing critters fade out in place; everything else exits via the nearest edge.
+        // Surfacing critters fade out in place, fliers fly off and everything else exits via the nearest edge.
         if style.surfaces { return legs }
         legs.append(PathLeg(
-            destination: nearestEdgePoint(to: current),
-            travel: exitTravel,
+            destination: style.fliesOff ? flightEdgePoint(from: current) : nearestEdgePoint(to: current),
+            travel: style.fliesOff ? flightTravel : exitTravel,
             pause: 0,
             hides: false,
             exits: true
@@ -105,6 +112,27 @@ enum MovementPlanner {
         case 2: return CGPoint(x: point.x, y: 0)
         default: return CGPoint(x: point.x, y: 1)
         }
+    }
+
+    /// Where a straight flight, roughly across the middle, leaves the field.
+    private static func flightEdgePoint(from point: CGPoint) -> CGPoint {
+        let heading = atan2(0.5 - Double(point.y), 0.5 - Double(point.x)) + Double.random(in: -0.8...0.8)
+        let dx = cos(heading)
+        let dy = sin(heading)
+        let toSide = dx > 0 ? (1 - Double(point.x)) / dx : (dx < 0 ? -Double(point.x) / dx : .infinity)
+        let toEnd = dy > 0 ? (1 - Double(point.y)) / dy : (dy < 0 ? -Double(point.y) / dy : .infinity)
+        let reach = min(toSide, toEnd)
+        var result = CGPoint(
+            x: min(max(point.x + CGFloat(dx * reach), 0), 1),
+            y: min(max(point.y + CGFloat(dy * reach), 0), 1)
+        )
+        // Snap onto the edge so the view pushes it fully off-screen.
+        if toSide <= toEnd {
+            result.x = dx > 0 ? 1 : 0
+        } else {
+            result.y = dy > 0 ? 1 : 0
+        }
+        return result
     }
 
     /// Slightly uneven pieces that sum to `total`.

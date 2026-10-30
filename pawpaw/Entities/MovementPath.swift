@@ -29,6 +29,7 @@ enum MovementStyle {
     case zip
     case swim
     case slither
+    case peck
 
     /// Fades in and out in place instead of entering and leaving via an edge.
     var surfaces: Bool {
@@ -38,6 +39,16 @@ enum MovementStyle {
     /// Weaves in S-curves along a smoothed path, like a wand toy's string.
     var slithers: Bool {
         self == .slither
+    }
+
+    /// Bobs its head forward during each pause.
+    var pecks: Bool {
+        self == .peck
+    }
+
+    /// Leaves in a fast straight flight across the field, sometimes before its path is done.
+    var fliesOff: Bool {
+        self == .peck
     }
 
     var legCount: ClosedRange<Int> {
@@ -50,6 +61,7 @@ enum MovementStyle {
         case .drift: return 4...5
         case .zip: return 5...7
         case .slither: return 7...9
+        case .peck: return 7...9
         }
     }
 
@@ -63,6 +75,7 @@ enum MovementStyle {
         case .drift: return 0
         case .zip: return 0
         case .slither: return 0
+        case .peck: return 0
         }
     }
 
@@ -72,7 +85,7 @@ enum MovementStyle {
         case .wander: return 0.4
         case .hop: return 0.3
         case .swim: return 0.3
-        case .flutter, .drift, .zip, .slither: return 0
+        case .flutter, .drift, .zip, .slither, .peck: return 0
         }
     }
 
@@ -86,6 +99,7 @@ enum MovementStyle {
         case .drift: return 0
         case .zip: return 0.6
         case .slither: return 0
+        case .peck: return 0.45
         }
     }
 
@@ -99,6 +113,7 @@ enum MovementStyle {
         case .drift: return 0.2...0.35
         case .zip: return 0.35...0.7
         case .slither: return 0.12...0.22
+        case .peck: return 0.06...0.14
         }
     }
 
@@ -113,6 +128,7 @@ enum MovementStyle {
         case .drift: return 0.2...0.6
         case .zip: return 1.0...3.0
         case .slither: return 0.8...1.4
+        case .peck: return 0.3...1.6
         }
     }
 
@@ -122,7 +138,7 @@ enum MovementStyle {
         case .dart: return 0.18
         case .wander: return 0.12
         case .hop: return 0.15
-        case .flutter, .drift, .zip, .swim, .slither: return 0
+        case .flutter, .drift, .zip, .swim, .slither, .peck: return 0
         }
     }
 
@@ -133,7 +149,7 @@ enum MovementStyle {
         case .wander: return 1.5
         case .hop: return 2.5
         case .zip: return 2
-        case .flutter, .drift, .swim, .slither: return 0
+        case .flutter, .drift, .swim, .slither, .peck: return 0
         }
     }
 }

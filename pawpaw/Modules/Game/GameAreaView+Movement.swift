@@ -85,6 +85,12 @@ extension GameAreaView {
                         positions.append(NSValue(cgPoint: point))
                         positionTimes.append(NSNumber(value: (elapsed + leg.pause * fraction) / total))
                     }
+                } else if style.pecks {
+                    let nod = nodPoint(from: current, to: destination)
+                    for (fraction, point) in [(0.2, nod), (0.35, destination), (0.55, nod), (0.7, destination)] {
+                        positions.append(NSValue(cgPoint: point))
+                        positionTimes.append(NSNumber(value: (elapsed + leg.pause * fraction) / total))
+                    }
                 } else {
                     twitches += self.twitches(from: elapsed, during: leg.pause, style: style, turns: turns)
                 }
@@ -103,7 +109,7 @@ extension GameAreaView {
         move.values = positions
         move.keyTimes = positionTimes
         // A smoothed path turns the zigzag legs into S-curves.
-        move.calculationMode = target.kind.movementStyle.slithers ? .cubic : .linear
+        move.calculationMode = style.slithers ? .cubic : .linear
 
         let turn = CAKeyframeAnimation(keyPath: "transform.rotation.z")
         turn.values = rotations
@@ -137,8 +143,11 @@ extension GameAreaView {
             addTailSwish(to: critter)
             emitRing(at: point(for: target.start), color: Self.waterRippleColor, endRadius: 70, lineWidth: 2)
         }
-        if target.kind.movementStyle.slithers {
+        if style.slithers {
             addSlither(to: critter)
+        }
+        if style.fliesOff, let flight = target.legs.last, flight.exits {
+            addFlap(to: critter, after: total - flight.travel, lasting: flight.travel)
         }
     }
 
@@ -170,6 +179,27 @@ extension GameAreaView {
         sway.duration = 1.0
         sway.repeatCount = .infinity
         critter.layer.add(sway, forKey: "slither")
+    }
+
+    /// Quick wingbeats, shown as a widening pulse, while it flies off.
+    private func addFlap(to critter: UIView, after delay: TimeInterval, lasting duration: TimeInterval) {
+        let beat: TimeInterval = 0.1
+        let flap = CAKeyframeAnimation(keyPath: "transform.scale.x")
+        flap.isAdditive = true
+        flap.values = [0, 0.35, 0]
+        flap.duration = beat
+        flap.repeatCount = Float(duration / beat)
+        flap.beginTime = critter.layer.convertTime(CACurrentMediaTime(), from: nil) + delay
+        critter.layer.add(flap, forKey: "flap")
+    }
+
+    /// A short peck forward along the last move.
+    private func nodPoint(from previous: CGPoint, to point: CGPoint) -> CGPoint {
+        let dx = point.x - previous.x
+        let dy = point.y - previous.y
+        let length = max(hypot(dx, dy), 1)
+        let reach: CGFloat = 10
+        return CGPoint(x: point.x + dx / length * reach, y: point.y + dy / length * reach)
     }
 
     func peekPoint(from point: CGPoint) -> CGPoint {

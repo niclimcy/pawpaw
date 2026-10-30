@@ -12,6 +12,7 @@ enum GameSound: CaseIterable {
     case chirp
     case swish
     case whisper
+    case tweet
     case catchPop
 }
 
@@ -60,6 +61,7 @@ final class SoundPlayer {
         case .laser: break
         case .fish: play(.swish, pan: pan)
         case .ribbon: play(.whisper, pan: pan)
+        case .bird: play(.tweet, pan: pan)
         }
     }
 
@@ -81,6 +83,13 @@ final class SoundPlayer {
         case .whisper:
             // One long, soft swoosh, like a string drawn across the floor.
             return noiseBursts(duration: 0.5, burstRate: 1, volume: 0.13)
+        case .tweet:
+            // A falling "tsee" then a rising "tweet", unlike the cricket's flat trill.
+            let gap = [Float](repeating: 0, count: Int(0.05 * sampleRate))
+            return chirp(from: 6_200, to: 3_800, duration: 0.08, volume: 0.3)
+                + gap
+                + chirp(from: 3_600, to: 5_600, duration: 0.06, volume: 0.3)
+                + chirp(from: 5_600, to: 4_400, duration: 0.05, volume: 0.25)
         case .catchPop:
             return chirp(from: 5_000, to: 2_600, duration: 0.09, volume: 0.5)
                 + chirp(from: 3_600, to: 2_000, duration: 0.11, volume: 0.45)
