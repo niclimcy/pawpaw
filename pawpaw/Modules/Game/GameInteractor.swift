@@ -14,6 +14,7 @@ final class GameInteractor: GameInteractorInputProtocol {
     weak var presenter: GameInteractorOutputProtocol?
 
     private let storage: ScoreStorage
+    private let settings: SettingsStorage
     private let mode: SessionMode
     private let statsStorage: StatsStorage
     private let spawnableKinds: [TargetKind]
@@ -39,12 +40,14 @@ final class GameInteractor: GameInteractorInputProtocol {
     init(
         storage: ScoreStorage,
         statsStorage: StatsStorage,
+        settings: SettingsStorage,
         mode: SessionMode,
         theme: PlayfieldTheme,
         enabledKinds: [TargetKind] = TargetKind.allCases
     ) {
         self.storage = storage
         self.statsStorage = statsStorage
+        self.settings = settings
         self.mode = mode
         self.theme = theme
         let suited = enabledKinds.filter { $0.canAppear(on: theme) }
@@ -58,6 +61,14 @@ final class GameInteractor: GameInteractorInputProtocol {
     }
 
     // MARK: GameInteractorInputProtocol
+    var shouldShowExitTip: Bool {
+        !settings.hasLearnedHoldToExit
+    }
+
+    func recordExitHoldLearned() {
+        settings.hasLearnedHoldToExit = true
+    }
+
     func startGame() {
         invalidateTimers()
         activeTargets.removeAll()

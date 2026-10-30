@@ -32,6 +32,12 @@ final class GameViewController: UIViewController, GameViewProtocol {
     let resultTitleLabel = UILabel()
     let resultDetailsLabel = UILabel()
 
+    weak var hudHomeButton: UIButton?
+    /// Kept while backgrounded so the countdown can restart.
+    var pendingCountdown: PendingCountdown?
+    /// Bumped to invalidate already-scheduled countdown steps.
+    var countdownGeneration = 0
+
     private var hasStarted = false
     private var isShowingResult = false
     private var disabledPopGestures: [UIGestureRecognizer] = []
@@ -80,6 +86,7 @@ final class GameViewController: UIViewController, GameViewProtocol {
         setScreenAwake(false)
         restoreSwipeBack()
         if isMovingFromParent || isBeingDismissed {
+            cancelCountdown()
             presenter?.viewWillDisappear()
         }
     }
@@ -106,11 +113,16 @@ final class GameViewController: UIViewController, GameViewProtocol {
 
     // MARK: App lifecycle
     @objc private func appWillResignActive() {
+        interruptCountdown()
         presenter?.appWillResignActive()
     }
 
     @objc private func appDidBecomeActive() {
         guard hasStarted, viewIfLoaded?.window != nil else { return }
+        if let pending = pendingCountdown {
+            showGetReady(showsExitTip: pending.showsExitTip, completion: pending.completion)
+            return
+        }
         presenter?.appDidBecomeActive()
     }
 

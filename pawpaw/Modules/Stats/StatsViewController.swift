@@ -90,7 +90,7 @@ extension StatsViewController {
         let button = Theme.plainButton(title: "Hold to reset stats", foreground: Theme.text.withAlphaComponent(0.75))
         button.accessibilityIdentifier = "statsResetButton"
         button.accessibilityHint = "Press and hold to erase all play statistics"
-        button.addGestureRecognizer(UILongPressGestureRecognizer.holdToConfirm(self, #selector(resetHeld(_:))))
+        button.addHoldToConfirm(self, action: #selector(resetHeld(_:)))
         return button
     }
 

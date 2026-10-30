@@ -28,18 +28,23 @@ enum Theme {
         value * uiScale
     }
 
-    static func styleSegmented(_ control: UISegmentedControl, fontSize: CGFloat) {
-        control.selectedSegmentTintColor = accent
+    static func styleSegmented(
+        _ control: UISegmentedControl,
+        fontSize: CGFloat,
+        selectedTint: UIColor = accent,
+        selectedText: UIColor = .white
+    ) {
+        control.selectedSegmentTintColor = selectedTint
         control.backgroundColor = panel
-        applySegmentedFonts(to: control, fontSize: fontSize)
+        applySegmentedFonts(to: control, fontSize: fontSize, selectedText: selectedText)
         control.heightAnchor.constraint(greaterThanOrEqualToConstant: max(minimumTapSize, scaled(36))).isActive = true
     }
 
     /// Segmented controls don't follow Dynamic Type, so call again when the text size changes.
-    static func applySegmentedFonts(to control: UISegmentedControl, fontSize: CGFloat) {
+    static func applySegmentedFonts(to control: UISegmentedControl, fontSize: CGFloat, selectedText: UIColor = .white) {
         let font = roundedFont(size: scaled(fontSize), weight: .bold)
         control.setTitleTextAttributes([.foregroundColor: text, .font: font], for: .normal)
-        control.setTitleTextAttributes([.foregroundColor: UIColor.white, .font: font], for: .selected)
+        control.setTitleTextAttributes([.foregroundColor: selectedText, .font: font], for: .selected)
     }
 
     /// Dynamic Type–scaled; set `adjustsFontForContentSizeCategory` on labels to follow changes live.

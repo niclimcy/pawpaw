@@ -29,6 +29,7 @@ extension GameViewController {
         homeButton.accessibilityIdentifier = "homeButton"
         homeButton.accessibilityLabel = "Home"
         installHoldToExit(on: homeButton)
+        hudHomeButton = homeButton
         homeButton.setContentHuggingPriority(.required, for: .horizontal)
         let side = max(Theme.minimumTapSize, Theme.scaled(48))
         homeButton.widthAnchor.constraint(greaterThanOrEqualToConstant: side).isActive = true
@@ -51,7 +52,7 @@ extension GameViewController {
 
     /// Leaving needs a deliberate hold; a plain tap only shows a hint.
     func installHoldToExit(on button: UIButton) {
-        button.addGestureRecognizer(UILongPressGestureRecognizer.holdToConfirm(self, #selector(holdToExitChanged(_:))))
+        button.addHoldToConfirm(self, action: #selector(holdToExitChanged(_:)))
         button.accessibilityHint = "Press and hold to leave the game"
         button.addTarget(self, action: #selector(showExitHint), for: .touchUpInside)
     }

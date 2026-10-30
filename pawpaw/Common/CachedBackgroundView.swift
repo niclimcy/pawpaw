@@ -9,11 +9,14 @@ import UIKit
 class CachedBackgroundView: UIView {
     private static let cache: NSCache<NSString, UIImage> = {
         let cache = NSCache<NSString, UIImage>()
-        cache.countLimit = 8
+        cache.countLimit = 12
         return cache
     }()
 
     private var renderedSize: CGSize = .zero
+
+    /// Draws at this width, then scales down to fit.
+    var canvasWidth: CGFloat?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -39,13 +42,18 @@ class CachedBackgroundView: UIView {
         let size = bounds.size
         guard size.width > 0, size.height > 0, size != renderedSize else { return }
         renderedSize = size
-        let key = "\(drawingKey)-\(Int(size.width))x\(Int(size.height))" as NSString
+        let zoomOut = max(1, (canvasWidth ?? size.width) / size.width)
+        let canvas = CGSize(width: size.width * zoomOut, height: size.height * zoomOut)
+        let key = "\(drawingKey)-\(Int(canvas.width))x\(Int(canvas.height))-\(Int(size.width))" as NSString
         if let cached = Self.cache.object(forKey: key) {
             show(cached)
             return
         }
-        let image = UIGraphicsImageRenderer(size: size).image { context in
-            drawBackground(in: context.cgContext, size: size)
+        // Render at on-screen pixel size, not canvas size.
+        let format = UIGraphicsImageRendererFormat.preferred()
+        format.scale = traitCollection.displayScale / zoomOut
+        let image = UIGraphicsImageRenderer(size: canvas, format: format).image { context in
+            drawBackground(in: context.cgContext, size: canvas)
         }
         Self.cache.setObject(image, forKey: key)
         show(image)

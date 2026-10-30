@@ -12,7 +12,7 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorOutputProtocol {
 
     // MARK: GamePresenterProtocol
     func viewDidBecomeReady() {
-        interactor?.startGame()
+        startAfterCountdown()
     }
 
     func viewWillDisappear() {
@@ -46,12 +46,20 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorOutputProtocol {
     func didTapPlayAgain() {
         view?.hideResult()
         view?.clearTargets()
-        interactor?.startGame()
+        startAfterCountdown()
     }
 
     func didTapHome() {
+        interactor?.recordExitHoldLearned()
         interactor?.stopGame()
         router?.navigateToHome(from: view)
+    }
+
+    private func startAfterCountdown() {
+        let showsTip = interactor?.shouldShowExitTip ?? false
+        view?.showGetReady(showsExitTip: showsTip) { [weak self] in
+            self?.interactor?.startGame()
+        }
     }
 
     // MARK: GameInteractorOutputProtocol

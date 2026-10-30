@@ -9,6 +9,7 @@ import Foundation
 protocol SettingsStorage: AnyObject {
     var selectedMode: SessionMode { get set }
     var selectedTheme: PlayfieldTheme { get set }
+    var hasLearnedHoldToExit: Bool { get set }
 }
 
 final class UserDefaultsSettingsStorage: SettingsStorage {
@@ -16,6 +17,7 @@ final class UserDefaultsSettingsStorage: SettingsStorage {
     // Legacy keys; keep them so existing saved choices carry over.
     private let modeKey = "pawpaw.selectedMode"
     private let themeKey = "pawpaw.selectedTheme"
+    private let holdToExitKey = "pawpaw.hasLearnedHoldToExit"
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
@@ -36,6 +38,15 @@ final class UserDefaultsSettingsStorage: SettingsStorage {
         }
         set {
             defaults.set(newValue.rawValue, forKey: themeKey)
+        }
+    }
+
+    var hasLearnedHoldToExit: Bool {
+        get {
+            defaults.bool(forKey: holdToExitKey)
+        }
+        set {
+            defaults.set(newValue, forKey: holdToExitKey)
         }
     }
 }

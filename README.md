@@ -22,7 +22,7 @@ Built with **Swift** and **UIKit** (no storyboards or SwiftUI), following the **
 
 ## How to play
 
-1. Pick a session length and a background on the home screen, then tap **PLAY**.
+1. Pick a round length and a playground (background) on the home screen, then tap **PLAY**. A 3-2-1 countdown starts the round.
 2. Tap the critters as they move across the screen. A round lasts **30 seconds**, **60 seconds** (the default) or **2 minutes**. **Relaxed** mode has no timer and never ends.
 3. Each catch gives points, with a sparkle, ring and "+points" animation.
 4. When time is up, you see your score and your best score for that session length. Choose **Play Again**, or press and hold **Hold to go Home**.
@@ -56,10 +56,11 @@ Game design choices that suit cats:
 
 For owners:
 
-- Leaving the game needs a 1.5 second press-and-hold on the Home buttons, so paws can't exit by accident.
-- The Home screen explains this, and a quick tap on an exit button shows a short reminder.
+- Leaving the game needs a 1.5 second press-and-hold on the Home buttons, so paws can't exit by accident. A ring fills around the button while it's held, so you can see the hold working.
+- Every round starts with a short 3-2-1 countdown, which gives you time to set the device down. Until you've left a round once with the hold, the countdown also shows an "Owners: press and hold 🏠 to leave" tip pointing at the house button. A quick tap on an exit button shows a short reminder.
+- The Home screen is for owners, so everything on it is a normal tap: the cat chip and the Stats button in the top bar, the round length and playground picker, and PLAY.
 - The **Play Stats** screen shows total rounds and catches, catches per critter, a favorite critter, rounds over the last 7 days and the best score for each session length. Changes in play can hint at a change in mood or energy.
-- Opening Play Stats and resetting it both need a 1.5 second press-and-hold, and a reset also asks for confirmation. Resetting keeps the best scores.
+- Resetting Play Stats needs a 1.5 second press-and-hold and also asks for confirmation. Resetting keeps the best scores.
 - Leaving a round early (always the case in relaxed mode) still counts the critters caught in the stats.
 - A phone call, Control Center or switching apps pauses the round: the clock stops, the critters on screen slip away and the catches so far are saved, in case the app is closed. Play picks up where it left off when you come back, and the round still counts once in the stats.
 - Rotating the device or resizing the app mid-round moves the hiding spots to match. Critters already running slip away (they don't count as escapes) and new ones come in.
@@ -71,7 +72,7 @@ Cat profiles for multi-cat households:
 
 - Each cat has a name and a drawn headshot (orange tabby, gray tabby, black, white, calico or Siamese), and its own best scores and play stats. The first launch after the update creates a "My Cat" profile that keeps your existing scores and stats.
 - The Home screen shows the active cat. Tap it to switch cats, or to add or edit one. Adding and editing use a themed card on the wood panel with a name field and a face picker, not a system alert. Deleting a cat needs a 1.5 second hold, erases its scores and stats, and the last cat can't be deleted.
-- Home shows "Luna loves butterflies" once that cat has caught something, and the Stats screen is titled with the cat's name.
+- The cat chip on Home shows "Loves butterflies" under the name once that cat has caught something, and the Stats screen is titled with the cat's name.
 - The session length and background are device settings shared by all cats.
 - Each cat can have its own critters. The add/edit card has a **Critters to play with** grid: tap a critter to turn it off for that cat (for example, Luna only likes mice and feathers). At least one critter that lives on every background (anything but the fish) always stays on, so every background has something to play with, and critters you turned off never come back. A short note explains this if you try to turn off the last one.
 
@@ -111,8 +112,9 @@ Each module's protocols are declared in a `*Protocols.swift` file. The `createMo
 
 | File | Role |
 |---|---|
-| `HomeViewController` | Title, active cat button, session length and background pickers, best score, PLAY and Stats buttons |
-| `HomePresenter` | Passes the picks to the interactor, and handles the PLAY tap, the cat button and the Stats hold |
+| `HomeViewController` | Top bar (cat chip, Stats button), title, setup card (round length and playground), PLAY and best score |
+| `ThemePickerView` | The playground picker: a row of background thumbnails |
+| `HomePresenter` | Passes the picks to the interactor, and handles the PLAY, cat and Stats taps |
 | `HomeInteractor` | Reads and saves the picked session length and background, and reads the active cat, its best score and its favorite critter |
 | `HomeRouter` | Creates the module and pushes the Game, Stats or Profiles screen |
 
@@ -120,7 +122,7 @@ Each module's protocols are declared in a `*Protocols.swift` file. The `createMo
 
 | File | Role |
 |---|---|
-| `GameViewController` (+ `+Layout`) | Score and timer labels, home button, results card |
+| `GameViewController` (+ `+Layout`, `+Countdown`, `+ExitTip`) | Score and timer labels, home button, 3-2-1 countdown, owner exit tip, results card |
 | `GameAreaView` (+ `+Effects`, `+Rings`) | The play field: moves critters, detects taps, plays catch animations |
 | `GamePresenter` | Formats score, time and result text, and forwards taps |
 | `GameInteractor` | Game rules: the session clock (if any), spawning (max 2 critters), scoring, saving the best score and recording stats |
@@ -178,6 +180,7 @@ pawpaw/
 │   ├── Log.swift             Unified logging for storage failures the app recovers from
 │   ├── CatFace+Image.swift   Draws a headshot at a given size
 │   ├── Theme.swift           Colours, fonts, card and button styles, the hold-to-confirm duration
+│   ├── HoldToConfirm.swift   Press-and-hold buttons with a filling progress ring
 │   ├── ScrollingLayout.swift Centered, scrolling column used by every menu screen
 │   ├── SoundPlayer.swift     Synthesized prey sounds
 │   ├── SeededGenerator.swift Repeatable random numbers for the drawn backgrounds
@@ -208,7 +211,7 @@ The critter images (`critter_mouse`, `critter_bug`, `critter_butterfly`, `critte
 | Critter size | `GameAreaView.targetSize` |
 | Sparkle amount | `count:` values in `GameAreaView+Effects.swift` |
 | Colours | `Theme.swift` |
-| Press-and-hold time for exits, stats and deleting | `Theme.holdDuration` |
+| Press-and-hold time for exits, resetting stats and deleting | `Theme.holdDuration` |
 
 ## Limitations
 

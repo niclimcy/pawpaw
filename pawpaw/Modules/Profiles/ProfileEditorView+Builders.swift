@@ -146,7 +146,7 @@ extension ProfileEditorView {
         button.isHidden = true
         button.accessibilityIdentifier = "deleteCatButton"
         button.accessibilityHint = "Press and hold to erase this cat, its best scores and its stats"
-        button.addGestureRecognizer(UILongPressGestureRecognizer.holdToConfirm(self, #selector(deleteHeld(_:))))
+        button.addHoldToConfirm(self, action: #selector(deleteHeld(_:)))
         deleteButton = button
         return button
     }

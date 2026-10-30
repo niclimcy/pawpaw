@@ -20,6 +20,7 @@ protocol GameViewProtocol: AnyObject {
     func hideResult()
     func showPaused()
     func showResumed()
+    func showGetReady(showsExitTip: Bool, completion: @escaping () -> Void)
 }
 
 // MARK: - Presenter
@@ -45,6 +46,7 @@ protocol GamePresenterProtocol: AnyObject {
 // MARK: - Interactor
 protocol GameInteractorInputProtocol: AnyObject {
     var presenter: GameInteractorOutputProtocol? { get set }
+    var shouldShowExitTip: Bool { get }
 
     func startGame()
     func stopGame()
@@ -54,6 +56,7 @@ protocol GameInteractorInputProtocol: AnyObject {
     func expireTarget(id: UUID)
     func discardTarget(id: UUID)
     func missTap()
+    func recordExitHoldLearned()
 }
 
 protocol GameInteractorOutputProtocol: AnyObject {

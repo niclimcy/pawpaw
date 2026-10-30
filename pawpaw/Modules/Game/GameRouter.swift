@@ -10,10 +10,12 @@ final class GameRouter: GameRouterProtocol {
         let view = GameViewController()
         let presenter = GamePresenter()
         let profile = UserDefaultsProfileStorage().activeProfile
-        let theme = UserDefaultsSettingsStorage().selectedTheme
+        let settings = UserDefaultsSettingsStorage()
+        let theme = settings.selectedTheme
         let interactor = GameInteractor(
             storage: UserDefaultsScoreStorage(profileID: profile.id),
             statsStorage: UserDefaultsStatsStorage(profileID: profile.id),
+            settings: settings,
             mode: mode,
             theme: theme,
             enabledKinds: profile.enabledKinds

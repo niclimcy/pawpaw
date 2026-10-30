@@ -31,30 +31,31 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         return label
     }()
 
-    private let subtitleLabel: UILabel = {
-        let label = HomeViewController.makeLabel(size: 18, weight: .semibold)
-        label.text = "Catch the mice, bugs and butterflies!"
-        return label
-    }()
-
     private let profileButton: UIButton = {
         var config = UIButton.Configuration.tinted()
         config.title = CatProfile.defaultName
         config.imagePlacement = .leading
         config.imagePadding = 8
+        config.titleAlignment = .leading
         config.baseBackgroundColor = Theme.text
         config.baseForegroundColor = Theme.text
         config.cornerStyle = .capsule
         config.contentInsets = NSDirectionalEdgeInsets(
-            top: 10,
-            leading: 20,
-            bottom: 10,
-            trailing: 20
+            top: 8,
+            leading: 12,
+            bottom: 8,
+            trailing: 16
         )
         config.titleTextAttributesTransformer = Theme.fontTransformer(
-            size: 20,
+            size: 18,
             weight: .bold
         )
+        config.subtitleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
+            var outgoing = incoming
+            outgoing.font = Theme.roundedFont(size: Theme.scaled(13), weight: .semibold)
+            outgoing.foregroundColor = Theme.text.withAlphaComponent(0.75)
+            return outgoing
+        }
         let button = UIButton(configuration: config)
         button.heightAnchor.constraint(
             greaterThanOrEqualToConstant: Theme.minimumTapSize
@@ -64,63 +65,55 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         return button
     }()
 
-    private let favoriteLabel: UILabel = {
-        let label = HomeViewController.makeLabel(size: 16, weight: .semibold)
+    private let statsButton: UIButton = {
+        var config = UIButton.Configuration.tinted()
+        config.image = UIImage(systemName: "chart.bar.fill")
+        config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(
+            pointSize: Theme.scaled(18),
+            weight: .semibold
+        )
+        config.baseBackgroundColor = Theme.text
+        config.baseForegroundColor = Theme.text
+        config.cornerStyle = .capsule
+        let button = UIButton(configuration: config)
+        let side = max(Theme.minimumTapSize, Theme.scaled(48))
+        button.widthAnchor.constraint(equalToConstant: side).isActive = true
+        button.heightAnchor.constraint(equalToConstant: side).isActive = true
+        button.accessibilityIdentifier = "statsButton"
+        button.accessibilityLabel = "Play stats"
+        button.accessibilityHint = "Opens play statistics"
+        return button
+    }()
+
+    private let highScoreLabel: UILabel = {
+        let label = HomeViewController.makeLabel(size: 18, weight: .bold)
         label.textColor = Theme.text.withAlphaComponent(0.85)
         label.isHidden = true
         return label
     }()
 
-    private let highScoreLabel: UILabel = {
-        let label = HomeViewController.makeLabel(size: 22, weight: .bold)
-        label.text = "Best: 0"
-        return label
-    }()
-
-    private let ownerNoteLabel: UILabel = {
-        let label = HomeViewController.makeLabel(size: 14, weight: .semibold)
-        label.text =
-            "For owners: during play, press and hold the home button to leave the game."
-        label.textColor = Theme.text.withAlphaComponent(0.75)
-        return label
-    }()
-
     private static let modeFontSize: CGFloat = 16
-    private static let themeFontSize: CGFloat = 14
+    /// Not orange, so PLAY stands out.
+    private static let selectedTint = Theme.text
+    private static let selectedText = Theme.background
 
     private let modeControl: UISegmentedControl = {
         let control = UISegmentedControl(
             items: SessionMode.allCases.map(\.title)
         )
-        Theme.styleSegmented(control, fontSize: HomeViewController.modeFontSize)
-        control.accessibilityIdentifier = "modeControl"
-        control.accessibilityLabel = "Session length"
-        return control
-    }()
-
-    private let themeControl: UISegmentedControl = {
-        let control = UISegmentedControl(
-            items: PlayfieldTheme.allCases.map(\.title)
-        )
         Theme.styleSegmented(
             control,
-            fontSize: HomeViewController.themeFontSize
+            fontSize: HomeViewController.modeFontSize,
+            selectedTint: HomeViewController.selectedTint,
+            selectedText: HomeViewController.selectedText
         )
-        control.accessibilityIdentifier = "themeControl"
-        control.accessibilityLabel = "Background"
+        control.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        control.accessibilityIdentifier = "modeControl"
+        control.accessibilityLabel = "Round length"
         return control
     }()
 
-    private let statsButton: UIButton = {
-        let button = Theme.plainButton(
-            title: "Hold for Stats",
-            image: "chart.bar.fill",
-            foreground: Theme.text.withAlphaComponent(0.85)
-        )
-        button.accessibilityIdentifier = "statsButton"
-        button.accessibilityHint = "Press and hold to open play statistics"
-        return button
-    }()
+    private let themePicker = ThemePickerView()
 
     private let playButton: UIButton = {
         let button = Theme.filledButton(
@@ -165,22 +158,19 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
             action: #selector(profileTapped),
             for: .touchUpInside
         )
+        statsButton.addTarget(
+            self,
+            action: #selector(statsTapped),
+            for: .touchUpInside
+        )
         modeControl.addTarget(
             self,
             action: #selector(modeChanged),
             for: .valueChanged
         )
-        themeControl.addTarget(
-            self,
-            action: #selector(themeChanged),
-            for: .valueChanged
-        )
-        statsButton.addGestureRecognizer(
-            UILongPressGestureRecognizer.holdToConfirm(
-                self,
-                #selector(statsHeld(_:))
-            )
-        )
+        themePicker.onSelect = { [weak self] theme in
+            self?.presenter?.didSelectTheme(theme)
+        }
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(contentSizeChanged),
@@ -195,34 +185,98 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     }
 
     @objc private func contentSizeChanged() {
-        Theme.applySegmentedFonts(to: modeControl, fontSize: Self.modeFontSize)
         Theme.applySegmentedFonts(
-            to: themeControl,
-            fontSize: Self.themeFontSize
+            to: modeControl,
+            fontSize: Self.modeFontSize,
+            selectedText: Self.selectedText
         )
     }
 
     private func setupLayout() {
+        let topBar = makeTopBar()
+        let content = UIView()
+        content.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(content)
+        let margin = Theme.scaled(16)
+        NSLayoutConstraint.activate([
+            topBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
+            topBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: margin),
+            topBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -margin),
+
+            content.topAnchor.constraint(equalTo: topBar.bottomAnchor),
+            content.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            content.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            content.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+
+        let setupCard = makeSetupCard()
         let stack = UIStackView(arrangedSubviews: [
-            logoView, titleLabel, subtitleLabel, profileButton, favoriteLabel,
-            modeControl, themeControl,
-            highScoreLabel, playButton, statsButton, ownerNoteLabel,
+            logoView, titleLabel, setupCard, playButton, highScoreLabel,
         ])
         stack.axis = .vertical
         stack.alignment = .center
-        stack.spacing = Theme.scaled(16)
-        stack.setCustomSpacing(Theme.scaled(28), after: highScoreLabel)
-        stack.setCustomSpacing(Theme.scaled(20), after: statsButton)
+        stack.spacing = Theme.scaled(12)
+        stack.setCustomSpacing(Theme.scaled(28), after: titleLabel)
+        stack.setCustomSpacing(Theme.scaled(28), after: setupCard)
+        setupCard.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
 
-        for wide in [
-            modeControl, themeControl, subtitleLabel, favoriteLabel,
-            ownerNoteLabel,
-        ] {
-            wide.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive =
-                true
-        }
+        embedCentered(stack, maxWidth: Self.maxContentWidth, in: content)
+    }
 
-        embedCentered(stack, maxWidth: 520)
+    private static var maxContentWidth: CGFloat {
+        UIDevice.current.userInterfaceIdiom == .pad ? 660 : 520
+    }
+
+    private func makeTopBar() -> UIView {
+        let spacer = UIView()
+        spacer.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        profileButton.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        statsButton.setContentCompressionResistancePriority(.required, for: .horizontal)
+
+        let bar = UIStackView(arrangedSubviews: [profileButton, spacer, statsButton])
+        bar.axis = .horizontal
+        bar.alignment = .center
+        bar.spacing = 12
+        bar.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(bar)
+        return bar
+    }
+
+    private func makeSetupCard() -> UIView {
+        let stack = UIStackView(arrangedSubviews: [
+            Self.makeSectionLabel("ROUND LENGTH"), modeControl,
+            Self.makeSectionLabel("PLAYGROUND"), themePicker,
+        ])
+        stack.axis = .vertical
+        stack.alignment = .fill
+        stack.spacing = 8
+        stack.setCustomSpacing(Theme.scaled(20), after: modeControl)
+        stack.translatesAutoresizingMaskIntoConstraints = false
+
+        let card = UIView()
+        Theme.styleCard(card)
+        card.backgroundColor = Theme.panel.withAlphaComponent(0.85)
+        card.layer.borderWidth = 2
+        card.layer.borderColor = Theme.text.withAlphaComponent(0.15).cgColor
+        card.layer.cornerRadius = 24
+        card.addSubview(stack)
+        let inset = Theme.scaled(18)
+        NSLayoutConstraint.activate([
+            stack.topAnchor.constraint(equalTo: card.topAnchor, constant: inset),
+            stack.bottomAnchor.constraint(equalTo: card.bottomAnchor, constant: -inset),
+            stack.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: inset),
+            stack.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -inset)
+        ])
+        return card
+    }
+
+    private static func makeSectionLabel(_ text: String) -> UILabel {
+        let label = makeLabel(size: 13, weight: .heavy)
+        label.text = text
+        label.textAlignment = .natural
+        label.textColor = Theme.text.withAlphaComponent(0.65)
+        label.accessibilityTraits = .header
+        return label
     }
 
     @objc private func playTapped() {
@@ -239,16 +293,8 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         )
     }
 
-    @objc private func statsHeld(_ gesture: UILongPressGestureRecognizer) {
-        guard gesture.state == .began else { return }
-        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+    @objc private func statsTapped() {
         presenter?.didRequestStats()
-    }
-
-    @objc private func themeChanged() {
-        presenter?.didSelectTheme(
-            PlayfieldTheme.allCases[themeControl.selectedSegmentIndex]
-        )
     }
 
     // MARK: HomeViewProtocol
@@ -258,25 +304,25 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     }
 
     func showTheme(_ theme: PlayfieldTheme) {
-        themeControl.selectedSegmentIndex =
-            PlayfieldTheme.allCases.firstIndex(of: theme) ?? 0
+        themePicker.select(theme)
         guard theme != shownTheme else { return }
         shownTheme = theme
         installBackground(theme: theme)
     }
 
     func showHighScore(_ score: Int?) {
-        highScoreLabel.isHidden = score == nil
-        highScoreLabel.text = "Best: \(score ?? 0)"
+        let best = score ?? 0
+        highScoreLabel.isHidden = best <= 0
+        highScoreLabel.text = "🏆 Best: \(best)"
     }
 
     func showProfile(name: String, face: CatFace, favorite: String?) {
         profileButton.configuration?.title = name
+        profileButton.configuration?.subtitle = favorite
         profileButton.configuration?.image = face.image(side: Theme.scaled(34))
-        profileButton.accessibilityLabel =
-            "\(name), \(face.title). Opens the list of cats"
-        favoriteLabel.text = favorite
-        favoriteLabel.isHidden = favorite == nil
+        profileButton.accessibilityLabel = [name, face.title, favorite]
+            .compactMap { $0 }
+            .joined(separator: ", ")
     }
 }
 
