@@ -164,6 +164,7 @@ extension GameAreaView {
         if style.slithers {
             addSlither(to: critter)
         }
+        addBodyMotion(to: critter, for: target)
         if style.fliesOff, let flight = target.legs.last, flight.exits {
             addFlap(to: critter, after: total - flight.travel, lasting: flight.travel)
         }
@@ -199,12 +200,12 @@ extension GameAreaView {
         critter.layer.add(sway, forKey: "slither")
     }
 
-    /// Quick wingbeats, shown as a widening pulse, while it flies off.
+    /// Quick wingbeats, shown as the wings folding in and opening out, while it flies off.
     private func addFlap(to critter: UIView, after delay: TimeInterval, lasting duration: TimeInterval) {
         let beat: TimeInterval = 0.1
         let flap = CAKeyframeAnimation(keyPath: "transform.scale.x")
         flap.isAdditive = true
-        flap.values = [0, 0.35, 0]
+        flap.values = [0, -0.45, 0]
         flap.duration = beat
         flap.repeatCount = Float(duration / beat)
         flap.beginTime = critter.layer.convertTime(CACurrentMediaTime(), from: nil) + delay
