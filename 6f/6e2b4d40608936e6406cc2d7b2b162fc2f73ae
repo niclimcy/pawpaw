@@ -1,0 +1,60 @@
+pawpaw/Modules/Profiles/ProfileEditorView.swift
+  s_94becd29f4387f::t_d431246fe9472f 14-15,39,106,129
+pawpaw/Modules/Onboarding/OnboardingRouter.swift
+  s_94becd29f4387f::t_160a1b64df0b0d 1-36
+pawpaw/Modules/Onboarding/OnboardingProtocols.swift
+  s_94becd29f4387f::t_97eefbbe3bd047 36
+  s_94becd29f4387f::t_deb45a132e2ad4 22-25,38,45
+  s_94becd29f4387f::t_c403d77b483774 20-21
+  s_94becd29f4387f::t_160a1b64df0b0d 1-19,26-35,37,39-44,46-53
+pawpaw/Common/SettingsStorage.swift
+  s_94becd29f4387f::t_84d03914bfa90e 13,22,24-25,28,57-74
+pawpaw/SceneDelegate.swift
+  s_94becd29f4387f::t_bb6513540eb910 16-19,22-27
+  s_94becd29f4387f::t_89ccbe1ab9e4cb 28
+pawpaw/Common/CatNameField.swift
+  s_94becd29f4387f::t_3790a416135923 1-52
+pawpaw/Modules/Profiles/ProfileEditorView+Layout.swift
+  s_94becd29f4387f::t_d431246fe9472f 26
+pawpaw/Common/CatFacePicker.swift
+  s_94becd29f4387f::t_3368827fad6ac9 68,70,94-96
+  s_94becd29f4387f::t_3790a416135923 1-67,69,71-93,97-108
+pawpaw/Modules/Onboarding/OnboardingViewController.swift
+  s_94becd29f4387f::t_67e7448fb109c4 156-158
+  s_94becd29f4387f::t_c3be6d69ffe276 8,16-19,48,76-77,91-95,120-122,137-139,150,194,196-200,203-210,239-255,260,265-269,278-282,306-308,314-323,326-327,329-340,343-344
+  s_94becd29f4387f::t_3368827fad6ac9 12,98,100-101,233-238,312,324
+  s_94becd29f4387f::t_c403d77b483774 14-15,96-97,99,104,116,119,123-135,140-147,149,159-174,176-183,286-305
+  s_94becd29f4387f::t_300c0e511fc51f 1-7,9-11,13,20-47,49-52,59-75,78-79,81-90,102-103,105-113,117-118,136,148,184-193,195,201-202,211-232,261-264,275-277,283-285,309-311,313,325,328,341-342,345-351
+  s_94becd29f4387f::t_97eefbbe3bd047 53-58,80,151-155,175,256-259,270-274
+  s_94becd29f4387f::t_0d056170f021bf 114-115
+pawpaw/Common/ScrollingLayout.swift
+  s_94becd29f4387f::t_9ae7abbac67dbf 48-50
+pawpaw/Modules/Onboarding/OnboardingPresenter.swift
+  s_94becd29f4387f::t_c403d77b483774 39
+  s_94becd29f4387f::t_160a1b64df0b0d 1-14,17-19,22-24,27-31,35-38,41-43,46-47,53-54,57-58,65-72,80-86
+  s_94becd29f4387f::t_97eefbbe3bd047 48-52
+  s_94becd29f4387f::t_deb45a132e2ad4 15-16,20-21,25-26,32-34,40,44-45,55-56,59-64,73-79
+pawpaw/Modules/Onboarding/OnboardingInteractor.swift
+  s_94becd29f4387f::t_160a1b64df0b0d 1-21,24-29
+  s_94becd29f4387f::t_deb45a132e2ad4 22-23
+README.md
+  s_94becd29f4387f::t_4ac60592bfccbd 158
+  s_94becd29f4387f::t_4a87e480e6cae8 154-157,161-162,174,187,206-207
+  s_94becd29f4387f::t_89eb32983d09de 59,149,159-160,193-194
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6f6e2b4d40608936e6406cc2d7b2b162fc2f73ae",
+  "prompts": {},
+  "sessions": {
+    "s_94becd29f4387f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "db7eb645-f016-4362-a49f-767a7581fff5",
+        "model": "anthropic/claude-opus-5.5"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
