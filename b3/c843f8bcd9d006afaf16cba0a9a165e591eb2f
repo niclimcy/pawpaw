@@ -4,8 +4,10 @@ pawpaw/Assets.xcassets/critter_ribbon.imageset/critter_ribbon.svg
   s_3da41da6e3aa1f::t_3eb34319d9f90a 1-17
 README.md
   s_3da41da6e3aa1f::t_039fe0534eea2c 39,49,57,220
+  s_3da41da6e3aa1f::t_518a9df320068c 53
 pawpaw/Common/SoundPlayer.swift
   s_3da41da6e3aa1f::t_9f5e8e27e81b89 14,81-83
+  s_3da41da6e3aa1f::t_518a9df320068c 62
 pawpaw/Modules/Game/MovementPlanner.swift
   s_3da41da6e3aa1f::t_678eb41a4a094f 51,68-71
 pawpaw/Entities/TargetKind.swift
@@ -16,6 +18,7 @@ pawpaw/Modules/Game/GameAreaView+Movement.swift
   s_3da41da6e3aa1f::t_fb93675abfff2d 105-106,138-140,163-172
 pawpaw/Entities/MovementPath.swift
   s_3da41da6e3aa1f::t_bee3252c48432f 31,38-42,52,65,75,88,101,105,115
+  s_3da41da6e3aa1f::t_87f7984b838afb 125,136
 ---
 {
   "schema_version": "authorship/3.0.0",
