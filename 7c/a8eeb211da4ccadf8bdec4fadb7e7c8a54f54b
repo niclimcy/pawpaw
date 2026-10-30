@@ -1,0 +1,92 @@
+pawpaw/Modules/Game/GameProtocols.swift
+  s_277c5e97cacae0::t_a262ec25e31969 49
+  s_277c5e97cacae0::t_e50f886f12d76a 59
+  s_277c5e97cacae0::t_8436e4ecc07406 23
+pawpaw/Modules/Game/GameViewController.swift
+  s_277c5e97cacae0::t_502af96dbcfb30 89
+  s_277c5e97cacae0::t_fee0518925457c 36,38
+  s_277c5e97cacae0::t_7a81b21830be2d 116,122-125
+  s_277c5e97cacae0::t_512470caec4ff1 35,37,39-40
+pawpaw/Common/CachedBackgroundView.swift
+  s_277c5e97cacae0::t_7fbea10b65d3d6 45-47,53-56
+  s_277c5e97cacae0::t_b3604183c07b0a 12
+  s_277c5e97cacae0::t_13253d33aac23c 18
+  s_277c5e97cacae0::t_b57ff2a0f737cd 52
+  s_277c5e97cacae0::t_fa6605241222f4 19-20
+pawpaw/Modules/Home/HomePresenter.swift
+  s_277c5e97cacae0::t_013b4d42ea7fe7 51
+pawpaw/Common/HoldToConfirm.swift
+  s_277c5e97cacae0::t_3d40244091e07a 70
+  s_277c5e97cacae0::t_e23d04decde6b4 8
+  s_277c5e97cacae0::t_9dc1d10fea06ad 1-7,9-69,71-90
+pawpaw/Modules/Home/ThemePickerView.swift
+  s_277c5e97cacae0::t_ca2bb3afbd15b6 1-60,67-119
+  s_277c5e97cacae0::t_9f20cd8e11f2d6 64
+  s_277c5e97cacae0::t_7a6b5537e9407d 61-63,65-66
+README.md
+  s_277c5e97cacae0::t_03f6ca4afd4e53 183
+  s_277c5e97cacae0::t_53e12160555663 63
+  s_277c5e97cacae0::t_58682cd230d49e 125
+  s_277c5e97cacae0::t_817ea9ca15c9e1 214
+  s_277c5e97cacae0::t_e0d45560327433 59-61
+  s_277c5e97cacae0::t_d84c619053d0d8 25
+  s_277c5e97cacae0::t_889b21de216461 75
+  s_277c5e97cacae0::t_3ea54a92dc7f24 115-117
+pawpaw/Modules/Game/GameViewController+Layout.swift
+  s_277c5e97cacae0::t_d08673475a3c85 32
+  s_277c5e97cacae0::t_a077a69968839c 55
+pawpaw/Modules/Game/GameViewController+Countdown.swift
+  s_277c5e97cacae0::t_de4d16c532d9c3 18
+  s_277c5e97cacae0::t_d8a9b1d8e8b7b2 46
+  s_277c5e97cacae0::t_0451b83f13d35f 1-17,19-45,47-131
+pawpaw/Modules/Game/GameRouter.swift
+  s_277c5e97cacae0::t_a3c7847eafbd00 13-14,18
+pawpaw/Modules/Game/GameInteractor.swift
+  s_277c5e97cacae0::t_1d08918c1d340d 43,50
+  s_277c5e97cacae0::t_955f93050ebd36 17
+  s_277c5e97cacae0::t_45308447d0d022 64-71
+pawpaw/Modules/Game/GameViewController+ExitTip.swift
+  s_277c5e97cacae0::t_b742fa7d15e22b 1-87
+pawpaw/Modules/Stats/StatsViewController.swift
+  s_277c5e97cacae0::t_2c790eb8ef71ea 93
+pawpaw/Common/Theme.swift
+  s_277c5e97cacae0::t_685f50243d511b 31-37,39,44,47
+pawpaw/Common/SettingsStorage.swift
+  s_277c5e97cacae0::t_51a68cf804797d 12
+  s_277c5e97cacae0::t_3ca278cd825423 43-51
+  s_277c5e97cacae0::t_ba33f2ad01962c 20
+pawpaw/Modules/Profiles/ProfileEditorView+Builders.swift
+  s_277c5e97cacae0::t_519f41be54eb87 149
+pawpaw/Modules/Game/GamePresenter.swift
+  s_277c5e97cacae0::t_16d3d0f3d8c9da 15
+  s_277c5e97cacae0::t_6f703d0ad10512 49,53,58-62
+  s_277c5e97cacae0::t_5a114400286d6e 63-64
+pawpaw/Modules/Home/HomeViewController.swift
+  s_277c5e97cacae0::t_a9b73e5c4046b2 189-191,196-199,201-202,205-211,218-219,222-225,229-254,256-279
+  s_277c5e97cacae0::t_28d20d73d2529d 110
+  s_277c5e97cacae0::t_8ec6a53bc824d5 200,203-204
+  s_277c5e97cacae0::t_f571ddfb36dccc 296
+  s_277c5e97cacae0::t_3bd44b552fbe79 212,214,220-221
+  s_277c5e97cacae0::t_ff29d58de64068 314-316,321,323-325
+  s_277c5e97cacae0::t_7c3fed3761cffa 307
+  s_277c5e97cacae0::t_9b396d8b8683b4 161,163-164,166,168,171-173
+  s_277c5e97cacae0::t_58fbe67810c6f3 96
+  s_277c5e97cacae0::t_341a8e95b9e7f0 39,44-47,50,53-58,68-85,89-91,97-98,106-108,111-112,116
+  s_277c5e97cacae0::t_61f15a8dcb43c6 226-228
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7ca8eeb211da4ccadf8bdec4fadb7e7c8a54f54b",
+  "prompts": {},
+  "sessions": {
+    "s_277c5e97cacae0": {
+      "agent_id": {
+        "tool": "cline",
+        "id": "conv_1793345604305_6s93b8m",
+        "model": "unknown"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
