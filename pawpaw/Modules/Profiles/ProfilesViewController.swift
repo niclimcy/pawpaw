@@ -7,6 +7,7 @@ import UIKit
 
 final class ProfilesViewController: UIViewController, ProfilesViewProtocol {
     var presenter: ProfilesPresenterProtocol?
+    var theme: PlayfieldTheme = .wood
 
     private let listStack: UIStackView = {
         let stack = UIStackView()
@@ -23,8 +24,8 @@ final class ProfilesViewController: UIViewController, ProfilesViewProtocol {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Theme.background
-        installBackground(theme: .wood)
+        view.backgroundColor = theme.baseColor
+        installBackground(theme: theme)
         setupLayout()
         setupEditor()
     }

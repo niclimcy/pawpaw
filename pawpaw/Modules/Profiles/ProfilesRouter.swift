@@ -15,6 +15,7 @@ final class ProfilesRouter: ProfilesRouterProtocol {
         )
         let router = ProfilesRouter()
 
+        view.theme = UserDefaultsSettingsStorage().selectedTheme
         view.presenter = presenter
         presenter.view = view
         presenter.interactor = interactor
