@@ -10,7 +10,6 @@ final class StatsPresenter: StatsPresenterProtocol, StatsInteractorOutputProtoco
     var interactor: StatsInteractorInputProtocol?
     var router: StatsRouterProtocol?
 
-    /// How many days the play history chart covers.
     private let historyDays = 7
 
     // MARK: StatsPresenterProtocol
@@ -60,7 +59,6 @@ final class StatsPresenter: StatsPresenterProtocol, StatsInteractorOutputProtoco
         ))
     }
 
-    /// "1 catch", "3 catches", "no rounds".
     private static func count(_ value: Int, _ singular: String, _ plural: String) -> String {
         switch value {
         case 0: return "no \(plural)"

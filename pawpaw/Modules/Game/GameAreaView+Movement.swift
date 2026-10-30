@@ -5,9 +5,8 @@
 
 import UIKit
 
-/// Stop-and-go movement: one keyframe animation drives both position and heading.
 extension GameAreaView {
-    /// Moves `critter` along the target's legs, freezing between them, and calls `completion` when done or cancelled.
+    /// `completion` runs when the path finishes or is cancelled.
     func animatePath(of target: GameTarget, on critter: UIView, completion: @escaping () -> Void) {
         let total = target.lifetime
         guard total > 0, !target.legs.isEmpty else {
@@ -15,7 +14,6 @@ extension GameAreaView {
             return
         }
 
-        // Critters slide in from beyond the edge; fish rise from the depths where they start.
         let surfaces = target.kind.movementStyle.surfaces
         var current = surfaces ? point(for: target.start) : offscreenPoint(for: target.start)
         var positions = [NSValue(cgPoint: current)]
@@ -33,16 +31,15 @@ extension GameAreaView {
         var previousPause: TimeInterval = 0
         for (index, leg) in target.legs.enumerated() {
             let destination = leg.exits ? offscreenPoint(for: leg.destination) : point(for: leg.destination)
-            // The artwork faces up, so turn it to face the direction of travel.
+            // Artwork faces up, hence the +π/2.
             var legHeading = atan2(destination.y - current.y, destination.x - current.x) + .pi / 2
             if index > 0 {
-                // Take the short way round.
                 while legHeading - heading > .pi { legHeading -= 2 * .pi }
                 while legHeading - heading < -.pi { legHeading += 2 * .pi }
             }
             heading = legHeading
 
-            // Frozen critters turn on the spot; continuous movers curve into the next heading.
+            // After a pause, turn on the spot; otherwise curve into the new heading.
             if index == 0 || previousPause > 0 {
                 rotations.append(NSNumber(value: Double(heading)))
                 rotationTimes.append(NSNumber(value: elapsed / total))
@@ -55,7 +52,6 @@ extension GameAreaView {
 
             if leg.pause > 0 {
                 if leg.hides {
-                    // Hide by running off the nearest edge, waiting out of sight, then running back.
                     let edge = hideEdgePoint(from: destination)
                     var outHeading = atan2(edge.y - destination.y, edge.x - destination.x) + .pi / 2
                     while outHeading - heading > .pi { outHeading -= 2 * .pi }
@@ -73,7 +69,6 @@ extension GameAreaView {
                     positionTimes.append(NSNumber(value: (elapsed + leg.pause - hideTravel) / total))
                     heading = returnHeading
                 } else if leg.underCover {
-                    // Wait under the hiding spot, poking out twice to tease the cat.
                     let peek = peekPoint(from: destination)
                     for (fraction, point) in [(0.3, peek), (0.45, destination), (0.65, peek), (0.8, destination)] {
                         positions.append(NSValue(cgPoint: point))
@@ -87,7 +82,7 @@ extension GameAreaView {
             previousPause = leg.pause
             current = destination
         }
-        // Rounding must not leave the last key short of the end.
+        // Guard against floating-point drift on the final key time.
         positionTimes[positionTimes.count - 1] = 1
         rotationTimes[rotationTimes.count - 1] = 1
 
@@ -101,19 +96,17 @@ extension GameAreaView {
         turn.keyTimes = rotationTimes
         turn.calculationMode = .linear
 
-        // Round critters such as the laser dot look the same from every side, so only some turn.
         let turns = target.kind.turnsToFaceMovement
         let group = CAAnimationGroup()
         group.animations = turns ? [move, turn] : [move]
         group.duration = total
         if surfaces {
             group.animations?.append(surfacingFade(total: total))
-            // Ending inside the pond, so hold the faded-out last frame until the view is recycled.
+            // Hold the faded-out final frame until the view is recycled.
             group.fillMode = .forwards
             group.isRemovedOnCompletion = false
         }
 
-        // Model values describe the end state; the animation shows the journey.
         critter.transform = turns ? CGAffineTransform(rotationAngle: heading) : .identity
         critter.center = current
         critter.alpha = surfaces ? CGFloat(Self.underwaterOpacity) : 1
@@ -129,11 +122,9 @@ extension GameAreaView {
         }
     }
 
-    /// Fish are seen through the water, so even at their shallowest they stay a little faded.
     static let underwaterOpacity: Float = 0.78
     static let waterRippleColor = UIColor(red: 0.6, green: 0.85, blue: 1, alpha: 0.6)
 
-    /// Rise out of the dark water, swim, then sink away. While mostly faded the fish can't be caught.
     private func surfacingFade(total: TimeInterval) -> CAKeyframeAnimation {
         let fadeTime = min(0.8, total / 4)
         let fade = CAKeyframeAnimation(keyPath: "opacity")
@@ -142,7 +133,6 @@ extension GameAreaView {
         return fade
     }
 
-    /// A gentle side-to-side sway on top of the heading, like a tail sweeping through water.
     private func addTailSwish(to critter: UIView) {
         let swish = CAKeyframeAnimation(keyPath: "transform.rotation.z")
         swish.isAdditive = true
@@ -152,14 +142,12 @@ extension GameAreaView {
         critter.layer.add(swish, forKey: "swish")
     }
 
-    /// Where a critter under a hiding spot pokes out to: half of it shows past the spot's edge.
     func peekPoint(from point: CGPoint) -> CGPoint {
         let angle = CGFloat.random(in: 0..<(2 * .pi))
         let reach = hidingSpotSize / 2
         return CGPoint(x: point.x + cos(angle) * reach, y: point.y + sin(angle) * reach)
     }
 
-    /// A spot just beyond the edge nearest to `point`, where a hiding critter waits out of sight.
     func hideEdgePoint(from point: CGPoint) -> CGPoint {
         let margin = targetSize * 0.75
         let gaps = [point.x, bounds.width - point.x, point.y, bounds.height - point.y]
@@ -171,7 +159,7 @@ extension GameAreaView {
         }
     }
 
-    /// Like `point(for:)`, but a point on the border is pushed far enough out that the critter is fully off-screen.
+    /// Like `point(for:)`, but border points are pushed fully off-screen.
     func offscreenPoint(for normalized: CGPoint) -> CGPoint {
         var result = point(for: normalized)
         let margin = targetSize * 0.75

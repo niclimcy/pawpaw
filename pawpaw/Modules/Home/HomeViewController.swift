@@ -37,7 +37,6 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         return label
     }()
 
-    /// The cat that is playing. Tapping it opens the profiles screen.
     private let profileButton: UIButton = {
         var config = UIButton.Configuration.tinted()
         config.title = CatProfile.defaultName
@@ -65,7 +64,6 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         return button
     }()
 
-    /// "Luna loves butterflies", shown once the cat has caught something.
     private let favoriteLabel: UILabel = {
         let label = HomeViewController.makeLabel(size: 16, weight: .semibold)
         label.textColor = Theme.text.withAlphaComponent(0.85)
@@ -79,7 +77,6 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         return label
     }()
 
-    /// A note for the human: cats can't leave the game by accident.
     private let ownerNoteLabel: UILabel = {
         let label = HomeViewController.makeLabel(size: 14, weight: .semibold)
         label.text =
@@ -88,11 +85,9 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         return label
     }()
 
-    /// Design sizes of the picker titles, kept so they can be re-applied when the text size changes.
     private static let modeFontSize: CGFloat = 16
     private static let themeFontSize: CGFloat = 14
 
-    /// Short rounds suit kittens and seniors; relaxed play has no timer at all.
     private let modeControl: UISegmentedControl = {
         let control = UISegmentedControl(
             items: SessionMode.allCases.map(\.title)
@@ -103,7 +98,6 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         return control
     }()
 
-    /// Picks the playfield background; the Home screen previews the choice.
     private let themeControl: UISegmentedControl = {
         let control = UISegmentedControl(
             items: PlayfieldTheme.allCases.map(\.title)
@@ -117,7 +111,6 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         return control
     }()
 
-    /// Owners only: a press-and-hold keeps paws out of the stats screen.
     private let statsButton: UIButton = {
         let button = Theme.plainButton(
             title: "Hold for Stats",
@@ -145,7 +138,6 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         return button
     }()
 
-    /// A centered, wrapping label in the rounded font that follows Dynamic Type.
     private static func makeLabel(size: CGFloat, weight: UIFont.Weight = .heavy)
         -> UILabel
     {
@@ -189,7 +181,6 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
                 #selector(statsHeld(_:))
             )
         )
-        // Segmented controls don't pick up a new text size on their own.
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(contentSizeChanged),
@@ -223,7 +214,6 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         stack.setCustomSpacing(Theme.scaled(28), after: highScoreLabel)
         stack.setCustomSpacing(Theme.scaled(20), after: statsButton)
 
-        // The pickers and the text use the full column width; everything else stays centered.
         for wide in [
             modeControl, themeControl, subtitleLabel, favoriteLabel,
             ownerNoteLabel,
@@ -232,7 +222,6 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
                 true
         }
 
-        // Everything lives in one centered column that scrolls on small screens and is capped on iPad.
         embedCentered(stack, maxWidth: 520)
     }
 
@@ -251,7 +240,6 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     }
 
     @objc private func statsHeld(_ gesture: UILongPressGestureRecognizer) {
-        // `.began` fires only after the full hold duration has passed.
         guard gesture.state == .began else { return }
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         presenter?.didRequestStats()
@@ -285,7 +273,6 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     func showProfile(name: String, face: CatFace, favorite: String?) {
         profileButton.configuration?.title = name
         profileButton.configuration?.image = face.image(side: Theme.scaled(34))
-        profileButton.configuration?.imagePlacement = .leading
         profileButton.accessibilityLabel =
             "\(name), \(face.title). Opens the list of cats"
         favoriteLabel.text = favorite

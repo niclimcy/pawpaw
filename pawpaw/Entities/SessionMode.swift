@@ -5,14 +5,13 @@
 
 import Foundation
 
-/// How long a play session lasts. Short rounds suit kittens and seniors; relaxed play never ends.
 enum SessionMode: String, CaseIterable {
     case short
     case standard
     case long
     case relaxed
 
-    /// Seconds in a round, or `nil` when there is no timer.
+    /// Seconds in a round; `nil` means no timer.
     var duration: Int? {
         switch self {
         case .short: return 30
@@ -22,7 +21,6 @@ enum SessionMode: String, CaseIterable {
         }
     }
 
-    /// Short label for the mode picker.
     var title: String {
         switch self {
         case .short: return "30s"
@@ -32,7 +30,6 @@ enum SessionMode: String, CaseIterable {
         }
     }
 
-    /// Relaxed play has no end, so there is no score to beat.
     var hasHighScore: Bool {
         duration != nil
     }

@@ -5,7 +5,6 @@
 
 import AVFoundation
 
-/// Prey sounds a cat might react to.
 enum GameSound: CaseIterable {
     case squeak
     case rustle
@@ -15,7 +14,7 @@ enum GameSound: CaseIterable {
     case catchPop
 }
 
-/// Plays short prey sounds. The sounds are synthesized in code, so no audio files are needed.
+/// Sounds are synthesized at launch; there are no audio assets.
 final class SoundPlayer {
     static let shared = SoundPlayer()
 
@@ -39,7 +38,6 @@ final class SoundPlayer {
         player.play()
     }
 
-    /// The sound a critter makes when it appears.
     func playAppear(for kind: TargetKind) {
         switch kind {
         case .mouse: play(.squeak)
@@ -47,9 +45,7 @@ final class SoundPlayer {
         case .butterfly: play(.flutter)
         case .cricket: play(.chirp)
         case .feather: play(.swish)
-        // A laser pointer is silent; the cat follows it with its eyes alone.
         case .laser: break
-        // A soft splash, like a fish breaking the surface.
         case .fish: play(.swish)
         }
     }
@@ -64,7 +60,6 @@ final class SoundPlayer {
         case .flutter:
             return noiseBursts(duration: 0.35, burstRate: 28, volume: 0.25)
         case .chirp:
-            // Three quick insect-like trills.
             let trill = chirp(from: 4_200, to: 4_400, duration: 0.05, volume: 0.35)
             let gap = [Float](repeating: 0, count: Int(0.03 * sampleRate))
             return trill + gap + trill + gap + trill
@@ -76,7 +71,7 @@ final class SoundPlayer {
         }
     }
 
-    /// A pure tone that glides between two frequencies, like a mouse squeak.
+    /// Sine sweep from `start` to `end` Hz.
     private static func chirp(from start: Double, to end: Double, duration: Double, volume: Float) -> [Float] {
         let count = Int(duration * sampleRate)
         var phase = 0.0
@@ -88,7 +83,7 @@ final class SoundPlayer {
         }
     }
 
-    /// Scratchy noise pulsing at `burstRate`, like claws or wings on dry leaves.
+    /// High-passed noise pulsing at `burstRate` Hz.
     private static func noiseBursts(duration: Double, burstRate: Double, volume: Float) -> [Float] {
         let count = Int(duration * sampleRate)
         var previous: Float = 0
@@ -97,7 +92,6 @@ final class SoundPlayer {
             let progress = time / duration
             let pulse = Float(max(0, sin(2 * .pi * burstRate * time)))
             let envelope = Float(sin(.pi * progress)) * pulse
-            // Subtracting the previous sample keeps the high, crisp part of the noise.
             let noise = Float.random(in: -1...1)
             let crisp = noise - previous * 0.6
             previous = noise
@@ -105,7 +99,7 @@ final class SoundPlayer {
         }
     }
 
-    /// Wraps 16-bit mono samples in a WAV container.
+    /// 16-bit mono PCM WAV.
     private static func wav(from samples: [Float]) -> Data {
         let byteRate = UInt32(sampleRate) * 2
         let dataSize = UInt32(samples.count * 2)

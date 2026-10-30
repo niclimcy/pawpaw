@@ -5,10 +5,8 @@
 
 import UIKit
 
-/// Draws the grass, pond and snow playfields. The wooden crate has its own view.
-/// A fixed seed keeps the scenery the same every time it is drawn.
+/// Grass, pond and snow. The crate uses `WoodCrateBackgroundView`.
 final class NatureBackgroundView: CachedBackgroundView {
-    /// Grass, pond or snow; the crate uses `WoodCrateBackgroundView`.
     private let theme: PlayfieldTheme
 
     init(theme: PlayfieldTheme) {
@@ -39,7 +37,6 @@ final class NatureBackgroundView: CachedBackgroundView {
         Self.drawVignette(in: ctx, size: size, darkness: 0.5)
     }
 
-    /// Short blades in a few greens, leaning slightly.
     private func drawGrass(size: CGSize, rng: inout SeededGenerator) {
         let bounds = CGRect(origin: .zero, size: size)
         let greens = [
@@ -68,7 +65,6 @@ final class NatureBackgroundView: CachedBackgroundView {
         }
     }
 
-    /// Soft concentric ripples and a few lily pads on dark water.
     private func drawPond(size: CGSize, rng: inout SeededGenerator) {
         let bounds = CGRect(origin: .zero, size: size)
         for _ in 0..<14 {
@@ -97,12 +93,10 @@ final class NatureBackgroundView: CachedBackgroundView {
             UIColor(red: 0.12, green: 0.34, blue: 0.22, alpha: 0.9).setFill()
             UIBezierPath(ovalIn: pad).fill()
             UIColor(red: 0.04, green: 0.12, blue: 0.20, alpha: 1).setFill()
-            // A small notch makes it read as a lily pad.
             UIBezierPath(rect: CGRect(x: pad.midX, y: pad.midY - 1.5, width: padSize / 2, height: 3)).fill()
         }
     }
 
-    /// Drifts of snowflakes and a few soft mounds.
     private func drawSnow(size: CGSize, rng: inout SeededGenerator) {
         let bounds = CGRect(origin: .zero, size: size)
         for _ in 0..<9 {

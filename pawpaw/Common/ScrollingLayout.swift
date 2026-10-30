@@ -6,10 +6,8 @@
 import UIKit
 
 extension UIViewController {
-    /// Puts `content` in a vertical scroll view inside the safe area. It stays centered when it fits
-    /// (large phones, iPad) and scrolls when it doesn't (small phones, landscape, large text).
-    /// `maxWidth` keeps it from stretching across a whole iPad.
-    /// `host` is the view to fill (defaults to the controller's view), so overlays can use it too.
+    /// Centers `content` in a vertical scroll view that scrolls only when the content doesn't fit.
+    /// `host` defaults to the controller's view.
     @discardableResult
     func embedCentered(_ content: UIView, maxWidth: CGFloat, margin: CGFloat = 24, in host: UIView? = nil) -> UIScrollView {
         let host = host ?? view!
@@ -26,7 +24,7 @@ extension UIViewController {
         content.translatesAutoresizingMaskIntoConstraints = false
         container.addSubview(content)
 
-        // Fill the content width up to the maximum; the lower priority lets the maximum win.
+        // Lower priority so `maxWidth` wins.
         let fillWidth = content.widthAnchor.constraint(equalTo: container.widthAnchor, constant: -margin * 2)
         fillWidth.priority = .defaultHigh
 

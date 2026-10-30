@@ -9,7 +9,6 @@ extension ProfileEditorView {
     func build() {
         backgroundColor = UIColor.black.withAlphaComponent(0.55)
         isHidden = true
-        // While the card is up, VoiceOver can't reach the list behind it.
         accessibilityViewIsModal = true
 
         let card = UIView()
@@ -42,7 +41,7 @@ extension ProfileEditorView {
         centerInScroll(card, maxWidth: Theme.scaled(380))
     }
 
-    /// Keeps the card centered, lets it scroll on small screens, and lifts it above the keyboard.
+    /// Like `embedCentered`, but pinned above the keyboard.
     private func centerInScroll(_ card: UIView, maxWidth: CGFloat) {
         let scroll = UIScrollView()
         scroll.keyboardDismissMode = .interactive

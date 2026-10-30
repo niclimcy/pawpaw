@@ -5,7 +5,6 @@
 
 import Foundation
 
-/// The kinds of prey that can scurry across the screen.
 enum TargetKind: String, CaseIterable {
     case mouse
     case bug
@@ -13,10 +12,9 @@ enum TargetKind: String, CaseIterable {
     case cricket
     case feather
     case laser
-    /// A koi that glides through the pond. It only lives on the Pond background.
     case fish
 
-    /// The only background this critter appears on, or `nil` when it appears on every background.
+    /// The only theme this critter appears on; `nil` means every theme.
     var exclusiveTheme: PlayfieldTheme? {
         switch self {
         case .fish: return .pond
@@ -24,19 +22,6 @@ enum TargetKind: String, CaseIterable {
         }
     }
 
-    var emoji: String {
-        switch self {
-        case .mouse: return "🐭"
-        case .bug: return "🐞"
-        case .butterfly: return "🦋"
-        case .cricket: return "🦗"
-        case .feather: return "🪶"
-        case .laser: return "🔴"
-        case .fish: return "🐟"
-        }
-    }
-
-    /// Plural name for sentences such as "Luna loves butterflies".
     var pluralName: String {
         switch self {
         case .mouse: return "mice"
@@ -49,7 +34,6 @@ enum TargetKind: String, CaseIterable {
         }
     }
 
-    /// Name of the top-down SVG artwork in the asset catalog.
     var imageName: String {
         switch self {
         case .mouse: return "critter_mouse"
@@ -74,22 +58,19 @@ enum TargetKind: String, CaseIterable {
         }
     }
 
-    /// Whether this critter can appear on `theme`.
     func canAppear(on theme: PlayfieldTheme) -> Bool {
         exclusiveTheme.map { $0 == theme } ?? true
     }
 
-    /// A round dot looks the same from every side, so it doesn't turn to face where it goes.
     var turnsToFaceMovement: Bool {
         self != .laser
     }
 
-    /// Glows rather than casting a shadow, so it reads as light on the surface.
     var glows: Bool {
         self == .laser
     }
 
-    /// How long (in seconds) the target stays on screen. Faster prey is worth more.
+    /// Seconds on screen.
     var lifetimeRange: ClosedRange<TimeInterval> {
         switch self {
         case .mouse: return 4.5...6.0
@@ -114,7 +95,7 @@ enum TargetKind: String, CaseIterable {
         }
     }
 
-    /// Relative chance of spawning.
+    /// Relative spawn weight.
     var weight: Int {
         switch self {
         case .mouse: return 4

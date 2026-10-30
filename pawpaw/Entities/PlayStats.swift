@@ -5,17 +5,15 @@
 
 import Foundation
 
-/// Lifetime play history. Owners can use it to spot changes in a cat's mood or energy.
 struct PlayStats: Codable, Equatable {
     var totalRounds = 0
     var totalCatches = 0
-    /// Catches per critter, keyed by `TargetKind.rawValue`.
+    /// Keyed by `TargetKind.rawValue`.
     var catchesByKind: [String: Int] = [:]
-    /// Rounds played per day, keyed by `PlayStats.dayKey(for:)`.
+    /// Keyed by `PlayStats.dayKey(for:)`.
     var roundsByDay: [String: Int] = [:]
 
-    /// The critter caught most often, if any. A tie goes to the critter listed first in `TargetKind`,
-    /// so the favorite doesn't change from one launch to the next.
+    /// Ties go to the earliest case in `TargetKind`, so the result is stable.
     var favoriteKind: TargetKind? {
         var best: (kind: TargetKind, catches: Int)?
         for kind in TargetKind.allCases {
@@ -29,7 +27,7 @@ struct PlayStats: Codable, Equatable {
         catchesByKind[kind.rawValue] ?? 0
     }
 
-    /// Rounds played on each of the last `days` days, oldest first, ending today.
+    /// Oldest first, ending today.
     func recentRounds(days: Int, endingOn today: Date = Date(), calendar: Calendar = .current) -> [(date: Date, rounds: Int)] {
         (0..<days).reversed().compactMap { offset in
             guard let date = calendar.date(byAdding: .day, value: -offset, to: today) else { return nil }
@@ -37,8 +35,7 @@ struct PlayStats: Codable, Equatable {
         }
     }
 
-    /// Adds catches to the totals. `isNewRound` is false when adding more of a round that was already
-    /// counted (it was saved when the app was interrupted), so the round isn't counted twice.
+    /// `isNewRound` is false for later parts of an interrupted round, so it isn't counted twice.
     mutating func record(
         catches: [TargetKind: Int],
         isNewRound: Bool = true,

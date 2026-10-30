@@ -16,11 +16,10 @@ final class ProfilesViewController: UIViewController, ProfilesViewProtocol {
         return stack
     }()
 
-    /// False when only one cat is left, since the last cat can't be deleted.
     var canDelete = false
-    /// The themed card for adding and editing, shown over the list instead of a system alert.
     let editor = ProfileEditorView()
     private var editingID: UUID?
+    private var usedFaces: Set<CatFace> = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,7 +54,6 @@ final class ProfilesViewController: UIViewController, ProfilesViewProtocol {
 
     func showAddCard() {
         editingID = nil
-        // New cats start with a face no other cat is wearing, when one is free.
         let free = CatFace.allCases.first { face in !usedFaces.contains(face) } ?? .orange
         editor.present(adding: true, name: "", face: free, canDelete: false)
     }
@@ -64,9 +62,6 @@ final class ProfilesViewController: UIViewController, ProfilesViewProtocol {
         editingID = row.id
         editor.present(adding: false, name: row.name, face: row.face, disabledKinds: row.disabledKinds, canDelete: canDelete)
     }
-
-    /// Faces already worn by a cat in the list.
-    private var usedFaces: Set<CatFace> = []
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)

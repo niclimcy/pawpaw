@@ -5,7 +5,6 @@
 
 import UIKit
 
-/// Sparkly feedback effects for the play field.
 extension GameAreaView {
     private static let starImage: CGImage? = {
         let size = CGSize(width: 24, height: 24)
@@ -33,7 +32,6 @@ extension GameAreaView {
         }.cgImage
     }()
 
-    /// Full celebration: sparkle burst, shockwave rings, flash and floating score.
     func playCatchEffects(points: Int, at position: CGPoint) {
         emitSparkles(at: position, bigBurst: points >= 20)
         emitRing(at: position, color: Theme.gold, endRadius: 110, lineWidth: 5)
@@ -42,12 +40,11 @@ extension GameAreaView {
         showPoints(points, at: position)
     }
 
-    /// A small ripple when the cat taps empty crate.
     func playMissEffect(at position: CGPoint) {
         emitRing(at: position, color: Theme.text.withAlphaComponent(0.6), endRadius: 28, lineWidth: 2)
     }
 
-    /// The closest visible critter jumps away from a missed tap, so the cat still gets a reaction.
+    /// Makes the nearest critter hop away from a missed tap.
     func startleNearestTarget(from location: CGPoint, critter: UIView?) {
         guard let critter, let presentation = critter.layer.presentation() else { return }
         let center = presentation.position
@@ -57,7 +54,7 @@ extension GameAreaView {
         dx /= distance
         dy /= distance
 
-        // An additive hop on top of the running path animation, then a quick settle.
+        // Additive, so it layers on top of the running path animation.
         let hop = CAKeyframeAnimation(keyPath: "position")
         hop.isAdditive = true
         hop.values = [
@@ -80,7 +77,6 @@ extension GameAreaView {
         SoundPlayer.shared.play(.squeak)
     }
 
-    /// A tiny, quickly fading ripple left behind a dragging paw.
     func playTrailEffect(at position: CGPoint) {
         emitRing(at: position, color: Theme.text.withAlphaComponent(0.35), endRadius: 18, lineWidth: 1.5)
     }
@@ -92,7 +88,6 @@ extension GameAreaView {
         emitter.renderMode = .additive
         emitter.birthRate = 1
 
-        // Keep it subtle: two colours, a handful of stars and a couple of dots.
         let palette: [UIColor] = [Theme.gold, .white]
         var cells: [CAEmitterCell] = []
         for color in palette {
@@ -102,7 +97,6 @@ extension GameAreaView {
         emitter.emitterCells = cells
         layer.addSublayer(emitter)
 
-        // One short pulse of particles, then let them fade out.
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.08) { emitter.birthRate = 0 }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) { emitter.removeFromSuperlayer() }
     }

@@ -5,8 +5,6 @@
 
 import UIKit
 
-/// Draws a dark wooden crate: horizontal planks with grain, seams, nails and a vignette.
-/// A fixed seed keeps the grain the same every time it is drawn.
 final class WoodCrateBackgroundView: CachedBackgroundView {
     private let plankHeight: CGFloat = 96
 
@@ -35,12 +33,10 @@ final class WoodCrateBackgroundView: CachedBackgroundView {
 
     private func drawPlank(_ plank: CGRect, width: CGFloat, in ctx: CGContext, rng: inout SeededGenerator) {
         let bounds = CGRect(x: 0, y: 0, width: width, height: plank.maxY)
-        // Base tone, varied per plank.
         let shade = CGFloat.random(in: -0.025...0.035, using: &rng)
         UIColor(red: 0.20 + shade, green: 0.125 + shade * 0.7, blue: 0.075 + shade * 0.4, alpha: 1).setFill()
         ctx.fill(plank)
 
-        // Grain lines.
         for _ in 0..<14 {
             let y = plank.minY + CGFloat.random(in: 4...(plank.height - 4), using: &rng)
             let amplitude = CGFloat.random(in: 1...4, using: &rng)
@@ -56,7 +52,7 @@ final class WoodCrateBackgroundView: CachedBackgroundView {
             path.stroke()
         }
 
-        // A knot or two, on fields wide enough to hold one between the nails.
+        // Knots only on fields wide enough to fit one between the nails.
         let knots = Int.random(in: 0...1, using: &rng)
         for _ in 0..<(bounds.width > 120 ? knots : 0) {
             let size = CGFloat.random(in: 14...26, using: &rng)
@@ -69,13 +65,11 @@ final class WoodCrateBackgroundView: CachedBackgroundView {
             UIBezierPath(ovalIn: knot.insetBy(dx: -4, dy: -3)).stroke()
         }
 
-        // Highlight on top edge and dark seam on the bottom edge.
         UIColor.white.withAlphaComponent(0.05).setFill()
         ctx.fill(CGRect(x: plank.minX, y: plank.minY, width: plank.width, height: 2))
         UIColor.black.withAlphaComponent(0.65).setFill()
         ctx.fill(CGRect(x: plank.minX, y: plank.maxY - 3, width: plank.width, height: 3))
 
-        // Nails at both ends.
         for x in [CGFloat(18), bounds.width - 18] {
             let nail = CGRect(x: x - 5, y: plank.midY - 5, width: 10, height: 10)
             UIColor.black.withAlphaComponent(0.5).setFill()
@@ -91,7 +85,7 @@ final class WoodCrateBackgroundView: CachedBackgroundView {
 extension UIViewController {
     private static let backgroundTag = 9_002
 
-    /// Puts the theme's playfield behind everything else, replacing any earlier one.
+    /// Replaces any previously installed background.
     func installBackground(theme: PlayfieldTheme) {
         view.viewWithTag(Self.backgroundTag)?.removeFromSuperview()
         let background: UIView = theme == .wood ? WoodCrateBackgroundView() : NatureBackgroundView(theme: theme)

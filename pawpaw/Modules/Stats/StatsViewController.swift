@@ -64,8 +64,6 @@ final class StatsViewController: UIViewController, StatsViewProtocol {
         page.axis = .vertical
         page.alignment = .center
         page.spacing = 20
-
-        // One centered column: scrolls on small phones and in landscape, capped in width on iPad.
         embedCentered(page, maxWidth: 560)
 
         NSLayoutConstraint.activate([
@@ -88,7 +86,6 @@ extension StatsViewController {
         return button
     }
 
-    /// Erasing history is deliberate, so the button needs a hold before it asks for confirmation.
     fileprivate func makeResetButton() -> UIButton {
         let button = Theme.plainButton(title: "Hold to reset stats", foreground: Theme.text.withAlphaComponent(0.75))
         button.accessibilityIdentifier = "statsResetButton"

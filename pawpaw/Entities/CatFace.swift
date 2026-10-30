@@ -5,7 +5,6 @@
 
 import Foundation
 
-/// The drawn cat headshots a profile can wear, one per coat colour.
 enum CatFace: String, Codable, CaseIterable {
     case orange
     case gray
@@ -14,12 +13,10 @@ enum CatFace: String, Codable, CaseIterable {
     case calico
     case siamese
 
-    /// Name of the SVG headshot in the asset catalog.
     var imageName: String {
         "cat_\(rawValue)"
     }
 
-    /// Spoken name for VoiceOver.
     var title: String {
         switch self {
         case .orange: return "Orange tabby"

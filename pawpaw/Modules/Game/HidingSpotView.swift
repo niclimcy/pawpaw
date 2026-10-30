@@ -5,8 +5,6 @@
 
 import UIKit
 
-/// Something on the playfield a critter can duck under: a box on the crate, a leaf pile on grass,
-/// a lily pad on the pond or a snow mound. It sits above the critters, so they vanish beneath it.
 final class HidingSpotView: UIView {
     private let theme: PlayfieldTheme
 
@@ -37,7 +35,6 @@ final class HidingSpotView: UIView {
         }
     }
 
-    /// A cardboard box seen from above, flaps folded back.
     private func drawBox(in area: CGRect) {
         let box = area.insetBy(dx: area.width * 0.08, dy: area.height * 0.08)
         UIColor(red: 0.62, green: 0.45, blue: 0.27, alpha: 1).setFill()
@@ -52,7 +49,6 @@ final class HidingSpotView: UIView {
         seam.stroke()
     }
 
-    /// A heap of overlapping autumn leaves.
     private func drawLeafPile(in area: CGRect) {
         let colors = [
             UIColor(red: 0.55, green: 0.30, blue: 0.10, alpha: 1),
@@ -73,7 +69,6 @@ final class HidingSpotView: UIView {
         }
     }
 
-    /// A big lily pad with a notch.
     private func drawLilyPad(in area: CGRect) {
         let center = CGPoint(x: area.midX, y: area.midY)
         let radius = min(area.width, area.height) / 2
@@ -94,7 +89,6 @@ final class HidingSpotView: UIView {
         }
     }
 
-    /// A soft drift of snow.
     private func drawSnowMound(in area: CGRect) {
         UIColor(white: 0.86, alpha: 1).setFill()
         UIBezierPath(ovalIn: area.insetBy(dx: 0, dy: area.height * 0.08)).fill()

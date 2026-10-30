@@ -26,7 +26,6 @@ extension ProfileEditorView {
         return nameField
     }
 
-    /// Every cat face in a grid of three. Tap one to wear it.
     func makeFacePicker() -> UIView {
         let faces = CatFace.allCases
         let rows = stride(from: 0, to: faces.count, by: 3).map { start in
@@ -67,7 +66,6 @@ extension ProfileEditorView {
         return button
     }
 
-    /// "Critters to play with", then every critter in a grid of four. Tap one to turn it on or off.
     func makeCritterPicker() -> UIView {
         let heading = UILabel()
         heading.text = "Critters to play with"
@@ -90,7 +88,7 @@ extension ProfileEditorView {
         let perRow = 4
         let rows = stride(from: 0, to: kinds.count, by: perRow).map { start -> UIStackView in
             var buttons: [UIView] = kinds[start..<min(start + perRow, kinds.count)].map(makeCritterButton)
-            // Keep every button the same size when the last row is short.
+            // Pad a short last row so buttons stay equal width.
             while buttons.count < perRow { buttons.append(UIView()) }
             let row = UIStackView(arrangedSubviews: buttons)
             row.axis = .horizontal
@@ -143,7 +141,6 @@ extension ProfileEditorView {
         return button
     }
 
-    /// Deleting erases a cat's history, so it needs a hold (`Theme.holdDuration`), like leaving the game.
     func makeDeleteButton() -> UIButton {
         let button = Theme.plainButton(title: "Hold to delete this cat", image: "trash")
         button.isHidden = true

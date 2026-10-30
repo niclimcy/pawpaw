@@ -30,7 +30,6 @@ extension GameViewController {
         homeButton.accessibilityLabel = "Home"
         installHoldToExit(on: homeButton)
         homeButton.setContentHuggingPriority(.required, for: .horizontal)
-        // Big enough for a thumb on a phone and for an owner's hand on an iPad.
         let side = max(Theme.minimumTapSize, Theme.scaled(48))
         homeButton.widthAnchor.constraint(greaterThanOrEqualToConstant: side).isActive = true
         homeButton.heightAnchor.constraint(greaterThanOrEqualToConstant: side).isActive = true
@@ -50,15 +49,13 @@ extension GameViewController {
         ])
     }
 
-    /// Cats tap and brush the screen all the time, so leaving the game needs a deliberate hold.
+    /// Leaving needs a deliberate hold; a plain tap only shows a hint.
     func installHoldToExit(on button: UIButton) {
         button.addGestureRecognizer(UILongPressGestureRecognizer.holdToConfirm(self, #selector(holdToExitChanged(_:))))
         button.accessibilityHint = "Press and hold to leave the game"
-        // A quick tap does nothing, so tell the owner how to leave.
         button.addTarget(self, action: #selector(showExitHint), for: .touchUpInside)
     }
 
-    /// Short message for owners who tap an exit button instead of holding it.
     @objc func showExitHint() {
         let tag = 9_001
         view.viewWithTag(tag)?.removeFromSuperview()
@@ -80,7 +77,6 @@ extension GameViewController {
         NSLayoutConstraint.activate([
             hint.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             hint.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -24),
-            // Wraps onto two lines on narrow phones instead of running off the screen.
             hint.leadingAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             hint.trailingAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
         ])
@@ -93,17 +89,15 @@ extension GameViewController {
     }
 
     @objc func holdToExitChanged(_ gesture: UILongPressGestureRecognizer) {
-        // `.began` fires only after the full hold duration has passed.
         guard gesture.state == .began else { return }
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        leaveGame()
+        presenter?.didTapHome()
     }
 
     func setupResultOverlay() {
         resultOverlay.backgroundColor = UIColor.black.withAlphaComponent(0.45)
         resultOverlay.isHidden = true
         resultOverlay.translatesAutoresizingMaskIntoConstraints = false
-        // While the result is up, VoiceOver stays on the card instead of the playfield and HUD behind it.
         resultOverlay.accessibilityViewIsModal = true
         view.addSubview(resultOverlay)
 
@@ -138,7 +132,6 @@ extension GameViewController {
         stack.translatesAutoresizingMaskIntoConstraints = false
         card.addSubview(stack)
 
-        // The card scrolls if a small phone in landscape can't fit it, so the exit buttons stay reachable.
         embedCentered(card, maxWidth: Theme.scaled(380), in: resultOverlay)
 
         NSLayoutConstraint.activate([

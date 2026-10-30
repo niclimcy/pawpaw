@@ -6,7 +6,6 @@
 import UIKit
 
 extension ProfilesViewController {
-    /// A cat's button (tap to play as that cat) with a pencil beside it to rename or delete.
     func makeRow(_ row: ProfileRow) -> UIView {
         var config = row.isActive ? UIButton.Configuration.filled() : UIButton.Configuration.tinted()
         config.title = row.isActive ? "\(row.name)  ✓" : row.name
@@ -22,7 +21,6 @@ extension ProfilesViewController {
         config.subtitleTextAttributesTransformer = Theme.fontTransformer(size: 14, weight: .semibold)
         let select = UIButton(configuration: config)
         select.contentHorizontalAlignment = .leading
-        // The cat takes all the spare width; the pencil stays small.
         select.setContentHuggingPriority(.defaultLow, for: .horizontal)
         select.heightAnchor.constraint(greaterThanOrEqualToConstant: Theme.minimumTapSize).isActive = true
         select.accessibilityIdentifier = "profileRow"

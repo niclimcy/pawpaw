@@ -6,18 +6,15 @@
 import CoreGraphics
 import Foundation
 
-/// Builds stop-and-go paths inside the normalized (0...1) play field.
+/// Builds paths in the normalized (0...1) play field.
 enum MovementPlanner {
-    /// Time a hiding critter takes to run off the edge, and the same again to come back.
+    /// Each way, off the edge and back.
     static let hideTravel: TimeInterval = 0.4
-    /// Shortest freeze that is long enough to run off the edge, wait unseen and run back.
     static let minimumHidePause: TimeInterval = 1.0
-    /// Time spent running off the edge at the end of a journey.
     static let exitTravel: TimeInterval = 0.9
-    /// Shortest wait under a hiding spot: long enough to peek out twice.
+    /// Long enough to peek out twice.
     static let minimumCoverPause: TimeInterval = 1.6
 
-    /// Normalized centers for `count` hiding spots, away from the edges and from each other.
     static func hidingSpots(count: Int) -> [CGPoint] {
         var spots: [CGPoint] = []
         var attempts = 0
@@ -30,7 +27,6 @@ enum MovementPlanner {
         return spots
     }
 
-    /// `coverSpots` are hiding spots a critter may run under during a long freeze.
     static func legs(
         from start: CGPoint,
         style: MovementStyle,
@@ -55,11 +51,10 @@ enum MovementPlanner {
             let destination: CGPoint
             let underCover: Bool
             if mayTakeCover, let spot = coverSpots.randomElement(), Double.random(in: 0..<1) < style.coverChance {
-                // Run for cover, like a mouse ducking under a box or a koi under a lily pad.
                 destination = spot
                 underCover = true
                 hasTakenCover = true
-                // Stay long enough to peek out twice. This makes the journey a little longer.
+                // May lengthen the journey slightly.
                 pause = max(pause, minimumCoverPause)
                 heading = atan2(Double(spot.y - current.y), Double(spot.x - current.x))
             } else {
@@ -80,9 +75,8 @@ enum MovementPlanner {
             ))
             current = destination
         }
-        // Fish sink back into the depths where they are; the view fades them out.
+        // Surfacing critters fade out in place; everything else exits via the nearest edge.
         if style.surfaces { return legs }
-        // Critters leave the way real prey does: they run off the edge instead of vanishing.
         legs.append(PathLeg(
             destination: nearestEdgePoint(to: current),
             travel: exitTravel,
@@ -93,7 +87,6 @@ enum MovementPlanner {
         return legs
     }
 
-    /// The point on the field's border closest to `point`.
     private static func nearestEdgePoint(to point: CGPoint) -> CGPoint {
         let gaps = [point.x, 1 - point.x, point.y, 1 - point.y]
         switch gaps.firstIndex(of: gaps.min() ?? 0) {
@@ -104,7 +97,7 @@ enum MovementPlanner {
         }
     }
 
-    /// Splits `total` into `parts` slightly uneven pieces that add up to `total`.
+    /// Slightly uneven pieces that sum to `total`.
     private static func split(_ total: TimeInterval, into parts: Int) -> [TimeInterval] {
         guard parts > 0 else { return [] }
         let weights = (0..<parts).map { _ in Double.random(in: 0.6...1.4) }
@@ -112,7 +105,7 @@ enum MovementPlanner {
         return weights.map { total * $0 / sum }
     }
 
-    /// Steps along `heading`, turning away from the walls when the step would leave the field.
+    /// Turns away from the walls when a step would leave the field.
     private static func nextPoint(from point: CGPoint, heading: inout Double, distance: Double) -> CGPoint {
         for _ in 0..<12 {
             let candidate = CGPoint(
@@ -124,7 +117,7 @@ enum MovementPlanner {
             }
             heading += Double.random(in: (.pi / 2)...(.pi)) * (Bool.random() ? 1 : -1)
         }
-        // Boxed in: head for the middle of the field.
+        // Boxed in: head for the center.
         heading = atan2(0.5 - Double(point.y), 0.5 - Double(point.x))
         return CGPoint(
             x: min(max(point.x + CGFloat(cos(heading) * distance), 0), 1),

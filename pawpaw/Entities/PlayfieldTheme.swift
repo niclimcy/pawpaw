@@ -5,14 +5,12 @@
 
 import UIKit
 
-/// The surface the critters run across. Every theme is dark so the critters and effects stand out.
 enum PlayfieldTheme: String, CaseIterable {
     case wood
     case grass
     case pond
     case snow
 
-    /// Short label for the theme picker.
     var title: String {
         switch self {
         case .wood: return "Crate"
@@ -22,10 +20,7 @@ enum PlayfieldTheme: String, CaseIterable {
         }
     }
 
-    /// Whether critters that move with `style` may hide under this background's hiding spots.
-    /// Critters that never take cover (the laser dot, which is light shining on top of everything, and
-    /// fliers like butterflies and feathers) always pass over the spots instead of under them.
-    /// Only fish slip under lily pads; land critters would have to walk on water to reach them.
+    /// Only fish hide under lily pads; land critters hide on every other theme.
     func allowsCover(for style: MovementStyle) -> Bool {
         guard style.coverChance > 0 else { return false }
         switch self {
@@ -34,7 +29,6 @@ enum PlayfieldTheme: String, CaseIterable {
         }
     }
 
-    /// Fill colour under whatever the theme draws on top.
     var baseColor: UIColor {
         switch self {
         case .wood: return Theme.background

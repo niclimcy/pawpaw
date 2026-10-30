@@ -16,7 +16,7 @@ extension StatsViewController {
         return label
     }
 
-    /// "Favorite catch:" followed by the critter's artwork, sized to the text.
+    /// Text followed by inline critter artwork sized to the font.
     static func favoriteText(_ text: String, imageName: String?, font: UIFont) -> NSAttributedString {
         let result = NSMutableAttributedString(string: text, attributes: [
             .font: font,
@@ -40,7 +40,7 @@ extension StatsViewController {
         return stack
     }
 
-    /// A critter's artwork over its catch count. VoiceOver reads the column as one element; set its label.
+    /// A single accessibility element; the caller sets its label.
     static func makeColumn(imageName: String, size: CGFloat, bottom: String) -> UIView {
         let imageView = UIImageView(image: UIImage(named: imageName))
         imageView.contentMode = .scaleAspectFit
@@ -59,8 +59,7 @@ extension StatsViewController {
         return column
     }
 
-    /// A vertical bar whose height is proportional to the rounds played that day.
-    /// VoiceOver reads the bar as one element; set its label.
+    /// A single accessibility element; the caller sets its label.
     static func makeBar(label: String, rounds: Int, maxRounds: Int) -> UIView {
         let maxHeight: CGFloat = 70
         let bar = UIView()

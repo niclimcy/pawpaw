@@ -7,8 +7,7 @@ import Foundation
 
 protocol StatsStorage {
     var stats: PlayStats { get }
-    /// Adds catches to the lifetime totals. A round is saved in parts when it is interrupted, so only
-    /// the first part passes `isNewRound`, and the round is counted once.
+    /// Interrupted rounds are saved in parts; only the first part passes `isNewRound`.
     func record(catches: [TargetKind: Int], isNewRound: Bool)
     func reset()
 }
@@ -22,7 +21,6 @@ final class UserDefaultsStatsStorage: StatsStorage {
         self.key = Self.key(for: profileID)
     }
 
-    /// Each cat has its own play history.
     static func key(for profileID: UUID) -> String {
         "pawpaw.\(profileID.uuidString).stats"
     }

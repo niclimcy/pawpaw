@@ -5,27 +5,23 @@
 
 import UIKit
 
-/// A cat and the critter it catches most, as the interactor reads them.
 struct ProfileEntry: Equatable {
     let profile: CatProfile
     let favorite: TargetKind?
 }
 
-/// One line of the profiles list, already formatted as text.
 struct ProfileRow: Equatable {
     let id: UUID
     let name: String
     let face: CatFace
     let subtitle: String
     let isActive: Bool
-    /// Critters turned off for this cat, so the edit card can show them.
     var disabledKinds: Set<TargetKind> = []
 }
 
 // MARK: - View
 protocol ProfilesViewProtocol: AnyObject {
     var presenter: ProfilesPresenterProtocol? { get set }
-    /// `canDelete` is false when only one cat is left.
     func showProfiles(_ rows: [ProfileRow], canDelete: Bool)
 }
 

@@ -5,14 +5,10 @@
 
 import UIKit
 
-/// A drawn background rendered once per size into an image, which is reused after that. Grass alone is
-/// thousands of strokes on a large iPad, so it isn't redrawn on the main thread at every rotation or
-/// screen change.
+/// Renders once per size and caches the image, since some backgrounds are thousands of strokes.
 class CachedBackgroundView: UIView {
-    /// Shared by every background, so going back to a screen or a size reuses the earlier drawing.
     private static let cache: NSCache<NSString, UIImage> = {
         let cache = NSCache<NSString, UIImage>()
-        // A few full-screen images: the current backgrounds in both orientations.
         cache.countLimit = 8
         return cache
     }()
@@ -30,12 +26,12 @@ class CachedBackgroundView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    /// Identifies what this view draws, apart from its size.
+    /// Cache key, excluding size.
     var drawingKey: String {
         String(describing: type(of: self))
     }
 
-    /// Draws the background into `ctx` for `size`. Subclasses override this.
+    /// Override in subclasses.
     func drawBackground(in ctx: CGContext, size: CGSize) {}
 
     override func layoutSubviews() {
@@ -60,7 +56,6 @@ class CachedBackgroundView: UIView {
         layer.contentsScale = image.scale
     }
 
-    /// Darkens the corners so the middle of the field, where critters run, stands out.
     static func drawVignette(in ctx: CGContext, size: CGSize, darkness: CGFloat) {
         let colors = [UIColor.clear.cgColor, UIColor.black.withAlphaComponent(darkness).cgColor] as CFArray
         guard let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: colors, locations: [0.45, 1]) else {

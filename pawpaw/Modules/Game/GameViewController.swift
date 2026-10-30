@@ -7,7 +7,6 @@ import UIKit
 
 final class GameViewController: UIViewController, GameViewProtocol {
     var presenter: GamePresenterProtocol?
-    /// The playfield background, chosen on the Home screen.
     var theme: PlayfieldTheme = .wood
 
     let gameArea = GameAreaView()
@@ -34,9 +33,7 @@ final class GameViewController: UIViewController, GameViewProtocol {
     let resultDetailsLabel = UILabel()
 
     private var hasStarted = false
-    /// Whether the result card is up, so coming back from the background doesn't keep the screen awake.
     private var isShowingResult = false
-    /// The navigation controller's swipe-back gestures, switched off while playing and restored on the way out.
     private var disabledPopGestures: [UIGestureRecognizer] = []
 
     override func viewDidLoad() {
@@ -53,7 +50,6 @@ final class GameViewController: UIViewController, GameViewProtocol {
         gameArea.onDiscard = { [weak self] id in self?.presenter?.didDiscardTarget(id: id) }
         gameArea.onMiss = { [weak self] in self?.presenter?.didMissTap() }
 
-        // A call, Control Center or the app switcher pauses the round so it doesn't run on unseen.
         let center = NotificationCenter.default
         center.addObserver(
             self, selector: #selector(appWillResignActive),
@@ -68,7 +64,7 @@ final class GameViewController: UIViewController, GameViewProtocol {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         disableSwipeBack()
-        // Start once layout is final so targets map to the real play area size.
+        // Start once layout is final so targets map to the real play area.
         guard !hasStarted else { return }
         hasStarted = true
         presenter?.viewDidBecomeReady()
@@ -76,7 +72,6 @@ final class GameViewController: UIViewController, GameViewProtocol {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // A cat won't touch the screen to keep it awake, so stop it dimming or locking mid-round.
         setScreenAwake(true)
     }
 
@@ -89,13 +84,11 @@ final class GameViewController: UIViewController, GameViewProtocol {
         }
     }
 
-    /// Keeps the screen on while critters are running. The result card lets it sleep again.
     private func setScreenAwake(_ awake: Bool) {
         UIApplication.shared.isIdleTimerDisabled = awake
     }
 
-    /// A paw sweeping across the screen must never leave the game, so the edge swipe and the iOS 26
-    /// full-screen swipe back are off while playing. The hold on the home button is the only way out.
+    /// Paws must never swipe out of the game; the home button hold is the only exit.
     private func disableSwipeBack() {
         guard disabledPopGestures.isEmpty, let navigation = navigationController else { return }
         var gestures = [navigation.interactivePopGestureRecognizer]
@@ -117,16 +110,11 @@ final class GameViewController: UIViewController, GameViewProtocol {
     }
 
     @objc private func appDidBecomeActive() {
-        // Only resume when this screen is the one showing.
         guard hasStarted, viewIfLoaded?.window != nil else { return }
         presenter?.appDidBecomeActive()
     }
 
     // MARK: Actions
-    func leaveGame() {
-        presenter?.didTapHome()
-    }
-
     @objc func playAgainTapped() {
         presenter?.didTapPlayAgain()
     }
@@ -163,9 +151,7 @@ final class GameViewController: UIViewController, GameViewProtocol {
         resultOverlay.isHidden = false
         isShowingResult = true
         UIView.animate(withDuration: 0.25) { self.resultOverlay.alpha = 1 }
-        // The round is over: if nobody comes back, the device can sleep as usual.
         setScreenAwake(false)
-        // VoiceOver moves to the result and can't wander onto the playfield behind it.
         UIAccessibility.post(notification: .screenChanged, argument: resultTitleLabel)
     }
 

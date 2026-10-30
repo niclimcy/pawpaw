@@ -5,29 +5,23 @@
 
 import UIKit
 
-/// Everything the stats screen shows, already formatted as text.
 struct StatsViewModel: Equatable {
     struct CritterRow: Equatable {
-        /// Name of the critter's SVG in the asset catalog.
         let imageName: String
         let catches: String
-        /// What VoiceOver reads for the column, such as "Mice: 3 catches".
         let accessibilityLabel: String
     }
 
     struct DayRow: Equatable {
         let label: String
         let rounds: Int
-        /// What VoiceOver reads for the bar, such as "Monday: 2 rounds".
         let accessibilityLabel: String
     }
 
     let title: String
     let summary: String
     let favorite: String
-    /// The favorite critter's SVG name, or `nil` when nothing has been caught yet.
     let favoriteImageName: String?
-    /// The favorite line with the critter named, since VoiceOver can't read the picture.
     let favoriteAccessibilityLabel: String
     let critters: [CritterRow]
     let days: [DayRow]

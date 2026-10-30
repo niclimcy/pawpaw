@@ -13,7 +13,7 @@ final class HomeInteractor: HomeInteractorInputProtocol {
     private let makeScoreStorage: (UUID) -> ScoreStorage
     private let makeStatsStorage: (UUID) -> StatsStorage
 
-    /// Per-cat storages are built per call because the active cat can change while Home stays open.
+    /// Per-cat storages are built on demand because the active cat can change while Home is open.
     init(
         profileStorage: ProfileStorage,
         settings: SettingsStorage,

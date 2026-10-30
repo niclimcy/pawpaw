@@ -5,23 +5,19 @@
 
 import UIKit
 
-/// A wood-styled card over the profiles list to add a cat or edit one. It replaces system alerts,
-/// so the game's look stays the same all the way through.
 final class ProfileEditorView: UIView, UITextFieldDelegate {
-    /// Name, face and the critters turned off for this cat.
+    /// Name, face and disabled critters.
     var onSave: ((String, CatFace, Set<TargetKind>) -> Void)?
     var onDelete: (() -> Void)?
 
     let titleLabel = UILabel()
     let nameField = UITextField()
-    /// Explains why the last critter for every background can't be turned off. Hidden until that happens.
     let critterHintLabel = UILabel()
-    /// Replaced by the real button when the card is built.
+    /// Replaced by the real button in `build()`.
     var deleteButton = UIButton(type: .system)
     var faceButtons: [CatFace: UIButton] = [:]
     var selectedFace: CatFace = .orange
     var critterButtons: [TargetKind: UIButton] = [:]
-    /// Critters this cat won't see. Tapping a critter in the card toggles it.
     var disabledKinds: Set<TargetKind> = []
     private var isAdding = true
 
@@ -49,7 +45,6 @@ final class ProfileEditorView: UIView, UITextFieldDelegate {
         alpha = 0
         UIView.animate(withDuration: 0.2) { self.alpha = 1 }
         if adding { nameField.becomeFirstResponder() }
-        // VoiceOver stays inside the card and starts at its title.
         UIAccessibility.post(notification: .screenChanged, argument: titleLabel)
     }
 
@@ -61,7 +56,6 @@ final class ProfileEditorView: UIView, UITextFieldDelegate {
         })
     }
 
-    /// Escape (the two-finger scrub) closes the card, like Cancel.
     override func accessibilityPerformEscape() -> Bool {
         cancelTapped()
         return true
@@ -79,8 +73,6 @@ final class ProfileEditorView: UIView, UITextFieldDelegate {
         }
     }
 
-    /// Turns a critter on or off for this cat. The last critter that can play on every background can't be
-    /// turned off (fish only live in the pond), so the shake comes with a short explanation.
     func toggle(_ kind: TargetKind) {
         guard let updated = Self.toggled(kind, in: disabledKinds) else {
             shake(critterButtons[kind])
@@ -93,8 +85,7 @@ final class ProfileEditorView: UIView, UITextFieldDelegate {
         refreshCritters()
     }
 
-    /// `disabled` with `kind` switched on or off, or `nil` when that would leave a background with nothing to play.
-    /// Turning a critter back on is always allowed.
+    /// `nil` when disabling `kind` would leave a theme with nothing to play.
     static func toggled(_ kind: TargetKind, in disabled: Set<TargetKind>) -> Set<TargetKind>? {
         var updated = disabled
         if updated.remove(kind) != nil { return updated }
@@ -118,9 +109,9 @@ final class ProfileEditorView: UIView, UITextFieldDelegate {
     // MARK: Actions
     @objc func saveTapped() {
         let name = nameField.text ?? ""
-        // A new cat needs a name; an empty name on an existing cat keeps the old one.
+        // An empty name is only invalid when adding; editing keeps the old name.
         if isAdding, CatProfile.cleaned(name) == nil {
-            shakeNameField()
+            shake(nameField)
             nameField.becomeFirstResponder()
             return
         }
@@ -132,16 +123,11 @@ final class ProfileEditorView: UIView, UITextFieldDelegate {
         dismiss()
     }
 
-    /// `.began` fires only after the full hold, so a paw can't delete a cat by accident.
     @objc func deleteHeld(_ gesture: UILongPressGestureRecognizer) {
         guard gesture.state == .began else { return }
         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         dismiss()
         onDelete?()
-    }
-
-    private func shakeNameField() {
-        shake(nameField)
     }
 
     private func shake(_ view: UIView?) {
@@ -157,7 +143,7 @@ final class ProfileEditorView: UIView, UITextFieldDelegate {
         guard let swiftRange = Range(range, in: current) else { return true }
         let proposed = current.replacingCharacters(in: swiftRange, with: string)
         if proposed.count <= CatProfile.maxNameLength { return true }
-        // Too long, usually a paste: keep as much of the new text as fits instead of dropping all of it.
+        // Too long (usually a paste): insert as much as fits rather than rejecting it all.
         let room = CatProfile.maxNameLength - (current.count - current[swiftRange].count)
         guard room > 0 else { return false }
         let kept = String(string.prefix(room))

@@ -6,39 +6,30 @@
 import CoreGraphics
 import Foundation
 
-/// One stretch of a critter's journey: travel to a point, then optionally freeze there.
 struct PathLeg: Equatable {
-    /// Normalized (0...1) destination.
+    /// Normalized (0...1).
     let destination: CGPoint
     let travel: TimeInterval
-    /// Time spent frozen at the destination before the next leg starts.
+    /// Freeze at the destination before the next leg.
     let pause: TimeInterval
-    /// The critter runs off the nearest edge during the freeze, then comes back.
+    /// Runs off the nearest edge during the pause, then returns.
     let hides: Bool
-    /// The critter runs off the edge of the field and out of sight, ending its journey.
+    /// Final leg off the edge of the field.
     var exits: Bool = false
-    /// The destination is a hiding spot: the critter waits under it during the freeze and peeks out.
+    /// Destination is a hiding spot; the critter peeks out during the pause.
     var underCover: Bool = false
 }
 
-/// How a critter moves. Real prey moves in bursts and changes direction, which holds a cat's attention.
 enum MovementStyle {
-    /// Quick dashes with long freezes (mouse).
     case dart
-    /// Slow meandering with short stops (bug).
     case wander
-    /// Constant zig-zagging arcs, no stops (butterfly).
     case flutter
-    /// Short sudden hops with brief stops (cricket).
     case hop
-    /// Slow, gentle curves that never stop, like a feather on a breeze.
     case drift
-    /// Lightning-fast streaks across the field with dead stops, like a laser pointer.
     case zip
-    /// Smooth, curving glides with brief hovers. Rises from the depths and sinks back instead of using the edges (fish).
     case swim
 
-    /// Appears by rising up from under the water and leaves by sinking, instead of running in from an edge.
+    /// Fades in and out in place instead of entering and leaving via an edge.
     var surfaces: Bool {
         self == .swim
     }
@@ -55,7 +46,6 @@ enum MovementStyle {
         }
     }
 
-    /// Chance that a long enough freeze is spent out of sight beyond the edge.
     var hideChance: Double {
         switch self {
         case .swim: return 0
@@ -68,19 +58,16 @@ enum MovementStyle {
         }
     }
 
-    /// Chance that a long enough freeze is spent under a hiding spot, peeking out.
     var coverChance: Double {
         switch self {
         case .dart: return 0.5
         case .wander: return 0.4
         case .hop: return 0.3
-        // Fish hover often but briefly, so each hover has a smaller chance of ending under a lily pad.
         case .swim: return 0.3
         case .flutter, .drift, .zip: return 0
         }
     }
 
-    /// Share of the lifetime spent frozen between legs.
     var pauseFraction: Double {
         switch self {
         case .swim: return 0.15
@@ -93,7 +80,6 @@ enum MovementStyle {
         }
     }
 
-    /// Normalized distance covered by one leg.
     var distanceRange: ClosedRange<Double> {
         switch self {
         case .swim: return 0.15...0.3
@@ -106,7 +92,7 @@ enum MovementStyle {
         }
     }
 
-    /// Radians the heading changes between legs.
+    /// Radians.
     var turnRange: ClosedRange<Double> {
         switch self {
         case .swim: return 0.25...0.7

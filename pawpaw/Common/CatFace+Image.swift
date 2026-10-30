@@ -6,8 +6,7 @@
 import UIKit
 
 extension CatFace {
-    /// The headshot drawn at `side` points. Button configurations tint plain images, so this one is
-    /// rendered with its own colours kept.
+    /// Rendered as `.alwaysOriginal` so button configurations don't tint it.
     func image(side: CGFloat) -> UIImage? {
         guard let source = UIImage(named: imageName) else { return nil }
         let size = CGSize(width: side, height: side)

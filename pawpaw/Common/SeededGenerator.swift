@@ -5,8 +5,7 @@
 
 import Foundation
 
-/// Deterministic random numbers (SplitMix64), shared by the drawn backgrounds so the scenery
-/// doesn't change from one drawing to the next.
+/// Deterministic SplitMix64, so drawn backgrounds look the same on every render.
 struct SeededGenerator: RandomNumberGenerator {
     private var state: UInt64
 

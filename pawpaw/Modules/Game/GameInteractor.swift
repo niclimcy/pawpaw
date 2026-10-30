@@ -6,13 +6,9 @@
 import CoreGraphics
 import Foundation
 
-/// Holds the game rules: timers, spawning, scoring and high score persistence.
 final class GameInteractor: GameInteractorInputProtocol {
-    /// Cats focus on one thing at a time, so never show more than two critters at once.
     static let maxActiveTargets = 2
-    /// How often we check for a free slot to spawn a new critter into.
     static let spawnInterval: TimeInterval = 1.0
-    /// How many spots critters can duck under each round.
     static let hidingSpotCount = 2
 
     weak var presenter: GameInteractorOutputProtocol?
@@ -20,29 +16,22 @@ final class GameInteractor: GameInteractorInputProtocol {
     private let storage: ScoreStorage
     private let mode: SessionMode
     private let statsStorage: StatsStorage
-    /// Critters that can spawn on this background (fish only live in the pond).
     private let spawnableKinds: [TargetKind]
-    /// Decides which critters can use the hiding spots (only fish go under lily pads).
     private let theme: PlayfieldTheme
     private var activeTargets: [UUID: GameTarget] = [:]
     private var score = 0
     private var catches = 0
-    /// Catches not yet written to the lifetime stats.
     private var unsavedCatches: [TargetKind: Int] = [:]
-    /// Whether this round already counts in the stats, from a save when the app was interrupted.
+    /// Set once an interrupted round has been saved, so it isn't counted twice.
     private var roundIsRecorded = false
     private var timeRemaining = 0
-    /// A round is under way (it may be paused).
     private var isRunning = false
-    /// The app is in the background or interrupted, so the clock and the critters wait.
     private var isPaused = false
     private var clockTimer: Timer?
     private var spawnTimer: Timer?
-    /// Speeds critters up for a cat that catches a lot, and slows them for one that keeps missing.
-    private var difficulty: DifficultyTuner
+    private var difficulty = DifficultyTuner()
     private var hidingSpots: [CGPoint] = []
 
-    /// Taps, catches and the clock only count while the round is running and not paused.
     private var isPlaying: Bool {
         isRunning && !isPaused
     }
@@ -52,19 +41,15 @@ final class GameInteractor: GameInteractorInputProtocol {
         statsStorage: StatsStorage,
         mode: SessionMode,
         theme: PlayfieldTheme,
-        enabledKinds: [TargetKind] = TargetKind.allCases,
-        adaptiveDifficulty: Bool = true
+        enabledKinds: [TargetKind] = TargetKind.allCases
     ) {
         self.storage = storage
         self.statsStorage = statsStorage
         self.mode = mode
         self.theme = theme
         let suited = enabledKinds.filter { $0.canAppear(on: theme) }
-        // Profiles always keep a critter that lives on every background (`CatProfile.isPlayable`), so `suited`
-        // is only empty for a profile saved by an older build with just the fish on. Play with every critter
-        // that suits this background then, rather than leave the field empty.
+        // Only empty for legacy profiles with just the fish enabled; fall back to every suitable critter.
         self.spawnableKinds = suited.isEmpty ? TargetKind.allCases.filter { $0.canAppear(on: theme) } : suited
-        self.difficulty = DifficultyTuner(isEnabled: adaptiveDifficulty)
     }
 
     deinit {
@@ -84,12 +69,10 @@ final class GameInteractor: GameInteractorInputProtocol {
         timeRemaining = mode.duration ?? 0
         isRunning = true
         isPaused = false
-        // New hiding spots every round keep the playfield fresh.
         hidingSpots = MovementPlanner.hidingSpots(count: Self.hidingSpotCount)
 
         presenter?.didPlaceHidingSpots(hidingSpots)
         presenter?.didUpdateScore(score)
-        // Relaxed play has no clock, so the view shows an open-ended symbol instead.
         presenter?.didUpdateTimeRemaining(mode.duration == nil ? nil : timeRemaining)
 
         startTimers()
@@ -97,7 +80,6 @@ final class GameInteractor: GameInteractorInputProtocol {
     }
 
     func stopGame() {
-        // Leaving mid-session (always the case in relaxed mode) still counts what the cat caught.
         if isRunning { saveCatches() }
         isRunning = false
         isPaused = false
@@ -109,10 +91,9 @@ final class GameInteractor: GameInteractorInputProtocol {
         guard isRunning, !isPaused else { return }
         isPaused = true
         invalidateTimers()
-        // The app may be closed while it is in the background, so save what the cat caught so far.
+        // The app may be killed in the background.
         saveCatches()
-        // Critters on screen can't be frozen reliably, so they leave without counting as escapes,
-        // and new ones come when play resumes.
+        // Running animations can't be frozen reliably, so on-screen critters are dropped.
         activeTargets.removeAll()
         presenter?.didPause()
     }
@@ -136,7 +117,6 @@ final class GameInteractor: GameInteractorInputProtocol {
     }
 
     func expireTarget(id: UUID) {
-        // Only a critter that ran off untouched during play counts as an escape.
         guard isPlaying, activeTargets.removeValue(forKey: id) != nil else { return }
         difficulty.recordEscape()
     }
@@ -175,7 +155,6 @@ final class GameInteractor: GameInteractorInputProtocol {
     private func spawnTarget() {
         guard isPlaying, activeTargets.count < Self.maxActiveTargets else { return }
         let kind = randomKind()
-        // Prey emerges from the edge of the crate; fish rise from somewhere inside the pond.
         let start = kind.movementStyle.surfaces ? randomInnerPoint() : randomEdgePoint()
         let target = GameTarget(
             id: UUID(),
@@ -192,8 +171,7 @@ final class GameInteractor: GameInteractorInputProtocol {
         presenter?.didSpawnTarget(target)
     }
 
-    /// Adds catches not yet saved to the lifetime stats. A round without a catch isn't counted.
-    /// The round itself is counted only the first time, even when it is saved in parts.
+    /// Rounds without a catch aren't recorded.
     private func saveCatches() {
         guard !unsavedCatches.isEmpty else { return }
         statsStorage.record(catches: unsavedCatches, isNewRound: !roundIsRecorded)
@@ -232,7 +210,6 @@ final class GameInteractor: GameInteractorInputProtocol {
         return fallback
     }
 
-    /// A spot well inside the field, away from the edges.
     private func randomInnerPoint() -> CGPoint {
         CGPoint(x: CGFloat.random(in: 0.2...0.8), y: CGFloat.random(in: 0.2...0.8))
     }

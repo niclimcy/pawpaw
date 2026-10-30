@@ -10,9 +10,8 @@ protocol HomeViewProtocol: AnyObject {
     var presenter: HomePresenterProtocol? { get set }
     func showMode(_ mode: SessionMode)
     func showTheme(_ theme: PlayfieldTheme)
-    /// `nil` hides the best score (relaxed mode has none).
+    /// `nil` hides the best score.
     func showHighScore(_ score: Int?)
-    /// The cat that is playing, and a line about its favorite critter (`nil` before the first catch).
     func showProfile(name: String, face: CatFace, favorite: String?)
 }
 
