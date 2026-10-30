@@ -1,0 +1,38 @@
+README.md
+  s_3da41da6e3aa1f::t_b3742d1c7b2caf 40,58,221
+  s_3da41da6e3aa1f::t_c54e512eecca4e 50,54
+pawpaw/Common/SoundPlayer.swift
+  s_3da41da6e3aa1f::t_c45c176ac322e0 15,86-92
+  s_3da41da6e3aa1f::t_c54e512eecca4e 64
+pawpaw/Modules/Game/GameAreaView+Movement.swift
+  s_3da41da6e3aa1f::t_8937532d78c254 17-18,88-93,112,146,149-151,184-204
+pawpaw/Entities/TargetKind.swift
+  s_3da41da6e3aa1f::t_64a28b0a3eefdc 17,37,51,65,92,106,121
+pawpaw/Entities/MovementPath.swift
+  s_3da41da6e3aa1f::t_e43a6de0d5b6f9 32,44-53,64,78,88,102,116,131
+  s_3da41da6e3aa1f::t_02e1572f8cbd1f 141,152
+pawpaw/Assets.xcassets/critter_bird.imageset/critter_bird.svg
+  s_3da41da6e3aa1f::t_15fb5942e06ddd 1-21
+pawpaw/Modules/Stats/StatsViewController+Builders.swift
+  s_3da41da6e3aa1f::t_bd642648acb1b9 80-81
+pawpaw/Modules/Game/MovementPlanner.swift
+  s_3da41da6e3aa1f::t_e88819d6050820 15-17,55-59,95,98-99,117-137
+pawpaw/Assets.xcassets/critter_bird.imageset/Contents.json
+  s_3da41da6e3aa1f::t_8c1d09cb458720 1-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6de3e6ae265eaba66968e11a2b2c1eca2ff4f80a",
+  "prompts": {},
+  "sessions": {
+    "s_3da41da6e3aa1f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0476bc75-adc3-47c7-b30f-61c394b06834",
+        "model": "anthropic/claude-opus-5.5"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
