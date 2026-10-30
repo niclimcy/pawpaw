@@ -1,13 +1,16 @@
 README.md
   s_3da41da6e3aa1f::t_b3742d1c7b2caf 40,58,221
+  s_3da41da6e3aa1f::t_c54e512eecca4e 50,54
 pawpaw/Common/SoundPlayer.swift
   s_3da41da6e3aa1f::t_c45c176ac322e0 15,86-92
+  s_3da41da6e3aa1f::t_c54e512eecca4e 64
 pawpaw/Modules/Game/GameAreaView+Movement.swift
   s_3da41da6e3aa1f::t_8937532d78c254 17-18,88-93,112,144,147-149,182-202
 pawpaw/Entities/TargetKind.swift
   s_3da41da6e3aa1f::t_64a28b0a3eefdc 17,37,51,65,92,106,121
 pawpaw/Entities/MovementPath.swift
   s_3da41da6e3aa1f::t_e43a6de0d5b6f9 32,44-53,64,78,88,102,116,131
+  s_3da41da6e3aa1f::t_02e1572f8cbd1f 141,152
 pawpaw/Assets.xcassets/critter_bird.imageset/critter_bird.svg
   s_3da41da6e3aa1f::t_15fb5942e06ddd 1-21
 pawpaw/Modules/Stats/StatsViewController+Builders.swift
