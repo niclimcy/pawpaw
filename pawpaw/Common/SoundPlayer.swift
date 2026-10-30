@@ -19,34 +19,45 @@ final class SoundPlayer {
     static let shared = SoundPlayer()
 
     private static let sampleRate = 44_100.0
-    private var players: [GameSound: AVAudioPlayer] = [:]
+    /// Players per sound, so two critters can make the same sound at different pans.
+    private static let voices = 3
+    private var players: [GameSound: [AVAudioPlayer]] = [:]
+    private var nextVoice: [GameSound: Int] = [:]
 
     private init() {
         // Ambient: mixes with other audio and respects the silent switch.
         try? AVAudioSession.sharedInstance().setCategory(.ambient, mode: .default)
         try? AVAudioSession.sharedInstance().setActive(true)
         for sound in GameSound.allCases {
-            let player = try? AVAudioPlayer(data: Self.wav(from: Self.samples(for: sound)))
-            player?.prepareToPlay()
-            players[sound] = player
+            let data = Self.wav(from: Self.samples(for: sound))
+            players[sound] = (0..<Self.voices).compactMap { _ -> AVAudioPlayer? in
+                let player = try? AVAudioPlayer(data: data)
+                player?.prepareToPlay()
+                return player
+            }
         }
     }
 
-    func play(_ sound: GameSound) {
-        guard let player = players[sound] else { return }
+    /// `pan` runs from -1 (left) to 1 (right).
+    func play(_ sound: GameSound, pan: Float = 0) {
+        guard let pool = players[sound], !pool.isEmpty else { return }
+        let index = nextVoice[sound, default: 0] % pool.count
+        nextVoice[sound] = (index + 1) % pool.count
+        let player = pool[index]
+        player.pan = max(-1, min(1, pan))
         player.currentTime = 0
         player.play()
     }
 
-    func playAppear(for kind: TargetKind) {
+    func playAppear(for kind: TargetKind, pan: Float = 0) {
         switch kind {
-        case .mouse: play(.squeak)
-        case .bug: play(.rustle)
-        case .butterfly: play(.flutter)
-        case .cricket: play(.chirp)
-        case .feather: play(.swish)
+        case .mouse: play(.squeak, pan: pan)
+        case .bug: play(.rustle, pan: pan)
+        case .butterfly: play(.flutter, pan: pan)
+        case .cricket: play(.chirp, pan: pan)
+        case .feather: play(.swish, pan: pan)
         case .laser: break
-        case .fish: play(.swish)
+        case .fish: play(.swish, pan: pan)
         }
     }
 
@@ -56,9 +67,9 @@ final class SoundPlayer {
         case .squeak:
             return chirp(from: 3_200, to: 4_800, duration: 0.14, volume: 0.5)
         case .rustle:
-            return noiseBursts(duration: 0.4, burstRate: 14, volume: 0.35)
+            return noiseBursts(duration: 0.4, burstRate: 14, volume: 0.45, bright: true)
         case .flutter:
-            return noiseBursts(duration: 0.35, burstRate: 28, volume: 0.25)
+            return noiseBursts(duration: 0.35, burstRate: 28, volume: 0.32, bright: true)
         case .chirp:
             let trill = chirp(from: 4_200, to: 4_400, duration: 0.05, volume: 0.35)
             let gap = [Float](repeating: 0, count: Int(0.03 * sampleRate))
@@ -84,18 +95,24 @@ final class SoundPlayer {
     }
 
     /// High-passed noise pulsing at `burstRate` Hz.
-    private static func noiseBursts(duration: Double, burstRate: Double, volume: Float) -> [Float] {
+    /// `bright` leans it toward 6–12 kHz, where cats hear best.
+    private static func noiseBursts(duration: Double, burstRate: Double, volume: Float, bright: Bool = false) -> [Float] {
         let count = Int(duration * sampleRate)
+        // Bright: a steeper high-pass, then a gentle low-pass so the top end doesn't hiss.
+        let highPass: Float = bright ? 0.95 : 0.6
+        let smoothing: Float = bright ? 0.6 : 1
         var previous: Float = 0
+        var smoothed: Float = 0
         return (0..<count).map { index in
             let time = Double(index) / sampleRate
             let progress = time / duration
             let pulse = Float(max(0, sin(2 * .pi * burstRate * time)))
             let envelope = Float(sin(.pi * progress)) * pulse
             let noise = Float.random(in: -1...1)
-            let crisp = noise - previous * 0.6
+            let crisp = noise - previous * highPass
             previous = noise
-            return crisp * envelope * volume
+            smoothed += (crisp - smoothed) * smoothing
+            return smoothed * envelope * volume
         }
     }
 

@@ -77,7 +77,7 @@ final class GameAreaView: UIView {
             addSubview(critter)
         }
         targetViews[target.id] = critter
-        SoundPlayer.shared.playAppear(for: target.kind)
+        SoundPlayer.shared.playAppear(for: target.kind, pan: pan(atX: critter.center.x))
 
         animatePath(of: target, on: critter) { [weak self, weak critter] in
             guard let self, let critter, self.targetViews[target.id] === critter else { return }
@@ -174,7 +174,7 @@ final class GameAreaView: UIView {
             self?.recycle(critter)
         })
         playCatchEffects(points: points, at: position)
-        SoundPlayer.shared.play(.catchPop)
+        SoundPlayer.shared.play(.catchPop, pan: pan(atX: position.x))
         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
     }
 
@@ -251,5 +251,12 @@ final class GameAreaView: UIView {
         let width = max(bounds.width - inset * 2, 0)
         let height = max(bounds.height - inset * 2, 0)
         return CGPoint(x: inset + normalized.x * width, y: inset + normalized.y * height)
+    }
+
+    /// Stereo pan for a sound at `x`: -0.8 at the left edge to 0.8 at the right, never fully one-sided.
+    func pan(atX x: CGFloat) -> Float {
+        guard bounds.width > 0 else { return 0 }
+        let normalized = min(max(x / bounds.width, 0), 1) * 2 - 1
+        return Float(normalized) * 0.8
     }
 }

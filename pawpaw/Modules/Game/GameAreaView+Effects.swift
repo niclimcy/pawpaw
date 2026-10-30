@@ -74,7 +74,7 @@ extension GameAreaView {
         squash.keyTimes = [0, 0.3, 1]
         squash.duration = 0.35
         critter.layer.add(squash, forKey: "startleScale")
-        SoundPlayer.shared.play(.squeak)
+        SoundPlayer.shared.play(.squeak, pan: pan(atX: center.x))
     }
 
     func playTrailEffect(at position: CGPoint) {
