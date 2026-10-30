@@ -8,17 +8,15 @@ Built with **Swift** and **UIKit** (no storyboards or SwiftUI), following the **
 
 ### iPhone
 
-| Home | Gameplay | Video
-|:---:|:---:|:---:|
-| <img src="previews/iphone-home.png" alt="Paw Paw home screen on iPhone" width="280"> | <img src="previews/iphone-gameplay.png" alt="Paw Paw gameplay on iPhone" width="280"> | https://github.com/user-attachments/assets/42b09ec8-3e3a-4238-8e96-210aef7c2d1a |
-
-
+| Home | Gameplay | Stats | Profiles |
+|:---:|:---:|:---:|:---:|
+| <img src="previews/iphone-home.png" alt="Paw Paw home screen on iPhone" width="200"> | <img src="previews/iphone-gameplay.png" alt="Paw Paw gameplay on iPhone" width="200"> | <img src="previews/iphone-stats.png" alt="Paw Paw stats on iPhone" width="200"> | <img src="previews/iphone-profiles.png" alt="Paw Paw profiles on iPhone" width="200"> |
 
 ### iPad
 
-| Home | Gameplay | Video
-|:---:|:---:|:---:|
-| <img src="previews/ipad-home.png" alt="Paw Paw home screen on iPad" width="380"> | <img src="previews/ipad-gameplay.png" alt="Paw Paw gameplay on iPad" width="380"> | https://github.com/user-attachments/assets/deded609-790c-484b-b927-a53345a3e72b |
+| Home | Gameplay | Stats | Profiles |
+|:---:|:---:|:---:|:---:|
+| <img src="previews/ipad-home.png" alt="Paw Paw home screen on iPad" width="220"> | <img src="previews/ipad-gameplay.png" alt="Paw Paw gameplay on iPad" width="220"> | <img src="previews/ipad-stats.png" alt="Paw Paw stats on iPad" width="220"> | <img src="previews/ipad-profiles.png" alt="Paw Paw profiles on iPad" width="220"> |
 
 ## How to play
 
