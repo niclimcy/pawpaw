@@ -1,0 +1,33 @@
+README.md
+  s_3da41da6e3aa1f::t_e5dd91a19188b0 46
+pawpaw/Assets.xcassets/critter_bug.imageset/critter_bug.svg
+  s_3da41da6e3aa1f::t_045c3f775e5498 3-24,26-29,31-42
+pawpaw/Assets.xcassets/critter_butterfly.imageset/critter_butterfly.svg
+  s_3da41da6e3aa1f::t_b0a8288b8a5733 18-19
+pawpaw/Assets.xcassets/critter_cricket.imageset/critter_cricket.svg
+  s_3da41da6e3aa1f::t_7388378920ddc8 3,13-16
+pawpaw/Assets.xcassets/critter_feather.imageset/critter_feather.svg
+  s_3da41da6e3aa1f::t_a7f1bf97df3fd0 13
+pawpaw/Assets.xcassets/critter_fish.imageset/critter_fish.svg
+  s_3da41da6e3aa1f::t_239af831b2654e 3-12
+pawpaw/Assets.xcassets/critter_laser.imageset/critter_laser.svg
+  s_3da41da6e3aa1f::t_f4b35f4c1db255 3-9
+pawpaw/Modules/Game/GameAreaView.swift
+  s_3da41da6e3aa1f::t_2953dc8cc2ac13 58-61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fe8199f5628518308638dfaed675ff5b7878f411",
+  "prompts": {},
+  "sessions": {
+    "s_3da41da6e3aa1f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0476bc75-adc3-47c7-b30f-61c394b06834",
+        "model": "anthropic/claude-opus-5.5"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
