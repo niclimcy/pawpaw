@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Paw Paw – Wireframes (A4)</title>
+<style>
+  :root { --ink:#222; --line:#333; --fill:#e9e9e9; --dark:#3a3a3a; --accent:#e8590c; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  /* A4 landscape ratio (1.414), exported at 3508 x 2480 px */
+  .page {
+    width: 2400px; height: 1697px; padding: 44px 48px; overflow: hidden;
+    background: #f4f4f2; color: var(--ink);
+    font: 14px/1.35 -apple-system, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  header { display: flex; align-items: baseline; gap: 20px; border-bottom: 3px solid var(--ink); padding-bottom: 10px; }
+  header h1 { margin: 0; font-size: 38px; }
+  header span { color: #777; font-size: 16px; }
+
+  .screens { display: flex; justify-content: space-between; zoom: 1.08; }
+  .screen { width: 300px; }
+  .screen h3 { margin: 0 0 10px; font-size: 18px; text-align: center; }
+  .notes { margin: 14px 0 0; padding: 0; list-style: none; font-size: 13.5px; }
+  .notes li { display: flex; gap: 8px; align-items: center; margin-bottom: 5px; }
+  .notes .n { position: static; flex: none; }
+
+  .phone {
+    width: 300px; height: 650px; border: 2px solid var(--ink); border-radius: 38px;
+    background: #fff; position: relative; overflow: hidden; display: flex; flex-direction: column;
+  }
+  .status { height: 44px; flex: none; position: relative; }
+  .status::after { content:""; position:absolute; left:50%; top:10px; width:84px; height:22px; margin-left:-42px; border-radius:12px; background:var(--ink); }
+  .body { flex: 1; display: flex; flex-direction: column; padding: 8px 16px 16px; min-height: 0; position: relative; }
+  .dim { position: absolute; inset: 0; background: rgba(0,0,0,.35); }
+
+  .p { position: relative; }
+  .n { position:absolute; left:-9px; top:-9px; z-index:5; width:20px; height:20px; border-radius:50%; background:var(--accent); color:#fff; font:700 11px/20px sans-serif; text-align:center; }
+  .box { border:1.5px solid var(--line); background:var(--fill); border-radius:10px; }
+  .card { border:2px solid var(--line); background:#fafafa; border-radius:22px; padding:14px; }
+  .img { border:1.5px solid var(--line); border-radius:8px; flex:none;
+    background: linear-gradient(to top right, transparent calc(50% - 1px), #aaa 50%, transparent calc(50% + 1px)),
+                linear-gradient(to bottom right, transparent calc(50% - 1px), #aaa 50%, transparent calc(50% + 1px)), #f2f2f2; }
+  .round { border-radius:50%; }
+  .btn { border:1.5px solid var(--line); border-radius:999px; background:var(--dark); color:#fff; text-align:center; font-weight:700; padding:11px 16px; }
+  .btn.light { background:var(--fill); color:var(--ink); }
+  .btn.ring { border:2px dashed var(--ink); background:transparent; color:var(--ink); }
+  .label { font-size:10px; font-weight:800; letter-spacing:.06em; color:#666; margin:0 0 4px; }
+  .center { text-align:center; }
+  .row { display:flex; align-items:center; }
+  .grow { flex:1; }
+  .gap6 { gap:6px; } .gap8 { gap:8px; }
+  .title { font-size:26px; font-weight:800; text-align:center; }
+  .dashed { border:1.5px dashed #777; border-radius:10px; }
+
+  .seg { display:flex; border:1.5px solid var(--line); border-radius:9px; overflow:hidden; }
+  .seg span { flex:1; text-align:center; padding:7px 0; font-size:11px; font-weight:700; border-left:1.5px solid var(--line); }
+  .seg span:first-child { border-left:0; } .seg span.on { background:var(--dark); color:#fff; }
+  .tiles { display:flex; gap:6px; }
+  .tile { flex:1; text-align:center; font-size:10px; font-weight:700; }
+  .tile .img { height:40px; margin-bottom:3px; }
+  .tile.on .img { border:3px solid var(--accent); } .tile.on { color:var(--accent); }
+
+  .hud { display:flex; align-items:center; gap:10px; height:44px; font-weight:800; font-size:17px; }
+  .hbtn { width:40px; height:40px; text-align:center; line-height:36px; font-size:18px; }
+  .field { flex:1; position:relative; margin:0 -16px -16px; border-top:1.5px dashed #999; background:repeating-linear-gradient(0deg,#f6f6f6 0 70px,#efefef 70px 140px); }
+  .crit { position:absolute; }
+  .crit span { position:absolute; inset:0; display:grid; place-items:center; font-size:10px; color:#666; }
+
+  .crits { display:flex; justify-content:space-between; align-items:flex-end; }
+  .crits div { text-align:center; font-weight:700; font-size:11px; }
+  .crits .img { width:28px; height:28px; margin:0 auto 2px; }
+  .bars { display:flex; justify-content:space-between; align-items:flex-end; height:84px; }
+  .bars div { text-align:center; font-size:9.5px; font-weight:700; width:28px; }
+  .bars i { display:block; width:14px; margin:2px auto; background:var(--dark); border-radius:3px; }
+  .bars i.z { height:3px; background:#bbb; }
+
+  .cat { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+  .cat .pick { flex:1; display:flex; align-items:center; gap:10px; border:1.5px solid var(--line); border-radius:14px; padding:8px 10px; background:var(--fill); }
+  .cat .pick.on { background:var(--dark); color:#fff; }
+  .cat .pick b { display:block; font-size:14px; } .cat .pick small { font-size:10.5px; opacity:.85; }
+  .pencil { width:30px; text-align:center; font-size:16px; }
+  .grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+  .grid4 { display:grid; grid-template-columns:repeat(4,1fr); gap:5px; }
+  .grid3 .img, .grid4 .img { aspect-ratio:1; }
+  .sel { border:3px solid var(--accent) !important; } .off { opacity:.35; }
+  .field-in { border:1.5px solid var(--line); border-radius:12px; background:#fff; text-align:center; padding:8px; color:#888; font-weight:700; }
+
+  /* stats tiles */
+  .metrics { display:flex; gap:8px; }
+  .metric { flex:1; background:#e2e2e2; border-radius:12px; padding:7px 4px 6px; text-align:center; }
+  .metric b { display:block; font-size:22px; line-height:1.15; font-weight:800; }
+  .metric small { font-size:10.5px; color:#666; font-weight:600; }
+  .metric .img { width:26px; height:26px; margin:0 auto; }
+  .divider { height:1px; background:#bbb; }
+  .hdr { font-size:10.5px; font-weight:700; color:#777; text-align:center; margin-bottom:6px; }
+  .ctiles { display:flex; gap:3px; }
+  .ctile { flex:1; background:#e2e2e2; border-radius:10px; padding:5px 0 4px; text-align:center; font-size:12px; font-weight:700; }
+  .ctile .img { width:24px; height:24px; margin:0 auto 2px; }
+  .ctile.off { opacity:1; } .ctile.off .img, .ctile.off span { opacity:.35; }
+
+  /* bottom strip */
+  .bottom { display:flex; gap:40px; align-items:flex-start; padding-bottom:8px; }
+  .bottom svg { flex:none; }
+  .key { flex:1; display:flex; flex-direction:column; gap:16px; padding-top:6px; }
+  .key h4 { margin:0 0 8px; font-size:16px; }
+  .swatches { display:flex; gap:10px; flex-wrap:wrap; }
+  .sw { width:112px; font-size:12px; } .sw i { display:block; height:40px; border:1px solid #000; border-radius:8px; margin-bottom:4px; }
+  .key ul { margin:0; padding-left:18px; font-size:14px; } .key li { margin-bottom:3px; }
+  svg text { font-family:-apple-system,"Helvetica Neue",Arial,sans-serif; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <h1>🐾 Paw Paw — App Wireframes</h1>
+  <span>iPhone · 390 × 844 pt · based on current source code</span>
+</header>
+
+<div class="screens">
+
+<!-- HOME -->
+<section class="screen">
+  <h3>1 · Home</h3>
+  <div class="phone"><div class="status"></div>
+    <div class="body">
+      <div class="row" style="justify-content:space-between">
+        <div class="p box row gap8" style="border-radius:999px;padding:5px 14px 5px 6px"><b class="n">1</b>
+          <div class="img round" style="width:30px;height:30px"></div>
+          <div style="line-height:1.15"><b style="font-size:13px">Luna</b><br><span style="font-size:10px;color:#555">Loves butterflies</span></div></div>
+        <div class="p box round row" style="width:44px;height:44px;justify-content:center;font-weight:800"><b class="n">2</b>▂▅▇</div>
+      </div>
+      <div class="grow" style="display:flex;flex-direction:column;justify-content:center;gap:10px">
+        <div class="p center"><b class="n" style="left:70px">3</b>
+          <div class="img" style="width:62px;height:62px;margin:0 auto 6px"></div>
+          <div class="title" style="font-size:34px">Paw Paw</div></div>
+        <div class="card" style="margin-top:12px">
+          <div class="p"><b class="n" style="left:-22px;top:-4px">4</b><div class="label">ROUND LENGTH</div>
+            <div class="seg"><span>30s</span><span class="on">60s</span><span>2 min</span><span>Relaxed</span></div></div>
+          <div class="p" style="margin-top:12px"><b class="n" style="left:-22px;top:-4px">5</b><div class="label">PLAYGROUND</div>
+            <div class="tiles"><div class="tile on"><div class="img"></div>Crate</div><div class="tile"><div class="img"></div>Grass</div><div class="tile"><div class="img"></div>Pond</div><div class="tile"><div class="img"></div>Snow</div></div></div>
+        </div>
+        <div class="p btn" style="font-size:24px;padding:16px;margin:10px 30px 0"><b class="n">6</b>PLAY</div>
+        <div class="p center dashed" style="font-weight:800;padding:4px;margin:0 70px"><b class="n">7</b>🏆 Best: 120</div>
+      </div>
+    </div></div>
+  <ol class="notes">
+    <li><b class="n">1</b>Cat chip → Your Cats</li>
+    <li><b class="n">2</b>Stats button</li>
+    <li><b class="n">3</b>Logo and title</li>
+    <li><b class="n">4</b>Round length: 30s · 60s · 2 min · Relaxed</li>
+    <li><b class="n">5</b>Playground: Crate · Grass · Pond · Snow</li>
+    <li><b class="n">6</b>PLAY → countdown</li>
+    <li><b class="n">7</b>Best score (only if &gt; 0)</li>
+  </ol>
+</section>
+
+<!-- PLAYING -->
+<section class="screen">
+  <h3>2 · Game: playing</h3>
+  <div class="phone"><div class="status"></div>
+    <div class="body">
+      <div class="hud">
+        <div class="p box round hbtn"><b class="n">1</b>🏠</div>
+        <div class="p grow"><b class="n" style="left:-4px;top:-12px">2</b>Score: 30</div>
+        <div class="p"><b class="n" style="left:-14px">3</b>⏱ 43</div>
+      </div>
+      <div class="field p"><b class="n" style="left:8px;top:8px">4</b>
+        <div class="crit img p" style="left:120px;top:60px;width:84px;height:84px"><b class="n">5</b><span>critter</span></div>
+        <div class="crit img" style="left:40px;top:250px;width:84px;height:84px"><span>critter</span></div>
+        <div class="crit dashed p" style="left:176px;top:330px;width:92px;height:70px;background:#e6e6e6"><b class="n">6</b><span>hiding spot</span></div>
+        <div class="crit dashed" style="left:20px;top:100px;width:70px;height:56px;background:#e6e6e6"><span>hiding spot</span></div>
+        <div class="crit dashed p btn light" style="left:52px;bottom:24px;width:196px;padding:8px;font-size:12px;background:#fff"><b class="n">7</b>Press and hold to leave</div>
+      </div>
+    </div></div>
+  <ol class="notes">
+    <li><b class="n">1</b>Home: hold 1.5 s to exit</li>
+    <li><b class="n">2</b>Score</li>
+    <li><b class="n">3</b>Timer (⏱ ∞ in Relaxed)</li>
+    <li><b class="n">4</b>Play field</li>
+    <li><b class="n">5</b>Critters (max 2)</li>
+    <li><b class="n">6</b>Hiding spots</li>
+    <li><b class="n">7</b>Exit hint on quick tap</li>
+  </ol>
+</section>
+
+<!-- COUNTDOWN -->
+<section class="screen">
+  <h3>3 · Game: countdown</h3>
+  <div class="phone"><div class="status"></div>
+    <div class="body">
+      <div class="hud"><div class="box round hbtn">🏠</div><div class="grow">Score: 0</div><div>⏱ 60</div></div>
+      <div style="margin-left:14px;width:0;height:0;border:9px solid transparent;border-bottom:10px solid var(--ink);border-top:0"></div>
+      <div class="p box" style="width:220px;padding:8px 12px;font-size:12px;font-weight:700;border:2px solid var(--ink)"><b class="n">1</b>Owners: press and hold 🏠 to leave</div>
+      <div class="field p" style="border-top:0;background:transparent">
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px">
+          <div class="p" style="font-size:22px;font-weight:800"><b class="n" style="left:-26px">2</b>Get ready!</div>
+          <div class="p" style="font-size:96px;font-weight:800;line-height:1;color:var(--accent)"><b class="n" style="left:-18px">3</b>3</div>
+        </div>
+      </div>
+    </div></div>
+  <ol class="notes">
+    <li><b class="n">1</b>Owner exit tip (until learned)</li>
+    <li><b class="n">2</b>“Get ready!”</li>
+    <li><b class="n">3</b>3 · 2 · 1</li>
+  </ol>
+</section>
+
+<!-- RESULT -->
+<section class="screen">
+  <h3>4 · Game: result</h3>
+  <div class="phone"><div class="status"></div>
+    <div class="body" style="background:repeating-linear-gradient(0deg,#f6f6f6 0 70px,#efefef 70px 140px)">
+      <div class="hud"><div class="box round hbtn">🏠</div><div class="grow">Score: 150</div><div>⏱ 0</div></div>
+      <div class="dim" style="top:44px"></div>
+      <div style="position:absolute;left:20px;right:20px;top:180px">
+        <div class="card p center" style="background:#fff;padding:22px 20px 12px"><b class="n">1</b>
+          <div style="font-size:26px;font-weight:800;margin-bottom:10px">Time's Up!</div>
+          <div class="p" style="font-weight:700;font-size:15px;line-height:1.5"><b class="n" style="left:-4px">2</b>You caught 14 critters<br>Score: 150<br>Best: 210</div>
+          <div class="p btn" style="margin:14px 20px 8px"><b class="n">3</b>Play Again</div>
+          <div class="p btn ring" style="margin:0 20px 4px;font-size:13px;padding:8px"><b class="n">4</b>Hold to go Home</div>
+        </div>
+      </div>
+    </div></div>
+  <ol class="notes">
+    <li><b class="n">1</b>Time's Up! / New Best! 🎉</li>
+    <li><b class="n">2</b>Catches, score, best</li>
+    <li><b class="n">3</b>Play Again → countdown</li>
+    <li><b class="n">4</b>Hold 1.5 s → Home</li>
+  </ol>
+</section>
+
+<!-- STATS -->
+<section class="screen">
+  <h3>5 · Play Stats</h3>
+  <div class="phone"><div class="status"></div>
+    <div class="body" style="gap:14px;justify-content:center">
+      <div class="p title" style="font-size:24px"><b class="n" style="left:20px;top:-12px">1</b>Luna's Stats</div>
+      <div class="card" style="padding:14px 12px;display:flex;flex-direction:column;gap:11px">
+        <div class="metrics">
+          <div class="p metric"><b class="n" style="left:-6px;top:-6px">2</b><b>12</b><small>Rounds</small></div>
+          <div class="metric"><b>87</b><small>Catches</small></div>
+          <div class="p metric"><b class="n" style="left:-6px;top:-6px">3</b><div class="img"></div><small>Favorite</small></div>
+        </div>
+        <div class="divider"></div>
+        <div class="p"><b class="n" style="left:-4px;top:-4px">4</b>
+          <div class="hdr">Catches by critter</div>
+          <div class="ctiles">
+            <div class="ctile"><div class="img"></div>24</div><div class="ctile"><div class="img"></div>18</div><div class="ctile"><div class="img"></div>9</div>
+            <div class="ctile"><div class="img"></div>7</div><div class="ctile"><div class="img"></div>11</div><div class="ctile"><div class="img"></div>6</div>
+            <div class="ctile off"><div class="img"></div><span>0</span></div>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="p"><b class="n" style="left:-4px;top:-4px">5</b>
+          <div class="hdr">Rounds in the last 7 days</div>
+          <div class="bars" style="height:76px"><div>2<i style="height:26px"></i>Mon</div><div><i class="z"></i>Tue</div><div>3<i style="height:38px"></i>Wed</div><div>4<i style="height:52px"></i>Thu</div><div>1<i style="height:14px"></i>Fri</div><div><i class="z"></i>Sat</div><div>2<i style="height:26px"></i>Sun</div></div>
+        </div>
+        <div class="divider"></div>
+        <div class="p"><b class="n" style="left:-4px;top:-4px">6</b>
+          <div class="hdr">Best scores</div>
+          <div class="metrics"><div class="metric"><b>90</b><small>30s</small></div><div class="metric"><b>150</b><small>60s</small></div><div class="metric"><b>210</b><small>2 min</small></div></div>
+        </div>
+      </div>
+      <div class="p btn" style="margin:0 80px"><b class="n">7</b>Back</div>
+      <div class="p btn ring" style="margin:-6px 50px 0;font-size:12px;padding:8px"><b class="n">8</b>Hold to reset stats</div>
+    </div></div>
+  <ol class="notes">
+    <li><b class="n">1</b>Active cat's name</li>
+    <li><b class="n">2</b>Rounds and Catches tiles</li>
+    <li><b class="n">3</b>Favorite critter (– if none)</li>
+    <li><b class="n">4</b>Catches per critter (dim if 0)</li>
+    <li><b class="n">5</b>7-day rounds chart</li>
+    <li><b class="n">6</b>Best score tile per round length</li>
+    <li><b class="n">7</b>Back</li>
+    <li><b class="n">8</b>Hold 1.5 s → confirm alert</li>
+  </ol>
+</section>
+
+<!-- PROFILES -->
+<section class="screen">
+  <h3>6 · Your Cats</h3>
+  <div class="phone"><div class="status"></div>
+    <div class="body" style="gap:14px;justify-content:center">
+      <div class="title" style="font-size:24px">Your Cats</div>
+      <div class="card p" style="padding:12px"><b class="n">1</b>
+        <div class="cat p"><b class="n" style="left:-18px;top:14px">2</b>
+          <div class="pick on"><div class="img round" style="width:40px;height:40px"></div><div><b>Luna&nbsp; ✓</b><small>Loves butterflies</small></div></div>
+          <div class="p pencil"><b class="n" style="left:-4px;top:-14px">3</b>✎</div></div>
+        <div class="cat"><div class="pick"><div class="img round" style="width:40px;height:40px"></div><div><b>Milo</b><small>Loves mice</small></div></div><div class="pencil">✎</div></div>
+        <div class="cat" style="margin-bottom:0"><div class="pick"><div class="img round" style="width:40px;height:40px"></div><div><b>Pepper</b><small>No favorite yet</small></div></div><div class="pencil">✎</div></div>
+      </div>
+      <div class="p btn light" style="margin:0 60px"><b class="n">4</b>＋ Add a cat</div>
+      <div class="p btn" style="margin:0 80px"><b class="n">5</b>Back</div>
+    </div></div>
+  <ol class="notes">
+    <li><b class="n">1</b>Cat list</li>
+    <li><b class="n">2</b>Tap row = make active</li>
+    <li><b class="n">3</b>Edit → editor card</li>
+    <li><b class="n">4</b>Add a cat → editor card</li>
+    <li><b class="n">5</b>Back</li>
+  </ol>
+</section>
+
+<!-- EDITOR -->
+<section class="screen">
+  <h3>7 · Add / edit cat</h3>
+  <div class="phone"><div class="status"></div>
+    <div class="body" style="background:#f4f4f4">
+      <div class="dim" style="top:0"></div>
+      <div style="position:absolute;left:14px;right:14px;top:12px">
+        <div class="card" style="background:#fff;padding:14px 14px 8px;display:flex;flex-direction:column;gap:9px">
+          <div class="p center" style="font-size:22px;font-weight:800"><b class="n">1</b>Add a cat</div>
+          <div class="p field-in"><b class="n">2</b>Your cat's name</div>
+          <div class="p grid3" style="padding:0 40px"><b class="n" style="left:0">3</b><div class="img sel"></div><div class="img"></div><div class="img"></div><div class="img"></div><div class="img"></div><div class="img"></div></div>
+          <div class="p center" style="font-weight:800;font-size:12px"><b class="n" style="left:-4px">4</b>Critters to play with</div>
+          <div class="grid4" style="padding:0 6px"><div class="img sel"></div><div class="img sel"></div><div class="img sel"></div><div class="img sel"></div><div class="img sel"></div><div class="img off"></div><div class="img sel"></div></div>
+          <div class="p center dashed" style="font-size:10px;padding:4px;font-weight:700"><b class="n">5</b>Keep at least one critter that isn't a fish on. Fish only swim in the pond.</div>
+          <div class="p btn" style="padding:9px;margin:0 50px"><b class="n">6</b>Save</div>
+          <div class="center" style="font-weight:700;font-size:13px;color:#555;margin-top:-4px">Cancel</div>
+          <div class="p center dashed" style="font-weight:700;font-size:12px;padding:6px;margin:-2px 30px 0;border-radius:999px"><b class="n">7</b>🗑 Hold to delete this cat</div>
+        </div>
+      </div>
+    </div></div>
+  <ol class="notes">
+    <li><b class="n">1</b>Add a cat / Edit cat</li>
+    <li><b class="n">2</b>Name (max 20)</li>
+    <li><b class="n">3</b>Face picker (6)</li>
+    <li><b class="n">4</b>Critter on/off toggles</li>
+    <li><b class="n">5</b>Hint (only when blocked)</li>
+    <li><b class="n">6</b>Save / Cancel</li>
+    <li><b class="n">7</b>Hold to delete (edit only)</li>
+  </ol>
+</section>
+
+</div>
+
+<div class="bottom">
+  <svg viewBox="0 0 1520 340" width="1824" height="408" role="img" aria-label="Navigation flow">
+    <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#222"/></marker></defs>
+    <g fill="#fff" stroke="#222" stroke-width="2">
+      <rect x="10"   y="130" width="200" height="70" rx="12" fill="#3a3a3a"/>
+      <rect x="330"  y="20"  width="200" height="70" rx="12"/>
+      <rect x="650"  y="20"  width="200" height="70" rx="12"/>
+      <rect x="970"  y="20"  width="200" height="70" rx="12"/>
+      <rect x="330"  y="130" width="200" height="70" rx="12"/>
+      <rect x="650"  y="130" width="200" height="70" rx="12"/>
+      <rect x="970"  y="130" width="200" height="70" rx="12"/>
+      <rect x="1290" y="130" width="200" height="70" rx="12"/>
+      <rect x="330"  y="240" width="200" height="70" rx="12"/>
+      <rect x="650"  y="240" width="200" height="70" rx="12" stroke-dasharray="6 4"/>
+    </g>
+    <g font-size="17" font-weight="700" text-anchor="middle" fill="#222">
+      <text x="110" y="170" fill="#fff">Home</text>
+      <text x="430" y="60">Your Cats</text><text x="750" y="60">Add / edit cat</text><text x="1070" y="60">Delete cat</text>
+      <text x="430" y="170">Game</text><text x="750" y="170">Countdown</text><text x="1070" y="170">Playing</text><text x="1390" y="170">Result card</text>
+      <text x="430" y="280">Play Stats</text><text x="750" y="280">Reset alert</text>
+    </g>
+    <g stroke="#222" stroke-width="2" fill="none" marker-end="url(#a)">
+      <path d="M210 150 C 270 150 270 55 330 55"/><path d="M210 165 L330 165"/><path d="M210 180 C 270 180 270 275 330 275"/>
+      <path d="M530 55 L650 55"/><path d="M850 55 L970 55"/>
+      <path d="M530 165 L650 165"/><path d="M850 165 L970 165"/><path d="M1170 165 L1290 165"/>
+      <path d="M530 275 L650 275"/>
+    </g>
+    <g stroke="#888" stroke-width="1.5" fill="none" stroke-dasharray="5 4" marker-end="url(#a)">
+      <path d="M330 190 L210 190"/>
+      <path d="M430 90 L430 118 L110 118 L110 130"/>
+      <path d="M430 310 L430 334 L110 334 L110 200"/>
+      <path d="M1390 200 L1390 222 L750 222 L750 200"/>
+    </g>
+    <g font-size="13" fill="#555" text-anchor="middle">
+      <text x="262" y="50">cat chip</text><text x="270" y="158">PLAY</text><text x="262" y="268">stats</text>
+      <text x="590" y="46">edit / add</text><text x="910" y="46">hold</text>
+      <text x="590" y="156">auto</text><text x="910" y="156">auto</text><text x="1230" y="156">time up</text>
+      <text x="590" y="266">hold</text>
+      <text x="270" y="185">hold 🏠</text><text x="270" y="110">Back</text><text x="270" y="326">Back</text>
+      <text x="1070" y="216">Play Again</text>
+    </g>
+  </svg>
+
+  <div class="key">
+    <div>
+      <h4>Palette</h4>
+      <div class="swatches">
+        <div class="sw"><i style="background:#291A0F"></i>Background #291A0F</div>
+        <div class="sw"><i style="background:#452B1A"></i>Panel #452B1A</div>
+        <div class="sw"><i style="background:#FF9E33"></i>Accent #FF9E33</div>
+        <div class="sw"><i style="background:#FFD64D"></i>Gold #FFD64D</div>
+        <div class="sw"><i style="background:#FFF0CC"></i>Text #FFF0CC</div>
+      </div>
+    </div>
+    <div>
+      <h4>Key</h4>
+      <ul>
+        <li><b style="color:var(--accent)">Orange numbers</b>: callouts under each screen</li>
+        <li><b>Dashed outline</b>: conditional or temporary element</li>
+        <li><b>Hold 1.5 s</b>: owner-only action (exit, reset, delete)</li>
+        <li><b>Cross box</b>: image placeholder</li>
+        <li>iPad: same layouts, UI scaled 1.4×</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>
