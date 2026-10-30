@@ -7,6 +7,7 @@ import UIKit
 
 final class StatsViewController: UIViewController, StatsViewProtocol {
     var presenter: StatsPresenterProtocol?
+    var theme: PlayfieldTheme = .wood
 
     private let titleLabel = StatsViewController.makeLabel(size: Theme.scaled(34))
     private let summaryRow = StatsViewController.makeRow(spacing: 10, alignment: .fill)
@@ -16,8 +17,8 @@ final class StatsViewController: UIViewController, StatsViewProtocol {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Theme.background
-        installBackground(theme: .wood)
+        view.backgroundColor = theme.baseColor
+        installBackground(theme: theme)
         setupLayout()
     }
 

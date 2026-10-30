@@ -17,6 +17,7 @@ final class StatsRouter: StatsRouterProtocol {
         )
         let router = StatsRouter()
 
+        view.theme = UserDefaultsSettingsStorage().selectedTheme
         view.presenter = presenter
         presenter.view = view
         presenter.interactor = interactor
