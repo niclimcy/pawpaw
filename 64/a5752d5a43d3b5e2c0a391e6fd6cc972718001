@@ -1,0 +1,22 @@
+pawpaw/Modules/Game/GameAreaView+BodyMotion.swift
+  s_69e74685583ae2::t_f3240ec4633423 1-70
+pawpaw/Modules/Game/GameAreaView+Movement.swift
+  s_69e74685583ae2::t_d447543bf12e1d 167
+  s_69e74685583ae2::t_f104edd42da16b 203,208
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "64a5752d5a43d3b5e2c0a391e6fd6cc972718001",
+  "prompts": {},
+  "sessions": {
+    "s_69e74685583ae2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fe11fa93-474b-4d18-8907-195b83fa32fd",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
