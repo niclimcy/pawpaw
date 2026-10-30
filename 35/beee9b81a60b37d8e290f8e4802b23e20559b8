@@ -1,0 +1,29 @@
+README.md
+  s_3da41da6e3aa1f::t_84da112c90f72e 55,129,131,179-180,228
+pawpaw/Modules/Game/GameInteractor.swift
+  s_3da41da6e3aa1f::t_b87917ba73fb52 13-14,37-40,86-88,135,189-190,196-204
+pawpaw/Modules/Game/GameAreaView.swift
+  s_3da41da6e3aa1f::t_ec75f203907ae9 56-58,61,111
+pawpaw/Modules/Game/GameAreaView+Variants.swift
+  s_3da41da6e3aa1f::t_c67b6acb4c83fc 1-31
+pawpaw/Entities/CritterVariant.swift
+  s_3da41da6e3aa1f::t_910f8e6292a54e 1-49
+pawpaw/Entities/GameTarget.swift
+  s_3da41da6e3aa1f::t_629a22d354adf1 15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "35beee9b81a60b37d8e290f8e4802b23e20559b8",
+  "prompts": {},
+  "sessions": {
+    "s_3da41da6e3aa1f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0476bc75-adc3-47c7-b30f-61c394b06834",
+        "model": "anthropic/claude-opus-5.5"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
