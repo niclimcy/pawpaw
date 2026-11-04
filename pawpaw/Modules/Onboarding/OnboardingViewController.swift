@@ -15,8 +15,11 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
     private let textArea = UIView()
     private let catFields = UIStackView()
     private let nameField = CatNameField()
-    private let facePicker = CatFacePicker(perRow: 3, maxSide: Theme.scaled(64))
+    private let facePicker = CatFacePicker(perRow: 3, maxSide: Theme.scaled(64), minSide: Theme.minimumTapSize)
     private var isOnCatSetup = false
+    private weak var cardScroll: UIScrollView?
+    /// How much of the card's scroll view the keyboard covers.
+    private var keyboardInset: CGFloat = 0
 
     private let titleLabel: UILabel = {
         let label = OnboardingViewController.makeLabel(size: 28)
@@ -57,9 +60,18 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
     }()
 
     private static let artSide: CGFloat = 64
+    private static let cardMargin: CGFloat = 24
+
+    // When the card is taller than the space above the buttons, the reserved text space gives way
+    // first, then the art, then the face picker (just below `.defaultHigh`); past that the card scrolls.
+    private static let fitPriority = UILayoutPriority.defaultHigh
+    private static let artPriority = UILayoutPriority(650)
+    private static let reservedTextPriority = UILayoutPriority(600)
 
     private static func makeLabel(size: CGFloat, weight: UIFont.Weight = .heavy) -> UILabel {
         let label = UILabel()
+        // Required, so fitting the card shrinks the art and picker rather than cutting off text.
+        label.setContentCompressionResistancePriority(.required, for: .vertical)
         label.font = Theme.roundedFont(size: Theme.scaled(size), weight: weight)
         label.adjustsFontForContentSizeCategory = true
         label.textColor = Theme.text
@@ -131,38 +143,47 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
             textArea.widthAnchor.constraint(equalTo: cardStack.widthAnchor)
         ])
 
-        // Ends at the keyboard so the name field and buttons stay visible while typing.
-        let content = UIView()
-        content.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(content)
-
         // The controls stay put at the bottom; the card is centered in the space above them.
+        // The keyboard slides over both rather than squeezing them; see `updateKeyboardInset()`.
         let controls = UIStackView(arrangedSubviews: [pageDots, nextButton, skipButton])
         controls.axis = .vertical
         controls.alignment = .center
         controls.spacing = Theme.scaled(8)
         controls.translatesAutoresizingMaskIntoConstraints = false
-        content.addSubview(controls)
+        view.addSubview(controls)
 
         let cardArea = UIView()
         cardArea.translatesAutoresizingMaskIntoConstraints = false
-        content.addSubview(cardArea)
+        view.addSubview(cardArea)
 
         NSLayoutConstraint.activate([
-            content.topAnchor.constraint(equalTo: view.topAnchor),
-            content.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
-            content.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            content.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-
-            controls.bottomAnchor.constraint(equalTo: content.bottomAnchor, constant: -8),
-            controls.centerXAnchor.constraint(equalTo: content.centerXAnchor),
+            controls.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
+            controls.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 
             cardArea.bottomAnchor.constraint(equalTo: controls.topAnchor, constant: -8),
-            cardArea.leadingAnchor.constraint(equalTo: content.leadingAnchor),
-            cardArea.trailingAnchor.constraint(equalTo: content.trailingAnchor)
+            cardArea.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            cardArea.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
-        let scroll = embedCentered(card, maxWidth: Theme.scaled(440), in: cardArea)
+        let scroll = embedCentered(card, maxWidth: Theme.scaled(440), margin: Self.cardMargin, in: cardArea)
         scroll.keyboardDismissMode = .interactive
+        cardScroll = scroll
+
+        // Invisible; follows the keyboard so its moves trigger `viewDidLayoutSubviews`.
+        let keyboardTracker = UIView()
+        keyboardTracker.isUserInteractionEnabled = false
+        keyboardTracker.isAccessibilityElement = false
+        keyboardTracker.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(keyboardTracker)
+        NSLayoutConstraint.activate([
+            keyboardTracker.topAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
+            keyboardTracker.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            keyboardTracker.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            keyboardTracker.widthAnchor.constraint(equalToConstant: 0)
+        ])
+        // Keeps the card on screen on shorter phones instead of cutting it off at the buttons.
+        let fit = card.heightAnchor.constraint(lessThanOrEqualTo: scroll.frameLayoutGuide.heightAnchor, constant: -Self.cardMargin * 2)
+        fit.priority = Self.fitPriority
+        fit.isActive = true
 
         backButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(backButton)
@@ -172,6 +193,33 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
             // Below Back even when it's hidden, so the card doesn't shift on the first page.
             cardArea.topAnchor.constraint(equalTo: backButton.bottomAnchor, constant: 8)
         ])
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        updateKeyboardInset()
+    }
+
+    /// Lets the card scroll out from under the keyboard instead of moving the layout.
+    /// Runs on every keyboard change, since `keyboardLayoutGuide` relayouts the view.
+    private func updateKeyboardInset() {
+        guard let scroll = cardScroll else { return }
+        let scrollFrame = scroll.convert(scroll.bounds, to: view)
+        let inset = max(0, scrollFrame.maxY - view.keyboardLayoutGuide.layoutFrame.minY)
+        guard inset != keyboardInset else { return }
+        keyboardInset = inset
+        scroll.contentInset.bottom = inset
+        scroll.verticalScrollIndicatorInsets.bottom = inset
+
+        let maxOffset = max(0, scroll.contentSize.height + inset - scroll.bounds.height)
+        if scroll.contentOffset.y > maxOffset {
+            scroll.contentOffset.y = maxOffset
+        }
+        // Only when the keyboard appears or resizes, so it doesn't fight the owner's scrolling.
+        if inset > 0, nameField.isFirstResponder {
+            let field = nameField.convert(nameField.bounds, to: scroll).insetBy(dx: 0, dy: -12)
+            scroll.scrollRectToVisible(field, animated: false)
+        }
     }
 
     private func setupTextArea() {
@@ -215,11 +263,20 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
         artRow.addArrangedSubview(makeArtImage(UIImage(named: face.imageName), side: Theme.scaled(Self.artSide * 1.4)))
     }
 
+    /// `side` is the preferred size; the art shrinks below it when the card needs the room.
     private func makeArtImage(_ image: UIImage?, side: CGFloat) -> UIImageView {
         let picture = UIImageView(image: image)
         picture.contentMode = .scaleAspectFit
-        picture.widthAnchor.constraint(equalToConstant: side).isActive = true
-        picture.heightAnchor.constraint(equalToConstant: side).isActive = true
+        // The SVG's own size mustn't stop the art from shrinking.
+        picture.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        picture.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
+        let preferred = picture.heightAnchor.constraint(equalToConstant: side)
+        preferred.priority = Self.artPriority
+        NSLayoutConstraint.activate([
+            preferred,
+            picture.heightAnchor.constraint(lessThanOrEqualToConstant: side),
+            picture.widthAnchor.constraint(equalTo: picture.heightAnchor)
+        ])
         return picture
     }
 
@@ -334,9 +391,12 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
             ghost.isUserInteractionEnabled = false
             ghost.accessibilityElementsHidden = true
             textArea.addSubview(ghost)
+            // Optional, so the cat step's shorter text can give the space back on short screens.
+            let reserve = ghost.bottomAnchor.constraint(lessThanOrEqualTo: textArea.bottomAnchor)
+            reserve.priority = Self.reservedTextPriority
             NSLayoutConstraint.activate([
                 ghost.topAnchor.constraint(equalTo: textArea.topAnchor),
-                ghost.bottomAnchor.constraint(lessThanOrEqualTo: textArea.bottomAnchor),
+                reserve,
                 ghost.leadingAnchor.constraint(equalTo: textArea.leadingAnchor),
                 ghost.trailingAnchor.constraint(equalTo: textArea.trailingAnchor)
             ])
@@ -373,6 +433,19 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
         nameField.layer.add(shake, forKey: "shake")
         nameField.becomeFirstResponder()
         UIAccessibility.post(notification: .announcement, argument: "Add your cat's name, or skip for now")
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        func dump(_ tag: String) {
+            print("DBG \(tag) card", card.frame, "inset", keyboardInset, "kbd", view.keyboardLayoutGuide.layoutFrame,
+                  "scroll", cardScroll.map { "\($0.frame) off \($0.contentOffset.y) inset \($0.contentInset.bottom)" } ?? "-")
+        }
+        dump("rest")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { self.nameField.becomeFirstResponder() }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { dump("kbd") }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 6) { self.nameField.resignFirstResponder() }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 8) { dump("after") }
     }
 
     // MARK: Accessibility

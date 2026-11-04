@@ -12,9 +12,10 @@ final class CatFacePicker: UIView {
     private var buttons: [CatFace: UIButton] = [:]
 
     /// `maxSide` caps the button size and centers the rows; `nil` fills the width.
-    init(perRow: Int = 3, maxSide: CGFloat? = nil) {
+    /// `minSide` lets a tighter layout shrink the buttons down to that size, but no smaller.
+    init(perRow: Int = 3, maxSide: CGFloat? = nil, minSide: CGFloat? = nil) {
         super.init(frame: .zero)
-        build(perRow: perRow, maxSide: maxSide)
+        build(perRow: perRow, maxSide: maxSide, minSide: minSide)
         select(.orange)
     }
 
@@ -42,7 +43,7 @@ final class CatFacePicker: UIView {
     }
 
     // MARK: Building
-    private func build(perRow: Int, maxSide: CGFloat?) {
+    private func build(perRow: Int, maxSide: CGFloat?, minSide: CGFloat?) {
         let spacing: CGFloat = 10
         let faces = CatFace.allCases
         let rows = stride(from: 0, to: faces.count, by: perRow).map { start in
@@ -72,6 +73,16 @@ final class CatFacePicker: UIView {
             if let maxSide {
                 let count = CGFloat(perRow)
                 row.widthAnchor.constraint(lessThanOrEqualToConstant: maxSide * count + spacing * (count - 1)).isActive = true
+            }
+        }
+        if let minSide {
+            // One size for every button, so a shrinking grid doesn't leave its rows mismatched.
+            let all = rows.flatMap(\.arrangedSubviews)
+            for button in all {
+                button.widthAnchor.constraint(greaterThanOrEqualToConstant: minSide).isActive = true
+                if let first = all.first, button !== first {
+                    button.widthAnchor.constraint(equalTo: first.widthAnchor).isActive = true
+                }
             }
         }
     }

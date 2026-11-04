@@ -38,7 +38,7 @@ final class OnboardingPresenter: OnboardingPresenterProtocol {
     /// The intro pages plus the cat setup.
     private static var stepCount: Int { pages.count + 1 }
 
-    private var index = 0
+    private var index = 3
 
     // MARK: OnboardingPresenterProtocol
     func viewDidLoad() {
