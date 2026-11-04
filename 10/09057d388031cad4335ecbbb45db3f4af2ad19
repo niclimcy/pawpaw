@@ -1,0 +1,14 @@
+pawpaw/Info.plist
+  h_36695e5767c2ad 5-6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1009057d388031cad4335ecbbb45db3f4af2ad19",
+  "prompts": {},
+  "humans": {
+    "h_36695e5767c2ad": {
+      "author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
