@@ -53,8 +53,6 @@ Always watch your cat while it plays. Claws can scratch screens, so a screen pro
 
 ## Keywords (100)
 
-Comma-separated, no spaces. Words already in the name and subtitle are left out, since Apple indexes those anyway.
-
 ```
 kitten,pet,toy,mouse,laser,bug,fish,bird,feather,ipad,indoor,hunt,chase,play,enrichment,kitty
 ```
