@@ -15,16 +15,47 @@ final class StatsViewController: UIViewController, StatsViewProtocol {
     private let daysStack = StatsViewController.makeRow(spacing: 4)
     private let bestScoresRow = StatsViewController.makeRow(spacing: 10, alignment: .fill)
 
+    // Tightened when the regular layout doesn't fit, e.g. on an iPhone SE; see `applyMetrics()`.
+    private var fit = CompactLayoutFit()
+    private weak var layoutScroll: UIScrollView?
+    private let page = UIStackView()
+    private let footer = UIStackView()
+    private let content = UIStackView()
+    private var sectionBreaks: [UIView] = []
+    private var cardInsets: [NSLayoutConstraint] = []
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = theme.baseColor
         installBackground(theme: theme)
         setupLayout()
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(contentSizeChanged),
+            name: UIContentSizeCategory.didChangeNotification,
+            object: nil
+        )
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         presenter?.viewWillAppear()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        guard let scroll = layoutScroll else { return }
+        let overflow = scroll.contentLayoutGuide.layoutFrame.height - scroll.frameLayoutGuide.layoutFrame.height
+        let room = view.safeAreaLayoutGuide.layoutFrame.height
+        if fit.update(needed: room + overflow, room: room) {
+            applyMetrics()
+        }
+    }
+
+    /// The text size changes what fits, so start from the regular layout and measure again.
+    @objc private func contentSizeChanged() {
+        fit.reset()
+        applyMetrics()
     }
 
     // MARK: Layout
@@ -38,7 +69,7 @@ final class StatsViewController: UIViewController, StatsViewProtocol {
         card.translatesAutoresizingMaskIntoConstraints = false
 
         let dividers = (0..<3).map { _ in Self.makeDivider() }
-        let content = UIStackView(arrangedSubviews: [
+        for subview in [
             summaryRow,
             dividers[0],
             Self.makeSectionHeader("Catches by critter"), crittersStack,
@@ -46,37 +77,69 @@ final class StatsViewController: UIViewController, StatsViewProtocol {
             Self.makeSectionHeader("Rounds in the last 7 days"), daysStack,
             dividers[2],
             Self.makeSectionHeader("Best scores"), bestScoresRow
-        ])
-        let sectionGap = Self.spacing(phone: 14, pad: 20)
+        ] {
+            content.addArrangedSubview(subview)
+        }
         content.axis = .vertical
         content.alignment = .fill
-        content.spacing = Self.spacing(phone: 10, pad: 14)
         // Room around the dividers so each section reads as its own block.
-        for section in [summaryRow, crittersStack, daysStack] {
-            content.setCustomSpacing(sectionGap, after: section)
-        }
-        for divider in dividers {
-            content.setCustomSpacing(sectionGap, after: divider)
-        }
+        sectionBreaks = [summaryRow, crittersStack, daysStack] + dividers
         content.translatesAutoresizingMaskIntoConstraints = false
         card.addSubview(content)
 
-        let page = UIStackView(arrangedSubviews: [title, card, makeBackButton(), makeResetButton()])
+        for subview in [title, card] {
+            page.addArrangedSubview(subview)
+        }
         page.axis = .vertical
         page.alignment = .center
-        page.spacing = Self.spacing(phone: 16, pad: 24)
-        page.setCustomSpacing(8, after: page.arrangedSubviews[2])
-        embedCentered(page, maxWidth: 560)
+        page.isLayoutMarginsRelativeArrangement = true
 
-        let inset = Self.spacing(phone: 16, pad: 20)
-        NSLayoutConstraint.activate([
-            card.widthAnchor.constraint(equalTo: page.widthAnchor),
+        // Back stays on screen; on short screens only the stats above it scroll.
+        for subview in [makeBackButton(), makeResetButton()] {
+            footer.addArrangedSubview(subview)
+        }
+        footer.axis = .vertical
+        footer.alignment = .center
+        footer.isLayoutMarginsRelativeArrangement = true
 
-            content.topAnchor.constraint(equalTo: card.topAnchor, constant: inset),
-            content.bottomAnchor.constraint(equalTo: card.bottomAnchor, constant: -inset),
-            content.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: inset),
-            content.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -inset)
-        ])
+        // Margins live in the stacks so `applyMetrics()` can tighten them.
+        layoutScroll = embedCentered(page, footer: footer, maxWidth: 560, verticalMargin: 0, footerSpacing: 0)
+
+        // Constants are set in `applyMetrics()`; each is card edge to content edge, inward.
+        cardInsets = [
+            content.topAnchor.constraint(equalTo: card.topAnchor),
+            card.bottomAnchor.constraint(equalTo: content.bottomAnchor),
+            content.leadingAnchor.constraint(equalTo: card.leadingAnchor),
+            card.trailingAnchor.constraint(equalTo: content.trailingAnchor)
+        ]
+        NSLayoutConstraint.activate(cardInsets + [card.widthAnchor.constraint(equalTo: page.widthAnchor)])
+        applyMetrics()
+    }
+
+    /// Regular sizes, or tighter ones when they don't fit. iPad always has room for the regular ones.
+    private func applyMetrics() {
+        let compact = fit.isCompact
+        titleLabel.font = Theme.roundedFont(size: Theme.scaled(compact ? 28 : 34), weight: .heavy)
+
+        page.spacing = Self.spacing(phone: compact ? 10 : 16, pad: 24)
+        page.directionalLayoutMargins = NSDirectionalEdgeInsets(top: compact ? 12 : 24, leading: 0, bottom: 0, trailing: 0)
+
+        content.spacing = Self.spacing(phone: compact ? 8 : 10, pad: 14)
+        for section in sectionBreaks {
+            content.setCustomSpacing(Self.spacing(phone: compact ? 10 : 14, pad: 20), after: section)
+        }
+        for inset in cardInsets {
+            inset.constant = Self.spacing(phone: compact ? 12 : 16, pad: 20)
+        }
+
+        footer.spacing = compact ? 0 : 8
+        footer.directionalLayoutMargins = NSDirectionalEdgeInsets(
+            top: Self.spacing(phone: compact ? 10 : 16, pad: 24),
+            leading: 0,
+            bottom: compact ? 4 : 16,
+            trailing: 0
+        )
+        view.setNeedsLayout()
     }
 }
 

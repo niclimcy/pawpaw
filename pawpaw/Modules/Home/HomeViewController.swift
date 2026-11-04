@@ -9,17 +9,23 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     var presenter: HomePresenterProtocol?
     private var shownTheme: PlayfieldTheme = .wood
 
+    // Tightened when the regular layout doesn't fit, e.g. on an iPhone SE; see `applyMetrics()`.
+    private var fit = CompactLayoutFit()
+    private weak var layoutScroll: UIScrollView?
+    private let mainStack = UIStackView()
+    private let footer = UIStackView()
+    private let setupStack = UIStackView()
+    private var setupCardInsets: [NSLayoutConstraint] = []
+
     private let logoView: UIImageView = {
         let view = UIImageView(image: UIImage(named: "logo_paw"))
         view.contentMode = .scaleAspectFit
-        let height = Theme.scaled(80)
         let aspect = view.image.map { $0.size.width / $0.size.height } ?? 1
-        view.heightAnchor.constraint(equalToConstant: height).isActive = true
-        view.widthAnchor.constraint(equalToConstant: height * aspect).isActive =
-            true
+        view.widthAnchor.constraint(equalTo: view.heightAnchor, multiplier: aspect).isActive = true
         view.isAccessibilityElement = false
         return view
     }()
+    private lazy var logoHeight = logoView.heightAnchor.constraint(equalToConstant: Theme.scaled(80))
 
     private let titleLabel: UILabel = {
         let label = HomeViewController.makeLabel(size: 48)
@@ -224,6 +230,19 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
                 selectedText: Self.selectedText
             )
         }
+        // The text size changes what fits, so start from the regular layout and measure again.
+        fit.reset()
+        applyMetrics()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        guard let scroll = layoutScroll, let host = scroll.superview else { return }
+        let overflow = scroll.contentLayoutGuide.layoutFrame.height - scroll.frameLayoutGuide.layoutFrame.height
+        let room = host.safeAreaLayoutGuide.layoutFrame.height
+        if fit.update(needed: room + overflow, room: room) {
+            applyMetrics()
+        }
     }
 
     private func setupLayout() {
@@ -244,17 +263,63 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         ])
 
         let setupCard = makeSetupCard()
-        let stack = UIStackView(arrangedSubviews: [
-            logoView, titleLabel, setupCard, playButton, playfieldNoteLabel, highScoreLabel,
-        ])
-        stack.axis = .vertical
-        stack.alignment = .center
-        stack.spacing = Theme.scaled(12)
-        stack.setCustomSpacing(Theme.scaled(28), after: titleLabel)
-        stack.setCustomSpacing(Theme.scaled(28), after: setupCard)
-        setupCard.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
+        for subview in [logoView, titleLabel, setupCard] {
+            mainStack.addArrangedSubview(subview)
+        }
+        mainStack.axis = .vertical
+        mainStack.alignment = .center
+        mainStack.isLayoutMarginsRelativeArrangement = true
+        setupCard.widthAnchor.constraint(equalTo: mainStack.widthAnchor).isActive = true
+        logoHeight.isActive = true
 
-        embedCentered(stack, maxWidth: Self.maxContentWidth, in: content)
+        // PLAY stays on screen; on short screens only the settings above it scroll.
+        for subview in [playButton, playfieldNoteLabel, highScoreLabel] {
+            footer.addArrangedSubview(subview)
+        }
+        footer.axis = .vertical
+        footer.alignment = .center
+        footer.isLayoutMarginsRelativeArrangement = true
+
+        // Margins live in the stacks so `applyMetrics()` can tighten them.
+        layoutScroll = embedCentered(
+            mainStack,
+            footer: footer,
+            maxWidth: Self.maxContentWidth,
+            verticalMargin: 0,
+            footerSpacing: 0,
+            in: content
+        )
+        applyMetrics()
+    }
+
+    /// Regular sizes, or tighter ones when they don't fit. iPad always has room for the regular ones.
+    private func applyMetrics() {
+        let compact = fit.isCompact
+        logoHeight.constant = Theme.scaled(compact ? 52 : 80)
+        titleLabel.font = Theme.roundedFont(size: Theme.scaled(compact ? 38 : 48), weight: .heavy)
+
+        mainStack.spacing = Theme.scaled(compact ? 8 : 12)
+        mainStack.setCustomSpacing(Theme.scaled(compact ? 14 : 28), after: titleLabel)
+        mainStack.directionalLayoutMargins = NSDirectionalEdgeInsets(top: compact ? 12 : 24, leading: 0, bottom: 0, trailing: 0)
+
+        let sectionGap = Theme.scaled(compact ? 12 : 20)
+        setupStack.setCustomSpacing(sectionGap, after: modeControl)
+        setupStack.setCustomSpacing(sectionGap, after: afterRoundControl)
+        for inset in setupCardInsets {
+            inset.constant = Theme.scaled(compact ? 14 : 18)
+        }
+
+        footer.spacing = Theme.scaled(compact ? 6 : 12)
+        footer.directionalLayoutMargins = NSDirectionalEdgeInsets(
+            top: Theme.scaled(compact ? 16 : 28),
+            leading: 0,
+            bottom: compact ? 12 : 24,
+            trailing: 0
+        )
+        let playPadding = Theme.scaled(compact ? 14 : 20)
+        playButton.configuration?.contentInsets.top = playPadding
+        playButton.configuration?.contentInsets.bottom = playPadding
+        view.setNeedsLayout()
     }
 
     private static var maxContentWidth: CGFloat {
@@ -277,16 +342,17 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     }
 
     private func makeSetupCard() -> UIView {
-        let stack = UIStackView(arrangedSubviews: [
+        let stack = setupStack
+        for subview in [
             Self.makeSectionLabel("ROUND LENGTH"), modeControl,
             afterRoundLabel, afterRoundControl,
             Self.makeSectionLabel("PLAYGROUND"), themePicker,
-        ])
+        ] {
+            stack.addArrangedSubview(subview)
+        }
         stack.axis = .vertical
         stack.alignment = .fill
         stack.spacing = 8
-        stack.setCustomSpacing(Theme.scaled(20), after: modeControl)
-        stack.setCustomSpacing(Theme.scaled(20), after: afterRoundControl)
         stack.translatesAutoresizingMaskIntoConstraints = false
 
         let card = UIView()
@@ -296,13 +362,14 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         card.layer.borderColor = Theme.text.withAlphaComponent(0.15).cgColor
         card.layer.cornerRadius = 24
         card.addSubview(stack)
-        let inset = Theme.scaled(18)
-        NSLayoutConstraint.activate([
-            stack.topAnchor.constraint(equalTo: card.topAnchor, constant: inset),
-            stack.bottomAnchor.constraint(equalTo: card.bottomAnchor, constant: -inset),
-            stack.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: inset),
-            stack.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -inset)
-        ])
+        // Constants are set in `applyMetrics()`; each is card edge to stack edge, inward.
+        setupCardInsets = [
+            stack.topAnchor.constraint(equalTo: card.topAnchor),
+            card.bottomAnchor.constraint(equalTo: stack.bottomAnchor),
+            stack.leadingAnchor.constraint(equalTo: card.leadingAnchor),
+            card.trailingAnchor.constraint(equalTo: stack.trailingAnchor)
+        ]
+        NSLayoutConstraint.activate(setupCardInsets)
         return card
     }
 

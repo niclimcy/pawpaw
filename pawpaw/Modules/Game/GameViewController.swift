@@ -130,7 +130,7 @@ final class GameViewController: UIViewController, GameViewProtocol {
     private func releaseOrientationLock() {
         guard tuning.prefersLandscape, let navigation = navigationController else { return }
         let scene = windowScene
-        let release = {
+        let release: @MainActor @Sendable () -> Void = {
             if #available(iOS 16.0, *) {
                 navigation.setNeedsUpdateOfSupportedInterfaceOrientations()
                 scene?.requestGeometryUpdate(.iOS(interfaceOrientations: .menus))
