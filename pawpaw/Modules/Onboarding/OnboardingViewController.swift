@@ -5,7 +5,7 @@
 
 import UIKit
 
-final class OnboardingViewController: UIViewController, OnboardingViewProtocol, UITextFieldDelegate {
+final class OnboardingViewController: UIViewController, OnboardingViewProtocol, UITextFieldDelegate, UIGestureRecognizerDelegate {
     var presenter: OnboardingPresenterProtocol?
 
     private let card = UIView()
@@ -78,7 +78,18 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
         nextButton.addTarget(self, action: #selector(nextTapped), for: .touchUpInside)
         skipButton.addTarget(self, action: #selector(skipTapped), for: .touchUpInside)
         backButton.addTarget(self, action: #selector(backTapped), for: .touchUpInside)
+        setupSwipes()
         presenter?.viewDidLoad()
+    }
+
+    /// Swipes step through the pages like the Next and Back buttons.
+    private func setupSwipes() {
+        for direction in [UISwipeGestureRecognizer.Direction.left, .right] {
+            let swipe = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
+            swipe.direction = direction
+            swipe.delegate = self
+            view.addGestureRecognizer(swipe)
+        }
     }
 
     // MARK: Layout
@@ -274,6 +285,31 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
         presenter?.didTapBack()
     }
 
+    @objc private func swiped(_ swipe: UISwipeGestureRecognizer) {
+        let isRightToLeft = view.effectiveUserInterfaceLayoutDirection == .rightToLeft
+        let forward: UISwipeGestureRecognizer.Direction = isRightToLeft ? .right : .left
+        if swipe.direction == forward {
+            goForward()
+        } else {
+            goBack()
+        }
+    }
+
+    /// Moves to the next page; the cat step only finishes from its button, never from a swipe.
+    @discardableResult
+    private func goForward() -> Bool {
+        guard !isOnCatSetup else { return false }
+        presenter?.didTapNext()
+        return true
+    }
+
+    @discardableResult
+    private func goBack() -> Bool {
+        guard backButton.isEnabled else { return false }
+        backTapped()
+        return true
+    }
+
     @objc private func skipTapped() {
         if isOnCatSetup {
             presenter?.didSkipCatSetup()
@@ -333,6 +369,25 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
         nameField.layer.add(shake, forKey: "shake")
         nameField.becomeFirstResponder()
         UIAccessibility.post(notification: .announcement, argument: "Add your cat's name, or skip for now")
+    }
+
+    // MARK: Accessibility
+    /// VoiceOver's three-finger swipe pages through the steps too.
+    override func accessibilityScroll(_ direction: UIAccessibilityScrollDirection) -> Bool {
+        switch direction {
+        case .left, .next: return goForward()
+        case .right, .previous: return goBack()
+        default: return false
+        }
+    }
+
+    // MARK: UIGestureRecognizerDelegate
+    /// Lets the swipes work alongside the card's vertical scroll view when the card is taller than the screen.
+    func gestureRecognizer(
+        _ gestureRecognizer: UIGestureRecognizer,
+        shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
+    ) -> Bool {
+        true
     }
 
     // MARK: UITextFieldDelegate
