@@ -33,9 +33,15 @@ final class GameViewController: UIViewController, GameViewProtocol {
         return label
     }()
 
-    let resultOverlay = UIView()
+    /// Only the card takes touches; the rest of the screen stays a play area for the lure.
+    let resultOverlay = PassthroughView()
     let resultTitleLabel = UILabel()
     let resultDetailsLabel = UILabel()
+    /// Cover for the lure between rounds.
+    weak var resultCard: UIView?
+    /// Bumped to invalidate an already-scheduled lure start.
+    var lureGeneration = 0
+    var lureIdleWork: DispatchWorkItem?
 
     weak var hudHomeButton: UIButton?
     /// Kept while backgrounded so the countdown can restart.
@@ -44,7 +50,7 @@ final class GameViewController: UIViewController, GameViewProtocol {
     var countdownGeneration = 0
 
     private var hasStarted = false
-    private var isShowingResult = false
+    private(set) var isShowingResult = false
     private var disabledPopGestures: [UIGestureRecognizer] = []
 
     override func viewDidLoad() {
@@ -60,6 +66,7 @@ final class GameViewController: UIViewController, GameViewProtocol {
         scene.onExpire = { [weak self] id in self?.presenter?.didExpireTarget(id: id) }
         scene.onDiscard = { [weak self] id in self?.presenter?.didDiscardTarget(id: id) }
         scene.onMiss = { [weak self] in self?.presenter?.didMissTap() }
+        setupLure()
 
         let center = NotificationCenter.default
         center.addObserver(
@@ -97,11 +104,12 @@ final class GameViewController: UIViewController, GameViewProtocol {
         restoreSwipeBack()
         if isMovingFromParent || isBeingDismissed {
             cancelCountdown()
+            cancelLure()
             presenter?.viewWillDisappear()
         }
     }
 
-    private func setScreenAwake(_ awake: Bool) {
+    func setScreenAwake(_ awake: Bool) {
         UIApplication.shared.isIdleTimerDisabled = awake
     }
 
@@ -124,6 +132,7 @@ final class GameViewController: UIViewController, GameViewProtocol {
     // MARK: App lifecycle
     @objc private func appWillResignActive() {
         interruptCountdown()
+        pauseLureIdleTimer()
         presenter?.appWillResignActive()
     }
 
@@ -133,12 +142,20 @@ final class GameViewController: UIViewController, GameViewProtocol {
             showGetReady(showsExitTip: pending.showsExitTip, completion: pending.completion)
             return
         }
+        resumeLureIdleTimer()
         presenter?.appDidBecomeActive()
     }
 
     // MARK: Actions
-    @objc func playAgainTapped() {
+    /// A hold, so a paw on the card can't start a round and bypass the after-round setting.
+    @objc func playAgainHeld(_ gesture: UILongPressGestureRecognizer) {
+        guard gesture.state == .began else { return }
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         presenter?.didTapPlayAgain()
+    }
+
+    @objc func showPlayAgainHint() {
+        showHoldHint("Press and hold to play again")
     }
 
     // MARK: GameViewProtocol
@@ -173,11 +190,12 @@ final class GameViewController: UIViewController, GameViewProtocol {
         resultOverlay.isHidden = false
         isShowingResult = true
         UIView.animate(withDuration: 0.25) { self.resultOverlay.alpha = 1 }
-        setScreenAwake(false)
+        // Stays awake while the lure plays; it sleeps once the lure leaves or is caught for the last time.
         UIAccessibility.post(notification: .screenChanged, argument: resultTitleLabel)
     }
 
     func hideResult() {
+        cancelLure()
         resultOverlay.isHidden = true
         isShowingResult = false
         setScreenAwake(true)
@@ -197,7 +215,7 @@ final class GameViewController: UIViewController, GameViewProtocol {
     }
 
     func showResumed() {
-        setScreenAwake(!isShowingResult)
+        setScreenAwake(!isShowingResult || scene.hasLure)
     }
 }
 

@@ -44,6 +44,7 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorOutputProtocol {
     }
 
     func didTapPlayAgain() {
+        interactor?.resetAutoRounds()
         view?.hideResult()
         view?.clearTargets()
         startAfterCountdown()
@@ -53,6 +54,22 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorOutputProtocol {
         interactor?.recordExitHoldLearned()
         interactor?.stopGame()
         router?.navigateToHome(from: view)
+    }
+
+    func didBecomeReadyForLure(cover: LureCover, lastTouch: CGPoint?) {
+        interactor?.startLure(cover: cover, awayFrom: lastTouch)
+    }
+
+    func didFinishLureLoop(at point: CGPoint) {
+        interactor?.continueLure(from: point)
+    }
+
+    func didIdleWithLure(at point: CGPoint) {
+        interactor?.sendLureAway(from: point)
+    }
+
+    func didTapLure() {
+        interactor?.catchLure()
     }
 
     private func startAfterCountdown() {
@@ -89,6 +106,22 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorOutputProtocol {
         let critters = result.catches == 1 ? "critter" : "critters"
         let details = "You caught \(result.catches) \(critters)\nScore: \(result.score)\nBest: \(result.highScore)"
         view?.showResult(title: title, details: details)
+        view?.showLureWhenReady()
+    }
+
+    func didMoveLure(_ target: GameTarget, isLeaving: Bool) {
+        view?.showLure(target, isLeaving: isLeaving)
+    }
+
+    func didCatchLure(startsNextRound: Bool) {
+        view?.showLureCaught()
+        guard startsNextRound else {
+            view?.showFinalCatch("Great hunt! 😺")
+            return
+        }
+        view?.hideResult()
+        view?.clearTargets()
+        startAfterCountdown()
     }
 
     func didPause() {

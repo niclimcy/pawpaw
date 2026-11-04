@@ -115,6 +115,25 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
 
     private let themePicker = ThemePickerView()
 
+    private let afterRoundLabel = HomeViewController.makeSectionLabel("AFTER A ROUND")
+
+    private let afterRoundControl: UISegmentedControl = {
+        let control = UISegmentedControl(
+            items: AfterRoundMode.allCases.map(\.title)
+        )
+        Theme.styleSegmented(
+            control,
+            fontSize: HomeViewController.modeFontSize,
+            selectedTint: HomeViewController.selectedTint,
+            selectedText: HomeViewController.selectedText
+        )
+        control.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        control.accessibilityIdentifier = "afterRoundControl"
+        control.accessibilityLabel = "After a round"
+        control.accessibilityHint = "Whether catching the critter on the results starts another round"
+        return control
+    }()
+
     private let playButton: UIButton = {
         let button = Theme.filledButton(
             title: "PLAY",
@@ -168,6 +187,11 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
             action: #selector(modeChanged),
             for: .valueChanged
         )
+        afterRoundControl.addTarget(
+            self,
+            action: #selector(afterRoundChanged),
+            for: .valueChanged
+        )
         themePicker.onSelect = { [weak self] theme in
             self?.presenter?.didSelectTheme(theme)
         }
@@ -185,11 +209,13 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     }
 
     @objc private func contentSizeChanged() {
-        Theme.applySegmentedFonts(
-            to: modeControl,
-            fontSize: Self.modeFontSize,
-            selectedText: Self.selectedText
-        )
+        for control in [modeControl, afterRoundControl] {
+            Theme.applySegmentedFonts(
+                to: control,
+                fontSize: Self.modeFontSize,
+                selectedText: Self.selectedText
+            )
+        }
     }
 
     private func setupLayout() {
@@ -245,12 +271,14 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     private func makeSetupCard() -> UIView {
         let stack = UIStackView(arrangedSubviews: [
             Self.makeSectionLabel("ROUND LENGTH"), modeControl,
+            afterRoundLabel, afterRoundControl,
             Self.makeSectionLabel("PLAYGROUND"), themePicker,
         ])
         stack.axis = .vertical
         stack.alignment = .fill
         stack.spacing = 8
         stack.setCustomSpacing(Theme.scaled(20), after: modeControl)
+        stack.setCustomSpacing(Theme.scaled(20), after: afterRoundControl)
         stack.translatesAutoresizingMaskIntoConstraints = false
 
         let card = UIView()
@@ -293,6 +321,12 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         )
     }
 
+    @objc private func afterRoundChanged() {
+        presenter?.didSelectAfterRound(
+            AfterRoundMode.allCases[afterRoundControl.selectedSegmentIndex]
+        )
+    }
+
     @objc private func statsTapped() {
         presenter?.didRequestStats()
     }
@@ -301,6 +335,13 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     func showMode(_ mode: SessionMode) {
         modeControl.selectedSegmentIndex =
             SessionMode.allCases.firstIndex(of: mode) ?? 0
+    }
+
+    func showAfterRound(_ afterRound: AfterRoundMode, isAvailable: Bool) {
+        afterRoundControl.selectedSegmentIndex =
+            AfterRoundMode.allCases.firstIndex(of: afterRound) ?? 0
+        afterRoundLabel.isHidden = !isAvailable
+        afterRoundControl.isHidden = !isAvailable
     }
 
     func showTheme(_ theme: PlayfieldTheme) {

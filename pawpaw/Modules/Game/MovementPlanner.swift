@@ -104,6 +104,124 @@ enum MovementPlanner {
         return legs
     }
 
+    // MARK: Lure
+
+    static let lureLegCount: ClosedRange<Int> = 3...5
+    /// Long freezes give the cat time to stalk and line up a pounce.
+    static let lurePauseFraction = 0.35
+    static let finalLurePauseFraction = 0.5
+    static let lureCoverChance = 0.6
+    /// Normalized gap kept around the card when choosing open stops.
+    private static let lureCoverMargin: CGFloat = 0.04
+    private static let lureField = CGRect(x: 0.05, y: 0.05, width: 0.9, height: 0.9)
+
+    /// One loop of the critter that roams the results. It never leaves; the last leg ends in a freeze
+    /// and the next loop starts there. At most one stop is under the card, never the first or last,
+    /// so each loop starts and ends in view. The final, easy catch never takes cover.
+    static func lureLegs(
+        from start: CGPoint,
+        style: MovementStyle,
+        legDuration: TimeInterval,
+        cover: LureCover?,
+        isFinal: Bool
+    ) -> [PathLeg] {
+        let count = Int.random(in: lureLegCount)
+        let duration = legDuration * Double(count)
+        let pauseTotal = duration * max(style.pauseFraction, isFinal ? finalLurePauseFraction : lurePauseFraction)
+        let pauses = split(pauseTotal, into: count)
+        let travels = split(duration - pauseTotal, into: count)
+        let spots = isFinal ? [] : (cover?.spots ?? [])
+        let coverIndex = count >= 3 && !spots.isEmpty && Double.random(in: 0..<1) < lureCoverChance
+            ? Int.random(in: 1..<(count - 1))
+            : nil
+
+        var legs: [PathLeg] = []
+        var current = start
+        for index in 0..<count {
+            if index == coverIndex, let spot = spots.randomElement() {
+                legs.append(PathLeg(
+                    destination: spot.hide,
+                    travel: travels[index],
+                    pause: max(pauses[index], minimumCoverPause),
+                    hides: false,
+                    underCover: true,
+                    peek: spot.peek
+                ))
+                current = spot.hide
+            } else {
+                current = lureOpenPoint(from: current, style: style, avoiding: cover?.frame)
+                legs.append(PathLeg(destination: current, travel: travels[index], pause: pauses[index], hides: false))
+            }
+        }
+        return legs
+    }
+
+    /// Off-screen on the side away from `touch` (the last paw, so roughly where the cat is),
+    /// at a height or width that isn't behind the card when possible.
+    static func lureEntryPoint(awayFrom touch: CGPoint?, avoiding cover: CGRect?) -> CGPoint {
+        let blocked = cover?.insetBy(dx: -lureCoverMargin, dy: -lureCoverMargin)
+        let entersFromSide: Bool
+        let side: CGFloat
+        if let touch {
+            entersFromSide = abs(touch.x - 0.5) >= abs(touch.y - 0.5)
+            side = (entersFromSide ? touch.x : touch.y) > 0.5 ? 0 : 1
+        } else {
+            entersFromSide = Bool.random()
+            side = Bool.random() ? 0 : 1
+        }
+        func point(along: CGFloat, inset: CGFloat) -> CGPoint {
+            let edge = side == 0 ? inset : 1 - inset
+            return entersFromSide ? CGPoint(x: edge, y: along) : CGPoint(x: along, y: edge)
+        }
+        for _ in 0..<20 {
+            let along = CGFloat.random(in: 0.1...0.9)
+            if !(blocked?.contains(point(along: along, inset: 0.05)) ?? false) {
+                return point(along: along, inset: 0)
+            }
+        }
+        return point(along: CGFloat.random(in: 0.1...0.9), inset: 0)
+    }
+
+    /// A point clear of the card, a natural step away for `style` when there's room.
+    static func lureOpenPoint(from point: CGPoint, style: MovementStyle, avoiding cover: CGRect?) -> CGPoint {
+        let blocked = cover?.insetBy(dx: -lureCoverMargin, dy: -lureCoverMargin)
+        func isOpen(_ candidate: CGPoint) -> Bool {
+            lureField.contains(candidate) && !(blocked?.contains(candidate) ?? false)
+        }
+        for _ in 0..<20 {
+            let heading = Double.random(in: 0..<(2 * .pi))
+            let distance = max(Double.random(in: style.distanceRange), 0.15)
+            let candidate = CGPoint(
+                x: point.x + CGFloat(cos(heading) * distance),
+                y: point.y + CGFloat(sin(heading) * distance)
+            )
+            if isOpen(candidate) { return candidate }
+        }
+        // No room nearby: anywhere open, which may mean running under the card.
+        for _ in 0..<30 {
+            let candidate = CGPoint(
+                x: CGFloat.random(in: lureField.minX...lureField.maxX),
+                y: CGFloat.random(in: lureField.minY...lureField.maxY)
+            )
+            if isOpen(candidate) { return candidate }
+        }
+        return CGPoint(x: min(max(point.x, lureField.minX), lureField.maxX), y: min(max(point.y, lureField.minY), lureField.maxY))
+    }
+
+    /// The lure wandering off when nobody has caught it for a while; surfacing critters fade out in place.
+    static func lureExitLegs(from point: CGPoint, style: MovementStyle) -> [PathLeg] {
+        if style.surfaces {
+            return [PathLeg(destination: point, travel: 1.2, pause: 0, hides: false)]
+        }
+        return [PathLeg(
+            destination: style.fliesOff ? flightEdgePoint(from: point) : nearestEdgePoint(to: point),
+            travel: style.fliesOff ? flightTravel : exitTravel * 1.5,
+            pause: 0,
+            hides: false,
+            exits: true
+        )]
+    }
+
     private static func nearestEdgePoint(to point: CGPoint) -> CGPoint {
         let gaps = [point.x, 1 - point.x, point.y, 1 - point.y]
         switch gaps.firstIndex(of: gaps.min() ?? 0) {

@@ -39,6 +39,18 @@ final class GameInteractor: GameInteractorInputProtocol {
     /// How many times each kind's look has been refreshed this round.
     private var refreshes: [TargetKind: Int] = [:]
 
+    /// Seconds per lure leg, travel and freeze together: about 0.7× a round critter's pace.
+    static let lureLegDuration: TimeInterval = 1.4
+    /// The final catch is slower still, so it's easy.
+    static let finalLureLegDuration: TimeInterval = 2.0
+    private var lure: GameTarget?
+    private var lureCover: LureCover?
+    private var lureIsFinal = false
+    /// Changes every results screen, as a new look keeps a cat interested.
+    private var lastLureKind: TargetKind?
+    /// Rounds started in a row by catching the lure.
+    private var autoRounds = 0
+
     private var isPlaying: Bool {
         isRunning && !isPaused
     }
@@ -86,6 +98,8 @@ final class GameInteractor: GameInteractorInputProtocol {
         lastCaughtKind = nil
         catchStreak = 0
         refreshes = [:]
+        lure = nil
+        lureCover = nil
         timeRemaining = mode.duration ?? 0
         isRunning = true
         isPaused = false
@@ -105,6 +119,7 @@ final class GameInteractor: GameInteractorInputProtocol {
         isPaused = false
         invalidateTimers()
         activeTargets.removeAll()
+        lure = nil
     }
 
     func pauseGame() {
@@ -148,6 +163,83 @@ final class GameInteractor: GameInteractorInputProtocol {
     func missTap() {
         guard isPlaying else { return }
         difficulty.recordMiss()
+    }
+
+    // MARK: Lure
+
+    func startLure(cover: LureCover, awayFrom touch: CGPoint?) {
+        guard !isRunning else { return }
+        lureCover = cover
+        // After a relayout the same critter comes back, so a final catch stays final.
+        let kind: TargetKind
+        if let current = lure {
+            kind = current.kind
+        } else {
+            kind = randomLureKind()
+            lastLureKind = kind
+            lureIsFinal = !settings.afterRound.continues(afterAutoRounds: autoRounds)
+        }
+        let start = kind.movementStyle.surfaces
+            ? MovementPlanner.lureOpenPoint(from: CGPoint(x: 0.5, y: 0.5), style: kind.movementStyle, avoiding: cover.frame)
+            : MovementPlanner.lureEntryPoint(awayFrom: touch, avoiding: cover.frame)
+        moveLure(kind: kind, from: start, leadIn: MovementPlanner.leadIn(for: kind.movementStyle))
+    }
+
+    func continueLure(from point: CGPoint) {
+        guard !isRunning, let current = lure else { return }
+        // Inside the border, so the planner doesn't take the start for an off-screen entry.
+        let start = CGPoint(x: min(max(point.x, 0.01), 0.99), y: min(max(point.y, 0.01), 0.99))
+        moveLure(kind: current.kind, from: start, leadIn: 0)
+    }
+
+    /// It can still be caught on the way out.
+    func sendLureAway(from point: CGPoint) {
+        guard !isRunning, let current = lure else { return }
+        let target = GameTarget(
+            id: current.id,
+            kind: current.kind,
+            start: point,
+            legs: MovementPlanner.lureExitLegs(from: point, style: current.kind.movementStyle)
+        )
+        lure = target
+        presenter?.didMoveLure(target, isLeaving: true)
+    }
+
+    func catchLure() {
+        guard !isRunning, lure != nil else { return }
+        lure = nil
+        let startsNextRound = !lureIsFinal
+        if startsNextRound { autoRounds += 1 }
+        presenter?.didCatchLure(startsNextRound: startsNextRound)
+    }
+
+    func resetAutoRounds() {
+        autoRounds = 0
+    }
+
+    private func moveLure(kind: TargetKind, from start: CGPoint, leadIn: TimeInterval) {
+        let target = GameTarget(
+            id: lure?.id ?? UUID(),
+            kind: kind,
+            start: start,
+            legs: MovementPlanner.lureLegs(
+                from: start,
+                style: kind.movementStyle,
+                legDuration: lureIsFinal ? Self.finalLureLegDuration : Self.lureLegDuration,
+                cover: lureCover,
+                isFinal: lureIsFinal
+            ),
+            leadIn: leadIn
+        )
+        lure = target
+        presenter?.didMoveLure(target, isLeaving: false)
+    }
+
+    /// Any enabled critter but the laser, which a cat can never truly catch, and not last time's.
+    private func randomLureKind() -> TargetKind {
+        let catchable = spawnableKinds.filter { $0 != .laser }
+        let fresh = catchable.filter { $0 != lastLureKind }
+        return fresh.randomElement() ?? catchable.randomElement() ?? .mouse
     }
 
     // MARK: Private

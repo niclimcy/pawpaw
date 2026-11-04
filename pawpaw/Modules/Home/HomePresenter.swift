@@ -35,15 +35,21 @@ final class HomePresenter: HomePresenterProtocol, HomeInteractorOutputProtocol {
         interactor?.selectTheme(theme)
     }
 
+    func didSelectAfterRound(_ afterRound: AfterRoundMode) {
+        interactor?.selectAfterRound(afterRound)
+    }
+
     func didFetchState(
         mode: SessionMode,
         theme: PlayfieldTheme,
+        afterRound: AfterRoundMode,
         highScore: Int?,
         profile: CatProfile,
         favorite: TargetKind?
     ) {
         view?.showMode(mode)
         view?.showTheme(theme)
+        view?.showAfterRound(afterRound, isAvailable: mode.duration != nil)
         view?.showHighScore(highScore)
         view?.showProfile(
             name: profile.name,

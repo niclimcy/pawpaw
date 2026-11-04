@@ -36,6 +36,7 @@ final class HomeInteractor: HomeInteractorInputProtocol {
         presenter?.didFetchState(
             mode: mode,
             theme: settings.selectedTheme,
+            afterRound: settings.afterRound,
             highScore: mode.hasHighScore ? makeScoreStorage(profile.id).highScore(for: mode) : nil,
             profile: profile,
             favorite: makeStatsStorage(profile.id).stats.favoriteKind
@@ -44,6 +45,11 @@ final class HomeInteractor: HomeInteractorInputProtocol {
 
     func selectTheme(_ theme: PlayfieldTheme) {
         settings.selectedTheme = theme
+        fetchState()
+    }
+
+    func selectAfterRound(_ afterRound: AfterRoundMode) {
+        settings.afterRound = afterRound
         fetchState()
     }
 

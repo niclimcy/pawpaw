@@ -24,6 +24,15 @@ protocol GameViewProtocol: AnyObject {
     func showPaused()
     func showResumed()
     func showGetReady(showsExitTip: Bool, completion: @escaping () -> Void)
+
+    // Lure: one critter that roams under the results card between timed rounds.
+    /// After a short wait, so a late pounce doesn't count, reports the card as cover via `didBecomeReadyForLure`.
+    func showLureWhenReady()
+    /// One loop of the lure; a leaving lure runs off and is removed.
+    func showLure(_ target: GameTarget, isLeaving: Bool)
+    func showLureCaught()
+    /// The cat's last catch for now; no new round starts.
+    func showFinalCatch(_ message: String)
 }
 
 // MARK: - Presenter
@@ -44,6 +53,13 @@ protocol GamePresenterProtocol: AnyObject {
     func didMissTap()
     func didTapPlayAgain()
     func didTapHome()
+    /// `lastTouch` is normalized, roughly where the cat is.
+    func didBecomeReadyForLure(cover: LureCover, lastTouch: CGPoint?)
+    /// Normalized position where the lure's loop ended.
+    func didFinishLureLoop(at point: CGPoint)
+    /// Nobody has played for a while; normalized position of the lure.
+    func didIdleWithLure(at point: CGPoint)
+    func didTapLure()
 }
 
 // MARK: - Interactor
@@ -60,6 +76,15 @@ protocol GameInteractorInputProtocol: AnyObject {
     func discardTarget(id: UUID)
     func missTap()
     func recordExitHoldLearned()
+
+    // Lure, between timed rounds. Never scored or counted in stats.
+    /// Sends in a lure from the side away from `touch`, or brings the current one back after a relayout.
+    func startLure(cover: LureCover, awayFrom touch: CGPoint?)
+    func continueLure(from point: CGPoint)
+    func sendLureAway(from point: CGPoint)
+    func catchLure()
+    /// An owner started a round, so automatic rounds count from zero again.
+    func resetAutoRounds()
 }
 
 protocol GameInteractorOutputProtocol: AnyObject {
@@ -73,6 +98,8 @@ protocol GameInteractorOutputProtocol: AnyObject {
     /// On-screen critters still count and should freeze where they are.
     func didPause()
     func didResume()
+    func didMoveLure(_ target: GameTarget, isLeaving: Bool)
+    func didCatchLure(startsNextRound: Bool)
 }
 
 // MARK: - Router

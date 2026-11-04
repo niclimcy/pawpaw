@@ -65,7 +65,7 @@ enum CritterActions {
                     positions += [(elapsed + hide, edge), (elapsed + pause - hide, edge)]
                     heading = out + .pi
                 } else if leg.underCover {
-                    let peek = geometry.peekPoint(from: destination)
+                    let peek = leg.peek.map { geometry.point(for: $0) } ?? geometry.peekPoint(from: destination)
                     positions += [(0.3, peek), (0.45, destination), (0.65, peek), (0.8, destination)].map { (elapsed + pause * $0.0, $0.1) }
                 } else if style.pecks {
                     let nod = geometry.nodPoint(from: current, to: destination)

@@ -9,6 +9,7 @@ import Foundation
 protocol SettingsStorage: AnyObject {
     var selectedMode: SessionMode { get set }
     var selectedTheme: PlayfieldTheme { get set }
+    var afterRound: AfterRoundMode { get set }
     var hasLearnedHoldToExit: Bool { get set }
     var hasCompletedOnboarding: Bool { get set }
 }
@@ -20,6 +21,7 @@ final class UserDefaultsSettingsStorage: SettingsStorage {
     private let themeKey = "pawpaw.selectedTheme"
     private let holdToExitKey = "pawpaw.hasLearnedHoldToExit"
     private let onboardingKey = "pawpaw.hasCompletedOnboarding"
+    private let afterRoundKey = "pawpaw.afterRound"
 
     /// Create before any `UserDefaultsProfileStorage` on launch: that creates a cat,
     /// which would make a fresh install look like an existing one.
@@ -43,6 +45,15 @@ final class UserDefaultsSettingsStorage: SettingsStorage {
         }
         set {
             defaults.set(newValue.rawValue, forKey: themeKey)
+        }
+    }
+
+    var afterRound: AfterRoundMode {
+        get {
+            defaults.string(forKey: afterRoundKey).flatMap(AfterRoundMode.init(rawValue:)) ?? .keepPlaying
+        }
+        set {
+            defaults.set(newValue.rawValue, forKey: afterRoundKey)
         }
     }
 

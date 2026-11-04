@@ -10,12 +10,13 @@ import UIKit
 extension GameScene {
     static let waterRippleColor = UIColor(red: 0.6, green: 0.85, blue: 1, alpha: 0.6)
 
-    func playCatchEffects(points: Int, at position: CGPoint) {
-        emitSparkles(at: position, bigBurst: points >= 20)
+    /// `nil` points, for the unscored lure, skips the points label.
+    func playCatchEffects(points: Int?, at position: CGPoint) {
+        emitSparkles(at: position, bigBurst: (points ?? 0) >= 20)
         emitRing(at: position, color: Theme.gold, endRadius: 110, lineWidth: 5)
         emitRing(at: position, color: .white, endRadius: 70, lineWidth: 3, delay: 0.06)
         flash(at: position)
-        showPoints(points, at: position)
+        if let points { showPoints(points, at: position) }
     }
 
     func playMissEffect(at position: CGPoint) {

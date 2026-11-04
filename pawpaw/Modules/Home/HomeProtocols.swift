@@ -10,6 +10,8 @@ protocol HomeViewProtocol: AnyObject {
     var presenter: HomePresenterProtocol? { get set }
     func showMode(_ mode: SessionMode)
     func showTheme(_ theme: PlayfieldTheme)
+    /// `isAvailable` is false for untimed rounds, which never end on their own.
+    func showAfterRound(_ afterRound: AfterRoundMode, isAvailable: Bool)
     /// `nil` hides the best score.
     func showHighScore(_ score: Int?)
     func showProfile(name: String, face: CatFace, favorite: String?)
@@ -24,6 +26,7 @@ protocol HomePresenterProtocol: AnyObject {
     func viewWillAppear()
     func didSelectMode(_ mode: SessionMode)
     func didSelectTheme(_ theme: PlayfieldTheme)
+    func didSelectAfterRound(_ afterRound: AfterRoundMode)
     func didTapPlay()
     func didRequestStats()
     func didTapProfile()
@@ -36,12 +39,14 @@ protocol HomeInteractorInputProtocol: AnyObject {
     func fetchState()
     func selectMode(_ mode: SessionMode)
     func selectTheme(_ theme: PlayfieldTheme)
+    func selectAfterRound(_ afterRound: AfterRoundMode)
 }
 
 protocol HomeInteractorOutputProtocol: AnyObject {
     func didFetchState(
         mode: SessionMode,
         theme: PlayfieldTheme,
+        afterRound: AfterRoundMode,
         highScore: Int?,
         profile: CatProfile,
         favorite: TargetKind?

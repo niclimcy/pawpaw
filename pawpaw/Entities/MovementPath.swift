@@ -18,6 +18,8 @@ struct PathLeg: Equatable {
     var exits: Bool = false
     /// Destination is a hiding spot; the critter peeks out during the pause.
     var underCover: Bool = false
+    /// Normalized point the critter peeks out to while under cover; `nil` picks one around the spot.
+    var peek: CGPoint?
 }
 
 enum MovementStyle {

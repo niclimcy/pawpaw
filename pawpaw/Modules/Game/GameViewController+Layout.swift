@@ -80,10 +80,14 @@ extension GameViewController {
     }
 
     @objc func showExitHint() {
+        showHoldHint("Press and hold to leave")
+    }
+
+    /// Owner hint for a plain tap on a hold-to-confirm button.
+    func showHoldHint(_ message: String) {
         let tag = 9_001
         view.viewWithTag(tag)?.removeFromSuperview()
 
-        let message = "Press and hold to leave"
         let hint = Theme.filledButton(
             title: message,
             fontSize: 16,
@@ -118,7 +122,8 @@ extension GameViewController {
     }
 
     func setupResultOverlay() {
-        resultOverlay.backgroundColor = UIColor.black.withAlphaComponent(0.45)
+        // Only a light tint: the field around the card stays in play for the lure.
+        resultOverlay.backgroundColor = UIColor.black.withAlphaComponent(0.15)
         resultOverlay.isHidden = true
         resultOverlay.translatesAutoresizingMaskIntoConstraints = false
         resultOverlay.accessibilityViewIsModal = true
@@ -126,6 +131,8 @@ extension GameViewController {
 
         let card = UIView()
         Theme.styleCard(card)
+        resultOverlay.interactiveView = card
+        resultCard = card
 
         resultTitleLabel.font = Theme.roundedFont(size: Theme.scaled(34))
         resultTitleLabel.adjustsFontForContentSizeCategory = true
@@ -140,9 +147,11 @@ extension GameViewController {
         resultDetailsLabel.textAlignment = .center
         resultDetailsLabel.numberOfLines = 0
 
-        let againButton = Theme.filledButton(title: "Play Again")
+        let againButton = Theme.filledButton(title: "Hold to Play Again")
         againButton.accessibilityIdentifier = "playAgainButton"
-        againButton.addTarget(self, action: #selector(playAgainTapped), for: .touchUpInside)
+        againButton.accessibilityHint = "Press and hold to start another round"
+        againButton.addHoldToConfirm(self, action: #selector(playAgainHeld(_:)))
+        againButton.addTarget(self, action: #selector(showPlayAgainHint), for: .touchUpInside)
 
         let menuButton = Theme.plainButton(title: "Hold to go Home", fontSize: 17, foreground: Theme.text)
         menuButton.accessibilityIdentifier = "resultHomeButton"
