@@ -1,0 +1,22 @@
+README.md
+  h_36695e5767c2ad 26
+docs/game-design.md
+  h_36695e5767c2ad 42
+pawpaw/Common/PlayfieldTuning+Device.swift
+  h_36695e5767c2ad 14
+pawpaw/Modules/Home/HomeViewController.swift
+  h_36695e5767c2ad 437-457
+pawpaw/Modules/Onboarding/OnboardingPresenter.swift
+  h_36695e5767c2ad 16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "269b812538b7b0d0a592d07436f4aadb0afb5e0f",
+  "prompts": {},
+  "humans": {
+    "h_36695e5767c2ad": {
+      "author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
