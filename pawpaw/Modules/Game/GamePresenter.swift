@@ -85,7 +85,7 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorOutputProtocol {
     }
 
     func didUpdateTimeRemaining(_ seconds: Int?) {
-        view?.showTime(seconds.map { "⏱ \($0)" } ?? "⏱ ∞")
+        view?.showTime(seconds.map { "\($0)" } ?? "∞")
     }
 
     func didSpawnTarget(_ target: GameTarget) {
@@ -102,10 +102,11 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorOutputProtocol {
 
     func didFinishGame(_ result: GameResult) {
         view?.clearTargets()
-        let title = result.isNewHighScore ? "New Best! 🎉" : "Time's Up!"
+        let title = result.isNewHighScore ? "New Best!" : "Time's Up!"
+        let symbol = result.isNewHighScore ? "sparkles" : nil
         let critters = result.catches == 1 ? "critter" : "critters"
         let details = "You caught \(result.catches) \(critters)\nScore: \(result.score)\nBest: \(result.highScore)"
-        view?.showResult(title: title, details: details)
+        view?.showResult(title: title, symbol: symbol, details: details)
         view?.showLureWhenReady()
     }
 
@@ -116,7 +117,7 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorOutputProtocol {
     func didCatchLure(startsNextRound: Bool) {
         view?.showLureCaught()
         guard startsNextRound else {
-            view?.showFinalCatch("Great hunt! 😺")
+            view?.showFinalCatch("Great hunt!", symbol: "pawprint.fill")
             return
         }
         view?.hideResult()

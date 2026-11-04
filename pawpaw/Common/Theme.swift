@@ -54,6 +54,35 @@ enum Theme {
         return UIFontMetrics.default.scaledFont(for: rounded, maximumPointSize: size * maxTextScale)
     }
 
+    /// `text` with an SF Symbol before it (or after it, if `trailing`), sized and coloured to match the label it goes in.
+    static func symbolText(
+        _ symbolName: String,
+        _ text: String,
+        font: UIFont,
+        color: UIColor,
+        trailing: Bool = false
+    ) -> NSAttributedString {
+        let result = NSMutableAttributedString(string: text)
+        let config = UIImage.SymbolConfiguration(font: font)
+        if let symbol = UIImage(systemName: symbolName, withConfiguration: config) {
+            let tinted = symbol.withTintColor(color, renderingMode: .alwaysOriginal)
+            let icon = NSMutableAttributedString(attachment: NSTextAttachment(image: tinted))
+            let gap = NSAttributedString(string: text.isEmpty ? "" : " ")
+            if trailing {
+                result.append(gap)
+                result.append(icon)
+            } else {
+                icon.append(gap)
+                result.insert(icon, at: 0)
+            }
+        }
+        result.addAttributes(
+            [.font: font, .foregroundColor: color],
+            range: NSRange(location: 0, length: result.length)
+        )
+        return result
+    }
+
     static func styleCard(_ card: UIView) {
         card.backgroundColor = panel
         card.layer.borderWidth = 3

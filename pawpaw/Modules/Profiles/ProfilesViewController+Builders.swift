@@ -8,7 +8,18 @@ import UIKit
 extension ProfilesViewController {
     func makeRow(_ row: ProfileRow) -> UIView {
         var config = row.isActive ? UIButton.Configuration.filled() : UIButton.Configuration.tinted()
-        config.title = row.isActive ? "\(row.name)  ✓" : row.name
+        config.title = row.name
+        if row.isActive {
+            // Checkmark after the name; the UIKit scope keeps the symbol attachment.
+            let title = Theme.symbolText(
+                "checkmark",
+                row.name,
+                font: Theme.roundedFont(size: Theme.scaled(22), weight: .bold),
+                color: .white,
+                trailing: true
+            )
+            config.attributedTitle = try? AttributedString(title, including: \.uiKit)
+        }
         config.subtitle = row.subtitle
         config.image = row.face.image(side: Theme.scaled(52))
         config.imagePadding = 14

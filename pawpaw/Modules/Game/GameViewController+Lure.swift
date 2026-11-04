@@ -52,8 +52,8 @@ extension GameViewController {
         scene.catchLure()
     }
 
-    func showFinalCatch(_ message: String) {
-        resultTitleLabel.text = message
+    func showFinalCatch(_ message: String, symbol: String?) {
+        setResultTitle(message, symbol: symbol)
         setScreenAwake(false)
         UIAccessibility.post(notification: .announcement, argument: message)
     }

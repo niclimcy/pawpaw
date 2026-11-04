@@ -18,6 +18,7 @@ extension GameViewController {
     /// The overlay ignores touches so the house button still works.
     func showGetReady(showsExitTip: Bool, completion: @escaping () -> Void) {
         removeCountdownOverlay(animated: false)
+        clearTime()
         countdownGeneration += 1
         pendingCountdown = PendingCountdown(showsExitTip: showsExitTip, completion: completion)
 

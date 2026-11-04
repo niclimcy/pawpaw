@@ -25,12 +25,14 @@ final class GameViewController: UIViewController, GameViewProtocol {
         return label
     }()
 
+    private static let timerSymbol = "timer"
+
     let timeLabel: UILabel = {
         let label = UILabel()
         label.font = Theme.roundedFont(size: 24)
         label.textColor = Theme.text
         label.textAlignment = .right
-        label.text = "⏱"
+        // Empty until the round starts; `showTime` adds the timer icon.
         return label
     }()
 
@@ -214,7 +216,16 @@ final class GameViewController: UIViewController, GameViewProtocol {
     }
 
     func showTime(_ text: String) {
-        timeLabel.text = text
+        timeLabel.attributedText = Theme.symbolText(
+            Self.timerSymbol, text, font: timeLabel.font, color: timeLabel.textColor
+        )
+        timeLabel.accessibilityLabel = "Time: \(text)"
+    }
+
+    /// Hides the timer until the next round starts counting down.
+    func clearTime() {
+        timeLabel.attributedText = nil
+        timeLabel.accessibilityLabel = nil
     }
 
     func showTarget(_ target: GameTarget) {
@@ -233,8 +244,8 @@ final class GameViewController: UIViewController, GameViewProtocol {
         scene.removeAllTargets()
     }
 
-    func showResult(title: String, details: String) {
-        resultTitleLabel.text = title
+    func showResult(title: String, symbol: String?, details: String) {
+        setResultTitle(title, symbol: symbol)
         resultDetailsLabel.text = details
         resultOverlay.alpha = 0
         resultOverlay.isHidden = false
@@ -242,6 +253,19 @@ final class GameViewController: UIViewController, GameViewProtocol {
         UIView.animate(withDuration: 0.25) { self.resultOverlay.alpha = 1 }
         // Stays awake while the lure plays; it sleeps once the lure leaves or is caught for the last time.
         UIAccessibility.post(notification: .screenChanged, argument: resultTitleLabel)
+    }
+
+    /// The title, with an SF Symbol after it when given; VoiceOver reads only the text.
+    func setResultTitle(_ title: String, symbol: String?) {
+        guard let symbol else {
+            resultTitleLabel.text = title
+            resultTitleLabel.accessibilityLabel = nil
+            return
+        }
+        resultTitleLabel.attributedText = Theme.symbolText(
+            symbol, title, font: resultTitleLabel.font, color: resultTitleLabel.textColor, trailing: true
+        )
+        resultTitleLabel.accessibilityLabel = title
     }
 
     func hideResult() {

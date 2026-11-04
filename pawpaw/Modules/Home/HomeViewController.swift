@@ -429,7 +429,10 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     func showHighScore(_ score: Int?) {
         let best = score ?? 0
         highScoreLabel.isHidden = best <= 0
-        highScoreLabel.text = "🏆 Best: \(best)"
+        highScoreLabel.attributedText = Theme.symbolText(
+            "trophy.fill", "Best: \(best)", font: highScoreLabel.font, color: highScoreLabel.textColor
+        )
+        highScoreLabel.accessibilityLabel = "Best: \(best)"
     }
 
     func showPlayfieldNote(_ text: String?) {
@@ -439,22 +442,12 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
             playfieldNoteLabel.attributedText = nil
             return
         }
-        let font = playfieldNoteLabel.font
-            ?? Theme.roundedFont(size: Theme.scaled(14), weight: .semibold)
-        let color = playfieldNoteLabel.textColor ?? Theme.text
-        let note = NSMutableAttributedString()
-        let symbol = UIImage.SymbolConfiguration(font: font)
-        if let phone = UIImage(systemName: "iphone", withConfiguration: symbol) {
-            let tinted = phone.withTintColor(color, renderingMode: .alwaysOriginal)
-            note.append(NSAttributedString(attachment: NSTextAttachment(image: tinted)))
-            note.append(NSAttributedString(string: " "))
-        }
-        note.append(NSAttributedString(string: text))
-        note.addAttributes(
-            [.font: font, .foregroundColor: color],
-            range: NSRange(location: 0, length: note.length)
+        playfieldNoteLabel.attributedText = Theme.symbolText(
+            "iphone",
+            text,
+            font: playfieldNoteLabel.font,
+            color: playfieldNoteLabel.textColor
         )
-        playfieldNoteLabel.attributedText = note
     }
 
     func showProfile(name: String, face: CatFace, favorite: String?) {

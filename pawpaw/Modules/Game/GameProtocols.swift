@@ -19,7 +19,8 @@ protocol GameViewProtocol: AnyObject {
     /// Stops critters and effects where they are, ignoring touches, until `resumeTargets()`.
     func freezeTargets()
     func resumeTargets()
-    func showResult(title: String, details: String)
+    /// `symbol` is an SF Symbol name shown after the title.
+    func showResult(title: String, symbol: String?, details: String)
     func hideResult()
     func showPaused()
     func showResumed()
@@ -32,7 +33,7 @@ protocol GameViewProtocol: AnyObject {
     func showLure(_ target: GameTarget, isLeaving: Bool)
     func showLureCaught()
     /// The cat's last catch for now; no new round starts.
-    func showFinalCatch(_ message: String)
+    func showFinalCatch(_ message: String, symbol: String?)
 }
 
 // MARK: - Presenter
