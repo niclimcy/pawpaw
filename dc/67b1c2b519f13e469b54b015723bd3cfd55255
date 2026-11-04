@@ -1,0 +1,52 @@
+README.md
+  h_36695e5767c2ad 26
+docs/architecture.md
+  h_36695e5767c2ad 17,19-22
+docs/development.md
+  h_36695e5767c2ad 18-19
+docs/game-design.md
+  h_36695e5767c2ad 28-43
+pawpaw/Common/OrientationNavigationController.swift
+  h_36695e5767c2ad 1-27
+pawpaw/Common/PlayfieldTuning+Device.swift
+  h_36695e5767c2ad 1-18
+pawpaw/Common/SettingsStorage.swift
+  h_36695e5767c2ad 35
+pawpaw/Entities/PlayfieldTuning.swift
+  h_36695e5767c2ad 1-58
+pawpaw/Modules/Game/GameInteractor.swift
+  h_36695e5767c2ad 22,63,71,107,269,271,280
+pawpaw/Modules/Game/GameRouter.swift
+  h_36695e5767c2ad 15,22,28
+pawpaw/Modules/Game/GameViewController.swift
+  h_36695e5767c2ad 12,62,101-147,158
+pawpaw/Modules/Game/Playfield/GameScene.swift
+  h_36695e5767c2ad 35,53-55,57-59,61-63,73,118,130,199,217,288,309
+pawpaw/Modules/Game/Playfield/PlayfieldGeometry.swift
+  h_36695e5767c2ad 14-22,35,43,57-59,80,90,102
+pawpaw/Modules/Game/Playfield/PlayfieldTextures.swift
+  h_36695e5767c2ad 36,45-52,54,56,82,85,89,103,105-106
+pawpaw/Modules/Home/HomePresenter.swift
+  h_36695e5767c2ad 12,55
+pawpaw/Modules/Home/HomeProtocols.swift
+  h_36695e5767c2ad 18-19
+pawpaw/Modules/Home/HomeRouter.swift
+  h_36695e5767c2ad 20,27
+pawpaw/Modules/Home/HomeViewController.swift
+  h_36695e5767c2ad 95-102,248,368-372
+pawpaw/Modules/Onboarding/OnboardingPresenter.swift
+  h_36695e5767c2ad 13-18,27
+pawpaw/Modules/Onboarding/OnboardingViewController.swift
+  h_36695e5767c2ad 71-74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "dc67b1c2b519f13e469b54b015723bd3cfd55255",
+  "prompts": {},
+  "humans": {
+    "h_36695e5767c2ad": {
+      "author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
