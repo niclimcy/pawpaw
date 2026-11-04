@@ -435,19 +435,6 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
         UIAccessibility.post(notification: .announcement, argument: "Add your cat's name, or skip for now")
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        func dump(_ tag: String) {
-            print("DBG \(tag) card", card.frame, "inset", keyboardInset, "kbd", view.keyboardLayoutGuide.layoutFrame,
-                  "scroll", cardScroll.map { "\($0.frame) off \($0.contentOffset.y) inset \($0.contentInset.bottom)" } ?? "-")
-        }
-        dump("rest")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { self.nameField.becomeFirstResponder() }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { dump("kbd") }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 6) { self.nameField.resignFirstResponder() }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 8) { dump("after") }
-    }
-
     // MARK: Accessibility
     /// VoiceOver's three-finger swipe pages through the steps too.
     override func accessibilityScroll(_ direction: UIAccessibilityScrollDirection) -> Bool {
