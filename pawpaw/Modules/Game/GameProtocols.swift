@@ -16,6 +16,9 @@ protocol GameViewProtocol: AnyObject {
     func showHidingSpots(_ points: [CGPoint])
     func showCatch(targetID: UUID, points: Int)
     func clearTargets()
+    /// Stops critters and effects where they are, ignoring touches, until `resumeTargets()`.
+    func freezeTargets()
+    func resumeTargets()
     func showResult(title: String, details: String)
     func hideResult()
     func showPaused()
@@ -67,7 +70,7 @@ protocol GameInteractorOutputProtocol: AnyObject {
     func didPlaceHidingSpots(_ points: [CGPoint])
     func didCatchTarget(id: UUID, points: Int)
     func didFinishGame(_ result: GameResult)
-    /// On-screen critters no longer count and should be cleared.
+    /// On-screen critters still count and should freeze where they are.
     func didPause()
     func didResume()
 }

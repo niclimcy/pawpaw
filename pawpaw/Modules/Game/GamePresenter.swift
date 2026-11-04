@@ -92,11 +92,12 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorOutputProtocol {
     }
 
     func didPause() {
-        view?.clearTargets()
+        view?.freezeTargets()
         view?.showPaused()
     }
 
     func didResume() {
+        view?.resumeTargets()
         view?.showResumed()
     }
 }

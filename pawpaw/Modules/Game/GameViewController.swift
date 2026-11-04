@@ -3,13 +3,18 @@
 //  pawpaw
 //
 
+import SpriteKit
 import UIKit
 
 final class GameViewController: UIViewController, GameViewProtocol {
     var presenter: GamePresenterProtocol?
     var theme: PlayfieldTheme = .wood
 
-    let gameArea = GameAreaView()
+    /// Fills the screen, under the HUD too, so critters leave by the real screen edge.
+    let gameArea = SKView()
+    let scene = GameScene(size: CGSize(width: 1, height: 1))
+    /// The part of `gameArea` below the HUD.
+    let playfieldGuide = UILayoutGuide()
 
     let scoreLabel: UILabel = {
         let label = UILabel()
@@ -46,15 +51,15 @@ final class GameViewController: UIViewController, GameViewProtocol {
         super.viewDidLoad()
         view.backgroundColor = theme.baseColor
         installBackground(theme: theme)
-        gameArea.theme = theme
+        scene.theme = theme
         setupGameArea()
         setupHUD()
         setupResultOverlay()
 
-        gameArea.onTapTarget = { [weak self] id in self?.presenter?.didTapTarget(id: id) }
-        gameArea.onExpire = { [weak self] id in self?.presenter?.didExpireTarget(id: id) }
-        gameArea.onDiscard = { [weak self] id in self?.presenter?.didDiscardTarget(id: id) }
-        gameArea.onMiss = { [weak self] in self?.presenter?.didMissTap() }
+        scene.onTapTarget = { [weak self] id in self?.presenter?.didTapTarget(id: id) }
+        scene.onExpire = { [weak self] id in self?.presenter?.didExpireTarget(id: id) }
+        scene.onDiscard = { [weak self] id in self?.presenter?.didDiscardTarget(id: id) }
+        scene.onMiss = { [weak self] in self?.presenter?.didMissTap() }
 
         let center = NotificationCenter.default
         center.addObserver(
@@ -65,6 +70,11 @@ final class GameViewController: UIViewController, GameViewProtocol {
             self, selector: #selector(appDidBecomeActive),
             name: UIApplication.didBecomeActiveNotification, object: nil
         )
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        updatePlayfieldInset()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -141,19 +151,19 @@ final class GameViewController: UIViewController, GameViewProtocol {
     }
 
     func showTarget(_ target: GameTarget) {
-        gameArea.add(target)
+        scene.add(target)
     }
 
     func showHidingSpots(_ points: [CGPoint]) {
-        gameArea.showHidingSpots(at: points)
+        scene.showHidingSpots(at: points)
     }
 
     func showCatch(targetID: UUID, points: Int) {
-        gameArea.caught(id: targetID, points: points)
+        scene.caught(id: targetID, points: points)
     }
 
     func clearTargets() {
-        gameArea.removeAllTargets()
+        scene.removeAllTargets()
     }
 
     func showResult(title: String, details: String) {
@@ -172,6 +182,14 @@ final class GameViewController: UIViewController, GameViewProtocol {
         isShowingResult = false
         setScreenAwake(true)
         UIAccessibility.post(notification: .screenChanged, argument: nil)
+    }
+
+    func freezeTargets() {
+        scene.freeze()
+    }
+
+    func resumeTargets() {
+        scene.resume()
     }
 
     func showPaused() {

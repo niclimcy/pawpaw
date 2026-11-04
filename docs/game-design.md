@@ -29,7 +29,7 @@
 
 - First launch shows an intro and cat setup.
 - Exits, stats reset and cat deletion need a 1.5 s hold.
-- Interruptions pause the round; the screen stays awake during play.
+- Interruptions pause the round with critters frozen in place; the screen stays awake during play.
 - Each cat has a name, face, scores, stats and its own critter list (at least one all-background critter stays on).
 - Session length and background are shared by all cats.
 - Data is stored in `UserDefaults`.

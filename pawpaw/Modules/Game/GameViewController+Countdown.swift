@@ -123,8 +123,8 @@ extension GameViewController {
         stack.translatesAutoresizingMaskIntoConstraints = false
         overlay.addSubview(stack)
         NSLayoutConstraint.activate([
-            stack.centerXAnchor.constraint(equalTo: gameArea.centerXAnchor),
-            stack.centerYAnchor.constraint(equalTo: gameArea.centerYAnchor)
+            stack.centerXAnchor.constraint(equalTo: playfieldGuide.centerXAnchor),
+            stack.centerYAnchor.constraint(equalTo: playfieldGuide.centerYAnchor)
         ])
         return numberLabel
     }

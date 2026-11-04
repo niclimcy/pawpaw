@@ -113,8 +113,7 @@ final class GameInteractor: GameInteractorInputProtocol {
         invalidateTimers()
         // The app may be killed in the background.
         saveCatches()
-        // Running animations can't be frozen reliably, so on-screen critters are dropped.
-        activeTargets.removeAll()
+        // On-screen critters stay in play; the view freezes them until the round resumes.
         presenter?.didPause()
     }
 

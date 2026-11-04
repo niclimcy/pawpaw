@@ -3,18 +3,40 @@
 //  pawpaw
 //
 
+import SpriteKit
 import UIKit
 
 extension GameViewController {
     func setupGameArea() {
+        gameArea.allowsTransparency = true
+        gameArea.backgroundColor = .clear
+        gameArea.isMultipleTouchEnabled = true
+        gameArea.ignoresSiblingOrder = true
+        // Cats track motion closely and notice flicker above 60 Hz, so ask ProMotion screens for 120 Hz.
+        gameArea.preferredFramesPerSecond = 120
+        gameArea.presentScene(scene)
         gameArea.translatesAutoresizingMaskIntoConstraints = false
+        // Behind the HUD, which is added later, so taps on the home button still reach it.
         view.addSubview(gameArea)
+        view.addLayoutGuide(playfieldGuide)
+        // The scene fills the screen so critters run off the top edge, not into the HUD's strip.
+        // `playfieldGuide` marks the field below the HUD, where they spawn, stop and hide.
         NSLayoutConstraint.activate([
-            gameArea.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16 + max(48, Theme.scaled(48))),
+            gameArea.topAnchor.constraint(equalTo: view.topAnchor),
             gameArea.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             gameArea.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            gameArea.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            gameArea.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+
+            playfieldGuide.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16 + max(48, Theme.scaled(48))),
+            playfieldGuide.leadingAnchor.constraint(equalTo: gameArea.leadingAnchor),
+            playfieldGuide.trailingAnchor.constraint(equalTo: gameArea.trailingAnchor),
+            playfieldGuide.bottomAnchor.constraint(equalTo: gameArea.bottomAnchor)
         ])
+    }
+
+    /// Tells the scene how much of its top sits under the HUD.
+    func updatePlayfieldInset() {
+        scene.topInset = max(playfieldGuide.layoutFrame.minY - gameArea.frame.minY, 0)
     }
 
     func setupHUD() {

@@ -1,32 +1,13 @@
 //
-//  HidingSpotView.swift
+//  HidingSpotArtwork.swift
 //  pawpaw
 //
 
 import UIKit
 
-final class HidingSpotView: UIView {
-    private let theme: PlayfieldTheme
-
-    init(theme: PlayfieldTheme) {
-        self.theme = theme
-        super.init(frame: .zero)
-        isOpaque = false
-        backgroundColor = .clear
-        isUserInteractionEnabled = false
-        contentMode = .redraw
-        layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOpacity = 0.55
-        layer.shadowRadius = 10
-        layer.shadowOffset = CGSize(width: 0, height: 6)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func draw(_ rect: CGRect) {
-        let area = bounds.insetBy(dx: 6, dy: 6)
+/// Box, leaf pile, lily pad and snow mound, drawn into the current graphics context.
+enum HidingSpotArtwork {
+    static func draw(_ theme: PlayfieldTheme, in area: CGRect) {
         switch theme {
         case .wood: drawBox(in: area)
         case .grass: drawLeafPile(in: area)
@@ -35,7 +16,7 @@ final class HidingSpotView: UIView {
         }
     }
 
-    private func drawBox(in area: CGRect) {
+    private static func drawBox(in area: CGRect) {
         let box = area.insetBy(dx: area.width * 0.08, dy: area.height * 0.08)
         UIColor(red: 0.62, green: 0.45, blue: 0.27, alpha: 1).setFill()
         UIBezierPath(roundedRect: box, cornerRadius: 8).fill()
@@ -49,7 +30,7 @@ final class HidingSpotView: UIView {
         seam.stroke()
     }
 
-    private func drawLeafPile(in area: CGRect) {
+    private static func drawLeafPile(in area: CGRect) {
         let colors = [
             UIColor(red: 0.55, green: 0.30, blue: 0.10, alpha: 1),
             UIColor(red: 0.68, green: 0.42, blue: 0.12, alpha: 1),
@@ -69,7 +50,7 @@ final class HidingSpotView: UIView {
         }
     }
 
-    private func drawLilyPad(in area: CGRect) {
+    private static func drawLilyPad(in area: CGRect) {
         let center = CGPoint(x: area.midX, y: area.midY)
         let radius = min(area.width, area.height) / 2
         let pad = UIBezierPath()
@@ -89,7 +70,7 @@ final class HidingSpotView: UIView {
         }
     }
 
-    private func drawSnowMound(in area: CGRect) {
+    private static func drawSnowMound(in area: CGRect) {
         UIColor(white: 0.86, alpha: 1).setFill()
         UIBezierPath(ovalIn: area.insetBy(dx: 0, dy: area.height * 0.08)).fill()
         UIColor.white.setFill()

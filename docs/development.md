@@ -17,7 +17,7 @@ xcodebuild -project pawpaw.xcodeproj -scheme pawpaw \
 | Background colours | `PlayfieldTheme.baseColor` |
 | Max critters, spawn rate | `GameInteractor.maxActiveTargets`, `spawnInterval` |
 | Points, lifetime, spawn odds | `TargetKind.swift` |
-| Critter size | `GameAreaView.targetSize` |
+| Critter size | `PlayfieldGeometry.targetSize` |
 | Look-change streak | `GameInteractor.habituationStreak`, `CritterVariant.swift` |
 | Colours, hold time | `Theme.swift`, `Theme.holdDuration` |
 
