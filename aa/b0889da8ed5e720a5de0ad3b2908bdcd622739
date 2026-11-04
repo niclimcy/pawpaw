@@ -1,0 +1,85 @@
+pawpaw/Modules/Home/HomeRouter.swift
+  h_36695e5767c2ad 20,27
+docs/game-design.md
+  h_36695e5767c2ad 28-43
+pawpaw/Modules/Onboarding/OnboardingPresenter.swift
+  h_36695e5767c2ad 13-18,27
+pawpaw/Modules/Game/GameRouter.swift
+  h_36695e5767c2ad 15,22,28
+pawpaw/Modules/Game/GameInteractor.swift
+  h_36695e5767c2ad 22,63,71,107,269,271,280
+pawpaw/Modules/Home/HomeProtocols.swift
+  h_36695e5767c2ad 18-19
+pawpaw/Modules/Game/Playfield/PlayfieldTextures.swift
+  h_36695e5767c2ad 36,45-52,54,56,82,85,89,103,105-106
+README.md
+  h_36695e5767c2ad 26
+docs/development.md
+  h_36695e5767c2ad 18-19
+pawpaw/Modules/Game/Playfield/GameScene.swift
+  s_2a803296ab2e1b::t_f13a26849d7745 35,53-55,57-59,61-63,73
+  s_2a803296ab2e1b::t_a4e0a0206d43b5 199
+  s_2a803296ab2e1b::t_357eb0973fcd09 217
+  h_36695e5767c2ad 118,130
+  h_36695e5767c2ad 288,309
+pawpaw/Modules/Home/HomePresenter.swift
+  h_36695e5767c2ad 12,55
+pawpaw/Common/PlayfieldTuning+Device.swift
+  h_36695e5767c2ad 1-18
+pawpaw/Modules/Onboarding/OnboardingViewController.swift
+  h_36695e5767c2ad 71-74
+pawpaw/Modules/Home/HomeViewController.swift
+  h_36695e5767c2ad 95-102,248,368-372
+pawpaw/Entities/PlayfieldTuning.swift
+  h_36695e5767c2ad 1-58
+pawpaw/Modules/Game/GameViewController.swift
+  s_59f2d880168466::t_51e02dc2439ddd 158
+  s_277c5e97cacae0::t_502af96dbcfb30 147
+  h_36695e5767c2ad 12,101-139
+  h_36695e5767c2ad 62,140-146
+pawpaw/Modules/Game/Playfield/PlayfieldGeometry.swift
+  h_36695e5767c2ad 14-22,35,43,57-59,80,90,102
+pawpaw/Common/SettingsStorage.swift
+  h_36695e5767c2ad 35
+pawpaw/Common/OrientationNavigationController.swift
+  h_36695e5767c2ad 1-27
+docs/architecture.md
+  h_36695e5767c2ad 17,19-22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "aab0889da8ed5e720a5de0ad3b2908bdcd622739",
+  "prompts": {},
+  "humans": {
+    "h_36695e5767c2ad": {
+      "author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  },
+  "sessions": {
+    "s_277c5e97cacae0": {
+      "agent_id": {
+        "tool": "cline",
+        "id": "conv_1793345604305_6s93b8m",
+        "model": "unknown"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    },
+    "s_2a803296ab2e1b": {
+      "agent_id": {
+        "tool": "cline",
+        "id": "conv_1793698988337_in7h9g3",
+        "model": "unknown"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    },
+    "s_59f2d880168466": {
+      "agent_id": {
+        "tool": "cline",
+        "id": "conv_1793344469927_yditc76",
+        "model": "unknown"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
