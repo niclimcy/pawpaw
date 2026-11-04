@@ -1,0 +1,15 @@
+pawpaw.xcodeproj/project.pbxproj
+  h_36695e5767c2ad 150-151,154-155,189-190,193-194
+  h_36695e5767c2ad 146-148,168-169,185-187,207-208
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0357d6471deb453438b37af46404f07d080e49b4",
+  "prompts": {},
+  "humans": {
+    "h_36695e5767c2ad": {
+      "author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
