@@ -1,0 +1,57 @@
+pawpaw/Modules/Game/Playfield/CritterNode.swift
+  s_2a803296ab2e1b::t_62d59c5b48ce5d 107
+  s_2a803296ab2e1b::t_76f8b1a02ae361 32-38,41
+  s_2a803296ab2e1b::t_b8da20950e3767 50
+  s_2a803296ab2e1b::t_c88ef529520155 1-31,39-40,42-49,51-106,108-119,125
+  s_2a803296ab2e1b::t_b9eacf804a5b3b 120-124
+  s_2a803296ab2e1b::t_56774086463ebc 126
+pawpaw/Modules/Game/Playfield/HidingSpotArtwork.swift
+  s_2a803296ab2e1b::t_280e8503ace95c 2,8-10,19,33,53,73
+docs/game-design.md
+  s_2a803296ab2e1b::t_baa1b3cd30b8fc 32
+pawpaw/Modules/Game/GameProtocols.swift
+  s_2a803296ab2e1b::t_d2024e4d347812 19-21
+  s_2a803296ab2e1b::t_68175a1058fddc 73
+docs/architecture.md
+  s_2a803296ab2e1b::t_68fa05f82e5c03 8-9
+pawpaw/Modules/Game/GamePresenter.swift
+  s_2a803296ab2e1b::t_e6896a5e377311 95,100
+pawpaw/Modules/Game/GameInteractor.swift
+  s_2a803296ab2e1b::t_3db29744bbf5d9 116
+docs/development.md
+  s_2a803296ab2e1b::t_cff8edfa1f3aff 20
+pawpaw/Modules/Game/Playfield/PlayfieldTextures.swift
+  s_2a803296ab2e1b::t_ef64bba3e4273d 2,6,9-43,45-74,76,79-80,83,91,94-125
+  s_2a803296ab2e1b::t_d7bdebb0a64fb6 126-176,180-181
+  s_2a803296ab2e1b::t_37ca29ac30f8ad 177-179
+pawpaw/Modules/Game/GameViewController.swift
+  s_2a803296ab2e1b::t_8094a89249f510 147,180-183,186
+  s_2a803296ab2e1b::t_27eb0f6dcd6cfa 13-15
+  s_2a803296ab2e1b::t_71816ce25712cf 6
+  s_2a803296ab2e1b::t_37007dcf2ea14c 184
+  s_2a803296ab2e1b::t_1fe3b85aa84326 185
+  s_2a803296ab2e1b::t_97aa794a8b9a7f 187
+pawpaw/Modules/Game/Playfield/GameScene.swift
+  s_2a803296ab2e1b::t_357eb0973fcd09 125-126,129-130,133-135,138-140,142,144-148,155-156,160-166,169,172,181,187,211,227
+  s_2a803296ab2e1b::t_f13a26849d7745 2,6,9-21,24,28-30,33-35,41-42,45-55,59-61,63,66-67,73-74,76-79,81-97,99-101,103,105-111,113-115,118-120,123-124
+  s_2a803296ab2e1b::t_906c6810444013 212-214
+  s_2a803296ab2e1b::t_35acd230754498 225-226
+pawpaw/Modules/Game/Playfield/GameScene+Effects.swift
+  s_2a803296ab2e1b::t_8b659cba3818e9 2,6,9-11,25-27,29-49,52-64,67,69-98,100,102-110,113-129
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ceb22564bff5d7c8c998c53148fd3e118070dd92",
+  "prompts": {},
+  "sessions": {
+    "s_2a803296ab2e1b": {
+      "agent_id": {
+        "tool": "cline",
+        "id": "conv_1793698988337_in7h9g3",
+        "model": "unknown"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
