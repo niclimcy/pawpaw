@@ -1,0 +1,18 @@
+pawpaw/Modules/Profiles/ProfileEditorView+Builders.swift
+  h_36695e5767c2ad 23,25,35-36,66-68
+pawpaw/Modules/Profiles/ProfileEditorView+Layout.swift
+  h_36695e5767c2ad 25,28,30-33,49-56,59,61,72-78,94-98,100-101
+pawpaw/Modules/Profiles/ProfileEditorView.swift
+  h_36695e5767c2ad 15-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "27c4aca3e450982e2ef71b4adb209313c9ea5334",
+  "prompts": {},
+  "humans": {
+    "h_36695e5767c2ad": {
+      "author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
