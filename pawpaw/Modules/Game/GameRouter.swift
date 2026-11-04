@@ -12,17 +12,20 @@ final class GameRouter: GameRouterProtocol {
         let profile = UserDefaultsProfileStorage().activeProfile
         let settings = UserDefaultsSettingsStorage()
         let theme = settings.selectedTheme
+        let tuning = PlayfieldTuning.current
         let interactor = GameInteractor(
             storage: UserDefaultsScoreStorage(profileID: profile.id),
             statsStorage: UserDefaultsStatsStorage(profileID: profile.id),
             settings: settings,
             mode: mode,
             theme: theme,
+            tuning: tuning,
             enabledKinds: profile.enabledKinds
         )
         let router = GameRouter()
 
         view.theme = theme
+        view.tuning = tuning
         view.presenter = presenter
         presenter.view = view
         presenter.interactor = interactor

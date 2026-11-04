@@ -32,6 +32,7 @@ final class GameScene: SKScene {
     /// Any touch on the field, so the view knows someone is still playing.
     var onTouch: (() -> Void)?
     var theme: PlayfieldTheme = .wood
+    var tuning: PlayfieldTuning = .standard
     /// Height of the strip under the HUD. Critters run through it on their way off-screen,
     /// but never spawn, stop or hide in it.
     var topInset: CGFloat = 0 {
@@ -49,11 +50,17 @@ final class GameScene: SKScene {
     private var targetNodes: [UUID: CritterNode] = [:]
     private var recycledNodes: [CritterNode] = []
     private var spawnCount = 0
-    private let hitSlop: CGFloat = 28
+    private var hitSlop: CGFloat {
+        tuning.hitSlop
+    }
     /// More generous than in a round: the lure is there to be caught.
-    private let lureHitSlop: CGFloat = 40
+    private var lureHitSlop: CGFloat {
+        tuning.lureHitSlop
+    }
     private let trailSpacing: CGFloat = 36
-    private let startleRange: CGFloat = 220
+    private var startleRange: CGFloat {
+        tuning.startleRange
+    }
     private var lastRipple: [ObjectIdentifier: CGPoint] = [:]
     /// The critter roaming the results between rounds; kept apart from the round's critters.
     private var lureNode: CritterNode?
@@ -63,7 +70,7 @@ final class GameScene: SKScene {
     private var lastTouch: CGPoint?
 
     private var geometry: PlayfieldGeometry {
-        PlayfieldGeometry(size: size, topInset: topInset)
+        PlayfieldGeometry(size: size, topInset: topInset, tuning: tuning)
     }
 
     override init(size: CGSize) {
@@ -108,7 +115,7 @@ final class GameScene: SKScene {
 
     func add(_ target: GameTarget) {
         guard let plan = CritterActions.plan(for: target, in: geometry),
-              let artwork = PlayfieldTextures.critter(target.kind, variant: target.variant) else {
+              let artwork = PlayfieldTextures.critter(target.kind, variant: target.variant, size: tuning.targetSize) else {
             onDiscard?(target.id)
             return
         }
@@ -120,7 +127,7 @@ final class GameScene: SKScene {
         critter.play(
             plan,
             artwork: artwork,
-            caughtArtwork: PlayfieldTextures.critter(target.kind, variant: target.variant, style: .caught),
+            caughtArtwork: PlayfieldTextures.critter(target.kind, variant: target.variant, size: tuning.targetSize, style: .caught),
             layer: canTakeCover ? Layer.coveredCritter : Layer.critter,
             canTakeCover: canTakeCover,
             spawnOrder: spawnCount
@@ -189,7 +196,7 @@ final class GameScene: SKScene {
     /// Plays one loop of the lure. The same node carries on between loops; a leaving lure is removed when it's gone.
     func showLure(_ target: GameTarget, isLeaving: Bool) {
         guard let plan = CritterActions.plan(for: target, in: geometry),
-              let artwork = PlayfieldTextures.critter(target.kind, variant: target.variant) else {
+              let artwork = PlayfieldTextures.critter(target.kind, variant: target.variant, size: tuning.targetSize) else {
             removeLure()
             if !isLeaving { onLureDiscard?() }
             return
@@ -207,7 +214,7 @@ final class GameScene: SKScene {
         critter.play(
             plan,
             artwork: artwork,
-            caughtArtwork: PlayfieldTextures.critter(target.kind, variant: target.variant, style: .caught),
+            caughtArtwork: PlayfieldTextures.critter(target.kind, variant: target.variant, size: tuning.targetSize, style: .caught),
             layer: Layer.critter,
             canTakeCover: false,
             spawnOrder: spawnCount
@@ -278,7 +285,7 @@ final class GameScene: SKScene {
     func showHidingSpots(at points: [CGPoint]) {
         hidingSpotNodes.forEach { $0.removeFromParent() }
         hidingSpotPoints = points
-        let texture = PlayfieldTextures.hidingSpot(for: theme)
+        let texture = PlayfieldTextures.hidingSpot(for: theme, side: tuning.hidingSpotSize)
         hidingSpotNodes = points.map { _ in
             let spot = SKSpriteNode(texture: texture)
             spot.zPosition = Layer.hidingSpot
@@ -299,7 +306,7 @@ final class GameScene: SKScene {
         guard critter.canTakeCover else { return false }
         let center = critter.center
         return hidingSpotNodes.contains { spot in
-            hypot(spot.position.x - center.x, spot.position.y - center.y) < PlayfieldGeometry.hidingSpotSize * 0.3
+            hypot(spot.position.x - center.x, spot.position.y - center.y) < tuning.hidingSpotSize * 0.3
         }
     }
 

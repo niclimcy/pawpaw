@@ -14,6 +14,10 @@ Each screen is a VIPER module (View, Interactor, Presenter, Entity, Router). Pro
 
 ## Other folders
 
-- `Entities/`: data models (`TargetKind`, `GameTarget`, `SessionMode`, `PlayfieldTheme`, `CatProfile`, ...).
+- `Entities/`: data models (`TargetKind`, `GameTarget`, `SessionMode`, `PlayfieldTheme`, `PlayfieldTuning`, `CatProfile`, ...).
 - `Common/`: storage (`ProfileStorage`, `SettingsStorage`, `ScoreStorage`, `StatsStorage`), `Theme`, `SoundPlayer`, shared views, drawn backgrounds.
+
+## Device tuning
+
+`PlayfieldTuning.current` (`.pocket` on iPhone, `.standard` on iPad) is read by `GameRouter` and passed to `GameInteractor` (counts, pace), `GameViewController` (landscape lock) and `GameScene`/`PlayfieldGeometry`/`PlayfieldTextures` (sizes, hit areas). `HomeRouter` uses `OrientationNavigationController` so the game's orientation lock reaches the window. On iPhone every other screen is portrait-only (`UIInterfaceOrientationMask.menus`), so leaving the game always rotates back, on iOS 15 too.
 - `Assets.xcassets/`: critter and cat SVGs.

@@ -33,6 +33,7 @@ enum PlayfieldTextures {
         let kind: TargetKind
         let variant: CritterVariant
         let style: CritterStyle
+        let size: CGFloat
     }
 
     private static var critters: [CritterKey: Critter] = [:]
@@ -41,12 +42,18 @@ enum PlayfieldTextures {
 
     // MARK: Critters
 
-    static func critter(_ kind: TargetKind, variant: CritterVariant, style: CritterStyle = .standard) -> Critter? {
-        let key = CritterKey(kind: kind, variant: variant, style: style)
+    /// `size` is before the variant's scale.
+    static func critter(
+        _ kind: TargetKind,
+        variant: CritterVariant,
+        size: CGFloat,
+        style: CritterStyle = .standard
+    ) -> Critter? {
+        let key = CritterKey(kind: kind, variant: variant, style: style, size: size)
         if let cached = critters[key] { return cached }
-        guard let artwork = artwork(for: kind, variant: variant) else { return nil }
+        guard let artwork = artwork(for: kind, variant: variant, size: size) else { return nil }
 
-        let side = PlayfieldGeometry.targetSize * variant.scale
+        let side = size * variant.scale
         let shadow = critterShadow(kind: kind, variant: variant, style: style)
         let image = renderWithShadow(shadow, contentSize: CGSize(width: side, height: side)) { rect in
             artwork.draw(in: rect)
@@ -72,14 +79,14 @@ enum PlayfieldTextures {
 
     /// The critter's artwork with the variant's colour washed over it.
     /// The laser keeps its red dot; only its size and glow change.
-    private static func artwork(for kind: TargetKind, variant: CritterVariant) -> UIImage? {
+    private static func artwork(for kind: TargetKind, variant: CritterVariant, size: CGFloat) -> UIImage? {
         guard let artwork = UIImage(named: kind.imageName) else { return nil }
         guard let tint = variant.tint, !kind.glows else { return artwork }
-        let key = CritterKey(kind: kind, variant: variant, style: .standard)
+        let key = CritterKey(kind: kind, variant: variant, style: .standard, size: size)
         if let cached = tintedArtwork[key] { return cached }
 
         // Rendered at the shown size so the vector art stays sharp.
-        let side = PlayfieldGeometry.targetSize * variant.scale
+        let side = size * variant.scale
         let rect = CGRect(x: 0, y: 0, width: side, height: side)
         let image = UIGraphicsImageRenderer(size: rect.size).image { _ in
             artwork.draw(in: rect)
@@ -93,10 +100,10 @@ enum PlayfieldTextures {
 
     // MARK: Hiding spots
 
-    static func hidingSpot(for theme: PlayfieldTheme) -> SKTexture {
+    static func hidingSpot(for theme: PlayfieldTheme, side: CGFloat) -> SKTexture {
         let shadow = Shadow(color: UIColor.black.withAlphaComponent(0.55), radius: 10, offset: CGSize(width: 0, height: 6))
-        return cached("spot.\(theme.rawValue)") {
-            texture(side: PlayfieldGeometry.hidingSpotSize, shadow: shadow) { HidingSpotArtwork.draw(theme, in: $0.insetBy(dx: 6, dy: 6)) }
+        return cached("spot.\(theme.rawValue).\(side)") {
+            texture(side: side, shadow: shadow) { HidingSpotArtwork.draw(theme, in: $0.insetBy(dx: 6, dy: 6)) }
         }
     }
 

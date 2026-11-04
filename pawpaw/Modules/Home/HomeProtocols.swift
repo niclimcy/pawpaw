@@ -15,6 +15,8 @@ protocol HomeViewProtocol: AnyObject {
     /// `nil` hides the best score.
     func showHighScore(_ score: Int?)
     func showProfile(name: String, face: CatFace, favorite: String?)
+    /// `nil` hides the note.
+    func showPlayfieldNote(_ text: String?)
 }
 
 // MARK: - Presenter

@@ -92,6 +92,14 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         return label
     }()
 
+    private let playfieldNoteLabel: UILabel = {
+        let label = HomeViewController.makeLabel(size: 14, weight: .semibold)
+        label.textColor = Theme.text.withAlphaComponent(0.65)
+        label.isHidden = true
+        label.accessibilityIdentifier = "playfieldNoteLabel"
+        return label
+    }()
+
     private static let modeFontSize: CGFloat = 16
     /// Not orange, so PLAY stands out.
     private static let selectedTint = Theme.text
@@ -237,7 +245,7 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
 
         let setupCard = makeSetupCard()
         let stack = UIStackView(arrangedSubviews: [
-            logoView, titleLabel, setupCard, playButton, highScoreLabel,
+            logoView, titleLabel, setupCard, playButton, playfieldNoteLabel, highScoreLabel,
         ])
         stack.axis = .vertical
         stack.alignment = .center
@@ -355,6 +363,11 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         let best = score ?? 0
         highScoreLabel.isHidden = best <= 0
         highScoreLabel.text = "🏆 Best: \(best)"
+    }
+
+    func showPlayfieldNote(_ text: String?) {
+        playfieldNoteLabel.text = text
+        playfieldNoteLabel.isHidden = text == nil
     }
 
     func showProfile(name: String, face: CatFace, favorite: String?) {

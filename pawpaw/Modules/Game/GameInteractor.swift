@@ -7,9 +7,7 @@ import CoreGraphics
 import Foundation
 
 final class GameInteractor: GameInteractorInputProtocol {
-    static let maxActiveTargets = 2
     static let spawnInterval: TimeInterval = 1.0
-    static let hidingSpotCount = 2
     /// Catches of one kind in a row before that kind gets a new look.
     static let habituationStreak = 3
 
@@ -21,6 +19,7 @@ final class GameInteractor: GameInteractorInputProtocol {
     private let statsStorage: StatsStorage
     private let spawnableKinds: [TargetKind]
     private let theme: PlayfieldTheme
+    private let tuning: PlayfieldTuning
     private var activeTargets: [UUID: GameTarget] = [:]
     private var score = 0
     private var catches = 0
@@ -61,6 +60,7 @@ final class GameInteractor: GameInteractorInputProtocol {
         settings: SettingsStorage,
         mode: SessionMode,
         theme: PlayfieldTheme,
+        tuning: PlayfieldTuning = .standard,
         enabledKinds: [TargetKind] = TargetKind.allCases
     ) {
         self.storage = storage
@@ -68,6 +68,7 @@ final class GameInteractor: GameInteractorInputProtocol {
         self.settings = settings
         self.mode = mode
         self.theme = theme
+        self.tuning = tuning
         let suited = enabledKinds.filter { $0.canAppear(on: theme) }
         // Only empty for legacy profiles with just single-theme critters enabled; fall back to every suitable critter.
         self.spawnableKinds = suited.isEmpty ? TargetKind.allCases.filter { $0.canAppear(on: theme) } : suited
@@ -103,7 +104,7 @@ final class GameInteractor: GameInteractorInputProtocol {
         timeRemaining = mode.duration ?? 0
         isRunning = true
         isPaused = false
-        hidingSpots = MovementPlanner.hidingSpots(count: Self.hidingSpotCount)
+        hidingSpots = MovementPlanner.hidingSpots(count: tuning.hidingSpotCount)
 
         presenter?.didPlaceHidingSpots(hidingSpots)
         presenter?.didUpdateScore(score)
@@ -265,8 +266,9 @@ final class GameInteractor: GameInteractorInputProtocol {
     }
 
     private func spawnTarget() {
-        guard isPlaying, activeTargets.count < Self.maxActiveTargets else { return }
+        guard isPlaying, activeTargets.count < tuning.maxActiveTargets else { return }
         let kind = randomKind()
+        let baseLifetime = tuning.lifetime(for: TimeInterval.random(in: kind.lifetimeRange))
         let start = kind.movementStyle.surfaces ? randomInnerPoint() : randomEdgePoint()
         let target = GameTarget(
             id: UUID(),
@@ -275,7 +277,7 @@ final class GameInteractor: GameInteractorInputProtocol {
             legs: MovementPlanner.legs(
                 from: start,
                 style: kind.movementStyle,
-                duration: difficulty.lifetime(for: TimeInterval.random(in: kind.lifetimeRange)),
+                duration: difficulty.lifetime(for: baseLifetime),
                 coverSpots: theme.allowsCover(for: kind.movementStyle) ? hidingSpots : []
             ),
             leadIn: MovementPlanner.leadIn(for: kind.movementStyle),

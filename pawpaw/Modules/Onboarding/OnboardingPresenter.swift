@@ -10,6 +10,12 @@ final class OnboardingPresenter: OnboardingPresenterProtocol {
     var interactor: OnboardingInteractorInputProtocol?
     var router: OnboardingRouterProtocol?
 
+    private static let setupBody =
+        "Choose how long to play and where, then tap PLAY. Set your device down flat while it counts 3, 2, 1."
+    private static let pocketBody =
+        " On iPhone, \(PlayfieldTuning.pocketName) keeps it simple: one critter at a time. "
+        + "Cats get the most room to hunt on a bigger screen like iPad."
+
     static let pages = [
         OnboardingPage(
             title: "A game for your cat",
@@ -18,7 +24,7 @@ final class OnboardingPresenter: OnboardingPresenterProtocol {
         ),
         OnboardingPage(
             title: "You set it up, your cat plays",
-            body: "Choose how long to play and where, then tap PLAY. Set your device down flat while it counts 3, 2, 1.",
+            body: setupBody + (PlayfieldTuning.current.isPocket ? pocketBody : ""),
             imageNames: ["critter_bug", "critter_cricket"]
         ),
         OnboardingPage(

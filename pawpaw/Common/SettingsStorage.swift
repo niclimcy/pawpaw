@@ -32,7 +32,7 @@ final class UserDefaultsSettingsStorage: SettingsStorage {
 
     var selectedMode: SessionMode {
         get {
-            defaults.string(forKey: modeKey).flatMap(SessionMode.init(rawValue:)) ?? .standard
+            defaults.string(forKey: modeKey).flatMap(SessionMode.init(rawValue:)) ?? PlayfieldTuning.current.defaultMode
         }
         set {
             defaults.set(newValue.rawValue, forKey: modeKey)

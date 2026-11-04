@@ -25,6 +25,22 @@
 - `DifficultyTuner` adapts speed (0.75×–1.3×) within a round.
 - After 3 catches in a row of one critter, it gets a new look (`CritterVariant`).
 
+## Pocket Hunt (iPhone)
+
+A phone screen is too small for the iPad field, so iPhone plays a tuned version (`PlayfieldTuning.pocket`):
+
+| | iPad | iPhone |
+|---|---|---|
+| Critters on screen | 2 | 1 |
+| Hiding spots | 2 × 170 pt | 1 × 130 pt |
+| Hit slop (lure) | 28 pt (40) | 44 pt (56) |
+| Missed-tap startle range | 220 pt | 140 pt |
+| Pace | 1× | 0.85× |
+| Orientation | Any | Game landscape, menus portrait |
+| Default round | 60 s | 30 s |
+
+Home and onboarding tell owners that Pocket Hunt plays best on a bigger screen. The game itself never shows this.
+
 ## Between rounds
 
 When a timed round ends, the field stays in play. One critter (the lure) roams around the results card, which works like a big hiding spot: the critter disappears under it, peeks out from its edges, then runs into the open. The cat catches it to ask for another round, so a hunt never stops before the catch.

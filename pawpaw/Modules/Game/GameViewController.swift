@@ -9,6 +9,7 @@ import UIKit
 final class GameViewController: UIViewController, GameViewProtocol {
     var presenter: GamePresenterProtocol?
     var theme: PlayfieldTheme = .wood
+    var tuning: PlayfieldTuning = .standard
 
     /// Fills the screen, under the HUD too, so critters leave by the real screen edge.
     let gameArea = SKView()
@@ -58,6 +59,7 @@ final class GameViewController: UIViewController, GameViewProtocol {
         view.backgroundColor = theme.baseColor
         installBackground(theme: theme)
         scene.theme = theme
+        scene.tuning = tuning
         setupGameArea()
         setupHUD()
         setupResultOverlay()
@@ -96,6 +98,53 @@ final class GameViewController: UIViewController, GameViewProtocol {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setScreenAwake(true)
+        rotateToSupportedOrientation()
+    }
+
+    // MARK: Orientation
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        tuning.prefersLandscape ? .landscape : super.supportedInterfaceOrientations
+    }
+
+    override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
+        tuning.prefersLandscape ? .landscapeRight : super.preferredInterfaceOrientationForPresentation
+    }
+
+    /// Mid-push, this view isn't in the window yet.
+    private var windowScene: UIWindowScene? {
+        (view.window ?? navigationController?.view.window)?.windowScene
+    }
+
+    private func rotateToSupportedOrientation() {
+        guard tuning.prefersLandscape else { return }
+        if #available(iOS 16.0, *) {
+            setNeedsUpdateOfSupportedInterfaceOrientations()
+            navigationController?.setNeedsUpdateOfSupportedInterfaceOrientations()
+            windowScene?.requestGeometryUpdate(.iOS(interfaceOrientations: .landscape))
+        } else {
+            UIViewController.attemptRotationToDeviceOrientation()
+        }
+    }
+
+    /// Home is portrait-only on iPhone, so re-checking once it's on top turns the screen back.
+    private func releaseOrientationLock() {
+        guard tuning.prefersLandscape, let navigation = navigationController else { return }
+        let scene = windowScene
+        let release = {
+            if #available(iOS 16.0, *) {
+                navigation.setNeedsUpdateOfSupportedInterfaceOrientations()
+                scene?.requestGeometryUpdate(.iOS(interfaceOrientations: .menus))
+            } else {
+                UIViewController.attemptRotationToDeviceOrientation()
+            }
+        }
+        if let coordinator = transitionCoordinator {
+            coordinator.animate(alongsideTransition: nil) { context in
+                if !context.isCancelled { release() }
+            }
+        } else {
+            DispatchQueue.main.async(execute: release)
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -106,6 +155,7 @@ final class GameViewController: UIViewController, GameViewProtocol {
             cancelCountdown()
             cancelLure()
             presenter?.viewWillDisappear()
+            releaseOrientationLock()
         }
     }
 

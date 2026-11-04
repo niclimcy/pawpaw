@@ -17,13 +17,14 @@ final class HomeRouter: HomeRouterProtocol {
         )
         let router = HomeRouter()
 
+        presenter.tuning = PlayfieldTuning.current
         view.presenter = presenter
         presenter.view = view
         presenter.interactor = interactor
         presenter.router = router
         interactor.presenter = presenter
 
-        let navigation = UINavigationController(rootViewController: view)
+        let navigation = OrientationNavigationController(rootViewController: view)
         navigation.setNavigationBarHidden(true, animated: false)
         return navigation
     }

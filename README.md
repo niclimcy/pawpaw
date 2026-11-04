@@ -23,6 +23,7 @@ https://github.com/user-attachments/assets/3d60a58d-6b03-4dae-b943-6ab0920fc8ef
 - Round: 30 s, 60 s, 2 min or untimed Relaxed.
 - Tap critters for points; hold 🏠 to leave.
 - Per-cat profiles, best scores and stats.
+- iPhone plays **Pocket Hunt**: one critter at a time, landscape. Best on iPad.
 
 ## Docs
 

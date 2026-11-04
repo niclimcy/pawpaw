@@ -68,6 +68,10 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
         return label
     }
 
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        .menus
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Theme.background

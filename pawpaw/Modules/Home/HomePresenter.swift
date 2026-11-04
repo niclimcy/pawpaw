@@ -9,6 +9,7 @@ final class HomePresenter: HomePresenterProtocol, HomeInteractorOutputProtocol {
     weak var view: HomeViewProtocol?
     var interactor: HomeInteractorInputProtocol?
     var router: HomeRouterProtocol?
+    var tuning: PlayfieldTuning = .standard
 
     func viewWillAppear() {
         interactor?.fetchState()
@@ -51,6 +52,7 @@ final class HomePresenter: HomePresenterProtocol, HomeInteractorOutputProtocol {
         view?.showTheme(theme)
         view?.showAfterRound(afterRound, isAvailable: mode.duration != nil)
         view?.showHighScore(highScore)
+        view?.showPlayfieldNote(tuning.screenNote)
         view?.showProfile(
             name: profile.name,
             face: profile.face,
