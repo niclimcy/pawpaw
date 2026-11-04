@@ -39,7 +39,7 @@ A phone screen is too small for the iPad field, so iPhone plays a tuned version 
 | Orientation | Any | Game landscape, menus portrait |
 | Default round | 60 s | 30 s |
 
-Home and onboarding tell owners that Pocket Hunt plays best on a bigger screen. The game itself never shows this.
+"Pocket Hunt" is an internal name only and never appears in the UI. Home and onboarding tell iPhone owners that the game plays best on a bigger screen. The game itself never shows this.
 
 ## Between rounds
 

@@ -433,8 +433,28 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     }
 
     func showPlayfieldNote(_ text: String?) {
-        playfieldNoteLabel.text = text
         playfieldNoteLabel.isHidden = text == nil
+        playfieldNoteLabel.accessibilityLabel = text
+        guard let text else {
+            playfieldNoteLabel.attributedText = nil
+            return
+        }
+        let font = playfieldNoteLabel.font
+            ?? Theme.roundedFont(size: Theme.scaled(14), weight: .semibold)
+        let color = playfieldNoteLabel.textColor ?? Theme.text
+        let note = NSMutableAttributedString()
+        let symbol = UIImage.SymbolConfiguration(font: font)
+        if let phone = UIImage(systemName: "iphone", withConfiguration: symbol) {
+            let tinted = phone.withTintColor(color, renderingMode: .alwaysOriginal)
+            note.append(NSAttributedString(attachment: NSTextAttachment(image: tinted)))
+            note.append(NSAttributedString(string: " "))
+        }
+        note.append(NSAttributedString(string: text))
+        note.addAttributes(
+            [.font: font, .foregroundColor: color],
+            range: NSRange(location: 0, length: note.length)
+        )
+        playfieldNoteLabel.attributedText = note
     }
 
     func showProfile(name: String, face: CatFace, favorite: String?) {

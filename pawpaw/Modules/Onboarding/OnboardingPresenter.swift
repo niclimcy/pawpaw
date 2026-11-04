@@ -13,7 +13,7 @@ final class OnboardingPresenter: OnboardingPresenterProtocol {
     private static let setupBody =
         "Choose how long to play and where, then tap PLAY. Set your device down flat while it counts 3, 2, 1."
     private static let pocketBody =
-        " On iPhone, \(PlayfieldTuning.pocketName) keeps it simple: one critter at a time. "
+        " On iPhone, the game keeps it simple: one critter at a time. "
         + "Cats get the most room to hunt on a bigger screen like iPad."
 
     static let pages = [
