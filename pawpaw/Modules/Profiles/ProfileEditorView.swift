@@ -12,7 +12,8 @@ final class ProfileEditorView: UIView, UITextFieldDelegate {
 
     let titleLabel = UILabel()
     let nameField = CatNameField()
-    let facePicker = CatFacePicker()
+    /// Fills the card's width, shrinking down to tap size when the card needs the room.
+    let facePicker = CatFacePicker(perRow: 3, minSide: Theme.minimumTapSize)
     let critterHintLabel = UILabel()
     /// Replaced by the real button in `build()`.
     var deleteButton = UIButton(type: .system)

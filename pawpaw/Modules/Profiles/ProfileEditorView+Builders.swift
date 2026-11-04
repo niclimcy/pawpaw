@@ -20,7 +20,9 @@ extension ProfileEditorView {
         heading.textAlignment = .center
         heading.numberOfLines = 0
         heading.accessibilityTraits = .header
+        heading.setContentCompressionResistancePriority(.required, for: .vertical)
 
+        critterHintLabel.setContentCompressionResistancePriority(.required, for: .vertical)
         critterHintLabel.text = "Keep at least one critter that isn't a fish or a lizard on. Fish only swim in the pond, and lizards only live on grass."
         critterHintLabel.font = Theme.roundedFont(size: Theme.scaled(14), weight: .semibold)
         critterHintLabel.adjustsFontForContentSizeCategory = true
@@ -30,7 +32,8 @@ extension ProfileEditorView {
         critterHintLabel.isHidden = true
 
         let kinds = TargetKind.allCases
-        let perRow = 4
+        // Two even rows of five keep the card short enough for small iPhones.
+        let perRow = 5
         let rows = stride(from: 0, to: kinds.count, by: perRow).map { start -> UIStackView in
             var buttons: [UIView] = kinds[start..<min(start + perRow, kinds.count)].map(makeCritterButton)
             // Pad a short last row so buttons stay equal width.
@@ -60,6 +63,9 @@ extension ProfileEditorView {
         let picture = UIImageView(image: UIImage(named: kind.imageName))
         picture.contentMode = .scaleAspectFit
         picture.isUserInteractionEnabled = false
+        // The SVG's own size mustn't push the button, and so the card, wider than the screen.
+        picture.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        picture.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
         picture.translatesAutoresizingMaskIntoConstraints = false
         button.addSubview(picture)
         NSLayoutConstraint.activate([

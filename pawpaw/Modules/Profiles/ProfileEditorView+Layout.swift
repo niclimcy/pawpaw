@@ -22,10 +22,15 @@ extension ProfileEditorView {
         titleLabel.accessibilityTraits = .header
 
         let saveButton = makeSaveButton()
+        let cancelButton = makeCancelButton()
         let stack = UIStackView(arrangedSubviews: [
             titleLabel, makeNameField(), facePicker, makeCritterPicker(),
-            saveButton, makeCancelButton(), makeDeleteButton()
+            saveButton, cancelButton, makeDeleteButton()
         ])
+        // Required, so fitting the card shrinks the face picker rather than squashing text.
+        for view in [titleLabel, saveButton, cancelButton, deleteButton] {
+            view.setContentCompressionResistancePriority(.required, for: .vertical)
+        }
         stack.axis = .vertical
         stack.alignment = .fill
         stack.spacing = 16
@@ -41,9 +46,19 @@ extension ProfileEditorView {
         centerInScroll(card, maxWidth: Theme.scaled(380))
     }
 
+    private static let cardMargin: CGFloat = 24
+
+    // When the card is taller than the screen, the face picker (just below `.defaultHigh`) shrinks
+    // to fit; past that the card scrolls. The width wins over fitting, since narrowing the card
+    // would only shrink the critters instead.
+    private static let fillWidthPriority = UILayoutPriority.defaultHigh + 1
+    private static let fitPriority = UILayoutPriority.defaultHigh
+
     /// Like `embedCentered`, but pinned above the keyboard.
     private func centerInScroll(_ card: UIView, maxWidth: CGFloat) {
+        let margin = Self.cardMargin
         let scroll = UIScrollView()
+        scroll.showsVerticalScrollIndicator = false
         scroll.keyboardDismissMode = .interactive
         scroll.translatesAutoresizingMaskIntoConstraints = false
         addSubview(scroll)
@@ -54,8 +69,13 @@ extension ProfileEditorView {
         card.translatesAutoresizingMaskIntoConstraints = false
         container.addSubview(card)
 
-        let fillWidth = card.widthAnchor.constraint(equalTo: container.widthAnchor, constant: -48)
-        fillWidth.priority = .defaultHigh
+        // Lower priority so `maxWidth` wins.
+        let fillWidth = card.widthAnchor.constraint(equalTo: container.widthAnchor, constant: -margin * 2)
+        fillWidth.priority = Self.fillWidthPriority
+        // Against the safe area rather than the scroll view, so the keyboard scrolls the card
+        // instead of shrinking the faces.
+        let fit = card.heightAnchor.constraint(lessThanOrEqualTo: safeAreaLayoutGuide.heightAnchor, constant: -margin * 2)
+        fit.priority = Self.fitPriority
         NSLayoutConstraint.activate([
             scroll.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             scroll.bottomAnchor.constraint(equalTo: keyboardLayoutGuide.topAnchor),
@@ -71,10 +91,14 @@ extension ProfileEditorView {
 
             card.centerXAnchor.constraint(equalTo: container.centerXAnchor),
             card.centerYAnchor.constraint(equalTo: container.centerYAnchor),
-            card.topAnchor.constraint(greaterThanOrEqualTo: container.topAnchor, constant: 24),
-            card.bottomAnchor.constraint(lessThanOrEqualTo: container.bottomAnchor, constant: -24),
+            card.topAnchor.constraint(greaterThanOrEqualTo: container.topAnchor, constant: margin),
+            card.bottomAnchor.constraint(lessThanOrEqualTo: container.bottomAnchor, constant: -margin),
+            // Required, so nothing inside can push the card past the screen margins.
+            card.leadingAnchor.constraint(greaterThanOrEqualTo: container.leadingAnchor, constant: margin),
+            card.trailingAnchor.constraint(lessThanOrEqualTo: container.trailingAnchor, constant: -margin),
             card.widthAnchor.constraint(lessThanOrEqualToConstant: maxWidth),
-            fillWidth
+            fillWidth,
+            fit
         ])
     }
 }
