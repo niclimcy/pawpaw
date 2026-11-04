@@ -1,0 +1,34 @@
+pawpaw/Modules/Onboarding/OnboardingViewController.swift
+  h_36695e5767c2ad 18,63-69,73-74,167,183-186,266,270-279,394-396,399
+  s_94becd29f4387f::t_c3be6d69ffe276 160,201,449-450
+  s_94becd29f4387f::t_c403d77b483774 153,157,161,164-165,223-224
+  s_94becd29f4387f::t_df08382f7501c4 198-200
+  s_94becd29f4387f::t_20b74b623bab6c 202-204,220-222
+  s_94becd29f4387f::t_89988d349f755c 446-448
+  h_36695e5767c2ad 20-22,147,169-182,205-219,438-445
+pawpaw/Modules/Onboarding/OnboardingPresenter.swift
+  s_94becd29f4387f::t_160a1b64df0b0d 41
+pawpaw/Common/CatFacePicker.swift
+  h_36695e5767c2ad 15-16,18,46,78-87
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "943394c6600784dcb1671b916875c49a53504673",
+  "prompts": {},
+  "humans": {
+    "h_36695e5767c2ad": {
+      "author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  },
+  "sessions": {
+    "s_94becd29f4387f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "db7eb645-f016-4362-a49f-767a7581fff5",
+        "model": "anthropic/claude-opus-5.5"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
