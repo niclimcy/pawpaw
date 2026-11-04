@@ -74,11 +74,6 @@ final class GameInteractor: GameInteractorInputProtocol {
         self.spawnableKinds = suited.isEmpty ? TargetKind.allCases.filter { $0.canAppear(on: theme) } : suited
     }
 
-    deinit {
-        clockTimer?.invalidate()
-        spawnTimer?.invalidate()
-    }
-
     // MARK: GameInteractorInputProtocol
     var shouldShowExitTip: Bool {
         !settings.hasLearnedHoldToExit
@@ -246,13 +241,17 @@ final class GameInteractor: GameInteractorInputProtocol {
     // MARK: Private
     private func startTimers() {
         invalidateTimers()
+        // Scheduled from the main actor, so these fire on the main run loop.
+        // A timer outliving the interactor stops itself, as deinit can't reach the timers.
         if mode.duration != nil {
-            clockTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
-                self?.tick()
+            clockTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
+                guard let self else { return timer.invalidate() }
+                MainActor.assumeIsolated { self.tick() }
             }
         }
-        spawnTimer = Timer.scheduledTimer(withTimeInterval: Self.spawnInterval, repeats: true) { [weak self] _ in
-            self?.spawnTarget()
+        spawnTimer = Timer.scheduledTimer(withTimeInterval: Self.spawnInterval, repeats: true) { [weak self] timer in
+            guard let self else { return timer.invalidate() }
+            MainActor.assumeIsolated { self.spawnTarget() }
         }
     }
 
