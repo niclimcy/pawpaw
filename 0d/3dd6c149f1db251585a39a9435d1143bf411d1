@@ -1,0 +1,22 @@
+pawpaw/Common/OrientationNavigationController.swift
+  h_36695e5767c2ad 23-50
+pawpaw/Common/ScrollingLayout.swift
+  h_36695e5767c2ad 56-128,130-163
+pawpaw/Modules/Game/GameViewController.swift
+  h_36695e5767c2ad 133
+pawpaw/Modules/Home/HomeViewController.swift
+  h_36695e5767c2ad 12-19,24,28,233-245,266-281,283-322,345-346,350-352,365-372
+pawpaw/Modules/Stats/StatsViewController.swift
+  h_36695e5767c2ad 18-26,32-37,45-60,72,80-82,86,90-92,95-142
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0d3dd6c149f1db251585a39a9435d1143bf411d1",
+  "prompts": {},
+  "humans": {
+    "h_36695e5767c2ad": {
+      "author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
