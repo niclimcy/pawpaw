@@ -1,0 +1,16 @@
+pawpaw.xcodeproj/project.pbxproj
+  h_36695e5767c2ad 168,200
+pawpaw/Modules/Game/GameInteractor.swift
+  h_36695e5767c2ad 244-245,247-249,252-254
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5171fdb53572e1e5088ca8ee7ef56bb609d28f54",
+  "prompts": {},
+  "humans": {
+    "h_36695e5767c2ad": {
+      "author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
