@@ -1,0 +1,28 @@
+pawpaw/Common/Theme.swift
+  h_36695e5767c2ad 57-85
+pawpaw/Modules/Game/GamePresenter.swift
+  h_36695e5767c2ad 88,105-106,109,120
+pawpaw/Modules/Game/GameProtocols.swift
+  h_36695e5767c2ad 22-23,36
+pawpaw/Modules/Game/GameViewController+Countdown.swift
+  h_36695e5767c2ad 21
+pawpaw/Modules/Game/GameViewController+Lure.swift
+  h_36695e5767c2ad 55-56
+pawpaw/Modules/Game/GameViewController.swift
+  h_36695e5767c2ad 28-29,35,219-228,247-248,258-270
+pawpaw/Modules/Home/HomeViewController.swift
+  h_36695e5767c2ad 432-435,445-449
+pawpaw/Modules/Profiles/ProfilesViewController+Builders.swift
+  h_36695e5767c2ad 11-22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0a0490149323000b272aa1875e74819315750ff6",
+  "prompts": {},
+  "humans": {
+    "h_36695e5767c2ad": {
+      "author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
