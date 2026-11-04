@@ -1,0 +1,46 @@
+docs/architecture.md
+  h_36695e5767c2ad 10
+docs/game-design.md
+  h_36695e5767c2ad 28-41,48
+pawpaw/Common/PassthroughView.swift
+  h_36695e5767c2ad 1-16
+pawpaw/Entities/AfterRoundMode.swift
+  h_36695e5767c2ad 1-35
+pawpaw/Entities/LureCover.swift
+  h_36695e5767c2ad 1-19
+pawpaw/Entities/MovementPath.swift
+  h_36695e5767c2ad 21-22
+pawpaw/Modules/Game/GameInteractor.swift
+  h_36695e5767c2ad 42-53,101-102,122,168-244
+pawpaw/Modules/Game/GamePresenter.swift
+  h_36695e5767c2ad 47,59-74,109-124
+pawpaw/Modules/Game/GameProtocols.swift
+  h_36695e5767c2ad 27-35,56-62,79-87,101-102
+pawpaw/Modules/Game/GameViewController+Layout.swift
+  h_36695e5767c2ad 83-87,125-126,134-135,150,152-154
+pawpaw/Modules/Game/GameViewController+Lure.swift
+  h_36695e5767c2ad 1-96
+pawpaw/Modules/Game/GameViewController.swift
+  h_36695e5767c2ad 36-37,40-44,53,69,107,112,135,145,150-153,157-160,193,198,218
+pawpaw/Modules/Game/MovementPlanner.swift
+  h_36695e5767c2ad 107-224
+pawpaw/Modules/Game/Playfield/CritterActions.swift
+  h_36695e5767c2ad 68
+pawpaw/Modules/Game/Playfield/GameScene+Effects.swift
+  h_36695e5767c2ad 13-15,19
+pawpaw/Modules/Game/Playfield/GameScene.swift
+  h_36695e5767c2ad 27-33,53-54,58-63,101-104,155-258,310,314-317,331-335,359,364-367
+pawpaw/Modules/Game/Playfield/PlayfieldGeometry.swift
+  h_36695e5767c2ad 35-70
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "096d6cc63b95ca8f7129acae81206f4da6f224f8",
+  "prompts": {},
+  "humans": {
+    "h_36695e5767c2ad": {
+      "author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
