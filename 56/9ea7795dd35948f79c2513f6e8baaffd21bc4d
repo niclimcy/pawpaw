@@ -1,0 +1,98 @@
+pawpaw/Modules/Game/Playfield/CritterActions.swift
+  h_36695e5767c2ad 68
+pawpaw/Common/PassthroughView.swift
+  h_36695e5767c2ad 1-16
+pawpaw/Modules/Game/GamePresenter.swift
+  h_36695e5767c2ad 47,59-74,109-124
+pawpaw/Modules/Game/GameViewController.swift
+  s_277c5e97cacae0::t_7a81b21830be2d 135
+  s_277c5e97cacae0::t_fee0518925457c 42,44
+  h_36695e5767c2ad 36-37,145,150-153
+  s_277c5e97cacae0::t_512470caec4ff1 41,43
+  s_2a803296ab2e1b::t_21d3eff6b272f1 198
+  s_277c5e97cacae0::t_1277580eeb28cd 40
+  h_36695e5767c2ad 53,69,107,112,157-160,193,218
+pawpaw/Entities/LureCover.swift
+  h_36695e5767c2ad 1-19
+pawpaw/Entities/AfterRoundMode.swift
+  h_36695e5767c2ad 1-35
+docs/game-design.md
+  h_36695e5767c2ad 28-41,48
+pawpaw/Entities/MovementPath.swift
+  h_36695e5767c2ad 21-22
+pawpaw/Modules/Game/GameInteractor.swift
+  h_36695e5767c2ad 42-53,101-102,122,168-244
+pawpaw/Modules/Game/Playfield/GameScene.swift
+  s_2a803296ab2e1b::t_f13a26849d7745 53-54,58-63,237
+  h_36695e5767c2ad 29-33,101-104,155-199,247-250
+  s_2a803296ab2e1b::t_357eb0973fcd09 202-224,229,235-236,238-242,246,252,257,335,364
+  s_2a803296ab2e1b::t_790767e6f36249 225
+  s_2a803296ab2e1b::t_b52cc39e91cfdb 255
+  s_2a803296ab2e1b::t_0c08958a4bb252 226-228
+  s_2a803296ab2e1b::t_67f382b2024a97 230-234
+  s_2a803296ab2e1b::t_a356a458c9fa42 243-245
+  s_2a803296ab2e1b::t_a4e0a0206d43b5 253-254
+  s_2a803296ab2e1b::t_8888131f9b4043 256
+  s_2a803296ab2e1b::t_54ff9a4a1ed68b 258
+  s_2a803296ab2e1b::t_4bdce914b1e661 332-334
+  s_2a803296ab2e1b::t_12b70aa74c84a9 365-367
+  h_36695e5767c2ad 27-28,200-201,251,310,314-317,331,359
+pawpaw/Modules/Game/GameProtocols.swift
+  h_36695e5767c2ad 27-35,56-62,79-87,101-102
+pawpaw/Common/SettingsStorage.swift
+  s_277c5e97cacae0::t_3ca278cd825423 59
+  s_277c5e97cacae0::t_3d5c61a5073cb5 56-58
+  h_36695e5767c2ad 12,24,51-55
+pawpaw/Modules/Game/Playfield/GameScene+Effects.swift
+  h_36695e5767c2ad 13-15,19
+pawpaw/Modules/Game/MovementPlanner.swift
+  h_36695e5767c2ad 107-224
+pawpaw/Modules/Game/Playfield/PlayfieldGeometry.swift
+  h_36695e5767c2ad 35-70
+pawpaw/Modules/Game/GameViewController+Layout.swift
+  h_36695e5767c2ad 83-87,125-126,134-135,150,152-154
+pawpaw/Modules/Home/HomeViewController.swift
+  s_277c5e97cacae0::t_a9b73e5c4046b2 214-216
+  s_277c5e97cacae0::t_3aceec0a9e43fa 212-213
+  s_277c5e97cacae0::t_45e8527705c090 217-218
+  h_36695e5767c2ad 118-136,190-194,274,281,324-329,340-346
+docs/architecture.md
+  h_36695e5767c2ad 10
+pawpaw/Modules/Game/GameViewController+Lure.swift
+  h_36695e5767c2ad 1-96
+pawpaw/Modules/Home/HomeInteractor.swift
+  h_36695e5767c2ad 39,51-55
+pawpaw/Modules/Home/HomePresenter.swift
+  h_36695e5767c2ad 38-41,45,52
+pawpaw/Modules/Home/HomeProtocols.swift
+  h_36695e5767c2ad 13-14,29,42,49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "569ea7795dd35948f79c2513f6e8baaffd21bc4d",
+  "prompts": {},
+  "humans": {
+    "h_36695e5767c2ad": {
+      "author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  },
+  "sessions": {
+    "s_277c5e97cacae0": {
+      "agent_id": {
+        "tool": "cline",
+        "id": "conv_1793345604305_6s93b8m",
+        "model": "unknown"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    },
+    "s_2a803296ab2e1b": {
+      "agent_id": {
+        "tool": "cline",
+        "id": "conv_1793698988337_in7h9g3",
+        "model": "unknown"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
