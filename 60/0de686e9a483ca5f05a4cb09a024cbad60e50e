@@ -1,0 +1,60 @@
+docs/game-design.md
+  s_2a803296ab2e1b::t_baa1b3cd30b8fc 32
+pawpaw/Modules/Game/GamePresenter.swift
+  s_2a803296ab2e1b::t_e6896a5e377311 95,100
+pawpaw/Modules/Game/Playfield/PlayfieldTextures.swift
+  s_2a803296ab2e1b::t_ef64bba3e4273d 2,6,9-42,44-73,75,78-79,82,90,93-124
+  s_2a803296ab2e1b::t_d7bdebb0a64fb6 125-175,179-180
+  s_2a803296ab2e1b::t_37ca29ac30f8ad 176-178
+pawpaw/Modules/Game/GameInteractor.swift
+  s_2a803296ab2e1b::t_3db29744bbf5d9 116
+pawpaw/Modules/Game/GameViewController.swift
+  s_2a803296ab2e1b::t_37007dcf2ea14c 180
+  s_2a803296ab2e1b::t_97aa794a8b9a7f 182,186
+  s_2a803296ab2e1b::t_71816ce25712cf 6
+  s_2a803296ab2e1b::t_27eb0f6dcd6cfa 14
+  s_2a803296ab2e1b::t_8094a89249f510 179,181
+  s_2a803296ab2e1b::t_5abbc715eee3f2 13
+  s_2a803296ab2e1b::t_21d3eff6b272f1 183-185
+pawpaw/Modules/Game/Playfield/GameScene+Effects.swift
+  s_2a803296ab2e1b::t_8b659cba3818e9 2,6,9-11,25-27,29-49,52-64,67,69-98,100,102-110,113-128
+docs/development.md
+  s_2a803296ab2e1b::t_cff8edfa1f3aff 20
+pawpaw/Modules/Game/Playfield/GameScene.swift
+  s_2a803296ab2e1b::t_f13a26849d7745 2,6,9-21,24,28-30,33-35,41-42,45-55,59-61,63,66-67,73-74,76-79,81-97,99-101,103,105-110
+  s_2a803296ab2e1b::t_357eb0973fcd09 111,113-115,118-120,123-125,128-129,132-134,137-139,141,143-147,154-155,159-161,211
+  s_2a803296ab2e1b::t_c892921f31321b 162-164
+  s_2a803296ab2e1b::t_b52cc39e91cfdb 210
+  s_2a803296ab2e1b::t_3bfa4d3271fc34 212-214
+pawpaw/Modules/Game/Playfield/HidingSpotArtwork.swift
+  s_2a803296ab2e1b::t_280e8503ace95c 2,8-10,19,33,53,73
+docs/architecture.md
+  s_2a803296ab2e1b::t_68fa05f82e5c03 8-9
+pawpaw/Modules/Game/Playfield/CritterNode.swift
+  s_2a803296ab2e1b::t_56774086463ebc 116
+  s_2a803296ab2e1b::t_b8da20950e3767 57
+  s_2a803296ab2e1b::t_76f8b1a02ae361 32-37,40
+  s_2a803296ab2e1b::t_c88ef529520155 1-31,38-39,41-56,58-103,106-115,117
+  s_2a803296ab2e1b::t_62d59c5b48ce5d 104
+  s_2a803296ab2e1b::t_2954055da96c08 105
+  s_2a803296ab2e1b::t_6ca97e7e8bfc1c 118-120
+pawpaw/Modules/Game/GameProtocols.swift
+  s_2a803296ab2e1b::t_68175a1058fddc 73
+  s_2a803296ab2e1b::t_d2024e4d347812 19-21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "600de686e9a483ca5f05a4cb09a024cbad60e50e",
+  "prompts": {},
+  "sessions": {
+    "s_2a803296ab2e1b": {
+      "agent_id": {
+        "tool": "cline",
+        "id": "conv_1793698988337_in7h9g3",
+        "model": "unknown"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
