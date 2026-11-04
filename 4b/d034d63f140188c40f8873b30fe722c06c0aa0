@@ -1,0 +1,16 @@
+pawpaw/Common/CatFacePicker.swift
+  h_36695e5767c2ad 15-16,18,46,78-87
+pawpaw/Modules/Onboarding/OnboardingViewController.swift
+  h_36695e5767c2ad 18,60-66,70-71,173,175-178,231,235-244,359-361,364
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4bd034d63f140188c40f8873b30fe722c06c0aa0",
+  "prompts": {},
+  "humans": {
+    "h_36695e5767c2ad": {
+      "author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
