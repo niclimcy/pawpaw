@@ -1,0 +1,14 @@
+pawpaw/Modules/Onboarding/OnboardingViewController.swift
+  h_36695e5767c2ad 8,81,85-94,288-312,374-392
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "62fb8a9182177000e896e87c9f462f2fa861dbe9",
+  "prompts": {},
+  "humans": {
+    "h_36695e5767c2ad": {
+      "author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
