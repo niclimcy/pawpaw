@@ -1,0 +1,153 @@
+pawpaw/Modules/Game/GameInteractor.swift
+  h_36695e5767c2ad 74-75,179-182
+  h_36695e5767c2ad 250-251,256-257
+pawpaw/Common/ScrollingLayout.swift
+  h_36695e5767c2ad 12-14,30-31,45-46,50-53,55-58,98-99,127-128,133-134,136
+  h_36695e5767c2ad 60
+pawpaw/Modules/Stats/StatsViewController.swift
+  h_36695e5767c2ad 48-50,116,119,162-163,183-186
+  h_36695e5767c2ad 81,108-109,118,129-130,134-135,200-202,216-218,220-222
+pawpaw/Common/HoldToConfirm.swift
+  h_36695e5767c2ad 37-38,62-66,84,87-89
+  h_36695e5767c2ad 67-68
+pawpaw/Common/WoodCrateBackgroundView.swift
+  h_36695e5767c2ad 28-29,35-37,40-41,51-54,87-88,99-100,108
+  h_36695e5767c2ad 56-57,65-68
+pawpaw/Modules/Game/Playfield/HidingSpotArtwork.swift
+  h_36695e5767c2ad 24-25,38,44-49,62-64,73-76,86-90
+pawpaw/Common/OrientationNavigationController.swift
+  h_36695e5767c2ad 28-30
+  h_36695e5767c2ad 46-48
+pawpaw/Common/ProfileStorage.swift
+  h_36695e5767c2ad 62-67,69-70,75-80,130-131
+  h_36695e5767c2ad 68
+pawpaw/Common/Log.swift
+  h_36695e5767c2ad 10-11,14-15
+pawpaw/Modules/Stats/StatsProtocols.swift
+  h_36695e5767c2ad 64-65
+pawpaw/Modules/Game/Playfield/GameScene+Effects.swift
+  h_36695e5767c2ad 23-24,28-29,43,49,56-61,69-74,84
+  h_36695e5767c2ad 138-140
+pawpaw/Modules/Profiles/ProfileEditorView.swift
+  h_36695e5767c2ad 35-38,56-61,94-95,135-138
+pawpaw/Modules/Stats/StatsViewController+Builders.swift
+  h_36695e5767c2ad 73-74,139-140
+  h_36695e5767c2ad 109-111
+pawpaw/Modules/Game/Playfield/CritterActions.swift
+  h_36695e5767c2ad 28-37,73-77,81-88,91-94,97-99,113-114,130-133,135-137,139-145,154-156,160-162,171-173,181-183,190
+  h_36695e5767c2ad 46-49,115,191-192,208-210
+pawpaw/Common/SoundPlayer.swift
+  h_36695e5767c2ad 105-107,120-122
+pawpaw/Common/SeededGenerator.swift
+  h_36695e5767c2ad 17,19-20
+pawpaw/Modules/Onboarding/OnboardingViewController.swift
+  h_36695e5767c2ad 8-11,38-41,55-59,85-87,110-124,132-135,169-184,186,191-193,205-208,211-214,216,218-223,234-236,238-241,244-247,254-261,263-266,280-283,289-292,298-301,316-318,320,340-342,348-353,361-368,374,389-397,403,411-412,421-426,429-434,450-453,465-468,545,551-552,564,570-572
+  h_36695e5767c2ad 21-25,512-514,520-522,544,548-550,553,562-563,565,584-585,591-595
+pawpaw/AppDelegate.swift
+  h_36695e5767c2ad 12-15,19-25
+pawpaw/Common/Theme.swift
+  h_36695e5767c2ad 40-43,47-49,59-61,108-109,136-137,144-146
+  h_36695e5767c2ad 52-53
+pawpaw/Common/CachedBackgroundView.swift
+  h_36695e5767c2ad 70-75,80-81
+  h_36695e5767c2ad 47-49,82
+pawpaw/Modules/Game/GamePresenter.swift
+  h_36695e5767c2ad 108-109
+pawpaw/Modules/Onboarding/OnboardingPresenter.swift
+  h_36695e5767c2ad 22-23,36
+pawpaw/Entities/CatProfile.swift
+  h_36695e5767c2ad 17-20
+pawpaw/Modules/Game/MovementPlanner.swift
+  h_36695e5767c2ad 32-33,57-58,69-71,79-80,91-97,138-140,144-145,153-161,165-168,259-260,263-266,290-292
+  h_36695e5767c2ad 98,103-111,201-203,225-227,235-244
+pawpaw/Modules/Game/Playfield/CritterNode.swift
+  s_2a803296ab2e1b::t_c88ef529520155 42-46,85,108
+  s_2a803296ab2e1b::t_7c47bd8e2b2447 82-84
+  s_2a803296ab2e1b::t_52e69be285095e 109
+  h_36695e5767c2ad 77-78,101-104
+pawpaw/Modules/Game/GameViewController+ExitTip.swift
+  h_36695e5767c2ad 14-15
+  h_36695e5767c2ad 58
+pawpaw/Modules/Game/Playfield/CritterActions+Twitch.swift
+  h_36695e5767c2ad 11-13,26-27,32-35,44-45,53-55,57-58
+  h_36695e5767c2ad 36,46
+pawpaw/Modules/Profiles/ProfileEditorView+Builders.swift
+  h_36695e5767c2ad 26-27,77
+  h_36695e5767c2ad 39-40
+pawpaw/Common/CatNameField.swift
+  h_36695e5767c2ad 28-30,48-49
+pawpaw/SceneDelegate.swift
+  h_36695e5767c2ad 13-16
+  s_2a803296ab2e1b::t_3b1c1547fdd822 20
+  s_2a803296ab2e1b::t_f21eec30be05b8 21
+pawpaw/Common/NatureBackgroundView.swift
+  h_36695e5767c2ad 45,77,80,97-98,100
+  h_36695e5767c2ad 78-79,81,99
+pawpaw/Modules/Home/ThemePickerView.swift
+  h_36695e5767c2ad 31,61-62,93,116-117
+pawpaw/Modules/Home/HomeViewController.swift
+  h_36695e5767c2ad 310-311,378,441-442
+  h_36695e5767c2ad 28-29,60-61,149-150,244-246,261-264,269
+pawpaw/Modules/Home/HomeRouter.swift
+  h_36695e5767c2ad 40-41,46-47
+pawpaw/Common/SettingsStorage.swift
+  h_36695e5767c2ad 35-36
+  h_36695e5767c2ad 54-55
+pawpaw/Common/CatFacePicker.swift
+  h_36695e5767c2ad 31,101-105,119
+  h_36695e5767c2ad 32,51-52,68,77-79
+pawpaw/Modules/Game/Playfield/PlayfieldGeometry.swift
+  h_36695e5767c2ad 38-39,53-55,66-69,71-80,84-88
+pawpaw/Modules/Profiles/ProfilesViewController.swift
+  h_36695e5767c2ad 40,45-46,65-67,104
+pawpaw/Entities/PlayStats.swift
+  h_36695e5767c2ad 31-33,35-37
+pawpaw/Modules/Game/GameViewController+Layout.swift
+  h_36695e5767c2ad 35,51-52,74-76,113-116,119-120,123-126,168-169,173-175,193
+  h_36695e5767c2ad 30-32,72-73,111-112,121-122
+pawpaw/Modules/Game/Playfield/PlayfieldTextures.swift
+  h_36695e5767c2ad 58-59,67-69,71,76-78,82-85,87-89,94-96,161,163-164,166
+  h_36695e5767c2ad 70,118-121,123-125,136-137,151-153,162,165,178-180,182-188,204-206,208-210,215-221,223-224
+pawpaw/Modules/Game/Playfield/GameScene.swift
+  s_2a803296ab2e1b::t_f10bf193796a84 97
+  s_2a803296ab2e1b::t_357eb0973fcd09 98,123
+  s_2a803296ab2e1b::t_c44fea92193748 129
+  s_2a803296ab2e1b::t_32b1abea8d9516 99-100
+  h_36695e5767c2ad 128
+  s_2a803296ab2e1b::t_0537e71afb9beb 121-122
+  h_36695e5767c2ad 136-137,206-208,226-227,269-271,321-322,396-397,402-403
+pawpaw/Modules/Profiles/ProfilesViewController+Builders.swift
+  h_36695e5767c2ad 10-11,30-31,34-35,39-41,45-47,58-59,85-86
+pawpaw/Modules/Game/GameViewController+Countdown.swift
+  h_36695e5767c2ad 34,42-43,83-84,97-101,132
+pawpaw/Modules/Profiles/ProfileEditorView+Layout.swift
+  h_36695e5767c2ad 28,44,73-74,78-79,92-93,98-99,101-104,107
+pawpaw/Modules/Stats/StatsPresenter.swift
+  h_36695e5767c2ad 29,31,38-41,43-45,48-52,54-58,60-73,79
+  h_36695e5767c2ad 30,42,46-47,53,59,74-78
+.swift-format
+  h_36695e5767c2ad 1-75
+pawpaw/Modules/Game/GameViewController.swift
+  h_36695e5767c2ad 112-113,267-268
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "db9d5dcbde0a9294fc6c691590436b1b039446f5",
+  "prompts": {},
+  "humans": {
+    "h_36695e5767c2ad": {
+      "author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  },
+  "sessions": {
+    "s_2a803296ab2e1b": {
+      "agent_id": {
+        "tool": "cline",
+        "id": "conv_1793698988337_in7h9g3",
+        "model": "unknown"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
