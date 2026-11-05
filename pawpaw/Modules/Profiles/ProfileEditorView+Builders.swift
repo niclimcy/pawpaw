@@ -24,7 +24,7 @@ extension ProfileEditorView {
 
         critterHintLabel.setContentCompressionResistancePriority(.required, for: .vertical)
         critterHintLabel.text =
-            "Keep at least one critter that isn't a fish or a lizard on. Fish only swim in the pond, and lizards only live on grass."
+            "Keep at least one critter that isn't a fish, a lizard or the laser on. Fish only swim in the pond, lizards only live on grass, and the laser can't be caught after a round."
         critterHintLabel.font = Theme.roundedFont(size: Theme.scaled(14), weight: .semibold)
         critterHintLabel.adjustsFontForContentSizeCategory = true
         critterHintLabel.textColor = Theme.gold

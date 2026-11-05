@@ -129,9 +129,8 @@ final class UserDefaultsProfileStorage: ProfileStorage {
         defaults.set(first.id.uuidString, forKey: activeKey)
 
         let scores = UserDefaultsScoreStorage(defaults: defaults, profileID: first.id)
-        for mode in SessionMode.allCases where mode.hasHighScore {
-            let legacyKey =
-                mode == .standard ? "pawpaw.highScore" : "pawpaw.highScore.\(mode.rawValue)"
+        for mode in SessionMode.allCases {
+            guard let legacyKey = UserDefaultsScoreStorage.legacyKey(for: mode) else { continue }
             let legacy = defaults.integer(forKey: legacyKey)
             if legacy > 0 { scores.saveHighScore(legacy, for: mode) }
         }

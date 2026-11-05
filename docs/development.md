@@ -22,7 +22,7 @@ Run on an iPad simulator too, since `PlayfieldTuning.current` depends on the dev
 
 - Mocks and spies are in `pawpawTests/Support/`; storage tests use a throwaway `UserDefaults` suite, never `.standard`.
 - Tests are `@MainActor`, matching the app's default actor isolation.
-- Known bugs are pinned with `XCTExpectFailure("Bug: …")`. Fixing one makes its test fail until the `XCTExpectFailure` is removed.
+- To record a known bug before fixing it, wrap its test in `XCTExpectFailure("Bug: …")`. Once the bug is fixed the test fails until the `XCTExpectFailure` is removed.
 - App classes the tests create declare `nonisolated deinit {}`, marked `TODO: To remove after swift bug is resolved.` Without it, on an iOS 15 deployment target, freeing one inside a test can crash in the Swift runtime ("pointer being freed was not allocated"). Once the bug is fixed, delete them all (search for the TODO) and run the tests on both simulators.
 
 ## Tuning

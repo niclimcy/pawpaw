@@ -132,17 +132,27 @@ final class StorageTests: XCTestCase {
         }
     }
 
-    /// "Devices that already have cats, scores or stats skip onboarding", but only the
-    /// standard-mode legacy score key is checked.
+    /// "Devices that already have cats, scores or stats skip onboarding", whichever mode the
+    /// old score is for.
     func testInstallsWithOnlyOtherModeScoresSkipOnboarding() {
         for key in ["pawpaw.highScore.short", "pawpaw.highScore.long"] {
             let defaults = makeTestDefaults()
             defaults.set(30, forKey: key)
-            XCTExpectFailure(
-                "Bug: recordOnboardingStateIfNeeded ignores legacy \(key), which "
-                    + "ProfileStorage migrates as an existing score")
             XCTAssertTrue(
                 UserDefaultsSettingsStorage(defaults: defaults).hasCompletedOnboarding, key)
         }
+    }
+
+    func testLegacyScoreKeys() {
+        XCTAssertEqual(UserDefaultsScoreStorage.legacyKey(for: .standard), "pawpaw.highScore")
+        XCTAssertEqual(UserDefaultsScoreStorage.legacyKey(for: .short), "pawpaw.highScore.short")
+        XCTAssertEqual(UserDefaultsScoreStorage.legacyKey(for: .long), "pawpaw.highScore.long")
+        XCTAssertNil(UserDefaultsScoreStorage.legacyKey(for: .relaxed))
+    }
+
+    func testUnrelatedKeysDontSkipOnboarding() {
+        defaults.set(30, forKey: "pawpaw.highScore.relaxed")
+        defaults.set(true, forKey: "pawpaw.hasLearnedHoldToExit")
+        XCTAssertFalse(UserDefaultsSettingsStorage(defaults: defaults).hasCompletedOnboarding)
     }
 }

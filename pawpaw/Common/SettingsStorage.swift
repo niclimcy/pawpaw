@@ -84,7 +84,9 @@ final class UserDefaultsSettingsStorage: SettingsStorage {
     /// already have cats, scores or stats skip onboarding.
     private func recordOnboardingStateIfNeeded() {
         guard defaults.object(forKey: onboardingKey) == nil else { return }
-        let existingKeys = ["pawpaw.profiles", "pawpaw.stats", "pawpaw.highScore"]
+        let existingKeys =
+            ["pawpaw.profiles", "pawpaw.stats"]
+            + SessionMode.allCases.compactMap(UserDefaultsScoreStorage.legacyKey(for:))
         let hasExistingData = existingKeys.contains { defaults.object(forKey: $0) != nil }
         defaults.set(hasExistingData, forKey: onboardingKey)
     }

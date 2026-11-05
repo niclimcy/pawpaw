@@ -237,11 +237,13 @@ final class GameInteractor: GameInteractorInputProtocol {
         presenter?.didMoveLure(target, isLeaving: false)
     }
 
-    /// Any enabled critter but the laser, which a cat can never truly catch, and not last time's.
+    /// Any enabled critter that `canBeLure`, and not last time's. Profiles saved before
+    /// `CatProfile.isPlayable` required one may only have the laser; they get the laser rather
+    /// than a critter the owner turned off.
     private func randomLureKind() -> TargetKind {
-        let catchable = spawnableKinds.filter { $0 != .laser }
+        let catchable = spawnableKinds.filter(\.canBeLure)
         let fresh = catchable.filter { $0 != lastLureKind }
-        return fresh.randomElement() ?? catchable.randomElement() ?? .mouse
+        return fresh.randomElement() ?? catchable.randomElement() ?? spawnableKinds.first ?? .mouse
     }
 
     // MARK: Private

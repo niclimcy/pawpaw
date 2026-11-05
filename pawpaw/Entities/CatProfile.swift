@@ -28,9 +28,12 @@ struct CatProfile: Codable, Equatable, Identifiable {
         TargetKind.allCases.filter { !disabledKinds.contains($0) }
     }
 
-    /// At least one critter that appears on every theme must stay enabled.
+    /// At least one critter that appears on every theme and can roam the results card
+    /// (anything but the laser) must stay enabled.
     static func isPlayable(disabledKinds: Set<TargetKind>) -> Bool {
-        TargetKind.allCases.contains { $0.exclusiveTheme == nil && !disabledKinds.contains($0) }
+        TargetKind.allCases.contains {
+            $0.exclusiveTheme == nil && $0.canBeLure && !disabledKinds.contains($0)
+        }
     }
 
     private enum CodingKeys: String, CodingKey {

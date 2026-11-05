@@ -83,6 +83,12 @@ enum TargetKind: String, CaseIterable {
         self == .laser
     }
 
+    /// Whether it can roam the results card between rounds. Not the laser, which a cat can
+    /// never truly catch.
+    var canBeLure: Bool {
+        self != .laser
+    }
+
     /// Seconds on screen.
     var lifetimeRange: ClosedRange<TimeInterval> {
         switch self {

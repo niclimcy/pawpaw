@@ -67,6 +67,37 @@ final class CatProfileTests: XCTestCase {
         XCTAssertTrue(CatProfile.isPlayable(disabledKinds: mouseOnly))
     }
 
+    /// The results-card critter is never the laser, so a laser-only cat would have nothing
+    /// enabled to catch after a round.
+    func testIsPlayableRequiresACritterThatCanBeLure() {
+        let laserOnly = Set(TargetKind.allCases.filter { $0 != .laser })
+        XCTAssertFalse(CatProfile.isPlayable(disabledKinds: laserOnly))
+
+        let laserAndFish = Set(TargetKind.allCases.filter { $0 != .laser && $0 != .fish })
+        XCTAssertFalse(CatProfile.isPlayable(disabledKinds: laserAndFish))
+
+        let laserAndBug = Set(TargetKind.allCases.filter { $0 != .laser && $0 != .bug })
+        XCTAssertTrue(CatProfile.isPlayable(disabledKinds: laserAndBug))
+    }
+
+    func testOnlyTheLaserCantBeLure() {
+        for kind in TargetKind.allCases {
+            XCTAssertEqual(kind.canBeLure, kind != .laser, "\(kind)")
+        }
+    }
+
+    /// The profile editor uses `toggled` so owners can't switch off the last valid critter.
+    func testEditorRefusesToLeaveOnlyTheLaser() {
+        let allButLaserAndBug = Set(TargetKind.allCases.filter { $0 != .laser && $0 != .bug })
+        XCTAssertNil(ProfileEditorView.toggled(.bug, in: allButLaserAndBug))
+        XCTAssertEqual(
+            ProfileEditorView.toggled(.laser, in: allButLaserAndBug),
+            allButLaserAndBug.union([.laser]))
+        XCTAssertEqual(
+            ProfileEditorView.toggled(.mouse, in: allButLaserAndBug),
+            allButLaserAndBug.subtracting([.mouse]), "Turning a critter back on always works")
+    }
+
     // MARK: Codable
 
     func testCodableRoundTrip() throws {

@@ -62,13 +62,23 @@ final class GameInteractorLureTests: XCTestCase {
         }
     }
 
-    func testLureIsAlwaysAnEnabledCritter() {
+    /// Profiles saved before `isPlayable` ruled it out may still have only the laser.
+    func testLegacyLaserOnlyCatGetsTheLaserNotADisabledCritter() {
         interactor = makeInteractor(kinds: [.laser])
         interactor.startLure(cover: cover, awayFrom: nil)
-        XCTExpectFailure(
-            "Bug: CatProfile.isPlayable allows a laser-only cat, but the lure skips the laser "
-                + "and falls back to .mouse, which the cat has turned off")
         XCTAssertEqual(output.lureMoves.last?.target.kind, .laser)
+    }
+
+    func testLureIsAlwaysAnEnabledCritter() {
+        let enabled: Set<TargetKind> = [.laser, .bug, .ribbon]
+        interactor = makeInteractor(kinds: Array(enabled))
+        for _ in 0..<50 {
+            interactor.startLure(cover: cover, awayFrom: nil)
+            interactor.catchLure()
+        }
+        let kinds = Set(output.lureMoves.map(\.target.kind))
+        XCTAssertTrue(kinds.isSubset(of: enabled), "\(kinds)")
+        XCTAssertFalse(kinds.contains(.laser), "The laser only roams when nothing else can")
     }
 
     func testRelayoutKeepsTheSameCritter() throws {
