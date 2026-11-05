@@ -1,0 +1,14 @@
+bootstrap.sh
+  h_36695e5767c2ad 1-60
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2835fc5fd0d6764fdc28f4d2f7a7fb5aefa7cff1",
+  "prompts": {},
+  "humans": {
+    "h_36695e5767c2ad": {
+      "author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
