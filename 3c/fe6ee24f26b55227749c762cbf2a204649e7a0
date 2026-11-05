@@ -1,0 +1,34 @@
+docs/development.md
+  h_36695e5767c2ad 25
+pawpaw/Common/ProfileStorage.swift
+  h_36695e5767c2ad 132-133
+pawpaw/Common/ScoreStorage.swift
+  h_36695e5767c2ad 42-47
+pawpaw/Common/SettingsStorage.swift
+  h_36695e5767c2ad 87-89
+pawpaw/Entities/CatProfile.swift
+  h_36695e5767c2ad 31-32,34-36
+pawpaw/Entities/TargetKind.swift
+  h_36695e5767c2ad 86-91
+pawpaw/Modules/Game/GameInteractor.swift
+  h_36695e5767c2ad 240-242,244,246
+pawpaw/Modules/Profiles/ProfileEditorView+Builders.swift
+  h_36695e5767c2ad 27
+pawpawTests/Common/StorageTests.swift
+  h_36695e5767c2ad 135-136,145-157
+pawpawTests/Entities/CatProfileTests.swift
+  h_36695e5767c2ad 70-100
+pawpawTests/Game/GameInteractorLureTests.swift
+  h_36695e5767c2ad 65-66,72-83
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3cfe6ee24f26b55227749c762cbf2a204649e7a0",
+  "prompts": {},
+  "humans": {
+    "h_36695e5767c2ad": {
+      "author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
