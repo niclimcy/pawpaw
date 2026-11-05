@@ -226,7 +226,7 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = XL5JK4F896;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = pawpaw/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "pawpaw: a game for cats";
+				INFOPLIST_KEY_CFBundleDisplayName = pawpaw;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.family-games";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -265,7 +265,7 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = XL5JK4F896;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = pawpaw/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "pawpaw: a game for cats";
+				INFOPLIST_KEY_CFBundleDisplayName = pawpaw;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.family-games";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
