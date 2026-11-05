@@ -6,6 +6,9 @@
 import Foundation
 
 final class OnboardingInteractor: OnboardingInteractorInputProtocol {
+    // TODO: To remove after swift bug is resolved.
+    nonisolated deinit {}
+
     private let profileStorage: ProfileStorage
     private let settings: SettingsStorage
 

@@ -6,6 +6,9 @@
 import Foundation
 
 final class ProfilesInteractor: ProfilesInteractorInputProtocol {
+    // TODO: To remove after swift bug is resolved.
+    nonisolated deinit {}
+
     weak var presenter: ProfilesInteractorOutputProtocol?
 
     private let profileStorage: ProfileStorage

@@ -6,6 +6,9 @@
 import Foundation
 
 final class ProfilesPresenter: ProfilesPresenterProtocol, ProfilesInteractorOutputProtocol {
+    // TODO: To remove after swift bug is resolved.
+    nonisolated deinit {}
+
     weak var view: ProfilesViewProtocol?
     var interactor: ProfilesInteractorInputProtocol?
     var router: ProfilesRouterProtocol?

@@ -11,6 +11,9 @@ protocol ScoreStorage {
 }
 
 final class UserDefaultsScoreStorage: ScoreStorage {
+    // TODO: To remove after swift bug is resolved.
+    nonisolated deinit {}
+
     private let defaults: UserDefaults
     private let profileID: UUID
 
@@ -20,7 +23,9 @@ final class UserDefaultsScoreStorage: ScoreStorage {
     }
 
     func reset() {
-        SessionMode.allCases.forEach { defaults.removeObject(forKey: key(for: $0)) }
+        for mode in SessionMode.allCases {
+            defaults.removeObject(forKey: key(for: mode))
+        }
     }
 
     func highScore(for mode: SessionMode) -> Int {

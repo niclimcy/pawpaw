@@ -20,6 +20,9 @@ protocol ProfileStorage {
 }
 
 final class UserDefaultsProfileStorage: ProfileStorage {
+    // TODO: To remove after swift bug is resolved.
+    nonisolated deinit {}
+
     private let defaults: UserDefaults
     private let profilesKey = "pawpaw.profiles"
     private let activeKey = "pawpaw.activeProfile"

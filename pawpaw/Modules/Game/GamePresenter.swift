@@ -6,6 +6,9 @@
 import Foundation
 
 final class GamePresenter: GamePresenterProtocol, GameInteractorOutputProtocol {
+    // TODO: To remove after swift bug is resolved.
+    nonisolated deinit {}
+
     weak var view: GameViewProtocol?
     var interactor: GameInteractorInputProtocol?
     var router: GameRouterProtocol?

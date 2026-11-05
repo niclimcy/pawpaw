@@ -6,8 +6,19 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		B9423E21308F3829007FF2D3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9423DFC308F3828007FF2D3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B9423E03308F3828007FF2D3;
+			remoteInfo = pawpaw;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		B9423E04308F3828007FF2D3 /* pawpaw.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pawpaw.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B9423E20308F3829007FF2D3 /* pawpawTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = pawpawTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -29,10 +40,22 @@
 			path = pawpaw;
 			sourceTree = "<group>";
 		};
+		B9423E22308F3829007FF2D3 /* pawpawTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = pawpawTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		B9423E01308F3828007FF2D3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B9423E23308F3829007FF2D3 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -46,6 +69,7 @@
 			isa = PBXGroup;
 			children = (
 				B9423E06308F3828007FF2D3 /* pawpaw */,
+				B9423E22308F3829007FF2D3 /* pawpawTests */,
 				B9423E05308F3828007FF2D3 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -54,6 +78,7 @@
 			isa = PBXGroup;
 			children = (
 				B9423E04308F3828007FF2D3 /* pawpaw.app */,
+				B9423E20308F3829007FF2D3 /* pawpawTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -83,6 +108,29 @@
 			productReference = B9423E04308F3828007FF2D3 /* pawpaw.app */;
 			productType = "com.apple.product-type.application";
 		};
+		B9423E24308F3829007FF2D3 /* pawpawTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B9423E27308F3829007FF2D3 /* Build configuration list for PBXNativeTarget "pawpawTests" */;
+			buildPhases = (
+				B9423E25308F3829007FF2D3 /* Sources */,
+				B9423E23308F3829007FF2D3 /* Frameworks */,
+				B9423E26308F3829007FF2D3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B9423E2A308F3829007FF2D3 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				B9423E22308F3829007FF2D3 /* pawpawTests */,
+			);
+			name = pawpawTests;
+			packageProductDependencies = (
+			);
+			productName = pawpawTests;
+			productReference = B9423E20308F3829007FF2D3 /* pawpawTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -95,6 +143,10 @@
 				TargetAttributes = {
 					B9423E03308F3828007FF2D3 = {
 						CreatedOnToolsVersion = 26.0.1;
+					};
+					B9423E24308F3829007FF2D3 = {
+						CreatedOnToolsVersion = 26.0.1;
+						TestTargetID = B9423E03308F3828007FF2D3;
 					};
 				};
 			};
@@ -113,12 +165,20 @@
 			projectRoot = "";
 			targets = (
 				B9423E03308F3828007FF2D3 /* pawpaw */,
+				B9423E24308F3829007FF2D3 /* pawpawTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		B9423E02308F3828007FF2D3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B9423E26308F3829007FF2D3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -135,7 +195,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B9423E25308F3829007FF2D3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B9423E2A308F3829007FF2D3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B9423E03308F3828007FF2D3 /* pawpaw */;
+			targetProxy = B9423E21308F3829007FF2D3 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		B9423E17308F3829007FF2D3 /* Debug */ = {
@@ -335,6 +410,48 @@
 			};
 			name = Release;
 		};
+		B9423E28308F3829007FF2D3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = org.swiftinsg.np2026.pawpawTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/pawpaw.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/pawpaw";
+			};
+			name = Debug;
+		};
+		B9423E29308F3829007FF2D3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = org.swiftinsg.np2026.pawpawTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/pawpaw.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/pawpaw";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -352,6 +469,15 @@
 			buildConfigurations = (
 				B9423E17308F3829007FF2D3 /* Debug */,
 				B9423E18308F3829007FF2D3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B9423E27308F3829007FF2D3 /* Build configuration list for PBXNativeTarget "pawpawTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B9423E28308F3829007FF2D3 /* Debug */,
+				B9423E29308F3829007FF2D3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

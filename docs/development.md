@@ -9,6 +9,22 @@ xcodebuild -project pawpaw.xcodeproj -scheme pawpaw \
   -destination 'generic/platform=iOS Simulator' build CODE_SIGNING_ALLOWED=NO
 ```
 
+## Test
+
+Unit tests live in `pawpawTests/` (XCTest, hosted in the app). Run them with ⌘U, or:
+
+```sh
+xcodebuild test -project pawpaw.xcodeproj -scheme pawpaw \
+  -destination 'platform=iOS Simulator,name=iPhone 17'
+```
+
+Run on an iPad simulator too, since `PlayfieldTuning.current` depends on the device. The shared scheme collects code coverage.
+
+- Mocks and spies are in `pawpawTests/Support/`; storage tests use a throwaway `UserDefaults` suite, never `.standard`.
+- Tests are `@MainActor`, matching the app's default actor isolation.
+- Known bugs are pinned with `XCTExpectFailure("Bug: …")`. Fixing one makes its test fail until the `XCTExpectFailure` is removed.
+- App classes the tests create declare `nonisolated deinit {}`, marked `TODO: To remove after swift bug is resolved.` Without it, on an iOS 15 deployment target, freeing one inside a test can crash in the Swift runtime ("pointer being freed was not allocated"). Once the bug is fixed, delete them all (search for the TODO) and run the tests on both simulators.
+
 ## Tuning
 
 | What | Where |
@@ -27,6 +43,6 @@ Critter and cat SVGs are original. To replace one, swap the SVG in its `.imagese
 
 ## Limitations
 
-- No unit tests.
+- No UI tests; views, SpriteKit scenes and routers aren't unit tested.
 - Not tested on a physical device.
 - Phone speakers can't play ultrasonic sounds.

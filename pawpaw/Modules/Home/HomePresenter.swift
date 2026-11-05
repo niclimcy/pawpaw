@@ -6,6 +6,9 @@
 import Foundation
 
 final class HomePresenter: HomePresenterProtocol, HomeInteractorOutputProtocol {
+    // TODO: To remove after swift bug is resolved.
+    nonisolated deinit {}
+
     weak var view: HomeViewProtocol?
     var interactor: HomeInteractorInputProtocol?
     var router: HomeRouterProtocol?

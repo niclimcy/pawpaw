@@ -6,6 +6,9 @@
 import Foundation
 
 final class HomeInteractor: HomeInteractorInputProtocol {
+    // TODO: To remove after swift bug is resolved.
+    nonisolated deinit {}
+
     weak var presenter: HomeInteractorOutputProtocol?
 
     private let profileStorage: ProfileStorage

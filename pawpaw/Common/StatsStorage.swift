@@ -13,6 +13,9 @@ protocol StatsStorage {
 }
 
 final class UserDefaultsStatsStorage: StatsStorage {
+    // TODO: To remove after swift bug is resolved.
+    nonisolated deinit {}
+
     private let defaults: UserDefaults
     private let key: String
 

@@ -6,6 +6,9 @@
 import Foundation
 
 final class StatsInteractor: StatsInteractorInputProtocol {
+    // TODO: To remove after swift bug is resolved.
+    nonisolated deinit {}
+
     weak var presenter: StatsInteractorOutputProtocol?
 
     private let profile: CatProfile

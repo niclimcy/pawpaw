@@ -6,6 +6,9 @@
 import Foundation
 
 final class StatsPresenter: StatsPresenterProtocol, StatsInteractorOutputProtocol {
+    // TODO: To remove after swift bug is resolved.
+    nonisolated deinit {}
+
     weak var view: StatsViewProtocol?
     var interactor: StatsInteractorInputProtocol?
     var router: StatsRouterProtocol?

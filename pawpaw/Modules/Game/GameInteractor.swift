@@ -7,6 +7,9 @@ import CoreGraphics
 import Foundation
 
 final class GameInteractor: GameInteractorInputProtocol {
+    // TODO: To remove after swift bug is resolved.
+    nonisolated deinit {}
+
     static let spawnInterval: TimeInterval = 1.0
     /// Catches of one kind in a row before that kind gets a new look.
     static let habituationStreak = 3

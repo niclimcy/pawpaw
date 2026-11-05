@@ -15,6 +15,9 @@ protocol SettingsStorage: AnyObject {
 }
 
 final class UserDefaultsSettingsStorage: SettingsStorage {
+    // TODO: To remove after swift bug is resolved.
+    nonisolated deinit {}
+
     private let defaults: UserDefaults
     // Legacy keys; keep them so existing saved choices carry over.
     private let modeKey = "pawpaw.selectedMode"
