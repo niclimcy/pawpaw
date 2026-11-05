@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Cat headshot: Siamese with dark points. One silhouette with the ears built in, taller than wide. The dark ear tips share the silhouette's edge, and the outline is drawn last. Original artwork for Paw Paw. -->
+  <path d="M100 182 C70 182 42 164 38 134 C36 118 38 104 39 96 C37 70 38 40 44 20 C58 30 72 42 84 56 C92 53 108 53 116 56 C128 42 142 30 156 20 C162 40 163 70 161 96 C162 104 164 118 162 134 C158 164 130 182 100 182 Z" fill="#f3e3c8"/>
+  <path d="M39 84 C37 62 38 40 44 20 C58 30 72 42 84 56 C68 58 52 68 39 84 Z" fill="#7b5a48"/>
+  <path d="M161 84 C163 62 162 40 156 20 C142 30 128 42 116 56 C132 58 148 68 161 84 Z" fill="#7b5a48"/>
+  <path transform="translate(0 -8)" d="M100 112 C118 112 128 126 125 144 C122 162 112 170 100 170 C88 170 78 162 75 144 C72 126 82 112 100 112 Z" fill="#8a6a58" opacity="0.9"/>
+  <path d="M52 40 C48 56 48 72 50 84 L76 60 C68 52 60 46 52 40 Z" fill="#c99486"/>
+  <path d="M148 40 C152 56 152 72 150 84 L124 60 C132 52 140 46 148 40 Z" fill="#c99486"/>
+  <path d="M100 182 C70 182 42 164 38 134 C36 118 38 104 39 96 C37 70 38 40 44 20 C58 30 72 42 84 56 C92 53 108 53 116 56 C128 42 142 30 156 20 C162 40 163 70 161 96 C162 104 164 118 162 134 C158 164 130 182 100 182 Z" fill="none" stroke="#5a3e30" stroke-width="4" stroke-linejoin="round"/>
+  <g transform="translate(0 -8)">
+  <ellipse cx="100" cy="153" rx="13" ry="8" fill="#a98672"/>
+  <circle cx="58" cy="146" r="7" fill="#ff8fa3" opacity="0.28"/>
+  <circle cx="142" cy="146" r="7" fill="#ff8fa3" opacity="0.28"/>
+  <ellipse cx="72" cy="122" rx="12.5" ry="15" fill="#2d79c0" stroke="#2a1d16" stroke-width="2"/>
+  <ellipse cx="128" cy="122" rx="12.5" ry="15" fill="#2d79c0" stroke="#2a1d16" stroke-width="2"/>
+  <ellipse cx="72" cy="124.5" rx="9.8" ry="11.8" fill="#6cc0f5"/>
+  <ellipse cx="128" cy="124.5" rx="9.8" ry="11.8" fill="#6cc0f5"/>
+  <ellipse cx="72" cy="122.5" rx="4.6" ry="9.2" fill="#1a1118"/>
+  <ellipse cx="128" cy="122.5" rx="4.6" ry="9.2" fill="#1a1118"/>
+  <circle cx="67.5" cy="115.5" r="3.7" fill="#ffffff"/>
+  <circle cx="123.5" cy="115.5" r="3.7" fill="#ffffff"/>
+  <circle cx="76.5" cy="128" r="1.7" fill="#ffffff" opacity="0.9"/>
+  <circle cx="132.5" cy="128" r="1.7" fill="#ffffff" opacity="0.9"/>
+  <path d="M96 142 L104 142 L100 147 Z" fill="#e58a9a" stroke="#e58a9a" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M100 147 L100 150 M100 150 Q95.5 155 90.5 152 M100 150 Q104.5 155 109.5 152" fill="none" stroke="#f3e3c8" stroke-width="2.2" stroke-linecap="round"/>
+  </g>
+</svg>

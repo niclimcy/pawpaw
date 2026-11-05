@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="168" viewBox="100 95 825 690">
+  <!-- The paw from the app icon: cream toe beans with pink pads. Original artwork for Paw Paw. -->
+  <g fill="#fdf5e6">
+    <!-- Outer toes, tilted outwards -->
+    <ellipse cx="222" cy="385" rx="104" ry="132" transform="rotate(-30 222 385)"/>
+    <ellipse cx="802" cy="385" rx="104" ry="132" transform="rotate(30 802 385)"/>
+    <!-- Middle toes -->
+    <ellipse cx="396" cy="253" rx="106" ry="145"/>
+    <ellipse cx="628" cy="253" rx="106" ry="145"/>
+    <!-- Palm: rounded on top, flatter underneath -->
+    <path d="M250 640 C250 520 380 425 512 425 C644 425 774 520 774 640 C774 730 650 773 512 773 C374 773 250 730 250 640 Z"/>
+  </g>
+  <g fill="#f5989b">
+    <ellipse cx="222" cy="392" rx="64" ry="80" transform="rotate(-30 222 392)"/>
+    <ellipse cx="802" cy="392" rx="64" ry="80" transform="rotate(30 802 392)"/>
+    <ellipse cx="396" cy="262" rx="65" ry="87"/>
+    <ellipse cx="628" cy="262" rx="65" ry="87"/>
+    <ellipse cx="512" cy="598" rx="189" ry="108"/>
+  </g>
+</svg>

@@ -1,0 +1,237 @@
+/* pawpaw website. Plain CSS, no build step.
+   Colours mirror pawpaw/Common/Theme.swift. */
+
+:root {
+  --background: #291a0f;
+  --panel: #452b1a;
+  --panel-soft: rgba(69, 43, 26, 0.72);
+  --accent: #ff9e33;
+  --gold: #ffd64d;
+  --text: #fff0cc;
+  --text-dim: rgba(255, 240, 204, 0.72);
+  --line: rgba(255, 214, 77, 0.35);
+  --pink: #f5989b;
+  --radius: 28px;
+  --max: 1120px;
+  --font: ui-rounded, "SF Pro Rounded", "Nunito", "Varela Round", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--text);
+  background-color: var(--background);
+  /* The crate: planks with dark seams, plus a vignette. */
+  background-image:
+    radial-gradient(ellipse at 50% 0%, rgba(255, 158, 51, 0.14), transparent 60%),
+    repeating-linear-gradient(180deg, transparent 0 116px, rgba(0, 0, 0, 0.55) 116px 120px),
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.025) 0 2px, transparent 2px 120px),
+    repeating-linear-gradient(178deg, transparent 0 9px, rgba(0, 0, 0, 0.05) 9px 10px);
+  -webkit-font-smoothing: antialiased;
+}
+
+img, video { max-width: 100%; height: auto; display: block; }
+
+a { color: var(--accent); text-underline-offset: 3px; }
+a:hover { color: var(--gold); }
+
+:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; border-radius: 6px; }
+
+h1, h2, h3 { line-height: 1.15; margin: 0 0 0.5em; font-weight: 900; letter-spacing: -0.01em; }
+h1 { font-size: clamp(2.6rem, 6vw, 4.6rem); }
+h2 { font-size: clamp(1.9rem, 4vw, 2.8rem); }
+h3 { font-size: 1.3rem; }
+p { margin: 0 0 1em; }
+
+.wrap { width: min(100% - 40px, var(--max)); margin-inline: auto; }
+.narrow { width: min(100% - 40px, 780px); margin-inline: auto; }
+
+.skip-link {
+  position: absolute; left: 16px; top: -60px; z-index: 10;
+  background: var(--accent); color: var(--background); padding: 10px 16px;
+  border-radius: 12px; font-weight: 800; text-decoration: none;
+}
+.skip-link:focus { top: 16px; }
+
+/* ---------------------------------------------------------------- header */
+
+.site-header { padding: 18px 0; }
+.site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+.brand { display: flex; align-items: center; gap: 12px; color: var(--text); text-decoration: none; font-weight: 900; font-size: 1.4rem; }
+.brand img { width: 44px; height: 44px; border-radius: 11px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5); }
+.brand:hover { color: var(--text); }
+
+.nav { display: flex; gap: 6px; flex-wrap: wrap; }
+.nav a {
+  color: var(--text); text-decoration: none; font-weight: 700;
+  padding: 8px 16px; border-radius: 999px;
+}
+.nav a:hover { background: var(--panel-soft); color: var(--text); }
+.nav a[aria-current="page"] { background: var(--text); color: var(--background); }
+
+/* ---------------------------------------------------------------- buttons */
+
+.button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 56px; padding: 12px 28px; border-radius: 999px;
+  background: var(--accent); color: #fff; font-weight: 900; font-size: 1.15rem;
+  text-decoration: none; letter-spacing: 0.02em;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+.button:hover { background: #ffb052; color: #fff; transform: translateY(-2px); }
+.button.secondary { background: var(--panel-soft); color: var(--text); border: 2px solid var(--line); box-shadow: none; }
+.button.secondary:hover { background: var(--panel); color: var(--text); }
+
+/* The App Store badge slot. While the app is unreleased this is a
+   non-link "coming soon" badge; see the comment in index.html. */
+.store-badge {
+  display: inline-flex; align-items: center; gap: 12px;
+  min-height: 56px; padding: 8px 22px 8px 18px; border-radius: 14px;
+  background: #000; color: #fff; border: 1.5px solid #a6a6a6;
+  text-decoration: none; line-height: 1.15;
+}
+.store-badge svg { width: 26px; height: 32px; flex: none; }
+.store-badge small { display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.02em; }
+.store-badge strong { display: block; font-size: 1.35rem; font-weight: 700; font-family: system-ui, -apple-system, sans-serif; }
+.store-badge.soon { cursor: default; }
+a.store-badge:hover { color: #fff; border-color: #fff; }
+
+.cta-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+.cta-note { color: var(--text-dim); font-size: 0.95rem; margin-top: 14px; }
+
+/* ---------------------------------------------------------------- hero */
+
+.hero { padding: 40px 0 80px; }
+.hero .wrap { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: center; }
+.hero .eyebrow { color: var(--accent); font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.9rem; margin-bottom: 12px; }
+.hero h1 { margin-bottom: 0.3em; }
+.hero h1 .paw { width: 0.9em; height: auto; display: inline-block; vertical-align: -0.05em; margin-right: 0.15em; filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5)); }
+.hero .lede { font-size: 1.3rem; color: var(--text-dim); max-width: 34ch; margin-bottom: 1.4em; }
+.hero .lede strong { color: var(--text); }
+
+.pills { list-style: none; padding: 0; margin: 28px 0 0; display: flex; flex-wrap: wrap; gap: 10px; }
+.pills li { background: var(--panel-soft); border: 1.5px solid var(--line); border-radius: 999px; padding: 6px 14px; font-weight: 700; font-size: 0.95rem; }
+
+/* An iPad-shaped frame around the app preview video. */
+.ipad-frame {
+  position: relative; margin-inline: auto; width: min(100%, 460px);
+  padding: 18px; border-radius: 42px;
+  background: linear-gradient(145deg, #3a3a3e, #1b1b1e);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), inset 0 0 0 2px rgba(255, 255, 255, 0.08);
+}
+.ipad-frame video, .ipad-frame img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 24px; background: #000; }
+.hero-media { position: relative; }
+.hero-media .critter { position: absolute; width: 92px; filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.5)); }
+.hero-media .critter.butterfly { top: -26px; right: -8px; transform: rotate(20deg); animation: flutter 3.2s ease-in-out infinite; }
+.hero-media .critter.mouse { bottom: 40px; left: -30px; transform: rotate(-60deg); }
+@keyframes flutter { 50% { transform: rotate(8deg) translate(-10px, 8px); } }
+
+/* ---------------------------------------------------------------- sections */
+
+section { scroll-margin-top: 20px; }
+.section { padding: 72px 0; }
+.section-head { text-align: center; max-width: 680px; margin: 0 auto 44px; }
+.section-head p { color: var(--text-dim); font-size: 1.15rem; }
+
+.card {
+  background: var(--panel-soft); border: 2px solid var(--line); border-radius: var(--radius);
+  padding: 28px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(2px);
+}
+
+.features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.feature img { width: 64px; height: 64px; margin-bottom: 14px; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.45)); }
+.feature p { color: var(--text-dim); margin: 0; }
+
+/* Ten critters: always two even rows of five. */
+.critter-strip { display: grid; grid-template-columns: repeat(5, minmax(0, 120px)); justify-content: center; gap: 14px; margin-top: 40px; list-style: none; padding: 0; }
+.critter-strip li { background: var(--panel-soft); border-radius: 20px; padding: 12px 6px 8px; text-align: center; font-weight: 700; font-size: 0.9rem; }
+.critter-strip img { width: 56px; height: 56px; margin: 0 auto 4px; }
+
+/* Screenshots */
+.shots { display: grid; gap: 22px; }
+.shots.ipad { grid-template-columns: repeat(4, 1fr); }
+.shots.iphone { grid-template-columns: repeat(4, 1fr); max-width: 760px; margin: 22px auto 0; }
+.shots figure { margin: 0; text-align: center; }
+.shots img { width: 100%; border-radius: 22px; border: 6px solid #1b1b1e; box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5); }
+.shots.iphone img { border-radius: 26px; }
+.shots figcaption { margin-top: 12px; font-weight: 700; color: var(--text-dim); }
+.subhead { text-align: center; margin-top: 56px; font-size: 1.2rem; color: var(--text-dim); }
+
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.checklist { list-style: none; padding: 0; margin: 0; }
+.checklist li { position: relative; padding-left: 34px; margin-bottom: 12px; }
+.checklist li::before { content: ""; position: absolute; left: 0; top: 0.3em; width: 22px; height: 18px; background: url("assets/art/logo_paw.svg") center / contain no-repeat; }
+
+.notice { border-color: var(--accent); background: rgba(255, 158, 51, 0.12); }
+.notice h3 { color: var(--gold); }
+
+.cta { text-align: center; }
+.cta .cta-row { justify-content: center; }
+
+/* ---------------------------------------------------------------- support + legal pages */
+
+.page-head { padding: 30px 0 20px; text-align: center; }
+.page-head p { color: var(--text-dim); font-size: 1.2rem; }
+
+.faq details { background: var(--panel-soft); border: 2px solid var(--line); border-radius: 20px; margin-bottom: 12px; }
+.faq summary { cursor: pointer; padding: 18px 56px 18px 22px; font-weight: 800; font-size: 1.08rem; list-style: none; position: relative; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; position: absolute; right: 22px; top: 50%; transform: translateY(-50%); font-size: 1.6rem; color: var(--accent); }
+.faq details[open] summary::after { content: "\2212"; }
+.faq details > div { padding: 0 22px 18px; color: var(--text-dim); }
+.faq details > div p:last-child { margin-bottom: 0; }
+.faq h2 { margin-top: 48px; font-size: 1.6rem; }
+
+.prose h2 { font-size: 1.5rem; margin-top: 1.8em; }
+.prose ul { padding-left: 1.3em; }
+.prose li { margin-bottom: 0.4em; }
+.prose .summary { font-size: 1.15rem; }
+.meta { color: var(--text-dim); }
+
+kbd, .ui { font-family: inherit; font-weight: 800; color: var(--text); background: rgba(0, 0, 0, 0.3); border-radius: 6px; padding: 1px 7px; white-space: nowrap; }
+
+/* ---------------------------------------------------------------- footer */
+
+.site-footer { padding: 40px 0 56px; border-top: 2px solid rgba(0, 0, 0, 0.45); margin-top: 40px; color: var(--text-dim); font-size: 0.95rem; }
+.site-footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; }
+.site-footer nav { display: flex; flex-wrap: wrap; gap: 18px; }
+.site-footer a { color: var(--text-dim); }
+.site-footer a:hover { color: var(--gold); }
+.legal-note { flex-basis: 100%; font-size: 0.8rem; opacity: 0.75; margin: 0; }
+
+/* ---------------------------------------------------------------- responsive */
+
+@media (max-width: 900px) {
+  .hero .wrap { grid-template-columns: 1fr; gap: 48px; text-align: center; }
+  .hero .lede { margin-inline: auto; }
+  .hero .cta-row, .pills { justify-content: center; }
+  .features { grid-template-columns: 1fr 1fr; }
+  .shots.ipad { grid-template-columns: 1fr 1fr; }
+  .split { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  body { font-size: 17px; }
+  .features { grid-template-columns: 1fr; }
+  .shots.iphone { grid-template-columns: 1fr 1fr; }
+  .hero-media .critter { width: 64px; }
+  .hero-media .critter.mouse { left: -8px; }
+  .critter-strip { grid-template-columns: repeat(5, 1fr); gap: 8px; }
+  .critter-strip li { border-radius: 14px; padding: 8px 2px 6px; font-size: 0.7rem; }
+  .critter-strip img { width: 38px; height: 38px; }
+  .site-header .wrap { justify-content: center; }
+  .section { padding: 52px 0; }
+}

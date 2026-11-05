@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Cat headshot: black cat. One silhouette with the ears built in, taller than wide. A lighter rim keeps it visible on dark wood. Original artwork for Paw Paw. -->
+  <path d="M100 182 C70 182 42 164 38 134 C36 118 38 104 39 96 C37 70 38 40 44 20 C58 30 72 42 84 56 C92 53 108 53 116 56 C128 42 142 30 156 20 C162 40 163 70 161 96 C162 104 164 118 162 134 C158 164 130 182 100 182 Z" fill="#2b2b36" stroke="#7c7c94" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M52 40 C48 56 48 72 50 84 L76 60 C68 52 60 46 52 40 Z" fill="#e58aa0"/>
+  <path d="M148 40 C152 56 152 72 150 84 L124 60 C132 52 140 46 148 40 Z" fill="#e58aa0"/>
+  <g transform="translate(0 -8)">
+  <ellipse cx="100" cy="152" rx="15" ry="10" fill="#46465a"/>
+  <circle cx="60" cy="148" r="7" fill="#ff8fa3" opacity="0.2"/>
+  <circle cx="140" cy="148" r="7" fill="#ff8fa3" opacity="0.2"/>
+  <ellipse cx="72" cy="122" rx="12.5" ry="15" fill="#b86a1a" stroke="#0e0e14" stroke-width="2"/>
+  <ellipse cx="128" cy="122" rx="12.5" ry="15" fill="#b86a1a" stroke="#0e0e14" stroke-width="2"/>
+  <ellipse cx="72" cy="124.5" rx="9.8" ry="11.8" fill="#f5a43a"/>
+  <ellipse cx="128" cy="124.5" rx="9.8" ry="11.8" fill="#f5a43a"/>
+  <ellipse cx="72" cy="122.5" rx="4.6" ry="9.2" fill="#1a1118"/>
+  <ellipse cx="128" cy="122.5" rx="4.6" ry="9.2" fill="#1a1118"/>
+  <circle cx="67.5" cy="115.5" r="3.7" fill="#ffffff"/>
+  <circle cx="123.5" cy="115.5" r="3.7" fill="#ffffff"/>
+  <circle cx="76.5" cy="128" r="1.7" fill="#ffffff" opacity="0.9"/>
+  <circle cx="132.5" cy="128" r="1.7" fill="#ffffff" opacity="0.9"/>
+  <path d="M96 142 L104 142 L100 147 Z" fill="#e58aa0" stroke="#e58aa0" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M100 147 L100 150 M100 150 Q95.5 155 90.5 152 M100 150 Q104.5 155 109.5 152" fill="none" stroke="#9a9ab2" stroke-width="2.2" stroke-linecap="round"/>
+  </g>
+</svg>

@@ -40,8 +40,8 @@ pawpaw is suitable for all ages and collects no personal information from anyone
 
 ## Changes to this policy
 
-If the app's data practices change, we will update this policy and its effective date before the change takes effect. The latest version is always at https://github.com/niclimcy/pawpaw/blob/main/docs/app-store/privacy-policy.md.
+If the app's data practices change, we will update this policy and its effective date before the change takes effect. The latest version is always at https://niclimcy.github.io/pawpaw/privacy.html.
 
 ## Contact
 
-Questions about this policy can be raised at https://github.com/niclimcy/pawpaw/issues.
+pawpaw is a personal project without dedicated support. Questions about this policy can be left at https://github.com/niclimcy/pawpaw/issues, though a reply isn't guaranteed.
