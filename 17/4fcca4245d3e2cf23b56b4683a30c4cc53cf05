@@ -1,0 +1,16 @@
+.github/workflows/release.yml
+  h_36695e5767c2ad 1-181
+pawpaw.xcodeproj/project.pbxproj
+  h_36695e5767c2ad 224,263
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "174fcca4245d3e2cf23b56b4683a30c4cc53cf05",
+  "prompts": {},
+  "humans": {
+    "h_36695e5767c2ad": {
+      "author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
