@@ -13,7 +13,7 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
 
     private let card = UIView()
     private let cardStack = UIStackView()
-    private let artRow = UIStackView()
+    let artRow = UIStackView()
     /// Holds the title and body, plus invisible copies of every page's text that set its height.
     private let textArea = UIView()
     private let catFields = UIStackView()
@@ -23,6 +23,13 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
         maxSide: Theme.scaled(64),
         minSide: Theme.minimumTapSize
     )
+    let practiceArea = UIView()
+    let playfield = OnboardingPlayfieldView()
+    let countdown = OnboardingCountdownView()
+    let holdPractice = OnboardingHoldPracticeView()
+    let ambient = OnboardingAmbientView()
+    var interaction: OnboardingInteraction?
+    private var shownIndex: Int?
     private var isOnCatSetup = false
     private weak var cardScroll: UIScrollView?
     /// How much of the card's scroll view the keyboard covers.
@@ -51,7 +58,7 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
         return dots
     }()
 
-    private let nextButton: UIButton = {
+    let nextButton: UIButton = {
         let button = Theme.filledButton(
             title: "Next",
             fontSize: 22,
@@ -74,12 +81,15 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
     }()
 
     private static let artSide: CGFloat = 64
+    static let practiceHeight: CGFloat = 170
+    static let minPracticeHeight: CGFloat = 110
     private static let cardMargin: CGFloat = 24
 
     // When the card is taller than the space above the buttons, the reserved text space gives way
-    // first, then the art, then the face picker (just below `.defaultHigh`); past that the card scrolls.
+    // first, then the art and practice area, then the face picker (just below `.defaultHigh`);
+    // past that the card scrolls.
     private static let fitPriority = UILayoutPriority.defaultHigh
-    private static let artPriority = UILayoutPriority(650)
+    static let artPriority = UILayoutPriority(650)
     private static let reservedTextPriority = UILayoutPriority(600)
 
     private static func makeLabel(size: CGFloat, weight: UIFont.Weight = .heavy)
@@ -104,9 +114,15 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
         super.viewDidLoad()
         view.backgroundColor = Theme.background
         installBackground(theme: .wood)
+        setupAmbient()
         setupLayout()
+        setupPractice()
         nameField.delegate = self
-        facePicker.onSelect = { [weak self] face in self?.showCatArt(face) }
+        nameField.addTarget(self, action: #selector(nameChanged), for: .editingChanged)
+        facePicker.onSelect = { [weak self] face in
+            self?.showCatArt(face)
+            self?.bounceCatArt()
+        }
         nextButton.addTarget(
             self,
             action: #selector(nextTapped),
@@ -124,6 +140,18 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
         )
         setupSwipes()
         presenter?.viewDidLoad()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        ambient.start()
+        startInteraction()
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        ambient.stop()
+        stopInteractions()
     }
 
     /// Swipes step through the pages like the Next and Back buttons.
@@ -154,7 +182,7 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
         setupTextArea()
 
         // `catFields` is added only on the cat step; hiding it would squeeze its fields to zero height.
-        for subview in [artRow, textArea] {
+        for subview in [artRow, practiceArea, textArea] {
             cardStack.addArrangedSubview(subview)
         }
         cardStack.axis = .vertical
@@ -184,6 +212,7 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
             ),
             // Pinned so long text wraps instead of widening the card past the screen margins.
             textArea.widthAnchor.constraint(equalTo: cardStack.widthAnchor),
+            practiceArea.widthAnchor.constraint(equalTo: cardStack.widthAnchor),
         ])
 
         // The controls stay put at the bottom; the card is centered in the space above them.
@@ -329,28 +358,28 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
         return stack
     }
 
-    private func showArt(for page: OnboardingPage) {
-        artRow.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        let side = Theme.scaled(Self.artSide)
-        if let symbolName = page.symbolName {
-            artRow.addArrangedSubview(makeSymbolBadge(symbolName, side: side))
-            return
-        }
-        for name in page.imageNames {
-            artRow.addArrangedSubview(
-                makeArtImage(UIImage(named: name), side: side)
-            )
-        }
-    }
-
     private func showCatArt(_ face: CatFace) {
-        artRow.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        for art in artRow.arrangedSubviews { art.removeFromSuperview() }
         artRow.addArrangedSubview(
             makeArtImage(
                 UIImage(named: face.imageName),
                 side: Theme.scaled(Self.artSide * 1.4)
             )
         )
+        artRow.isHidden = false
+    }
+
+    private func bounceCatArt() {
+        guard !UIAccessibility.isReduceMotionEnabled,
+            let art = artRow.arrangedSubviews.first
+        else { return }
+        art.transform = CGAffineTransform(scaleX: 0.7, y: 0.7)
+        UIView.animate(
+            withDuration: 0.45, delay: 0, usingSpringWithDamping: 0.45,
+            initialSpringVelocity: 0.8, options: [.allowUserInteraction]
+        ) {
+            art.transform = .identity
+        }
     }
 
     /// `side` is the preferred size; the art shrinks below it when the card needs the room.
@@ -376,35 +405,6 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
         return picture
     }
 
-    /// Looks like the in-game home button, with the hold ring drawn around it.
-    private func makeSymbolBadge(_ symbolName: String, side: CGFloat) -> UIView {
-        let badge = UIView()
-        badge.backgroundColor = Theme.background
-        badge.layer.cornerRadius = side / 2
-        badge.layer.borderWidth = 4
-        badge.layer.borderColor = Theme.accent.cgColor
-        badge.widthAnchor.constraint(equalToConstant: side).isActive = true
-        badge.heightAnchor.constraint(equalToConstant: side).isActive = true
-
-        let symbol = UIImageView(
-            image: UIImage(
-                systemName: symbolName,
-                withConfiguration: UIImage.SymbolConfiguration(
-                    pointSize: side * 0.4,
-                    weight: .bold
-                )
-            )
-        )
-        symbol.tintColor = Theme.text
-        symbol.translatesAutoresizingMaskIntoConstraints = false
-        badge.addSubview(symbol)
-        NSLayoutConstraint.activate([
-            symbol.centerXAnchor.constraint(equalTo: badge.centerXAnchor),
-            symbol.centerYAnchor.constraint(equalTo: badge.centerYAnchor),
-        ])
-        return badge
-    }
-
     private func showCatFields() {
         guard catFields.superview == nil else { return }
         cardStack.addArrangedSubview(catFields)
@@ -412,18 +412,38 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
             .isActive = true
     }
 
-    /// Cross-fades the card to new content; the first page appears without animation.
-    private func transitionCard(_ update: @escaping () -> Void) {
-        guard titleLabel.text != nil else {
+    /// Slides the card's content in the direction of travel; the first page appears without animation.
+    private func transitionCard(to index: Int, _ update: @escaping () -> Void) {
+        let previous = shownIndex
+        shownIndex = index
+        guard let previous, previous != index else {
             update()
             return
         }
-        UIView.transition(
-            with: card,
-            duration: 0.25,
-            options: .transitionCrossDissolve,
-            animations: update
-        )
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        guard !UIAccessibility.isReduceMotionEnabled else {
+            UIView.transition(
+                with: card, duration: 0.25, options: .transitionCrossDissolve,
+                animations: update)
+            return
+        }
+        let isRightToLeft = view.effectiveUserInterfaceLayoutDirection == .rightToLeft
+        let forward: CGFloat = index > previous ? 1 : -1
+        let shift = Theme.scaled(60) * forward * (isRightToLeft ? -1 : 1)
+        UIView.animate(withDuration: 0.14, delay: 0, options: [.curveEaseIn]) {
+            self.cardStack.alpha = 0
+            self.cardStack.transform = CGAffineTransform(translationX: -shift, y: 0)
+        } completion: { _ in
+            update()
+            self.cardStack.transform = CGAffineTransform(translationX: shift, y: 0)
+            UIView.animate(
+                withDuration: 0.32, delay: 0, usingSpringWithDamping: 0.8,
+                initialSpringVelocity: 0.5, options: [.allowUserInteraction]
+            ) {
+                self.cardStack.alpha = 1
+                self.cardStack.transform = .identity
+            }
+        }
     }
 
     private func showProgress(
@@ -488,6 +508,10 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
         return true
     }
 
+    @objc private func nameChanged() {
+        presenter?.didChangeCatName(nameField.text ?? "")
+    }
+
     @objc private func skipTapped() {
         if isOnCatSetup {
             presenter?.didSkipCatSetup()
@@ -497,12 +521,12 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
     }
 
     // MARK: OnboardingViewProtocol
-    func reserveSpace(for pages: [OnboardingPage]) {
-        for page in pages {
+    func reserveSpace(for texts: [OnboardingText]) {
+        for text in texts {
             let title = Self.makeLabel(size: 28)
             let body = Self.makeLabel(size: 18, weight: .semibold)
-            title.text = page.title
-            body.text = page.body
+            title.text = text.title
+            body.text = text.body
             let ghost = makeTextStack(title: title, body: body)
             ghost.alpha = 0
             ghost.isUserInteractionEnabled = false
@@ -526,23 +550,42 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
 
     func showPage(_ page: OnboardingPage, index: Int, count: Int) {
         isOnCatSetup = false
-        transitionCard {
-            self.showArt(for: page)
+        stopInteractions()
+        interaction = page.interaction
+        if page.interaction == .holdToLeave { holdPractice.reset() }
+        transitionCard(to: index) {
+            self.showPractice(page.interaction)
             self.titleLabel.text = page.title
             self.bodyLabel.text = page.body
             self.catFields.removeFromSuperview()
         }
         showProgress(index: index, count: count, next: "Next", skip: "Skip")
+        startInteraction()
     }
 
-    func showCatSetup(face: CatFace, index: Int, count: Int) {
+    func showPracticeFeedback(_ text: OnboardingText, celebrates: Bool) {
+        UIView.transition(
+            with: textArea, duration: 0.2, options: .transitionCrossDissolve
+        ) {
+            self.titleLabel.text = text.title
+            self.bodyLabel.text = text.body
+        }
+        if celebrates { bounce(nextButton) }
+        UIAccessibility.post(
+            notification: .announcement, argument: "\(text.title) \(text.body)")
+    }
+
+    func showCatSetup(face: CatFace, title: String, index: Int, count: Int) {
         isOnCatSetup = true
+        stopInteractions()
+        interaction = nil
         facePicker.select(face)
-        transitionCard {
+        transitionCard(to: index) {
+            self.showPractice(nil)
             self.showCatArt(face)
-            self.titleLabel.text = "Who's playing?"
+            self.titleLabel.text = title
             self.bodyLabel.text =
-                "Add your cat's name and pick the face that looks most like them. You can add more cats later."
+                "Name your cat and pick a face. You can add more cats later."
             self.showCatFields()
         }
         showProgress(
@@ -551,6 +594,11 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
             next: "Let's go",
             skip: "Skip for now"
         )
+    }
+
+    func updateCatSetupTitle(_ title: String) {
+        guard titleLabel.text != title else { return }
+        titleLabel.text = title
     }
 
     func showNameRequired() {
@@ -563,6 +611,21 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
             notification: .announcement,
             argument: "Add your cat's name, or skip for now"
         )
+    }
+
+    func showFinishCelebration(completion: @escaping () -> Void) {
+        view.endEditing(true)
+        view.isUserInteractionEnabled = false
+        UINotificationFeedbackGenerator().notificationOccurred(.success)
+        guard !UIAccessibility.isReduceMotionEnabled else {
+            completion()
+            return
+        }
+        burstPawPrints(from: nextButton.convert(nextButton.bounds, to: view))
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 700_000_000)
+            completion()
+        }
     }
 
     // MARK: Accessibility
@@ -585,6 +648,17 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
             UIGestureRecognizer
     ) -> Bool {
         true
+    }
+
+    /// Drags on the practice field are catches, not page swipes.
+    func gestureRecognizer(
+        _ gestureRecognizer: UIGestureRecognizer,
+        shouldReceive touch: UITouch
+    ) -> Bool {
+        guard gestureRecognizer is UISwipeGestureRecognizer, !playfield.isHidden else {
+            return true
+        }
+        return !playfield.bounds.contains(touch.location(in: playfield))
     }
 
     // MARK: UITextFieldDelegate

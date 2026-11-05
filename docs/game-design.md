@@ -57,7 +57,12 @@ When a timed round ends, the field stays in play. One critter (the lure) roams a
 
 ## For owners
 
-- First launch shows an intro and cat setup.
+- First launch shows a hands-on intro and cat setup:
+  - **Catch**: a small live field (`GameScene` with `PlayfieldTuning.onboarding`) where the owner catches critters. Optional.
+  - **Countdown**: a looping device-flat, 3-2-1, paw animation.
+  - **Hold to leave**: a practice house button; a tap only hints, a hold succeeds.
+  - **Cat setup**: the title greets the cat by name as it's typed.
+  - Faint critters drift behind the card. Reduce Motion turns off the drifting critters, slides and loops.
 - Exits, stats reset and cat deletion need a 1.5 s hold.
 - Interruptions pause the round with critters frozen in place; the screen stays awake during play.
 - Each cat has a name, face, scores, stats and its own critter list (at least one all-background critter stays on).

@@ -51,13 +51,14 @@ final class OnboardingPresenterTests: XCTestCase {
         for page in OnboardingPresenter.pages {
             XCTAssertFalse(page.title.isEmpty)
             XCTAssertFalse(page.body.isEmpty)
-            XCTAssertTrue(!page.imageNames.isEmpty || page.symbolName != nil, page.title)
         }
+        XCTAssertEqual(
+            OnboardingPresenter.pages.map(\.interaction), [.catchCritter, .countdown, .holdToLeave])
     }
 
     func testLoadReservesSpaceAndShowsFirstPage() {
         presenter.viewDidLoad()
-        XCTAssertEqual(view.reserved, [OnboardingPresenter.pages])
+        XCTAssertEqual(view.reserved, [OnboardingPresenter.reservedTexts])
         XCTAssertEqual(view.pages.last?.index, 0)
         XCTAssertEqual(view.pages.last?.count, pageCount + 1)
     }
@@ -98,11 +99,29 @@ final class OnboardingPresenterTests: XCTestCase {
         XCTAssertEqual(router.finishCount, 0)
     }
 
-    func testDoneSavesAndFinishes() {
+    func testDoneSavesThenFinishesAfterTheCelebration() {
         presenter.didTapDone(name: "Mochi", face: .gray)
         XCTAssertEqual(interactor.savedCats.map(\.name), ["Mochi"])
         XCTAssertEqual(interactor.savedCats.map(\.face), [.gray])
         XCTAssertEqual(interactor.completeCount, 1)
+        XCTAssertEqual(view.celebrationCount, 1)
+        XCTAssertEqual(router.finishCount, 0)
+        view.pendingCelebration?()
+        XCTAssertEqual(router.finishCount, 1)
+    }
+
+    func testDoneOnlyFinishesOnce() {
+        presenter.didTapDone(name: "Mochi", face: .gray)
+        presenter.didTapDone(name: "Mochi", face: .gray)
+        presenter.didSkipCatSetup()
+        XCTAssertEqual(interactor.savedCats.count, 1)
+        XCTAssertEqual(interactor.completeCount, 1)
+        XCTAssertEqual(view.celebrationCount, 1)
+    }
+
+    func testDoneFinishesWithoutAView() {
+        presenter.view = nil
+        presenter.didTapDone(name: "Mochi", face: .gray)
         XCTAssertEqual(router.finishCount, 1)
     }
 
@@ -111,5 +130,104 @@ final class OnboardingPresenterTests: XCTestCase {
         XCTAssertTrue(interactor.savedCats.isEmpty)
         XCTAssertEqual(interactor.completeCount, 1)
         XCTAssertEqual(router.finishCount, 1)
+    }
+}
+
+@MainActor
+final class OnboardingPracticeTests: XCTestCase {
+    private var view: OnboardingViewSpy!
+    private var presenter: OnboardingPresenter!
+
+    override func setUp() async throws {
+        try await super.setUp()
+        view = OnboardingViewSpy()
+        presenter = OnboardingPresenter()
+        presenter.view = view
+        presenter.interactor = OnboardingInteractorSpy()
+        presenter.router = OnboardingRouterSpy()
+        presenter.viewDidLoad()
+    }
+
+    func testReservedTextsCoverEveryFeedback() {
+        let reserved = OnboardingPresenter.reservedTexts
+        for text in OnboardingPresenter.catchFeedback + [
+            OnboardingPresenter.houseTapFeedback, OnboardingPresenter.holdFeedback,
+        ] {
+            XCTAssertTrue(reserved.contains(text), text.title)
+        }
+    }
+
+    func testCatchesCycleThroughFeedback() {
+        let feedback = OnboardingPresenter.catchFeedback
+        for _ in 0...feedback.count { presenter.didCatchPracticeCritter() }
+        XCTAssertEqual(view.feedback.map(\.text), feedback + [feedback[0]])
+        XCTAssertTrue(view.feedback.allSatisfy(\.celebrates))
+    }
+
+    func testCatchingIsNotNeededToMoveOn() {
+        presenter.didTapNext()
+        XCTAssertEqual(view.pages.last?.page.interaction, .countdown)
+    }
+
+    func testPracticeOnlyCountsOnItsOwnPage() {
+        presenter.didTapHousePractice()
+        presenter.didCompleteHoldPractice()
+        presenter.didTapNext()
+        presenter.didCatchPracticeCritter()
+        XCTAssertTrue(view.feedback.isEmpty)
+    }
+
+    func testHouseTapHintsThenHoldSucceeds() {
+        goToHoldPage()
+        presenter.didTapHousePractice()
+        presenter.didCompleteHoldPractice()
+        XCTAssertEqual(
+            view.feedback.map(\.text),
+            [OnboardingPresenter.houseTapFeedback, OnboardingPresenter.holdFeedback])
+        XCTAssertEqual(view.feedback.map(\.celebrates), [false, true])
+    }
+
+    func testTapAfterHoldKeepsTheSuccess() {
+        goToHoldPage()
+        presenter.didCompleteHoldPractice()
+        presenter.didTapHousePractice()
+        XCTAssertEqual(view.feedback.map(\.text), [OnboardingPresenter.holdFeedback])
+    }
+
+    func testReturningToHoldPageStartsOver() {
+        goToHoldPage()
+        presenter.didCompleteHoldPractice()
+        presenter.didTapBack()
+        presenter.didTapNext()
+        presenter.didTapHousePractice()
+        XCTAssertEqual(view.feedback.last?.text, OnboardingPresenter.houseTapFeedback)
+    }
+
+    func testCatSetupTitleGreetsTheCat() {
+        XCTAssertEqual(OnboardingPresenter.catSetupTitle(for: ""), "Who's playing?")
+        XCTAssertEqual(OnboardingPresenter.catSetupTitle(for: "   "), "Who's playing?")
+        XCTAssertEqual(OnboardingPresenter.catSetupTitle(for: " Mochi "), "Hi, Mochi!")
+    }
+
+    func testTypingUpdatesTheTitleOnlyOnCatSetup() {
+        presenter.didChangeCatName("Mo")
+        XCTAssertTrue(view.catTitles.isEmpty)
+        presenter.didTapSkip()
+        presenter.didChangeCatName("Mochi")
+        presenter.didChangeCatName("")
+        XCTAssertEqual(view.catTitles, ["Hi, Mochi!", "Who's playing?"])
+    }
+
+    func testCatSetupKeepsTheGreetingAfterGoingBack() {
+        presenter.didTapSkip()
+        XCTAssertEqual(view.catSetups.last?.title, "Who's playing?")
+        presenter.didChangeCatName("Mochi")
+        presenter.didTapBack()
+        presenter.didTapNext()
+        XCTAssertEqual(view.catSetups.last?.title, "Hi, Mochi!")
+    }
+
+    private func goToHoldPage() {
+        while view.pages.last?.page.interaction != .holdToLeave { presenter.didTapNext() }
     }
 }

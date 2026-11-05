@@ -48,6 +48,20 @@ struct PlayfieldTuning: Equatable {
         defaultMode: .short
     )
 
+    /// Onboarding's practice field.
+    static let onboarding = PlayfieldTuning(
+        targetSize: 80,
+        hidingSpotSize: 0,
+        maxActiveTargets: 1,
+        hidingSpotCount: 0,
+        hitSlop: 24,
+        lureHitSlop: 24,
+        startleRange: 120,
+        pace: 0.8,
+        prefersLandscape: false,
+        defaultMode: .short
+    )
+
     var isPocket: Bool {
         self == .pocket
     }

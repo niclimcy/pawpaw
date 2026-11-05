@@ -52,19 +52,32 @@ final class StatsRouterSpy: StatsRouterProtocol {
 @MainActor
 final class OnboardingViewSpy: OnboardingViewProtocol {
     var presenter: OnboardingPresenterProtocol?
-    private(set) var reserved: [[OnboardingPage]] = []
+    private(set) var reserved: [[OnboardingText]] = []
     private(set) var pages: [(page: OnboardingPage, index: Int, count: Int)] = []
-    private(set) var catSetups: [(face: CatFace, index: Int, count: Int)] = []
+    private(set) var feedback: [(text: OnboardingText, celebrates: Bool)] = []
+    private(set) var catSetups: [(face: CatFace, title: String, index: Int, count: Int)] = []
+    private(set) var catTitles: [String] = []
     private(set) var nameRequiredCount = 0
+    private(set) var celebrationCount = 0
+    /// Held back so tests can finish the celebration when they choose.
+    private(set) var pendingCelebration: (() -> Void)?
 
-    func reserveSpace(for pages: [OnboardingPage]) { reserved.append(pages) }
+    func reserveSpace(for texts: [OnboardingText]) { reserved.append(texts) }
     func showPage(_ page: OnboardingPage, index: Int, count: Int) {
         pages.append((page, index, count))
     }
-    func showCatSetup(face: CatFace, index: Int, count: Int) {
-        catSetups.append((face, index, count))
+    func showPracticeFeedback(_ text: OnboardingText, celebrates: Bool) {
+        feedback.append((text, celebrates))
     }
+    func showCatSetup(face: CatFace, title: String, index: Int, count: Int) {
+        catSetups.append((face, title, index, count))
+    }
+    func updateCatSetupTitle(_ title: String) { catTitles.append(title) }
     func showNameRequired() { nameRequiredCount += 1 }
+    func showFinishCelebration(completion: @escaping () -> Void) {
+        celebrationCount += 1
+        pendingCelebration = completion
+    }
 }
 
 @MainActor

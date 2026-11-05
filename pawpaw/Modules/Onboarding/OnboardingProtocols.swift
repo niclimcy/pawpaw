@@ -5,24 +5,40 @@
 
 import UIKit
 
+struct OnboardingText: Equatable {
+    let title: String
+    let body: String
+}
+
+enum OnboardingInteraction: Equatable {
+    case catchCritter
+    case countdown
+    case holdToLeave
+}
+
 struct OnboardingPage: Equatable {
     let title: String
     let body: String
-    /// Asset names shown in a row above the title.
-    let imageNames: [String]
-    /// SF Symbol shown instead of the images.
-    var symbolName: String?
+    let interaction: OnboardingInteraction
+
+    var text: OnboardingText {
+        OnboardingText(title: title, body: body)
+    }
 }
 
 // MARK: - View
 protocol OnboardingViewProtocol: AnyObject {
     var presenter: OnboardingPresenterProtocol? { get set }
-    /// Sizes the card for the longest page so it keeps one height between pages.
-    func reserveSpace(for pages: [OnboardingPage])
+    /// Sizes the card for the longest text so its height stays fixed.
+    func reserveSpace(for texts: [OnboardingText])
     func showPage(_ page: OnboardingPage, index: Int, count: Int)
+    /// `celebrates` is false for hints.
+    func showPracticeFeedback(_ text: OnboardingText, celebrates: Bool)
     /// The last step, after the intro pages.
-    func showCatSetup(face: CatFace, index: Int, count: Int)
+    func showCatSetup(face: CatFace, title: String, index: Int, count: Int)
+    func updateCatSetupTitle(_ title: String)
     func showNameRequired()
+    func showFinishCelebration(completion: @escaping () -> Void)
 }
 
 // MARK: - Presenter
@@ -37,6 +53,12 @@ protocol OnboardingPresenterProtocol: AnyObject {
     func didTapSkip()
     func didTapDone(name: String, face: CatFace)
     func didSkipCatSetup()
+
+    // Practice
+    func didCatchPracticeCritter()
+    func didTapHousePractice()
+    func didCompleteHoldPractice()
+    func didChangeCatName(_ name: String)
 }
 
 // MARK: - Interactor

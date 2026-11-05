@@ -14,39 +14,67 @@ final class OnboardingPresenter: OnboardingPresenterProtocol {
     var router: OnboardingRouterProtocol?
 
     private static let setupBody =
-        "Choose how long to play and where, then tap PLAY. Set your device down flat while it counts 3, 2, 1."
-    private static let pocketBody =
-        " On iPhone, the game keeps it simple: one critter at a time. "
-        + "Cats get the most room to hunt on a bigger screen like iPad."
+        "Pick a time and tap PLAY. Lay the device flat before the countdown ends."
 
     static let pages = [
         OnboardingPage(
-            title: "A game for your cat",
-            body:
-                "Little critters scurry across the screen, and your cat catches them with a tap of the paw.",
-            imageNames: ["critter_mouse", "critter_butterfly", "critter_feather"]
+            title: "Try it yourself",
+            body: "Tap a critter to catch it. Your cat does the same with a paw.",
+            interaction: .catchCritter
         ),
         OnboardingPage(
-            title: "You set it up, your cat plays",
-            body: setupBody + (PlayfieldTuning.current.isPocket ? pocketBody : ""),
-            imageNames: ["critter_bug", "critter_cricket"]
+            title: "You set it up",
+            body: [setupBody, PlayfieldTuning.current.screenNote.map { "\($0)." }]
+                .compactMap { $0 }.joined(separator: " "),
+            interaction: .countdown
         ),
         OnboardingPage(
-            title: "Only you can leave a game",
-            body: "To leave, press and hold the house button. A quick tap from a paw won't do it.",
-            imageNames: [],
-            symbolName: "house.fill"
+            title: "Hold to leave",
+            body: "Cats tap, so a tap on the house does nothing. Try holding it.",
+            interaction: .holdToLeave
         ),
     ]
+
+    /// Cycled through on each practice catch.
+    static let catchFeedback = [
+        OnboardingText(title: "Got one!", body: "Now picture your cat doing that."),
+        OnboardingText(title: "Nice", body: "Miss and they hop away."),
+        OnboardingText(title: "Again!", body: "Each critter moves a bit differently."),
+    ]
+
+    static let houseTapFeedback = OnboardingText(
+        title: "Nothing happens",
+        body: "That's all a paw can do. Now hold it."
+    )
+
+    static let holdFeedback = OnboardingText(
+        title: "That's it",
+        body: "Only a hold leaves a game."
+    )
+
+    static let unnamedCatTitle = "Who's playing?"
+
+    static func catSetupTitle(for name: String) -> String {
+        CatProfile.cleaned(name).map { "Hi, \($0)!" } ?? unnamedCatTitle
+    }
+
+    static var reservedTexts: [OnboardingText] {
+        pages.map(\.text) + catchFeedback + [houseTapFeedback, holdFeedback]
+    }
 
     /// The intro pages plus the cat setup.
     private static var stepCount: Int { pages.count + 1 }
 
     private var index = 0
+    private var catchCount = 0
+    private var hasHeldHouse = false
+    private var isFinishing = false
+    /// Kept so returning to the cat setup keeps the greeting.
+    private var catName = ""
 
     // MARK: OnboardingPresenterProtocol
     func viewDidLoad() {
-        view?.reserveSpace(for: Self.pages)
+        view?.reserveSpace(for: Self.reservedTexts)
         showCurrentStep()
     }
 
@@ -67,30 +95,71 @@ final class OnboardingPresenter: OnboardingPresenterProtocol {
     }
 
     func didTapDone(name: String, face: CatFace) {
+        guard !isFinishing else { return }
         guard CatProfile.cleaned(name) != nil else {
             view?.showNameRequired()
             return
         }
+        isFinishing = true
         interactor?.saveCat(name: name, face: face)
-        finish()
+        interactor?.completeOnboarding()
+        guard let view else {
+            router?.finish()
+            return
+        }
+        view.showFinishCelebration { [weak self] in self?.router?.finish() }
     }
 
     func didSkipCatSetup() {
-        finish()
+        guard !isFinishing else { return }
+        isFinishing = true
+        interactor?.completeOnboarding()
+        router?.finish()
+    }
+
+    // MARK: Practice
+    func didCatchPracticeCritter() {
+        guard currentInteraction == .catchCritter else { return }
+        let feedback = Self.catchFeedback[catchCount % Self.catchFeedback.count]
+        catchCount += 1
+        view?.showPracticeFeedback(feedback, celebrates: true)
+    }
+
+    /// Ignored after a successful hold, so the success text stays.
+    func didTapHousePractice() {
+        guard currentInteraction == .holdToLeave, !hasHeldHouse else { return }
+        view?.showPracticeFeedback(Self.houseTapFeedback, celebrates: false)
+    }
+
+    func didCompleteHoldPractice() {
+        guard currentInteraction == .holdToLeave else { return }
+        hasHeldHouse = true
+        view?.showPracticeFeedback(Self.holdFeedback, celebrates: true)
+    }
+
+    func didChangeCatName(_ name: String) {
+        catName = name
+        guard index == Self.pages.count else { return }
+        view?.updateCatSetupTitle(Self.catSetupTitle(for: name))
     }
 
     // MARK: Private
+    private var currentInteraction: OnboardingInteraction? {
+        index < Self.pages.count ? Self.pages[index].interaction : nil
+    }
+
     private func showCurrentStep() {
         guard index < Self.pages.count else {
             let face = interactor?.activeProfile.face ?? .orange
-            view?.showCatSetup(face: face, index: index, count: Self.stepCount)
+            view?.showCatSetup(
+                face: face,
+                title: Self.catSetupTitle(for: catName),
+                index: index,
+                count: Self.stepCount
+            )
             return
         }
+        hasHeldHouse = false
         view?.showPage(Self.pages[index], index: index, count: Self.stepCount)
-    }
-
-    private func finish() {
-        interactor?.completeOnboarding()
-        router?.finish()
     }
 }
