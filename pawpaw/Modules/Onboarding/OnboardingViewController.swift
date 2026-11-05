@@ -69,8 +69,9 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
     }()
 
     private let skipButton: UIButton = {
-        let button = Theme.plainButton(title: "Skip")
+        let button = Theme.plainButton(title: "Hold to Skip")
         button.accessibilityIdentifier = "onboardingSkipButton"
+        button.accessibilityHint = "Press and hold to skip"
         return button
     }()
 
@@ -128,11 +129,7 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
             action: #selector(nextTapped),
             for: .touchUpInside
         )
-        skipButton.addTarget(
-            self,
-            action: #selector(skipTapped),
-            for: .touchUpInside
-        )
+        installHoldToSkip()
         backButton.addTarget(
             self,
             action: #selector(backTapped),
@@ -449,14 +446,12 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
     private func showProgress(
         index: Int,
         count: Int,
-        next: String,
-        skip: String
+        next: String
     ) {
         pageDots.numberOfPages = count
         pageDots.currentPage = index
         pageDots.accessibilityValue = "Step \(index + 1) of \(count)"
         nextButton.configuration?.title = next
-        skipButton.configuration?.title = skip
         let isFirst = index == 0
         backButton.alpha = isFirst ? 0 : 1
         backButton.isEnabled = !isFirst
@@ -512,7 +507,30 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
         presenter?.didChangeCatName(nameField.text ?? "")
     }
 
-    @objc private func skipTapped() {
+    /// Skipping needs a deliberate hold, like leaving a game; a plain tap only shows a hint.
+    private func installHoldToSkip() {
+        skipButton.addHoldToConfirm(self, action: #selector(skipHeld(_:)))
+        skipButton.addTarget(self, action: #selector(showSkipHint), for: .touchUpInside)
+        // VoiceOver's double-tap is a plain tap, so offer the skip directly too.
+        skipButton.accessibilityCustomActions = [
+            UIAccessibilityCustomAction(name: "Skip") { [weak self] _ in
+                self?.skip()
+                return true
+            }
+        ]
+    }
+
+    @objc private func showSkipHint() {
+        showHoldHint("Press and hold to skip", above: pageDots.topAnchor)
+    }
+
+    @objc private func skipHeld(_ gesture: UILongPressGestureRecognizer) {
+        guard gesture.state == .began else { return }
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        skip()
+    }
+
+    private func skip() {
         if isOnCatSetup {
             presenter?.didSkipCatSetup()
         } else {
@@ -559,7 +577,7 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
             self.bodyLabel.text = page.body
             self.catFields.removeFromSuperview()
         }
-        showProgress(index: index, count: count, next: "Next", skip: "Skip")
+        showProgress(index: index, count: count, next: "Next")
         startInteraction()
     }
 
@@ -591,8 +609,7 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
         showProgress(
             index: index,
             count: count,
-            next: "Let's go",
-            skip: "Skip for now"
+            next: "Let's go"
         )
     }
 
@@ -609,7 +626,7 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
         nameField.becomeFirstResponder()
         UIAccessibility.post(
             notification: .announcement,
-            argument: "Add your cat's name, or skip for now"
+            argument: "Add your cat's name, or hold Skip to add one later"
         )
     }
 

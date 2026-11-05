@@ -88,45 +88,6 @@ extension GameViewController {
         showHoldHint("Press and hold to leave")
     }
 
-    /// Owner hint for a plain tap on a hold-to-confirm button.
-    func showHoldHint(_ message: String) {
-        let tag = 9_001
-        view.viewWithTag(tag)?.removeFromSuperview()
-
-        let hint = Theme.filledButton(
-            title: message,
-            fontSize: 16,
-            background: Theme.panel,
-            foreground: Theme.text,
-            insets: NSDirectionalEdgeInsets(top: 10, leading: 18, bottom: 10, trailing: 18)
-        )
-        hint.configuration?.titleAlignment = .center
-        hint.tag = tag
-        hint.isUserInteractionEnabled = false
-        hint.alpha = 0
-        hint.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(hint)
-        NSLayoutConstraint.activate([
-            hint.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            hint.bottomAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -24),
-            hint.leadingAnchor.constraint(
-                greaterThanOrEqualTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            hint.trailingAnchor.constraint(
-                lessThanOrEqualTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-        ])
-        UIAccessibility.post(notification: .announcement, argument: message)
-        UIView.animate(
-            withDuration: 0.2, animations: { hint.alpha = 1 },
-            completion: { _ in
-                UIView.animate(
-                    withDuration: 0.4, delay: 2.0, options: [], animations: { hint.alpha = 0 },
-                    completion: { _ in
-                        hint.removeFromSuperview()
-                    })
-            })
-    }
-
     @objc func holdToExitChanged(_ gesture: UILongPressGestureRecognizer) {
         guard gesture.state == .began else { return }
         UIImpactFeedbackGenerator(style: .light).impactOccurred()

@@ -93,3 +93,48 @@ extension UIButton {
         )
     }
 }
+
+extension UIViewController {
+    /// Owner hint for a plain tap on a hold-to-confirm button. Sits above `anchor` when given,
+    /// otherwise near the bottom of the safe area.
+    func showHoldHint(_ message: String, above anchor: NSLayoutYAxisAnchor? = nil) {
+        let tag = 9_001
+        view.viewWithTag(tag)?.removeFromSuperview()
+
+        let hint = Theme.filledButton(
+            title: message,
+            fontSize: 16,
+            background: Theme.panel,
+            foreground: Theme.text,
+            insets: NSDirectionalEdgeInsets(top: 10, leading: 18, bottom: 10, trailing: 18)
+        )
+        hint.configuration?.titleAlignment = .center
+        hint.tag = tag
+        hint.isUserInteractionEnabled = false
+        hint.alpha = 0
+        hint.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(hint)
+        let bottom =
+            anchor.map { hint.bottomAnchor.constraint(equalTo: $0, constant: -12) }
+            ?? hint.bottomAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -24)
+        NSLayoutConstraint.activate([
+            hint.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            bottom,
+            hint.leadingAnchor.constraint(
+                greaterThanOrEqualTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            hint.trailingAnchor.constraint(
+                lessThanOrEqualTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+        ])
+        UIAccessibility.post(notification: .announcement, argument: message)
+        UIView.animate(
+            withDuration: 0.2, animations: { hint.alpha = 1 },
+            completion: { _ in
+                UIView.animate(
+                    withDuration: 0.4, delay: 2.0, options: [], animations: { hint.alpha = 0 },
+                    completion: { _ in
+                        hint.removeFromSuperview()
+                    })
+            })
+    }
+}
