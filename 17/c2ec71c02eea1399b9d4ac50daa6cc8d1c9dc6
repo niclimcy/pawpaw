@@ -1,0 +1,271 @@
+pawpaw/Modules/Game/Playfield/CritterNode.swift
+  s_2a803296ab2e1b::t_c88ef529520155 12-20,22-25,35,37-38,40-61,63-68,70-88,90-92,94-97,99-109,111-114,117
+  s_2a803296ab2e1b::t_76f8b1a02ae361 31
+  s_2a803296ab2e1b::t_41c4cf19fa04ec 26-28
+  s_2a803296ab2e1b::t_7a7394db6ddb80 30
+  s_2a803296ab2e1b::t_f310d20eb2ddd5 32
+  s_2a803296ab2e1b::t_0462164c6bbf8a 34
+  s_2a803296ab2e1b::t_47cf831c9f277a 36
+  s_2a803296ab2e1b::t_a8f9b4067fe2b1 115-116
+  s_2a803296ab2e1b::t_5f195d5226f2ad 118-119
+  h_36695e5767c2ad 121-123,127-129
+pawpaw/Modules/Game/GameViewController.swift
+  s_2a803296ab2e1b::t_8611ceae70b94b 14
+  s_2a803296ab2e1b::t_8e41adc17fe9a1 122
+  s_2a803296ab2e1b::t_aada4a7a623d94 120
+  s_2a803296ab2e1b::t_27eb0f6dcd6cfa 15
+  s_2a803296ab2e1b::t_8094a89249f510 82,87,96,121,127,132,136,141,152,173,185,189,200,205,212,222,230,234,238,243,250,256,260,268,272,283
+  s_2a803296ab2e1b::t_45b1ec5bc70eca 77,81,84-85,98-119,248
+  s_2a803296ab2e1b::t_943dbc1de64f1c 11-13
+  s_2a803296ab2e1b::t_d7ed86ffde1194 16-18,74-76
+  s_2a803296ab2e1b::t_b4bb236dbecef0 78-80
+  s_2a803296ab2e1b::t_c4097bfe749137 83
+  s_2a803296ab2e1b::t_b6bc1a21541f84 86
+  s_2a803296ab2e1b::t_23a97d32f6a65c 88-90,93-95
+  s_2a803296ab2e1b::t_533d2ba1560cbe 97
+  s_2a803296ab2e1b::t_c9f842b05fe553 123-126
+  s_2a803296ab2e1b::t_aedd8273b10e37 129-131
+  s_2a803296ab2e1b::t_a815fc8d49c8bf 133-135
+  s_2a803296ab2e1b::t_74d9afe9a4a5e8 137-140
+  s_2a803296ab2e1b::t_1f83705e38e669 150-151
+  s_2a803296ab2e1b::t_d597494ba5087c 153-155
+  s_2a803296ab2e1b::t_483c32564dd16e 170-172
+  s_2a803296ab2e1b::t_030001542a0eab 182-184
+  s_2a803296ab2e1b::t_d15bc96f48348e 186-188
+  s_2a803296ab2e1b::t_aa672fcdd2b112 190-192
+  s_2a803296ab2e1b::t_e0111f195b8fcb 197-199
+  s_2a803296ab2e1b::t_6d34726ea26239 201-204
+  s_2a803296ab2e1b::t_7b84b8ab0afd90 206-211
+  s_2a803296ab2e1b::t_7d12a952180b6a 213-215,219-221
+  s_2a803296ab2e1b::t_084ac8963a5c72 223-225,227-229
+  s_2a803296ab2e1b::t_2387fc7c963ce1 231-233
+  s_2a803296ab2e1b::t_6f45c87b55db76 235-237
+  s_2a803296ab2e1b::t_fcdf9362e7ebb2 239-242
+  s_2a803296ab2e1b::t_d8827d0f790e6d 244-247
+  s_2a803296ab2e1b::t_73a47009f79dd4 249
+  s_2a803296ab2e1b::t_7be12c83a77406 251-255
+  s_2a803296ab2e1b::t_7e3cd377296696 257-259
+  s_2a803296ab2e1b::t_bc6b7efb1a8cf5 261-263
+  s_2a803296ab2e1b::t_256d18e5fdd8ab 265-267
+  s_2a803296ab2e1b::t_a8581348957e19 269-271
+  s_2a803296ab2e1b::t_c873b315614d26 273-275,280-282
+  s_2a803296ab2e1b::t_46866d5fd2e48f 284-286
+  h_36695e5767c2ad 10,19-73,91-92,143-148,156-160,162-169,175-181,193-195,216-218,226,276-279,287-293,298
+pawpaw/SceneDelegate.swift
+  s_2a803296ab2e1b::t_f21eec30be05b8 21-25,32
+  s_2a803296ab2e1b::t_3b1c1547fdd822 18-20
+  h_36695e5767c2ad 11,13-17,27-30
+pawpaw/Modules/Game/Playfield/GameScene.swift
+  s_2a803296ab2e1b::t_f13a26849d7745 16-79,89-106,108-115,127-128,142-143,188,210,262
+  s_2a803296ab2e1b::t_5e741a78de7b8e 118-119,213
+  s_2a803296ab2e1b::t_4bdce914b1e661 334
+  s_2a803296ab2e1b::t_357eb0973fcd09 121-122,129-137,140-141,145-146,150,154,160,166,174,179,191,200,209,225,228-229,241,245,252,258,263,269,273,278,286-314,331-332,348-349,353,357,360-395
+  h_36695e5767c2ad 87,107
+  s_2a803296ab2e1b::t_ec053af4082004 13-15
+  s_2a803296ab2e1b::t_9692e6a82e30b2 116-117
+  s_2a803296ab2e1b::t_6c76f53d06d386 120
+  s_2a803296ab2e1b::t_3faf243907f351 123-126
+  s_2a803296ab2e1b::t_2548147b049644 138-139
+  s_2a803296ab2e1b::t_68473b10f07acb 144
+  s_2a803296ab2e1b::t_ce4c33abccb670 147-149
+  s_2a803296ab2e1b::t_e99ede579a67fd 151-153
+  s_2a803296ab2e1b::t_1ecc4a3c74edf3 155-159
+  s_2a803296ab2e1b::t_f10bf193796a84 161-165
+  s_2a803296ab2e1b::t_32b1abea8d9516 167-169,171-173
+  s_2a803296ab2e1b::t_332f858cd249f1 175-178
+  s_2a803296ab2e1b::t_1e5fd3a59edc3f 180-182,185-187
+  s_2a803296ab2e1b::t_0537e71afb9beb 189-190
+  s_2a803296ab2e1b::t_c44fea92193748 192-194,197-199
+  s_2a803296ab2e1b::t_8adf0f3155d807 201-203,206-208
+  s_2a803296ab2e1b::t_3863f67c93e231 211-212
+  s_2a803296ab2e1b::t_1cc63b12808964 214-216,222-224
+  s_2a803296ab2e1b::t_b027847e9f0f6f 226-227
+  s_2a803296ab2e1b::t_d6617ab2bab74a 230-232,238-240
+  s_2a803296ab2e1b::t_08da377784ff2c 242-244
+  s_2a803296ab2e1b::t_339c5a95f4f1d8 246-251
+  s_2a803296ab2e1b::t_62e9c643a92c81 253-257
+  s_2a803296ab2e1b::t_bc31748dd08e22 259-261
+  s_2a803296ab2e1b::t_457dac2b66a14f 264-268
+  s_2a803296ab2e1b::t_ba69f969d88c68 270-272
+  s_2a803296ab2e1b::t_c9b260b2668c67 274-277
+  s_2a803296ab2e1b::t_81c502cb4c0fa8 279-281,283-285
+  s_2a803296ab2e1b::t_f7e370a55474d0 315-317,328-330
+  s_2a803296ab2e1b::t_75adbf51fd8e35 333
+  s_2a803296ab2e1b::t_871b2a270c84f5 335-337,345-347
+  s_2a803296ab2e1b::t_49852732a8de18 350-352
+  s_2a803296ab2e1b::t_aa1d19b3f7a3ee 354-356
+  s_2a803296ab2e1b::t_0721f6e7607d30 358-359
+  s_2a803296ab2e1b::t_8cac85ddd6798b 396-398
+  h_36695e5767c2ad 80-86,88,170,183-184,195-196,204-205,217-221,233-237,282,318-327,338-344
+pawpaw/AppDelegate.swift
+  h_36695e5767c2ad 12-17,19-24
+pawpaw/Common/CachedBackgroundView.swift
+  h_36695e5767c2ad 10-14,16,18-19,21-26,28-30,32-35,37-38,40-51,53-57,59-66,68-75,77-82
+pawpaw/Common/CatFace+Image.swift
+  h_36695e5767c2ad 9-14,16-17
+pawpaw/Common/CatFacePicker.swift
+  h_36695e5767c2ad 10-12,14-20,22-24,26-35,37,39-42,44,46-88,90,92,94-105,107-123
+pawpaw/Common/CatNameField.swift
+  h_36695e5767c2ad 11-31,33-35,37-51,53-54
+pawpaw/Common/HoldToConfirm.swift
+  h_36695e5767c2ad 10-12,14-22,24-28,30-32,34-43,45,47-58,60-69,73-75,77-85,87-93
+pawpaw/Common/Log.swift
+  h_36695e5767c2ad 10-11,13-15,17-19
+pawpaw/Common/NatureBackgroundView.swift
+  h_36695e5767c2ad 10,12-16,18-20,22-24,26-29,31-35,37-38,40-64,66,68-85,87-100,102-123,125
+pawpaw/Common/OrientationNavigationController.swift
+  h_36695e5767c2ad 9-12,17-21,23-26,28-34,36,38-51,53-56
+pawpaw/Common/PassthroughView.swift
+  h_36695e5767c2ad 10,12-15
+pawpaw/Common/PlayfieldTuning+Device.swift
+  h_36695e5767c2ad 9-11,13-15
+pawpaw/Common/ProfileStorage.swift
+  h_36695e5767c2ad 9-19,23-67,69-99,101-109,111-132,134-135,137
+pawpaw/Common/ScoreStorage.swift
+  h_36695e5767c2ad 9-10,14-15,17-20,22-24,26-28,30-32,34-36
+pawpaw/Common/ScrollingLayout.swift
+  h_36695e5767c2ad 9-136,146-166,168-169
+pawpaw/Common/SeededGenerator.swift
+  h_36695e5767c2ad 10,12-14,16-22
+pawpaw/Common/SettingsStorage.swift
+  h_36695e5767c2ad 10-14,18-24,26-31,33-36,38-39,41,43-45,47-50,52-57,59,61-63,65-68,70-75,77-86
+pawpaw/Common/SoundPlayer.swift
+  h_36695e5767c2ad 9-17,22,24-28,30-40,42,44-53,55-66,68,70-100,102,104-114,116,118-138,140,142-164,166-167
+pawpaw/Common/StatsStorage.swift
+  h_36695e5767c2ad 9-12,16-34,36-52,54
+pawpaw/Common/Theme.swift
+  h_36695e5767c2ad 9-81,83-145,147,151-156
+pawpaw/Common/WoodCrateBackgroundView.swift
+  h_36695e5767c2ad 9,11-14,16-18,20-24,26-30,32-33,35-42,44-58,60-72,74-77,79-86,88,92,94-108
+pawpaw/Entities/AfterRoundMode.swift
+  h_36695e5767c2ad 10-15,17,19-23,25,27-32,34
+pawpaw/Entities/CatFace.swift
+  h_36695e5767c2ad 9-14,16-18,20-27,29
+pawpaw/Entities/CatProfile.swift
+  h_36695e5767c2ad 9-63
+pawpaw/Entities/CritterVariant.swift
+  h_36695e5767c2ad 11-14,16-22,24-27,29-34,36,38-46,48
+pawpaw/Entities/GameResult.swift
+  h_36695e5767c2ad 9-12
+pawpaw/Entities/GameTarget.swift
+  h_36695e5767c2ad 11-17,19-21
+pawpaw/Entities/LureCover.swift
+  h_36695e5767c2ad 11-15,17-18
+pawpaw/Entities/MovementPath.swift
+  h_36695e5767c2ad 10-22,26-73,75-88,90-99,101-114,116-129,131-145,147-155,157-166,168
+pawpaw/Entities/PlayStats.swift
+  h_36695e5767c2ad 9-14,16-21,23-24,26-28,30-36,38,40-49,51-54,56-59
+pawpaw/Entities/PlayfieldTheme.swift
+  h_36695e5767c2ad 9-12,14-19,21,23-28,30,32-37,39
+pawpaw/Entities/PlayfieldTuning.swift
+  h_36695e5767c2ad 11-23,25-36,38-49,51-53,55-57
+pawpaw/Entities/SessionMode.swift
+  h_36695e5767c2ad 9-12,14-20,22,24-29,31,33-35
+pawpaw/Entities/TargetKind.swift
+  h_36695e5767c2ad 9-18,20-25,27,29-40,42,44-55,57,59-70,72,74-76,78-80,82-84,86-98,100,102-113,115,117-129,131
+pawpaw/Modules/Game/DifficultyTuner.swift
+  h_36695e5767c2ad 10-41
+pawpaw/Modules/Game/GameInteractor.swift
+  h_36695e5767c2ad 10-177,179-253,255-258,260-267,269-319,321-336,338-356
+pawpaw/Modules/Game/GamePresenter.swift
+  h_36695e5767c2ad 9-137
+pawpaw/Modules/Game/GameProtocols.swift
+  h_36695e5767c2ad 10,12-27,29-36,41-43,45-63,68-69,71-79,81-88,92-103,108-109
+pawpaw/Modules/Game/GameRouter.swift
+  h_36695e5767c2ad 9-25,27-33,35-36,38-41
+pawpaw/Modules/Game/GameViewController+Countdown.swift
+  h_36695e5767c2ad 9-10,14-39,42-68,71-80,83-85,87-94,96-120,122-134
+pawpaw/Modules/Game/GameViewController+ExitTip.swift
+  h_36695e5767c2ad 9-10,12-25,27-31,33,35-40,42-46,48-51,53-60,64,66-72,74-76,78-87
+pawpaw/Modules/Game/GameViewController+Layout.swift
+  h_36695e5767c2ad 10-192
+pawpaw/Modules/Game/GameViewController+Lure.swift
+  h_36695e5767c2ad 11-14,16-21,23-25,27,29-34,36,38-46,48,50-53,55-59,61-66,68-73,75-84,86-91,93-95
+pawpaw/Modules/Game/MovementPlanner.swift
+  h_36695e5767c2ad 11-21,23-25,27-34,36-37,39-48,50-96,98,100-112,114,116-123,125-145,147-165,167-168,170-181,183-191,193-194,196-219,221-224,226-229,231-240,242-248,250,252-269,271-272,274-294,296-302
+pawpaw/Modules/Game/Playfield/CritterActions+Twitch.swift
+  h_36695e5767c2ad 9-33,35-36,38,40-43,45-47,49-62,64,69-70,72-74,76-79,81-83,85-89
+pawpaw/Modules/Game/Playfield/CritterActions.swift
+  h_36695e5767c2ad 10-21,23-38,40-59,61-64,66-97,99-104,106-108,110-121,124-140,142-144,146-161,163-195,197-198,200-205,207-216
+pawpaw/Modules/Game/Playfield/GameScene+Effects.swift
+  h_36695e5767c2ad 11,13-20,22-24,26-29,31-52,54-74,76-107,109,111-120,122-127,129-133,135-138
+pawpaw/Modules/Game/Playfield/HidingSpotArtwork.swift
+  h_36695e5767c2ad 10-15,17,19-31,33-51,53,55-75,77,79-88
+pawpaw/Modules/Game/Playfield/PlayfieldGeometry.swift
+  h_36695e5767c2ad 12-14,16-18,20-22,24-27,29-32,34-39,41-47,49-65,67-79,81-90,92-100,102,104-108,110-117,119-124
+pawpaw/Modules/Game/Playfield/PlayfieldTextures.swift
+  h_36695e5767c2ad 12-216
+pawpaw/Modules/Home/HomeInteractor.swift
+  h_36695e5767c2ad 9-59
+pawpaw/Modules/Home/HomePresenter.swift
+  h_36695e5767c2ad 9-61
+pawpaw/Modules/Home/HomeProtocols.swift
+  h_36695e5767c2ad 10-19,24-26,28-34,39-44,48-55,60-63
+pawpaw/Modules/Home/HomeRouter.swift
+  h_36695e5767c2ad 9-18,20-25,27-30,32-36,38-42,44-48
+pawpaw/Modules/Home/HomeViewController.swift
+  h_36695e5767c2ad 9-64,66-211,213-232,234-246,248-271,273-281,283-314,317-356,358-448,450-465,470
+pawpaw/Modules/Home/ThemePickerView.swift
+  h_36695e5767c2ad 9,11,13-18,20-42,44-51,55-120
+pawpaw/Modules/Onboarding/OnboardingInteractor.swift
+  h_36695e5767c2ad 9-10,12-15,17-19,21-24,26-28
+pawpaw/Modules/Onboarding/OnboardingPresenter.swift
+  h_36695e5767c2ad 9-11,13-17,19-37,39-40,42,44-48,50-53,55-58,60-64,66-69,71-73,75-77,79-84,86-87,89-92
+pawpaw/Modules/Onboarding/OnboardingProtocols.swift
+  h_36695e5767c2ad 9-14,19-25,30-32,34-39,44-46,51-52
+pawpaw/Modules/Onboarding/OnboardingRouter.swift
+  h_36695e5767c2ad 9,11-13,15-23,25-28,30-31,33-35
+pawpaw/Modules/Onboarding/OnboardingViewController.swift
+  h_36695e5767c2ad 8-110,112,114-119,121-124,126,128-130,132-223,225-228,230-261,263-264,266-326,328-350,352-365,367-388,390-412,414-422,424-435,437-456,458-479,484
+pawpaw/Modules/Profiles/ProfileEditorView+Builders.swift
+  h_36695e5767c2ad 9-12,14-23,25-33,35-46,48-52,54-62,64-80,82-87,89-94,96-104
+pawpaw/Modules/Profiles/ProfileEditorView+Layout.swift
+  h_36695e5767c2ad 9-12,14-15,17-22,24-32,34-47,49,51-55,57-64,66-70,72-85,87-92,94-107
+pawpaw/Modules/Profiles/ProfileEditorView.swift
+  h_36695e5767c2ad 9-73,75-98,100-109,111-143
+pawpaw/Modules/Profiles/ProfilesInteractor.swift
+  h_36695e5767c2ad 9,11-12,14-17,19-21,23-47
+pawpaw/Modules/Profiles/ProfilesPresenter.swift
+  h_36695e5767c2ad 9-48,50-51
+pawpaw/Modules/Profiles/ProfilesProtocols.swift
+  h_36695e5767c2ad 9-10,14-19,24-25,30-39,44-49,53,58-59
+pawpaw/Modules/Profiles/ProfilesRouter.swift
+  h_36695e5767c2ad 9-16,18-23,25-26,28-31
+pawpaw/Modules/Profiles/ProfilesViewController+Builders.swift
+  h_36695e5767c2ad 9-43,45-54,56-61,63-75,77-83
+pawpaw/Modules/Profiles/ProfilesViewController.swift
+  h_36695e5767c2ad 9-49,51-53,55-114,119
+pawpaw/Modules/Stats/StatsInteractor.swift
+  h_36695e5767c2ad 9,11-13,15-19,21-26,28-31
+pawpaw/Modules/Stats/StatsPresenter.swift
+  h_36695e5767c2ad 9-11,13,15-18,20-22,24-26,28-35,37-77,79-86,88
+pawpaw/Modules/Stats/StatsProtocols.swift
+  h_36695e5767c2ad 9-14,16-20,22-27,29-36,41-42,47-49,51-53,58-60,64-65,70-71
+pawpaw/Modules/Stats/StatsRouter.swift
+  h_36695e5767c2ad 9-18,20-25,27-28,30-33
+pawpaw/Modules/Stats/StatsViewController+Builders.swift
+  h_36695e5767c2ad 9-173
+pawpaw/Modules/Stats/StatsViewController.swift
+  h_36695e5767c2ad 9-52,54-82,84-92,94-96,98-100,102-133,135-136,138-147,152-187,189-192,194-205,208-222,225-230,232,237
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "17c2ec71c02eea1399b9d4ac50daa6cc8d1c9dc6",
+  "prompts": {},
+  "humans": {
+    "h_36695e5767c2ad": {
+      "author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  },
+  "sessions": {
+    "s_2a803296ab2e1b": {
+      "agent_id": {
+        "tool": "cline",
+        "id": "conv_1793698988337_in7h9g3",
+        "model": "unknown"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
