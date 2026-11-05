@@ -32,7 +32,8 @@ final class UserDefaultsSettingsStorage: SettingsStorage {
 
     var selectedMode: SessionMode {
         get {
-            defaults.string(forKey: modeKey).flatMap(SessionMode.init(rawValue:)) ?? PlayfieldTuning.current.defaultMode
+            defaults.string(forKey: modeKey).flatMap(SessionMode.init(rawValue:))
+                ?? PlayfieldTuning.current.defaultMode
         }
         set {
             defaults.set(newValue.rawValue, forKey: modeKey)
@@ -50,7 +51,8 @@ final class UserDefaultsSettingsStorage: SettingsStorage {
 
     var afterRound: AfterRoundMode {
         get {
-            defaults.string(forKey: afterRoundKey).flatMap(AfterRoundMode.init(rawValue:)) ?? .keepPlaying
+            defaults.string(forKey: afterRoundKey).flatMap(AfterRoundMode.init(rawValue:))
+                ?? .keepPlaying
         }
         set {
             defaults.set(newValue.rawValue, forKey: afterRoundKey)

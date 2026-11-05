@@ -29,7 +29,8 @@ enum MovementPlanner {
         var attempts = 0
         while spots.count < count, attempts < 50 {
             attempts += 1
-            let candidate = CGPoint(x: CGFloat.random(in: 0.2...0.8), y: CGFloat.random(in: 0.25...0.75))
+            let candidate = CGPoint(
+                x: CGFloat.random(in: 0.2...0.8), y: CGFloat.random(in: 0.25...0.75))
             let isClear = spots.allSatisfy { hypot($0.x - candidate.x, $0.y - candidate.y) >= 0.35 }
             if isClear || attempts == 50 { spots.append(candidate) }
         }
@@ -53,7 +54,8 @@ enum MovementPlanner {
         var hasTakenCover = false
         let firstTurn: Double = Bool.random() ? 1 : -1
         // Fliers sometimes take off early, which shortens the path.
-        let lastIndex = style.fliesOff && Double.random(in: 0..<1) < earlyFlightChance
+        let lastIndex =
+            style.fliesOff && Double.random(in: 0..<1) < earlyFlightChance
             ? Int.random(in: 2..<max(count, 3))
             : count - 1
         for index in 0...lastIndex {
@@ -64,7 +66,9 @@ enum MovementPlanner {
             let mayTakeCover = hasPause && !hasTakenCover && (longFreeze || style.surfaces)
             let destination: CGPoint
             let underCover: Bool
-            if mayTakeCover, let spot = coverSpots.randomElement(), Double.random(in: 0..<1) < style.coverChance {
+            if mayTakeCover, let spot = coverSpots.randomElement(),
+                Double.random(in: 0..<1) < style.coverChance
+            {
                 destination = spot
                 underCover = true
                 hasTakenCover = true
@@ -72,7 +76,8 @@ enum MovementPlanner {
                 pause = max(pause, minimumCoverPause)
                 heading = atan2(Double(spot.y - current.y), Double(spot.x - current.x))
             } else {
-                let turn: Double = style.slithers
+                let turn: Double =
+                    style.slithers
                     ? firstTurn * (index.isMultiple(of: 2) ? 1 : -1)
                     : (Bool.random() ? 1 : -1)
                 heading += Double.random(in: style.turnRange) * turn
@@ -83,24 +88,27 @@ enum MovementPlanner {
                 )
                 underCover = false
             }
-            legs.append(PathLeg(
-                destination: destination,
-                travel: travels[index],
-                pause: pause,
-                hides: !underCover && longFreeze && Double.random(in: 0..<1) < style.hideChance,
-                underCover: underCover
-            ))
+            legs.append(
+                PathLeg(
+                    destination: destination,
+                    travel: travels[index],
+                    pause: pause,
+                    hides: !underCover && longFreeze && Double.random(in: 0..<1) < style.hideChance,
+                    underCover: underCover
+                ))
             current = destination
         }
         // Surfacing critters fade out in place, fliers fly off and everything else exits via the nearest edge.
         if style.surfaces { return legs }
-        legs.append(PathLeg(
-            destination: style.fliesOff ? flightEdgePoint(from: current) : nearestEdgePoint(to: current),
-            travel: style.fliesOff ? flightTravel : exitTravel,
-            pause: 0,
-            hides: false,
-            exits: true
-        ))
+        legs.append(
+            PathLeg(
+                destination: style.fliesOff
+                    ? flightEdgePoint(from: current) : nearestEdgePoint(to: current),
+                travel: style.fliesOff ? flightTravel : exitTravel,
+                pause: 0,
+                hides: false,
+                exits: true
+            ))
         return legs
     }
 
@@ -127,11 +135,14 @@ enum MovementPlanner {
     ) -> [PathLeg] {
         let count = Int.random(in: lureLegCount)
         let duration = legDuration * Double(count)
-        let pauseTotal = duration * max(style.pauseFraction, isFinal ? finalLurePauseFraction : lurePauseFraction)
+        let pauseTotal =
+            duration
+            * max(style.pauseFraction, isFinal ? finalLurePauseFraction : lurePauseFraction)
         let pauses = split(pauseTotal, into: count)
         let travels = split(duration - pauseTotal, into: count)
         let spots = isFinal ? [] : (cover?.spots ?? [])
-        let coverIndex = count >= 3 && !spots.isEmpty && Double.random(in: 0..<1) < lureCoverChance
+        let coverIndex =
+            count >= 3 && !spots.isEmpty && Double.random(in: 0..<1) < lureCoverChance
             ? Int.random(in: 1..<(count - 1))
             : nil
 
@@ -139,18 +150,22 @@ enum MovementPlanner {
         var current = start
         for index in 0..<count {
             if index == coverIndex, let spot = spots.randomElement() {
-                legs.append(PathLeg(
-                    destination: spot.hide,
-                    travel: travels[index],
-                    pause: max(pauses[index], minimumCoverPause),
-                    hides: false,
-                    underCover: true,
-                    peek: spot.peek
-                ))
+                legs.append(
+                    PathLeg(
+                        destination: spot.hide,
+                        travel: travels[index],
+                        pause: max(pauses[index], minimumCoverPause),
+                        hides: false,
+                        underCover: true,
+                        peek: spot.peek
+                    ))
                 current = spot.hide
             } else {
                 current = lureOpenPoint(from: current, style: style, avoiding: cover?.frame)
-                legs.append(PathLeg(destination: current, travel: travels[index], pause: pauses[index], hides: false))
+                legs.append(
+                    PathLeg(
+                        destination: current, travel: travels[index], pause: pauses[index],
+                        hides: false))
             }
         }
         return legs
@@ -183,7 +198,9 @@ enum MovementPlanner {
     }
 
     /// A point clear of the card, a natural step away for `style` when there's room.
-    static func lureOpenPoint(from point: CGPoint, style: MovementStyle, avoiding cover: CGRect?) -> CGPoint {
+    static func lureOpenPoint(from point: CGPoint, style: MovementStyle, avoiding cover: CGRect?)
+        -> CGPoint
+    {
         let blocked = cover?.insetBy(dx: -lureCoverMargin, dy: -lureCoverMargin)
         func isOpen(_ candidate: CGPoint) -> Bool {
             lureField.contains(candidate) && !(blocked?.contains(candidate) ?? false)
@@ -205,7 +222,9 @@ enum MovementPlanner {
             )
             if isOpen(candidate) { return candidate }
         }
-        return CGPoint(x: min(max(point.x, lureField.minX), lureField.maxX), y: min(max(point.y, lureField.minY), lureField.maxY))
+        return CGPoint(
+            x: min(max(point.x, lureField.minX), lureField.maxX),
+            y: min(max(point.y, lureField.minY), lureField.maxY))
     }
 
     /// The lure wandering off when nobody has caught it for a while; surfacing critters fade out in place.
@@ -213,13 +232,16 @@ enum MovementPlanner {
         if style.surfaces {
             return [PathLeg(destination: point, travel: 1.2, pause: 0, hides: false)]
         }
-        return [PathLeg(
-            destination: style.fliesOff ? flightEdgePoint(from: point) : nearestEdgePoint(to: point),
-            travel: style.fliesOff ? flightTravel : exitTravel * 1.5,
-            pause: 0,
-            hides: false,
-            exits: true
-        )]
+        return [
+            PathLeg(
+                destination: style.fliesOff
+                    ? flightEdgePoint(from: point) : nearestEdgePoint(to: point),
+                travel: style.fliesOff ? flightTravel : exitTravel * 1.5,
+                pause: 0,
+                hides: false,
+                exits: true
+            )
+        ]
     }
 
     private static func nearestEdgePoint(to point: CGPoint) -> CGPoint {
@@ -234,11 +256,14 @@ enum MovementPlanner {
 
     /// Where a straight flight, roughly across the middle, leaves the field.
     private static func flightEdgePoint(from point: CGPoint) -> CGPoint {
-        let heading = atan2(0.5 - Double(point.y), 0.5 - Double(point.x)) + Double.random(in: -0.8...0.8)
+        let heading =
+            atan2(0.5 - Double(point.y), 0.5 - Double(point.x)) + Double.random(in: -0.8...0.8)
         let dx = cos(heading)
         let dy = sin(heading)
-        let toSide = dx > 0 ? (1 - Double(point.x)) / dx : (dx < 0 ? -Double(point.x) / dx : .infinity)
-        let toEnd = dy > 0 ? (1 - Double(point.y)) / dy : (dy < 0 ? -Double(point.y) / dy : .infinity)
+        let toSide =
+            dx > 0 ? (1 - Double(point.x)) / dx : (dx < 0 ? -Double(point.x) / dx : .infinity)
+        let toEnd =
+            dy > 0 ? (1 - Double(point.y)) / dy : (dy < 0 ? -Double(point.y) / dy : .infinity)
         let reach = min(toSide, toEnd)
         var result = CGPoint(
             x: min(max(point.x + CGFloat(dx * reach), 0), 1),
@@ -262,7 +287,9 @@ enum MovementPlanner {
     }
 
     /// Turns away from the walls when a step would leave the field.
-    private static func nextPoint(from point: CGPoint, heading: inout Double, distance: Double) -> CGPoint {
+    private static func nextPoint(from point: CGPoint, heading: inout Double, distance: Double)
+        -> CGPoint
+    {
         for _ in 0..<12 {
             let candidate = CGPoint(
                 x: point.x + CGFloat(cos(heading) * distance),

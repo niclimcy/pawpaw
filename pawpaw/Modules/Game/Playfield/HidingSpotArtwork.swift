@@ -21,7 +21,8 @@ enum HidingSpotArtwork {
         UIColor(red: 0.62, green: 0.45, blue: 0.27, alpha: 1).setFill()
         UIBezierPath(roundedRect: box, cornerRadius: 8).fill()
         UIColor(red: 0.50, green: 0.35, blue: 0.20, alpha: 1).setFill()
-        UIBezierPath(rect: CGRect(x: box.minX, y: box.midY - 8, width: box.width, height: 16)).fill()
+        UIBezierPath(rect: CGRect(x: box.minX, y: box.midY - 8, width: box.width, height: 16))
+            .fill()
         UIColor.black.withAlphaComponent(0.25).setStroke()
         let seam = UIBezierPath()
         seam.move(to: CGPoint(x: box.midX, y: box.minY + 6))
@@ -34,15 +35,18 @@ enum HidingSpotArtwork {
         let colors = [
             UIColor(red: 0.55, green: 0.30, blue: 0.10, alpha: 1),
             UIColor(red: 0.68, green: 0.42, blue: 0.12, alpha: 1),
-            UIColor(red: 0.45, green: 0.38, blue: 0.12, alpha: 1)
+            UIColor(red: 0.45, green: 0.38, blue: 0.12, alpha: 1),
         ]
         let center = CGPoint(x: area.midX, y: area.midY)
         for index in 0..<11 {
             let angle = CGFloat(index) * 2.4
             let reach = area.width * (index == 0 ? 0 : 0.22)
-            let leafCenter = CGPoint(x: center.x + cos(angle) * reach, y: center.y + sin(angle) * reach)
-            let leaf = UIBezierPath(ovalIn: CGRect(x: -area.width * 0.2, y: -area.height * 0.11,
-                                                   width: area.width * 0.4, height: area.height * 0.22))
+            let leafCenter = CGPoint(
+                x: center.x + cos(angle) * reach, y: center.y + sin(angle) * reach)
+            let leaf = UIBezierPath(
+                ovalIn: CGRect(
+                    x: -area.width * 0.2, y: -area.height * 0.11,
+                    width: area.width * 0.4, height: area.height * 0.22))
             leaf.apply(CGAffineTransform(rotationAngle: angle))
             leaf.apply(CGAffineTransform(translationX: leafCenter.x, y: leafCenter.y))
             colors[index % colors.count].setFill()
@@ -55,7 +59,9 @@ enum HidingSpotArtwork {
         let radius = min(area.width, area.height) / 2
         let pad = UIBezierPath()
         pad.move(to: center)
-        pad.addArc(withCenter: center, radius: radius, startAngle: 0.35, endAngle: 2 * .pi - 0.05, clockwise: true)
+        pad.addArc(
+            withCenter: center, radius: radius, startAngle: 0.35, endAngle: 2 * .pi - 0.05,
+            clockwise: true)
         pad.close()
         UIColor(red: 0.16, green: 0.42, blue: 0.24, alpha: 1).setFill()
         pad.fill()
@@ -64,7 +70,10 @@ enum HidingSpotArtwork {
             let angle = 0.6 + CGFloat(index) * 0.95
             let vein = UIBezierPath()
             vein.move(to: center)
-            vein.addLine(to: CGPoint(x: center.x + cos(angle) * radius * 0.85, y: center.y + sin(angle) * radius * 0.85))
+            vein.addLine(
+                to: CGPoint(
+                    x: center.x + cos(angle) * radius * 0.85,
+                    y: center.y + sin(angle) * radius * 0.85))
             vein.lineWidth = 2
             vein.stroke()
         }
@@ -74,7 +83,10 @@ enum HidingSpotArtwork {
         UIColor(white: 0.86, alpha: 1).setFill()
         UIBezierPath(ovalIn: area.insetBy(dx: 0, dy: area.height * 0.08)).fill()
         UIColor.white.setFill()
-        UIBezierPath(ovalIn: CGRect(x: area.minX + area.width * 0.18, y: area.minY + area.height * 0.18,
-                                    width: area.width * 0.45, height: area.height * 0.35)).fill()
+        UIBezierPath(
+            ovalIn: CGRect(
+                x: area.minX + area.width * 0.18, y: area.minY + area.height * 0.18,
+                width: area.width * 0.45, height: area.height * 0.35)
+        ).fill()
     }
 }

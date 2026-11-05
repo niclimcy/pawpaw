@@ -61,7 +61,8 @@ protocol StatsInteractorInputProtocol: AnyObject {
 }
 
 protocol StatsInteractorOutputProtocol: AnyObject {
-    func didFetchStats(_ stats: PlayStats, bestScores: [(mode: SessionMode, score: Int)], profile: CatProfile)
+    func didFetchStats(
+        _ stats: PlayStats, bestScores: [(mode: SessionMode, score: Int)], profile: CatProfile)
 }
 
 // MARK: - Router

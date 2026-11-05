@@ -5,7 +5,10 @@
 
 import UIKit
 
-final class OnboardingViewController: UIViewController, OnboardingViewProtocol, UITextFieldDelegate, UIGestureRecognizerDelegate {
+final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
+    UITextFieldDelegate,
+    UIGestureRecognizerDelegate
+{
     var presenter: OnboardingPresenterProtocol?
 
     private let card = UIView()
@@ -15,7 +18,11 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
     private let textArea = UIView()
     private let catFields = UIStackView()
     private let nameField = CatNameField()
-    private let facePicker = CatFacePicker(perRow: 3, maxSide: Theme.scaled(64), minSide: Theme.minimumTapSize)
+    private let facePicker = CatFacePicker(
+        perRow: 3,
+        maxSide: Theme.scaled(64),
+        minSide: Theme.minimumTapSize
+    )
     private var isOnCatSetup = false
     private weak var cardScroll: UIScrollView?
     /// How much of the card's scroll view the keyboard covers.
@@ -28,7 +35,10 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
     }()
 
     private let bodyLabel: UILabel = {
-        let label = OnboardingViewController.makeLabel(size: 18, weight: .semibold)
+        let label = OnboardingViewController.makeLabel(
+            size: 18,
+            weight: .semibold
+        )
         label.textColor = Theme.text.withAlphaComponent(0.85)
         return label
     }()
@@ -42,7 +52,11 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
     }()
 
     private let nextButton: UIButton = {
-        let button = Theme.filledButton(title: "Next", fontSize: 22, weight: .heavy)
+        let button = Theme.filledButton(
+            title: "Next",
+            fontSize: 22,
+            weight: .heavy
+        )
         button.accessibilityIdentifier = "onboardingNextButton"
         return button
     }()
@@ -68,7 +82,9 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
     private static let artPriority = UILayoutPriority(650)
     private static let reservedTextPriority = UILayoutPriority(600)
 
-    private static func makeLabel(size: CGFloat, weight: UIFont.Weight = .heavy) -> UILabel {
+    private static func makeLabel(size: CGFloat, weight: UIFont.Weight = .heavy)
+        -> UILabel
+    {
         let label = UILabel()
         // Required, so fitting the card shrinks the art and picker rather than cutting off text.
         label.setContentCompressionResistancePriority(.required, for: .vertical)
@@ -91,9 +107,21 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
         setupLayout()
         nameField.delegate = self
         facePicker.onSelect = { [weak self] face in self?.showCatArt(face) }
-        nextButton.addTarget(self, action: #selector(nextTapped), for: .touchUpInside)
-        skipButton.addTarget(self, action: #selector(skipTapped), for: .touchUpInside)
-        backButton.addTarget(self, action: #selector(backTapped), for: .touchUpInside)
+        nextButton.addTarget(
+            self,
+            action: #selector(nextTapped),
+            for: .touchUpInside
+        )
+        skipButton.addTarget(
+            self,
+            action: #selector(skipTapped),
+            for: .touchUpInside
+        )
+        backButton.addTarget(
+            self,
+            action: #selector(backTapped),
+            for: .touchUpInside
+        )
         setupSwipes()
         presenter?.viewDidLoad()
     }
@@ -101,7 +129,10 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
     /// Swipes step through the pages like the Next and Back buttons.
     private func setupSwipes() {
         for direction in [UISwipeGestureRecognizer.Direction.left, .right] {
-            let swipe = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
+            let swipe = UISwipeGestureRecognizer(
+                target: self,
+                action: #selector(swiped(_:))
+            )
             swipe.direction = direction
             swipe.delegate = self
             view.addGestureRecognizer(swipe)
@@ -135,17 +166,31 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
         card.addSubview(cardStack)
         let inset = Theme.scaled(24)
         NSLayoutConstraint.activate([
-            cardStack.topAnchor.constraint(equalTo: card.topAnchor, constant: inset),
-            cardStack.bottomAnchor.constraint(equalTo: card.bottomAnchor, constant: -inset),
-            cardStack.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: inset),
-            cardStack.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -inset),
+            cardStack.topAnchor.constraint(
+                equalTo: card.topAnchor,
+                constant: inset
+            ),
+            cardStack.bottomAnchor.constraint(
+                equalTo: card.bottomAnchor,
+                constant: -inset
+            ),
+            cardStack.leadingAnchor.constraint(
+                equalTo: card.leadingAnchor,
+                constant: inset
+            ),
+            cardStack.trailingAnchor.constraint(
+                equalTo: card.trailingAnchor,
+                constant: -inset
+            ),
             // Pinned so long text wraps instead of widening the card past the screen margins.
-            textArea.widthAnchor.constraint(equalTo: cardStack.widthAnchor)
+            textArea.widthAnchor.constraint(equalTo: cardStack.widthAnchor),
         ])
 
         // The controls stay put at the bottom; the card is centered in the space above them.
         // The keyboard slides over both rather than squeezing them; see `updateKeyboardInset()`.
-        let controls = UIStackView(arrangedSubviews: [pageDots, nextButton, skipButton])
+        let controls = UIStackView(arrangedSubviews: [
+            pageDots, nextButton, skipButton,
+        ])
         controls.axis = .vertical
         controls.alignment = .center
         controls.spacing = Theme.scaled(8)
@@ -157,14 +202,25 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
         view.addSubview(cardArea)
 
         NSLayoutConstraint.activate([
-            controls.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
+            controls.bottomAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.bottomAnchor,
+                constant: -8
+            ),
             controls.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 
-            cardArea.bottomAnchor.constraint(equalTo: controls.topAnchor, constant: -8),
+            cardArea.bottomAnchor.constraint(
+                equalTo: controls.topAnchor,
+                constant: -8
+            ),
             cardArea.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            cardArea.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            cardArea.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
-        let scroll = embedCentered(card, maxWidth: Theme.scaled(440), margin: Self.cardMargin, in: cardArea)
+        let scroll = embedCentered(
+            card,
+            maxWidth: Theme.scaled(440),
+            margin: Self.cardMargin,
+            in: cardArea
+        )
         scroll.keyboardDismissMode = .interactive
         cardScroll = scroll
 
@@ -175,23 +231,39 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
         keyboardTracker.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(keyboardTracker)
         NSLayoutConstraint.activate([
-            keyboardTracker.topAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
+            keyboardTracker.topAnchor.constraint(
+                equalTo: view.keyboardLayoutGuide.topAnchor
+            ),
             keyboardTracker.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            keyboardTracker.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            keyboardTracker.widthAnchor.constraint(equalToConstant: 0)
+            keyboardTracker.leadingAnchor.constraint(
+                equalTo: view.leadingAnchor
+            ),
+            keyboardTracker.widthAnchor.constraint(equalToConstant: 0),
         ])
         // Keeps the card on screen on shorter phones instead of cutting it off at the buttons.
-        let fit = card.heightAnchor.constraint(lessThanOrEqualTo: scroll.frameLayoutGuide.heightAnchor, constant: -Self.cardMargin * 2)
+        let fit = card.heightAnchor.constraint(
+            lessThanOrEqualTo: scroll.frameLayoutGuide.heightAnchor,
+            constant: -Self.cardMargin * 2
+        )
         fit.priority = Self.fitPriority
         fit.isActive = true
 
         backButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(backButton)
         NSLayoutConstraint.activate([
-            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
-            backButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Theme.scaled(8)),
+            backButton.topAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.topAnchor,
+                constant: 8
+            ),
+            backButton.leadingAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                constant: Theme.scaled(8)
+            ),
             // Below Back even when it's hidden, so the card doesn't shift on the first page.
-            cardArea.topAnchor.constraint(equalTo: backButton.bottomAnchor, constant: 8)
+            cardArea.topAnchor.constraint(
+                equalTo: backButton.bottomAnchor,
+                constant: 8
+            ),
         ])
     }
 
@@ -205,19 +277,28 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
     private func updateKeyboardInset() {
         guard let scroll = cardScroll else { return }
         let scrollFrame = scroll.convert(scroll.bounds, to: view)
-        let inset = max(0, scrollFrame.maxY - view.keyboardLayoutGuide.layoutFrame.minY)
+        let inset = max(
+            0,
+            scrollFrame.maxY - view.keyboardLayoutGuide.layoutFrame.minY
+        )
         guard inset != keyboardInset else { return }
         keyboardInset = inset
         scroll.contentInset.bottom = inset
         scroll.verticalScrollIndicatorInsets.bottom = inset
 
-        let maxOffset = max(0, scroll.contentSize.height + inset - scroll.bounds.height)
+        let maxOffset = max(
+            0,
+            scroll.contentSize.height + inset - scroll.bounds.height
+        )
         if scroll.contentOffset.y > maxOffset {
             scroll.contentOffset.y = maxOffset
         }
         // Only when the keyboard appears or resizes, so it doesn't fight the owner's scrolling.
         if inset > 0, nameField.isFirstResponder {
-            let field = nameField.convert(nameField.bounds, to: scroll).insetBy(dx: 0, dy: -12)
+            let field = nameField.convert(nameField.bounds, to: scroll).insetBy(
+                dx: 0,
+                dy: -12
+            )
             scroll.scrollRectToVisible(field, animated: false)
         }
     }
@@ -232,9 +313,11 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
             hug,
             text.centerYAnchor.constraint(equalTo: textArea.centerYAnchor),
             text.topAnchor.constraint(greaterThanOrEqualTo: textArea.topAnchor),
-            text.bottomAnchor.constraint(lessThanOrEqualTo: textArea.bottomAnchor),
+            text.bottomAnchor.constraint(
+                lessThanOrEqualTo: textArea.bottomAnchor
+            ),
             text.leadingAnchor.constraint(equalTo: textArea.leadingAnchor),
-            text.trailingAnchor.constraint(equalTo: textArea.trailingAnchor)
+            text.trailingAnchor.constraint(equalTo: textArea.trailingAnchor),
         ])
     }
 
@@ -254,13 +337,20 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
             return
         }
         for name in page.imageNames {
-            artRow.addArrangedSubview(makeArtImage(UIImage(named: name), side: side))
+            artRow.addArrangedSubview(
+                makeArtImage(UIImage(named: name), side: side)
+            )
         }
     }
 
     private func showCatArt(_ face: CatFace) {
         artRow.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        artRow.addArrangedSubview(makeArtImage(UIImage(named: face.imageName), side: Theme.scaled(Self.artSide * 1.4)))
+        artRow.addArrangedSubview(
+            makeArtImage(
+                UIImage(named: face.imageName),
+                side: Theme.scaled(Self.artSide * 1.4)
+            )
+        )
     }
 
     /// `side` is the preferred size; the art shrinks below it when the card needs the room.
@@ -268,14 +358,20 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
         let picture = UIImageView(image: image)
         picture.contentMode = .scaleAspectFit
         // The SVG's own size mustn't stop the art from shrinking.
-        picture.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        picture.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
+        picture.setContentCompressionResistancePriority(
+            .defaultLow,
+            for: .horizontal
+        )
+        picture.setContentCompressionResistancePriority(
+            .defaultLow,
+            for: .vertical
+        )
         let preferred = picture.heightAnchor.constraint(equalToConstant: side)
         preferred.priority = Self.artPriority
         NSLayoutConstraint.activate([
             preferred,
             picture.heightAnchor.constraint(lessThanOrEqualToConstant: side),
-            picture.widthAnchor.constraint(equalTo: picture.heightAnchor)
+            picture.widthAnchor.constraint(equalTo: picture.heightAnchor),
         ])
         return picture
     }
@@ -290,16 +386,21 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
         badge.widthAnchor.constraint(equalToConstant: side).isActive = true
         badge.heightAnchor.constraint(equalToConstant: side).isActive = true
 
-        let symbol = UIImageView(image: UIImage(
-            systemName: symbolName,
-            withConfiguration: UIImage.SymbolConfiguration(pointSize: side * 0.4, weight: .bold)
-        ))
+        let symbol = UIImageView(
+            image: UIImage(
+                systemName: symbolName,
+                withConfiguration: UIImage.SymbolConfiguration(
+                    pointSize: side * 0.4,
+                    weight: .bold
+                )
+            )
+        )
         symbol.tintColor = Theme.text
         symbol.translatesAutoresizingMaskIntoConstraints = false
         badge.addSubview(symbol)
         NSLayoutConstraint.activate([
             symbol.centerXAnchor.constraint(equalTo: badge.centerXAnchor),
-            symbol.centerYAnchor.constraint(equalTo: badge.centerYAnchor)
+            symbol.centerYAnchor.constraint(equalTo: badge.centerYAnchor),
         ])
         return badge
     }
@@ -307,7 +408,8 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
     private func showCatFields() {
         guard catFields.superview == nil else { return }
         cardStack.addArrangedSubview(catFields)
-        catFields.widthAnchor.constraint(equalTo: cardStack.widthAnchor).isActive = true
+        catFields.widthAnchor.constraint(equalTo: cardStack.widthAnchor)
+            .isActive = true
     }
 
     /// Cross-fades the card to new content; the first page appears without animation.
@@ -316,10 +418,20 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
             update()
             return
         }
-        UIView.transition(with: card, duration: 0.25, options: .transitionCrossDissolve, animations: update)
+        UIView.transition(
+            with: card,
+            duration: 0.25,
+            options: .transitionCrossDissolve,
+            animations: update
+        )
     }
 
-    private func showProgress(index: Int, count: Int, next: String, skip: String) {
+    private func showProgress(
+        index: Int,
+        count: Int,
+        next: String,
+        skip: String
+    ) {
         pageDots.numberOfPages = count
         pageDots.currentPage = index
         pageDots.accessibilityValue = "Step \(index + 1) of \(count)"
@@ -335,7 +447,10 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
     // MARK: Actions
     @objc private func nextTapped() {
         if isOnCatSetup {
-            presenter?.didTapDone(name: nameField.text ?? "", face: facePicker.selectedFace)
+            presenter?.didTapDone(
+                name: nameField.text ?? "",
+                face: facePicker.selectedFace
+            )
         } else {
             presenter?.didTapNext()
         }
@@ -347,8 +462,10 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
     }
 
     @objc private func swiped(_ swipe: UISwipeGestureRecognizer) {
-        let isRightToLeft = view.effectiveUserInterfaceLayoutDirection == .rightToLeft
-        let forward: UISwipeGestureRecognizer.Direction = isRightToLeft ? .right : .left
+        let isRightToLeft =
+            view.effectiveUserInterfaceLayoutDirection == .rightToLeft
+        let forward: UISwipeGestureRecognizer.Direction =
+            isRightToLeft ? .right : .left
         if swipe.direction == forward {
             goForward()
         } else {
@@ -392,13 +509,17 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
             ghost.accessibilityElementsHidden = true
             textArea.addSubview(ghost)
             // Optional, so the cat step's shorter text can give the space back on short screens.
-            let reserve = ghost.bottomAnchor.constraint(lessThanOrEqualTo: textArea.bottomAnchor)
+            let reserve = ghost.bottomAnchor.constraint(
+                lessThanOrEqualTo: textArea.bottomAnchor
+            )
             reserve.priority = Self.reservedTextPriority
             NSLayoutConstraint.activate([
                 ghost.topAnchor.constraint(equalTo: textArea.topAnchor),
                 reserve,
                 ghost.leadingAnchor.constraint(equalTo: textArea.leadingAnchor),
-                ghost.trailingAnchor.constraint(equalTo: textArea.trailingAnchor)
+                ghost.trailingAnchor.constraint(
+                    equalTo: textArea.trailingAnchor
+                ),
             ])
         }
     }
@@ -420,10 +541,16 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
         transitionCard {
             self.showCatArt(face)
             self.titleLabel.text = "Who's playing?"
-            self.bodyLabel.text = "Add your cat's name and pick the face that looks most like them. You can add more cats later."
+            self.bodyLabel.text =
+                "Add your cat's name and pick the face that looks most like them. You can add more cats later."
             self.showCatFields()
         }
-        showProgress(index: index, count: count, next: "Let's go", skip: "Skip for now")
+        showProgress(
+            index: index,
+            count: count,
+            next: "Let's go",
+            skip: "Skip for now"
+        )
     }
 
     func showNameRequired() {
@@ -432,12 +559,17 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
         shake.duration = 0.3
         nameField.layer.add(shake, forKey: "shake")
         nameField.becomeFirstResponder()
-        UIAccessibility.post(notification: .announcement, argument: "Add your cat's name, or skip for now")
+        UIAccessibility.post(
+            notification: .announcement,
+            argument: "Add your cat's name, or skip for now"
+        )
     }
 
     // MARK: Accessibility
     /// VoiceOver's three-finger swipe pages through the steps too.
-    override func accessibilityScroll(_ direction: UIAccessibilityScrollDirection) -> Bool {
+    override func accessibilityScroll(
+        _ direction: UIAccessibilityScrollDirection
+    ) -> Bool {
         switch direction {
         case .left, .next: return goForward()
         case .right, .previous: return goBack()
@@ -449,13 +581,18 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol, 
     /// Lets the swipes work alongside the card's vertical scroll view when the card is taller than the screen.
     func gestureRecognizer(
         _ gestureRecognizer: UIGestureRecognizer,
-        shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
+        shouldRecognizeSimultaneouslyWith otherGestureRecognizer:
+            UIGestureRecognizer
     ) -> Bool {
         true
     }
 
     // MARK: UITextFieldDelegate
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+    func textField(
+        _ textField: UITextField,
+        shouldChangeCharactersIn range: NSRange,
+        replacementString string: String
+    ) -> Bool {
         nameField.shouldChangeCharacters(in: range, replacementString: string)
     }
 

@@ -109,7 +109,8 @@ final class GameViewController: UIViewController, GameViewProtocol {
     }
 
     override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
-        tuning.prefersLandscape ? .landscapeRight : super.preferredInterfaceOrientationForPresentation
+        tuning.prefersLandscape
+            ? .landscapeRight : super.preferredInterfaceOrientationForPresentation
     }
 
     /// Mid-push, this view isn't in the window yet.
@@ -263,7 +264,8 @@ final class GameViewController: UIViewController, GameViewProtocol {
             return
         }
         resultTitleLabel.attributedText = Theme.symbolText(
-            symbol, title, font: resultTitleLabel.font, color: resultTitleLabel.textColor, trailing: true
+            symbol, title, font: resultTitleLabel.font, color: resultTitleLabel.textColor,
+            trailing: true
         )
         resultTitleLabel.accessibilityLabel = title
     }

@@ -11,7 +11,8 @@ extension GameViewController {
 
         let label = UILabel()
         let font = Theme.roundedFont(size: Theme.scaled(16), weight: .bold)
-        let text = NSMutableAttributedString(string: "Owners: press and hold ", attributes: [.font: font])
+        let text = NSMutableAttributedString(
+            string: "Owners: press and hold ", attributes: [.font: font])
         let symbol = UIImage.SymbolConfiguration(font: font)
         if let house = UIImage(systemName: "house.fill", withConfiguration: symbol) {
             let tinted = house.withTintColor(Theme.text, renderingMode: .alwaysOriginal)
@@ -54,7 +55,7 @@ extension GameViewController {
             bubble.trailingAnchor.constraint(
                 lessThanOrEqualTo: view.safeAreaLayoutGuide.trailingAnchor,
                 constant: -16
-            )
+            ),
         ])
     }
 }

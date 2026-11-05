@@ -34,7 +34,8 @@ final class HoldProgressView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         let rect = bounds.insetBy(dx: 1.5, dy: 1.5)
-        let path = abs(rect.width - rect.height) < 1
+        let path =
+            abs(rect.width - rect.height) < 1
             ? UIBezierPath(ovalIn: rect)
             : UIBezierPath(roundedRect: rect, cornerRadius: rect.height / 2)
         for shape in [track, progress] {
@@ -58,11 +59,13 @@ final class HoldProgressView: UIView {
 
     func reset() {
         isHolding = false
-        UIView.animate(withDuration: 0.15, animations: { self.alpha = 0 }, completion: { _ in
-            // A new hold may have started during the fade.
-            guard !self.isHolding else { return }
-            self.progress.removeAllAnimations()
-        })
+        UIView.animate(
+            withDuration: 0.15, animations: { self.alpha = 0 },
+            completion: { _ in
+                // A new hold may have started during the fade.
+                guard !self.isHolding else { return }
+                self.progress.removeAllAnimations()
+            })
     }
 }
 
@@ -78,10 +81,12 @@ extension UIButton {
             ring.topAnchor.constraint(equalTo: topAnchor),
             ring.bottomAnchor.constraint(equalTo: bottomAnchor),
             ring.leadingAnchor.constraint(equalTo: leadingAnchor),
-            ring.trailingAnchor.constraint(equalTo: trailingAnchor)
+            ring.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
 
-        addAction(UIAction { [weak ring] _ in ring?.start(duration: Theme.holdDuration) }, for: .touchDown)
+        addAction(
+            UIAction { [weak ring] _ in ring?.start(duration: Theme.holdDuration) }, for: .touchDown
+        )
         addAction(
             UIAction { [weak ring] _ in ring?.reset() },
             for: [.touchUpInside, .touchUpOutside, .touchCancel, .touchDragExit]

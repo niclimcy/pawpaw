@@ -105,7 +105,8 @@ final class GamePresenter: GamePresenterProtocol, GameInteractorOutputProtocol {
         let title = result.isNewHighScore ? "New Best!" : "Time's Up!"
         let symbol = result.isNewHighScore ? "sparkles" : nil
         let critters = result.catches == 1 ? "critter" : "critters"
-        let details = "You caught \(result.catches) \(critters)\nScore: \(result.score)\nBest: \(result.highScore)"
+        let details =
+            "You caught \(result.catches) \(critters)\nScore: \(result.score)\nBest: \(result.highScore)"
         view?.showResult(title: title, symbol: symbol, details: details)
         view?.showLureWhenReady()
     }

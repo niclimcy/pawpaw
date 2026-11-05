@@ -14,7 +14,10 @@ struct CatProfile: Codable, Equatable, Identifiable {
     static let maxNameLength = 20
     static let defaultName = "My Cat"
 
-    init(id: UUID = UUID(), name: String, face: CatFace = .orange, disabledKinds: Set<TargetKind> = []) {
+    init(
+        id: UUID = UUID(), name: String, face: CatFace = .orange,
+        disabledKinds: Set<TargetKind> = []
+    ) {
         self.id = id
         self.name = Self.cleaned(name) ?? Self.defaultName
         self.face = face

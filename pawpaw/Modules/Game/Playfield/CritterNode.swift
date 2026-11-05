@@ -39,8 +39,11 @@ final class CritterNode: SKNode {
 
     /// Calls `completion` when the path ends, unless the critter was stopped first.
     /// Sibling order is ignored, so `spawnOrder` puts later critters on top within `layer`.
-    func play(_ plan: CritterActions.Plan, artwork: PlayfieldTextures.Critter, caughtArtwork: PlayfieldTextures.Critter?,
-              layer: CGFloat, canTakeCover: Bool, spawnOrder: Int, completion: @escaping () -> Void) {
+    func play(
+        _ plan: CritterActions.Plan, artwork: PlayfieldTextures.Critter,
+        caughtArtwork: PlayfieldTextures.Critter?,
+        layer: CGFloat, canTakeCover: Bool, spawnOrder: Int, completion: @escaping () -> Void
+    ) {
         self.canTakeCover = canTakeCover
         self.caughtArtwork = caughtArtwork
         artworkSide = artwork.side
@@ -71,13 +74,16 @@ final class CritterNode: SKNode {
         turn.setScale(1)
         let center = center
         let distance = max(hypot(center.x - location.x, center.y - location.y), 1)
-        let dx = (center.x - location.x) / distance, dy = (center.y - location.y) / distance
+        let dx = (center.x - location.x) / distance
+        let dy = (center.y - location.y) / distance
         let hop = SKAction.sequence([
             .moveBy(x: dx * 46, y: dy * 46, duration: 0.105),
             .moveBy(x: -dx * 8, y: -dy * 8, duration: 0.105),
-            .moveBy(x: -dx * 38, y: -dy * 38, duration: 0.14)
+            .moveBy(x: -dx * 38, y: -dy * 38, duration: 0.14),
         ])
-        let squash = SKAction.sequence([.scale(to: 1.18, duration: 0.105), .scale(to: 1, duration: 0.245)])
+        let squash = SKAction.sequence([
+            .scale(to: 1.18, duration: 0.105), .scale(to: 1, duration: 0.245),
+        ])
         turn.run(.group([hop, squash]), withKey: "startle")
     }
 
@@ -92,12 +98,15 @@ final class CritterNode: SKNode {
 
     var hitFrame: CGRect {
         let rotation = turn.zRotation + jiggle.zRotation
-        let cosine = abs(cos(rotation)), sine = abs(sin(rotation))
-        let scaleX = abs(sprite.xScale * wings.xScale * turn.xScale), scaleY = abs(sprite.yScale * turn.yScale)
+        let cosine = abs(cos(rotation))
+        let sine = abs(sin(rotation))
+        let scaleX = abs(sprite.xScale * wings.xScale * turn.xScale)
+        let scaleY = abs(sprite.yScale * turn.yScale)
         let width = artworkSide * (scaleX * cosine + scaleY * sine)
         let height = artworkSide * (scaleX * sine + scaleY * cosine)
         let center = center
-        return CGRect(x: center.x - width / 2, y: center.y - height / 2, width: width, height: height)
+        return CGRect(
+            x: center.x - width / 2, y: center.y - height / 2, width: width, height: height)
     }
 
     func reset() {

@@ -70,7 +70,8 @@ extension StatsViewController {
         tile.alignment = .center
         tile.spacing = 4
         tile.isLayoutMarginsRelativeArrangement = true
-        tile.layoutMargins = UIEdgeInsets(top: spacing(phone: 8, pad: 12), left: 8, bottom: spacing(phone: 8, pad: 12), right: 8)
+        tile.layoutMargins = UIEdgeInsets(
+            top: spacing(phone: 8, pad: 12), left: 8, bottom: spacing(phone: 8, pad: 12), right: 8)
         tile.backgroundColor = Theme.background.withAlphaComponent(0.45)
         tile.layer.cornerRadius = 16
         tile.isAccessibilityElement = true
@@ -105,7 +106,9 @@ extension StatsViewController {
 
     /// Critter artwork, or a dash when there is nothing to show yet.
     static func makeFavoriteValue(imageName: String?) -> UIView {
-        guard let imageName, let image = UIImage(named: imageName) else { return makeValueLabel("–") }
+        guard let imageName, let image = UIImage(named: imageName) else {
+            return makeValueLabel("–")
+        }
         let imageView = UIImageView(image: image)
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -133,7 +136,8 @@ extension StatsViewController {
         tile.alignment = .center
         tile.spacing = 4
         tile.isLayoutMarginsRelativeArrangement = true
-        tile.layoutMargins = UIEdgeInsets(top: spacing(phone: 6, pad: 10), left: 2, bottom: spacing(phone: 6, pad: 8), right: 2)
+        tile.layoutMargins = UIEdgeInsets(
+            top: spacing(phone: 6, pad: 10), left: 2, bottom: spacing(phone: 6, pad: 8), right: 2)
         tile.backgroundColor = Theme.background.withAlphaComponent(0.45)
         tile.layer.cornerRadius = 14
         tile.isAccessibilityElement = true

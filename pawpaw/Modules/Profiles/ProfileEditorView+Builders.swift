@@ -23,7 +23,8 @@ extension ProfileEditorView {
         heading.setContentCompressionResistancePriority(.required, for: .vertical)
 
         critterHintLabel.setContentCompressionResistancePriority(.required, for: .vertical)
-        critterHintLabel.text = "Keep at least one critter that isn't a fish or a lizard on. Fish only swim in the pond, and lizards only live on grass."
+        critterHintLabel.text =
+            "Keep at least one critter that isn't a fish or a lizard on. Fish only swim in the pond, and lizards only live on grass."
         critterHintLabel.font = Theme.roundedFont(size: Theme.scaled(14), weight: .semibold)
         critterHintLabel.adjustsFontForContentSizeCategory = true
         critterHintLabel.textColor = Theme.gold
@@ -35,7 +36,8 @@ extension ProfileEditorView {
         // Two even rows of five keep the card short enough for small iPhones.
         let perRow = 5
         let rows = stride(from: 0, to: kinds.count, by: perRow).map { start -> UIStackView in
-            var buttons: [UIView] = kinds[start..<min(start + perRow, kinds.count)].map(makeCritterButton)
+            var buttons: [UIView] = kinds[start..<min(start + perRow, kinds.count)].map(
+                makeCritterButton)
             // Pad a short last row so buttons stay equal width.
             while buttons.count < perRow { buttons.append(UIView()) }
             let row = UIStackView(arrangedSubviews: buttons)
@@ -72,7 +74,7 @@ extension ProfileEditorView {
             picture.topAnchor.constraint(equalTo: button.topAnchor, constant: 6),
             picture.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: -6),
             picture.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 6),
-            picture.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -6)
+            picture.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -6),
         ])
         critterButtons[kind] = button
         return button

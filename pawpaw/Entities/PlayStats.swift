@@ -28,9 +28,13 @@ struct PlayStats: Codable, Equatable {
     }
 
     /// Oldest first, ending today.
-    func recentRounds(days: Int, endingOn today: Date = Date(), calendar: Calendar = .current) -> [(date: Date, rounds: Int)] {
+    func recentRounds(days: Int, endingOn today: Date = Date(), calendar: Calendar = .current) -> [(
+        date: Date, rounds: Int
+    )] {
         (0..<days).reversed().compactMap { offset in
-            guard let date = calendar.date(byAdding: .day, value: -offset, to: today) else { return nil }
+            guard let date = calendar.date(byAdding: .day, value: -offset, to: today) else {
+                return nil
+            }
             return (date, roundsByDay[Self.dayKey(for: date, calendar: calendar)] ?? 0)
         }
     }

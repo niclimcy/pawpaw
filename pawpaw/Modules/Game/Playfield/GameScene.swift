@@ -94,7 +94,10 @@ final class GameScene: SKScene {
     /// On resize or a new HUD inset, hiding spots are repositioned. Running paths can't be rescaled,
     /// so those critters are discarded.
     private func relayout() {
-        guard size != laidOutSize || topInset != laidOutTopInset, size.width > 0, size.height > 0 else { return }
+        guard size != laidOutSize || topInset != laidOutTopInset, size.width > 0, size.height > 0
+        else {
+            return
+        }
         let hadLayout = laidOutSize != .zero
         laidOutSize = size
         laidOutTopInset = topInset
@@ -115,19 +118,23 @@ final class GameScene: SKScene {
 
     func add(_ target: GameTarget) {
         guard let plan = CritterActions.plan(for: target, in: geometry),
-              let artwork = PlayfieldTextures.critter(target.kind, variant: target.variant, size: tuning.targetSize) else {
+            let artwork = PlayfieldTextures.critter(
+                target.kind, variant: target.variant, size: tuning.targetSize)
+        else {
             onDiscard?(target.id)
             return
         }
         let critter = recycledNodes.popLast() ?? CritterNode()
-        let canTakeCover = !hidingSpotNodes.isEmpty && theme.allowsCover(for: target.kind.movementStyle)
+        let canTakeCover =
+            !hidingSpotNodes.isEmpty && theme.allowsCover(for: target.kind.movementStyle)
         spawnCount += 1
         world.addChild(critter)
         targetNodes[target.id] = critter
         critter.play(
             plan,
             artwork: artwork,
-            caughtArtwork: PlayfieldTextures.critter(target.kind, variant: target.variant, size: tuning.targetSize, style: .caught),
+            caughtArtwork: PlayfieldTextures.critter(
+                target.kind, variant: target.variant, size: tuning.targetSize, style: .caught),
             layer: canTakeCover ? Layer.coveredCritter : Layer.critter,
             canTakeCover: canTakeCover,
             spawnOrder: spawnCount
@@ -196,7 +203,9 @@ final class GameScene: SKScene {
     /// Plays one loop of the lure. The same node carries on between loops; a leaving lure is removed when it's gone.
     func showLure(_ target: GameTarget, isLeaving: Bool) {
         guard let plan = CritterActions.plan(for: target, in: geometry),
-              let artwork = PlayfieldTextures.critter(target.kind, variant: target.variant, size: tuning.targetSize) else {
+            let artwork = PlayfieldTextures.critter(
+                target.kind, variant: target.variant, size: tuning.targetSize)
+        else {
             removeLure()
             if !isLeaving { onLureDiscard?() }
             return
@@ -214,7 +223,8 @@ final class GameScene: SKScene {
         critter.play(
             plan,
             artwork: artwork,
-            caughtArtwork: PlayfieldTextures.critter(target.kind, variant: target.variant, size: tuning.targetSize, style: .caught),
+            caughtArtwork: PlayfieldTextures.critter(
+                target.kind, variant: target.variant, size: tuning.targetSize, style: .caught),
             layer: Layer.critter,
             canTakeCover: false,
             spawnOrder: spawnCount
@@ -256,7 +266,9 @@ final class GameScene: SKScene {
 
     /// Hidden behind the results card, the lure can't be caught, like a critter under a hiding spot.
     private func isLureCatchable(_ critter: CritterNode) -> Bool {
-        guard critter.opacity > 0.5, geometry.bounds.intersects(critter.hitFrame) else { return false }
+        guard critter.opacity > 0.5, geometry.bounds.intersects(critter.hitFrame) else {
+            return false
+        }
         return !(lureObstacle?.contains(critter.center) ?? false)
     }
 
@@ -306,7 +318,8 @@ final class GameScene: SKScene {
         guard critter.canTakeCover else { return false }
         let center = critter.center
         return hidingSpotNodes.contains { spot in
-            hypot(spot.position.x - center.x, spot.position.y - center.y) < tuning.hidingSpotSize * 0.3
+            hypot(spot.position.x - center.x, spot.position.y - center.y) < tuning.hidingSpotSize
+                * 0.3
         }
     }
 
@@ -380,11 +393,13 @@ final class GameScene: SKScene {
     /// Topmost visible critter first.
     private func targetID(at location: CGPoint) -> UUID? {
         targetNodes.sorted { $0.value.zPosition > $1.value.zPosition }.first { _, critter in
-            isCatchable(critter) && critter.hitFrame.insetBy(dx: -hitSlop, dy: -hitSlop).contains(location)
+            isCatchable(critter)
+                && critter.hitFrame.insetBy(dx: -hitSlop, dy: -hitSlop).contains(location)
         }?.key
     }
 
     private func isCatchable(_ critter: CritterNode) -> Bool {
-        critter.opacity > 0.5 && geometry.bounds.intersects(critter.hitFrame) && !isUnderCover(critter)
+        critter.opacity > 0.5 && geometry.bounds.intersects(critter.hitFrame)
+            && !isUnderCover(critter)
     }
 }

@@ -59,23 +59,25 @@ final class UserDefaultsProfileStorage: ProfileStorage {
 
     func update(_ id: UUID, name: String, face: CatFace) {
         let cleanName = CatProfile.cleaned(name)
-        save(profiles.map { profile in
-            var copy = profile
-            if copy.id == id {
-                copy.name = cleanName ?? copy.name
-                copy.face = face
-            }
-            return copy
-        })
+        save(
+            profiles.map { profile in
+                var copy = profile
+                if copy.id == id {
+                    copy.name = cleanName ?? copy.name
+                    copy.face = face
+                }
+                return copy
+            })
     }
 
     func setDisabledKinds(_ kinds: Set<TargetKind>, for id: UUID) {
         guard CatProfile.isPlayable(disabledKinds: kinds) else { return }
-        save(profiles.map { profile in
-            var copy = profile
-            if copy.id == id { copy.disabledKinds = kinds }
-            return copy
-        })
+        save(
+            profiles.map { profile in
+                var copy = profile
+                if copy.id == id { copy.disabledKinds = kinds }
+                return copy
+            })
     }
 
     func delete(_ id: UUID) {
@@ -125,7 +127,8 @@ final class UserDefaultsProfileStorage: ProfileStorage {
 
         let scores = UserDefaultsScoreStorage(defaults: defaults, profileID: first.id)
         for mode in SessionMode.allCases where mode.hasHighScore {
-            let legacyKey = mode == .standard ? "pawpaw.highScore" : "pawpaw.highScore.\(mode.rawValue)"
+            let legacyKey =
+                mode == .standard ? "pawpaw.highScore" : "pawpaw.highScore.\(mode.rawValue)"
             let legacy = defaults.integer(forKey: legacyKey)
             if legacy > 0 { scores.saveHighScore(legacy, for: mode) }
         }

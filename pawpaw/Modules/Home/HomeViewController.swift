@@ -25,7 +25,8 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         view.isAccessibilityElement = false
         return view
     }()
-    private lazy var logoHeight = logoView.heightAnchor.constraint(equalToConstant: Theme.scaled(80))
+    private lazy var logoHeight = logoView.heightAnchor.constraint(
+        equalToConstant: Theme.scaled(80))
 
     private let titleLabel: UILabel = {
         let label = HomeViewController.makeLabel(size: 48)
@@ -56,7 +57,8 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
             size: 18,
             weight: .bold
         )
-        config.subtitleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
+        config.subtitleTextAttributesTransformer = UIConfigurationTextAttributesTransformer {
+            incoming in
             var outgoing = incoming
             outgoing.font = Theme.roundedFont(size: Theme.scaled(13), weight: .semibold)
             outgoing.foregroundColor = Theme.text.withAlphaComponent(0.75)
@@ -144,7 +146,8 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         control.backgroundColor = UIColor.black.withAlphaComponent(0.3)
         control.accessibilityIdentifier = "afterRoundControl"
         control.accessibilityLabel = "After a round"
-        control.accessibilityHint = "Whether catching the critter on the results starts another round"
+        control.accessibilityHint =
+            "Whether catching the critter on the results starts another round"
         return control
     }()
 
@@ -238,7 +241,9 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         guard let scroll = layoutScroll, let host = scroll.superview else { return }
-        let overflow = scroll.contentLayoutGuide.layoutFrame.height - scroll.frameLayoutGuide.layoutFrame.height
+        let overflow =
+            scroll.contentLayoutGuide.layoutFrame.height
+            - scroll.frameLayoutGuide.layoutFrame.height
         let room = host.safeAreaLayoutGuide.layoutFrame.height
         if fit.update(needed: room + overflow, room: room) {
             applyMetrics()
@@ -253,13 +258,15 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         let margin = Theme.scaled(16)
         NSLayoutConstraint.activate([
             topBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
-            topBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: margin),
-            topBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -margin),
+            topBar.leadingAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: margin),
+            topBar.trailingAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -margin),
 
             content.topAnchor.constraint(equalTo: topBar.bottomAnchor),
             content.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             content.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            content.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            content.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
 
         let setupCard = makeSetupCard()
@@ -300,7 +307,8 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
 
         mainStack.spacing = Theme.scaled(compact ? 8 : 12)
         mainStack.setCustomSpacing(Theme.scaled(compact ? 14 : 28), after: titleLabel)
-        mainStack.directionalLayoutMargins = NSDirectionalEdgeInsets(top: compact ? 12 : 24, leading: 0, bottom: 0, trailing: 0)
+        mainStack.directionalLayoutMargins = NSDirectionalEdgeInsets(
+            top: compact ? 12 : 24, leading: 0, bottom: 0, trailing: 0)
 
         let sectionGap = Theme.scaled(compact ? 12 : 20)
         setupStack.setCustomSpacing(sectionGap, after: modeControl)
@@ -367,7 +375,7 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
             stack.topAnchor.constraint(equalTo: card.topAnchor),
             card.bottomAnchor.constraint(equalTo: stack.bottomAnchor),
             stack.leadingAnchor.constraint(equalTo: card.leadingAnchor),
-            card.trailingAnchor.constraint(equalTo: stack.trailingAnchor)
+            card.trailingAnchor.constraint(equalTo: stack.trailingAnchor),
         ]
         NSLayoutConstraint.activate(setupCardInsets)
         return card
@@ -430,7 +438,8 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         let best = score ?? 0
         highScoreLabel.isHidden = best <= 0
         highScoreLabel.attributedText = Theme.symbolText(
-            "trophy.fill", "Best: \(best)", font: highScoreLabel.font, color: highScoreLabel.textColor
+            "trophy.fill", "Best: \(best)", font: highScoreLabel.font,
+            color: highScoreLabel.textColor
         )
         highScoreLabel.accessibilityLabel = "Best: \(best)"
     }

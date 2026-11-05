@@ -42,7 +42,7 @@ final class NatureBackgroundView: CachedBackgroundView {
         let greens = [
             UIColor(red: 0.12, green: 0.28, blue: 0.12, alpha: 1),
             UIColor(red: 0.16, green: 0.34, blue: 0.14, alpha: 1),
-            UIColor(red: 0.09, green: 0.22, blue: 0.10, alpha: 1)
+            UIColor(red: 0.09, green: 0.22, blue: 0.10, alpha: 1),
         ]
         let count = Int(bounds.width * bounds.height / 260)
         for _ in 0..<count {
@@ -74,10 +74,11 @@ final class NatureBackgroundView: CachedBackgroundView {
             )
             for ring in 1...3 {
                 let radius = CGFloat(ring) * CGFloat.random(in: 14...24, using: &rng)
-                let oval = UIBezierPath(ovalIn: CGRect(
-                    x: center.x - radius, y: center.y - radius * 0.6,
-                    width: radius * 2, height: radius * 1.2
-                ))
+                let oval = UIBezierPath(
+                    ovalIn: CGRect(
+                        x: center.x - radius, y: center.y - radius * 0.6,
+                        width: radius * 2, height: radius * 1.2
+                    ))
                 oval.lineWidth = 1.5
                 UIColor(red: 0.45, green: 0.70, blue: 0.85, alpha: 0.16 / CGFloat(ring)).setStroke()
                 oval.stroke()
@@ -93,7 +94,10 @@ final class NatureBackgroundView: CachedBackgroundView {
             UIColor(red: 0.12, green: 0.34, blue: 0.22, alpha: 0.9).setFill()
             UIBezierPath(ovalIn: pad).fill()
             UIColor(red: 0.04, green: 0.12, blue: 0.20, alpha: 1).setFill()
-            UIBezierPath(rect: CGRect(x: pad.midX, y: pad.midY - 1.5, width: padSize / 2, height: 3)).fill()
+            UIBezierPath(
+                rect: CGRect(x: pad.midX, y: pad.midY - 1.5, width: padSize / 2, height: 3)
+            )
+            .fill()
         }
     }
 

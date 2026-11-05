@@ -7,7 +7,8 @@ import UIKit
 
 extension ProfilesViewController {
     func makeRow(_ row: ProfileRow) -> UIView {
-        var config = row.isActive ? UIButton.Configuration.filled() : UIButton.Configuration.tinted()
+        var config =
+            row.isActive ? UIButton.Configuration.filled() : UIButton.Configuration.tinted()
         config.title = row.name
         if row.isActive {
             // Checkmark after the name; the UIKit scope keeps the symbol attachment.
@@ -26,18 +27,24 @@ extension ProfilesViewController {
         config.baseBackgroundColor = row.isActive ? Theme.accent : Theme.text
         config.baseForegroundColor = row.isActive ? .white : Theme.text
         config.cornerStyle = .large
-        config.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
+        config.contentInsets = NSDirectionalEdgeInsets(
+            top: 12, leading: 16, bottom: 12, trailing: 16)
         config.titleAlignment = .leading
         config.titleTextAttributesTransformer = Theme.fontTransformer(size: 22, weight: .bold)
-        config.subtitleTextAttributesTransformer = Theme.fontTransformer(size: 14, weight: .semibold)
+        config.subtitleTextAttributesTransformer = Theme.fontTransformer(
+            size: 14, weight: .semibold)
         let select = UIButton(configuration: config)
         select.contentHorizontalAlignment = .leading
         select.setContentHuggingPriority(.defaultLow, for: .horizontal)
-        select.heightAnchor.constraint(greaterThanOrEqualToConstant: Theme.minimumTapSize).isActive = true
+        select.heightAnchor.constraint(greaterThanOrEqualToConstant: Theme.minimumTapSize)
+            .isActive =
+            true
         select.accessibilityIdentifier = "profileRow"
         select.accessibilityLabel = "\(row.name), \(row.face.title). \(row.subtitle)"
         select.accessibilityTraits = row.isActive ? [.button, .selected] : .button
-        select.addAction(UIAction { [weak self] _ in self?.presenter?.didSelectProfile(id: row.id) }, for: .touchUpInside)
+        select.addAction(
+            UIAction { [weak self] _ in self?.presenter?.didSelectProfile(id: row.id) },
+            for: .touchUpInside)
 
         var editConfig = UIButton.Configuration.plain()
         editConfig.image = UIImage(systemName: "pencil")
@@ -48,7 +55,8 @@ extension ProfilesViewController {
         edit.setContentCompressionResistancePriority(.required, for: .horizontal)
         edit.widthAnchor.constraint(equalToConstant: Theme.minimumTapSize).isActive = true
         edit.accessibilityLabel = "Edit \(row.name)"
-        edit.addAction(UIAction { [weak self] _ in self?.showEditCard(for: row) }, for: .touchUpInside)
+        edit.addAction(
+            UIAction { [weak self] _ in self?.showEditCard(for: row) }, for: .touchUpInside)
 
         let stack = UIStackView(arrangedSubviews: [select, edit])
         stack.axis = .horizontal
@@ -74,7 +82,8 @@ extension ProfilesViewController {
     func makeBackButton() -> UIButton {
         let button = Theme.filledButton(title: "Back")
         button.accessibilityIdentifier = "profilesBackButton"
-        button.addAction(UIAction { [weak self] _ in self?.presenter?.didTapBack() }, for: .touchUpInside)
+        button.addAction(
+            UIAction { [weak self] _ in self?.presenter?.didTapBack() }, for: .touchUpInside)
         return button
     }
 }

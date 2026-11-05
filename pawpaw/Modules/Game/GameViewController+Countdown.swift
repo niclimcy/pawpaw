@@ -31,7 +31,7 @@ extension GameViewController {
             overlay.topAnchor.constraint(equalTo: view.topAnchor),
             overlay.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             overlay.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            overlay.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            overlay.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
 
         let numberLabel = installCountdownLabels(in: overlay)
@@ -39,7 +39,8 @@ extension GameViewController {
             installExitTip(in: overlay)
         }
 
-        let announcement = showsExitTip ? "Get ready. Owners: press and hold Home to leave." : "Get ready."
+        let announcement =
+            showsExitTip ? "Get ready. Owners: press and hold Home to leave." : "Get ready."
         UIAccessibility.post(notification: .announcement, argument: announcement)
         runCountdownStep(Self.countdownFrom, label: numberLabel, generation: countdownGeneration)
     }
@@ -79,7 +80,8 @@ extension GameViewController {
             }
         }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + Self.stepDuration) { [weak self, weak label] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + Self.stepDuration) {
+            [weak self, weak label] in
             guard let self, let label else { return }
             self.runCountdownStep(number - 1, label: label, generation: generation)
         }
@@ -92,9 +94,11 @@ extension GameViewController {
             overlay.removeFromSuperview()
             return
         }
-        UIView.animate(withDuration: 0.2, animations: { overlay.alpha = 0 }, completion: { _ in
-            overlay.removeFromSuperview()
-        })
+        UIView.animate(
+            withDuration: 0.2, animations: { overlay.alpha = 0 },
+            completion: { _ in
+                overlay.removeFromSuperview()
+            })
     }
 
     private func installCountdownLabels(in overlay: UIView) -> UILabel {
@@ -125,7 +129,7 @@ extension GameViewController {
         overlay.addSubview(stack)
         NSLayoutConstraint.activate([
             stack.centerXAnchor.constraint(equalTo: playfieldGuide.centerXAnchor),
-            stack.centerYAnchor.constraint(equalTo: playfieldGuide.centerYAnchor)
+            stack.centerYAnchor.constraint(equalTo: playfieldGuide.centerYAnchor),
         ])
         return numberLabel
     }

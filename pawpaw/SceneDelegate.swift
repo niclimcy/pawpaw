@@ -10,11 +10,15 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
 
-    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+    func scene(
+        _ scene: UIScene, willConnectTo session: UISceneSession,
+        options connectionOptions: UIScene.ConnectionOptions
+    ) {
         guard let windowScene = scene as? UIWindowScene else { return }
         window = UIWindow(windowScene: windowScene)
         let settings = UserDefaultsSettingsStorage()
-        window?.rootViewController = settings.hasCompletedOnboarding
+        window?.rootViewController =
+            settings.hasCompletedOnboarding
             ? HomeRouter.createModule()
             : OnboardingRouter.createModule(onFinish: { [weak self] in self?.showHome() })
         window?.makeKeyAndVisible()
@@ -27,4 +31,3 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
 }
-

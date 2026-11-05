@@ -37,12 +37,13 @@ final class ProfilesViewController: UIViewController, ProfilesViewProtocol {
             editor.topAnchor.constraint(equalTo: view.topAnchor),
             editor.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             editor.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            editor.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            editor.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
         editor.onSave = { [weak self] name, face, disabledKinds in
             guard let self else { return }
             if let id = self.editingID {
-                self.presenter?.didUpdateProfile(id: id, name: name, face: face, disabledKinds: disabledKinds)
+                self.presenter?.didUpdateProfile(
+                    id: id, name: name, face: face, disabledKinds: disabledKinds)
             } else {
                 self.presenter?.didAddProfile(name: name, face: face, disabledKinds: disabledKinds)
             }
@@ -61,7 +62,9 @@ final class ProfilesViewController: UIViewController, ProfilesViewProtocol {
 
     func showEditCard(for row: ProfileRow) {
         editingID = row.id
-        editor.present(adding: false, name: row.name, face: row.face, disabledKinds: row.disabledKinds, canDelete: canDelete)
+        editor.present(
+            adding: false, name: row.name, face: row.face, disabledKinds: row.disabledKinds,
+            canDelete: canDelete)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -98,7 +101,7 @@ final class ProfilesViewController: UIViewController, ProfilesViewProtocol {
             listStack.topAnchor.constraint(equalTo: card.topAnchor, constant: 16),
             listStack.bottomAnchor.constraint(equalTo: card.bottomAnchor, constant: -16),
             listStack.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: 16),
-            listStack.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -16)
+            listStack.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -16),
         ])
     }
 

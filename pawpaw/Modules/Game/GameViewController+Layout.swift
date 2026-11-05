@@ -27,10 +27,12 @@ extension GameViewController {
             gameArea.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             gameArea.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 
-            playfieldGuide.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16 + max(48, Theme.scaled(48))),
+            playfieldGuide.topAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.topAnchor,
+                constant: 16 + max(48, Theme.scaled(48))),
             playfieldGuide.leadingAnchor.constraint(equalTo: gameArea.leadingAnchor),
             playfieldGuide.trailingAnchor.constraint(equalTo: gameArea.trailingAnchor),
-            playfieldGuide.bottomAnchor.constraint(equalTo: gameArea.bottomAnchor)
+            playfieldGuide.bottomAnchor.constraint(equalTo: gameArea.bottomAnchor),
         ])
     }
 
@@ -46,7 +48,8 @@ extension GameViewController {
         homeConfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(
             pointSize: Theme.scaled(20), weight: .semibold
         )
-        homeConfig.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+        homeConfig.contentInsets = NSDirectionalEdgeInsets(
+            top: 10, leading: 10, bottom: 10, trailing: 10)
         let homeButton = UIButton(configuration: homeConfig)
         homeButton.accessibilityIdentifier = "homeButton"
         homeButton.accessibilityLabel = "Home"
@@ -66,9 +69,11 @@ extension GameViewController {
 
         NSLayoutConstraint.activate([
             hud.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
-            hud.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            hud.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            hud.heightAnchor.constraint(equalToConstant: max(48, Theme.scaled(48)))
+            hud.leadingAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            hud.trailingAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            hud.heightAnchor.constraint(equalToConstant: max(48, Theme.scaled(48))),
         ])
     }
 
@@ -103,16 +108,23 @@ extension GameViewController {
         view.addSubview(hint)
         NSLayoutConstraint.activate([
             hint.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            hint.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -24),
-            hint.leadingAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            hint.trailingAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
+            hint.bottomAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -24),
+            hint.leadingAnchor.constraint(
+                greaterThanOrEqualTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            hint.trailingAnchor.constraint(
+                lessThanOrEqualTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
         ])
         UIAccessibility.post(notification: .announcement, argument: message)
-        UIView.animate(withDuration: 0.2, animations: { hint.alpha = 1 }, completion: { _ in
-            UIView.animate(withDuration: 0.4, delay: 2.0, options: [], animations: { hint.alpha = 0 }, completion: { _ in
-                hint.removeFromSuperview()
+        UIView.animate(
+            withDuration: 0.2, animations: { hint.alpha = 1 },
+            completion: { _ in
+                UIView.animate(
+                    withDuration: 0.4, delay: 2.0, options: [], animations: { hint.alpha = 0 },
+                    completion: { _ in
+                        hint.removeFromSuperview()
+                    })
             })
-        })
     }
 
     @objc func holdToExitChanged(_ gesture: UILongPressGestureRecognizer) {
@@ -153,11 +165,14 @@ extension GameViewController {
         againButton.addHoldToConfirm(self, action: #selector(playAgainHeld(_:)))
         againButton.addTarget(self, action: #selector(showPlayAgainHint), for: .touchUpInside)
 
-        let menuButton = Theme.plainButton(title: "Hold to go Home", fontSize: 17, foreground: Theme.text)
+        let menuButton = Theme.plainButton(
+            title: "Hold to go Home", fontSize: 17, foreground: Theme.text)
         menuButton.accessibilityIdentifier = "resultHomeButton"
         installHoldToExit(on: menuButton)
 
-        let stack = UIStackView(arrangedSubviews: [resultTitleLabel, resultDetailsLabel, againButton, menuButton])
+        let stack = UIStackView(arrangedSubviews: [
+            resultTitleLabel, resultDetailsLabel, againButton, menuButton,
+        ])
         stack.axis = .vertical
         stack.alignment = .center
         stack.spacing = 16
@@ -175,7 +190,7 @@ extension GameViewController {
             stack.topAnchor.constraint(equalTo: card.topAnchor, constant: 28),
             stack.bottomAnchor.constraint(equalTo: card.bottomAnchor, constant: -20),
             stack.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: 28),
-            stack.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -28)
+            stack.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -28),
         ])
     }
 }

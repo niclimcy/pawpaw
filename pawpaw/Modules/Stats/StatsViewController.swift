@@ -45,7 +45,9 @@ final class StatsViewController: UIViewController, StatsViewProtocol {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         guard let scroll = layoutScroll else { return }
-        let overflow = scroll.contentLayoutGuide.layoutFrame.height - scroll.frameLayoutGuide.layoutFrame.height
+        let overflow =
+            scroll.contentLayoutGuide.layoutFrame.height
+            - scroll.frameLayoutGuide.layoutFrame.height
         let room = view.safeAreaLayoutGuide.layoutFrame.height
         if fit.update(needed: room + overflow, room: room) {
             applyMetrics()
@@ -76,7 +78,7 @@ final class StatsViewController: UIViewController, StatsViewProtocol {
             dividers[1],
             Self.makeSectionHeader("Rounds in the last 7 days"), daysStack,
             dividers[2],
-            Self.makeSectionHeader("Best scores"), bestScoresRow
+            Self.makeSectionHeader("Best scores"), bestScoresRow,
         ] {
             content.addArrangedSubview(subview)
         }
@@ -103,16 +105,18 @@ final class StatsViewController: UIViewController, StatsViewProtocol {
         footer.isLayoutMarginsRelativeArrangement = true
 
         // Margins live in the stacks so `applyMetrics()` can tighten them.
-        layoutScroll = embedCentered(page, footer: footer, maxWidth: 560, verticalMargin: 0, footerSpacing: 0)
+        layoutScroll = embedCentered(
+            page, footer: footer, maxWidth: 560, verticalMargin: 0, footerSpacing: 0)
 
         // Constants are set in `applyMetrics()`; each is card edge to content edge, inward.
         cardInsets = [
             content.topAnchor.constraint(equalTo: card.topAnchor),
             card.bottomAnchor.constraint(equalTo: content.bottomAnchor),
             content.leadingAnchor.constraint(equalTo: card.leadingAnchor),
-            card.trailingAnchor.constraint(equalTo: content.trailingAnchor)
+            card.trailingAnchor.constraint(equalTo: content.trailingAnchor),
         ]
-        NSLayoutConstraint.activate(cardInsets + [card.widthAnchor.constraint(equalTo: page.widthAnchor)])
+        NSLayoutConstraint.activate(
+            cardInsets + [card.widthAnchor.constraint(equalTo: page.widthAnchor)])
         applyMetrics()
     }
 
@@ -122,11 +126,13 @@ final class StatsViewController: UIViewController, StatsViewProtocol {
         titleLabel.font = Theme.roundedFont(size: Theme.scaled(compact ? 28 : 34), weight: .heavy)
 
         page.spacing = Self.spacing(phone: compact ? 10 : 16, pad: 24)
-        page.directionalLayoutMargins = NSDirectionalEdgeInsets(top: compact ? 12 : 24, leading: 0, bottom: 0, trailing: 0)
+        page.directionalLayoutMargins = NSDirectionalEdgeInsets(
+            top: compact ? 12 : 24, leading: 0, bottom: 0, trailing: 0)
 
         content.spacing = Self.spacing(phone: compact ? 8 : 10, pad: 14)
         for section in sectionBreaks {
-            content.setCustomSpacing(Self.spacing(phone: compact ? 10 : 14, pad: 20), after: section)
+            content.setCustomSpacing(
+                Self.spacing(phone: compact ? 10 : 14, pad: 20), after: section)
         }
         for inset in cardInsets {
             inset.constant = Self.spacing(phone: compact ? 12 : 16, pad: 20)
@@ -153,7 +159,8 @@ extension StatsViewController {
     }
 
     fileprivate func makeResetButton() -> UIButton {
-        let button = Theme.plainButton(title: "Hold to reset stats", foreground: Theme.text.withAlphaComponent(0.75))
+        let button = Theme.plainButton(
+            title: "Hold to reset stats", foreground: Theme.text.withAlphaComponent(0.75))
         button.accessibilityIdentifier = "statsResetButton"
         button.accessibilityHint = "Press and hold to erase all play statistics"
         button.addHoldToConfirm(self, action: #selector(resetHeld(_:)))
@@ -173,9 +180,10 @@ extension StatsViewController {
             preferredStyle: .alert
         )
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        alert.addAction(UIAlertAction(title: "Reset", style: .destructive) { [weak self] _ in
-            self?.presenter?.didConfirmReset()
-        })
+        alert.addAction(
+            UIAlertAction(title: "Reset", style: .destructive) { [weak self] _ in
+                self?.presenter?.didConfirmReset()
+            })
         present(alert, animated: true)
     }
 }
@@ -189,7 +197,9 @@ extension StatsViewController {
         for metric in [viewModel.rounds, viewModel.catches] {
             summaryRow.addArrangedSubview(Self.makeMetricTile(metric))
         }
-        let favorite = Self.makeTile(value: Self.makeFavoriteValue(imageName: viewModel.favoriteImageName), caption: "Favorite")
+        let favorite = Self.makeTile(
+            value: Self.makeFavoriteValue(imageName: viewModel.favoriteImageName),
+            caption: "Favorite")
         favorite.accessibilityLabel = viewModel.favoriteAccessibilityLabel
         summaryRow.addArrangedSubview(favorite)
 
@@ -203,9 +213,13 @@ extension StatsViewController {
             Array(viewModel.critters[$0..<min($0 + Self.crittersPerRow, viewModel.critters.count)])
         }
         for rowCritters in rows {
-            let row = Self.makeRow(spacing: Self.isPad ? 8 : 4, alignment: .fill, distribution: Self.isPad ? .fill : .fillEqually)
+            let row = Self.makeRow(
+                spacing: Self.isPad ? 8 : 4, alignment: .fill,
+                distribution: Self.isPad ? .fill : .fillEqually)
             for critter in rowCritters {
-                let tile = Self.makeCritterTile(imageName: critter.imageName, catches: critter.catches, isEmpty: critter.isEmpty)
+                let tile = Self.makeCritterTile(
+                    imageName: critter.imageName, catches: critter.catches, isEmpty: critter.isEmpty
+                )
                 tile.accessibilityLabel = critter.accessibilityLabel
                 row.addArrangedSubview(tile)
             }
@@ -226,4 +240,3 @@ extension StatsViewController {
 #Preview {
     StatsRouter.createModule()
 }
-

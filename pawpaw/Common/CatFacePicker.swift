@@ -28,7 +28,8 @@ final class CatFacePicker: UIView {
         for (candidate, button) in buttons {
             let isSelected = candidate == face
             button.layer.borderColor = (isSelected ? Theme.gold : UIColor.clear).cgColor
-            button.backgroundColor = isSelected
+            button.backgroundColor =
+                isSelected
                 ? Theme.accent.withAlphaComponent(0.35)
                 : Theme.background.withAlphaComponent(0.5)
             button.accessibilityTraits = isSelected ? [.button, .selected] : .button
@@ -47,7 +48,8 @@ final class CatFacePicker: UIView {
         let spacing: CGFloat = 10
         let faces = CatFace.allCases
         let rows = stride(from: 0, to: faces.count, by: perRow).map { start in
-            let row = UIStackView(arrangedSubviews: faces[start..<min(start + perRow, faces.count)].map(makeButton))
+            let row = UIStackView(
+                arrangedSubviews: faces[start..<min(start + perRow, faces.count)].map(makeButton))
             row.axis = .horizontal
             row.distribution = .fillEqually
             row.spacing = spacing
@@ -63,7 +65,7 @@ final class CatFacePicker: UIView {
             grid.topAnchor.constraint(equalTo: topAnchor),
             grid.bottomAnchor.constraint(equalTo: bottomAnchor),
             grid.leadingAnchor.constraint(equalTo: leadingAnchor),
-            grid.trailingAnchor.constraint(equalTo: trailingAnchor)
+            grid.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
         for row in rows {
             // Below `.defaultHigh` so the picker never narrows the layout it sits in.
@@ -72,7 +74,9 @@ final class CatFacePicker: UIView {
             fill.isActive = true
             if let maxSide {
                 let count = CGFloat(perRow)
-                row.widthAnchor.constraint(lessThanOrEqualToConstant: maxSide * count + spacing * (count - 1)).isActive = true
+                row.widthAnchor.constraint(
+                    lessThanOrEqualToConstant: maxSide * count + spacing * (count - 1)
+                ).isActive = true
             }
         }
         if let minSide {
@@ -94,10 +98,11 @@ final class CatFacePicker: UIView {
         button.accessibilityLabel = face.title
         button.accessibilityIdentifier = "face_\(face.rawValue)"
         button.heightAnchor.constraint(equalTo: button.widthAnchor).isActive = true
-        button.addAction(UIAction { [weak self] _ in
-            self?.select(face)
-            self?.onSelect?(face)
-        }, for: .touchUpInside)
+        button.addAction(
+            UIAction { [weak self] _ in
+                self?.select(face)
+                self?.onSelect?(face)
+            }, for: .touchUpInside)
 
         let picture = UIImageView(image: UIImage(named: face.imageName))
         picture.contentMode = .scaleAspectFit
@@ -111,7 +116,7 @@ final class CatFacePicker: UIView {
             picture.topAnchor.constraint(equalTo: button.topAnchor, constant: 6),
             picture.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: -6),
             picture.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: 6),
-            picture.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -6)
+            picture.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -6),
         ])
         buttons[face] = button
         return button

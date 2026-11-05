@@ -20,11 +20,13 @@ extension GameScene {
     }
 
     func playMissEffect(at position: CGPoint) {
-        emitRing(at: position, color: Theme.text.withAlphaComponent(0.6), endRadius: 28, lineWidth: 2)
+        emitRing(
+            at: position, color: Theme.text.withAlphaComponent(0.6), endRadius: 28, lineWidth: 2)
     }
 
     func playTrailEffect(at position: CGPoint) {
-        emitRing(at: position, color: Theme.text.withAlphaComponent(0.35), endRadius: 18, lineWidth: 1.5)
+        emitRing(
+            at: position, color: Theme.text.withAlphaComponent(0.35), endRadius: 18, lineWidth: 1.5)
     }
 
     /// Squash, burst with a spin, then shrink away, from wherever the critter was caught.
@@ -38,21 +40,25 @@ extension GameScene {
         // Negative angles spin clockwise.
         let burst = SKAction.group([
             .scaleX(to: baseX * 1.6, y: baseY * 1.6, duration: 0.14),
-            .rotate(toAngle: -.pi / 5, duration: 0.14, shortestUnitArc: false)
+            .rotate(toAngle: -.pi / 5, duration: 0.14, shortestUnitArc: false),
         ])
         burst.timingMode = .easeInEaseOut
         let vanish = SKAction.group([
             .scaleX(to: baseX * 0.1, y: baseY * 0.1, duration: 0.16),
             .rotate(toAngle: -.pi, duration: 0.16, shortestUnitArc: false),
-            .fadeOut(withDuration: 0.16)
+            .fadeOut(withDuration: 0.16),
         ])
         vanish.timingMode = .easeInEaseOut
         sprite.run(.sequence([squash, burst, vanish, .run(completion)]))
     }
 
     /// Scales a cached texture, rather than rebuilding a shape every frame.
-    func emitRing(at position: CGPoint, color: UIColor, endRadius: CGFloat, lineWidth: CGFloat, delay: TimeInterval = 0) {
-        let ring = SKSpriteNode(texture: PlayfieldTextures.ring(radius: endRadius, lineWidth: lineWidth))
+    func emitRing(
+        at position: CGPoint, color: UIColor, endRadius: CGFloat, lineWidth: CGFloat,
+        delay: TimeInterval = 0
+    ) {
+        let ring = SKSpriteNode(
+            texture: PlayfieldTextures.ring(radius: endRadius, lineWidth: lineWidth))
         ring.position = position
         ring.zPosition = Layer.effect
         ring.color = color
@@ -60,7 +66,12 @@ extension GameScene {
         ring.alpha = 0
         ring.setScale(8 / endRadius)
         world.addChild(ring)
-        let grow = SKAction.group([.scale(to: 1, duration: 0.5), .sequence([.fadeAlpha(to: color.cgColor.alpha, duration: 0), .fadeOut(withDuration: 0.5)])])
+        let grow = SKAction.group([
+            .scale(to: 1, duration: 0.5),
+            .sequence([
+                .fadeAlpha(to: color.cgColor.alpha, duration: 0), .fadeOut(withDuration: 0.5),
+            ]),
+        ])
         grow.timingMode = .easeOut
         ring.run(.sequence([.wait(forDuration: delay), grow, .removeFromParent()]))
     }
@@ -70,7 +81,7 @@ extension GameScene {
         let cells: [(texture: SKTexture, color: UIColor, count: Int, big: Bool)] = [
             (PlayfieldTextures.star, Theme.gold, bigBurst ? 4 : 2, true),
             (PlayfieldTextures.star, .white, bigBurst ? 4 : 2, true),
-            (PlayfieldTextures.dot, Theme.gold, bigBurst ? 3 : 1, false)
+            (PlayfieldTextures.dot, Theme.gold, bigBurst ? 3 : 1, false),
         ]
         for cell in cells {
             // Bursts `count` particles over 0.08 s.
@@ -124,7 +135,9 @@ extension GameScene {
             let progress = 1 - exp(-6 * t) * cos(3 * .pi * t)
             node.setScale(0.4 + 0.6 * CGFloat(progress))
         }
-        let rise = SKAction.group([.moveBy(x: 0, y: 70, duration: 0.8), .fadeOut(withDuration: 0.8)])
+        let rise = SKAction.group([
+            .moveBy(x: 0, y: 70, duration: 0.8), .fadeOut(withDuration: 0.8),
+        ])
         rise.timingMode = .easeOut
         label.run(.group([pop, .sequence([.wait(forDuration: 0.1), rise, .removeFromParent()])]))
     }

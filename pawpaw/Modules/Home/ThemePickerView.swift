@@ -28,7 +28,7 @@ final class ThemePickerView: UIView {
             row.topAnchor.constraint(equalTo: topAnchor),
             row.bottomAnchor.constraint(equalTo: bottomAnchor),
             row.leadingAnchor.constraint(equalTo: leadingAnchor),
-            row.trailingAnchor.constraint(equalTo: trailingAnchor)
+            row.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
         accessibilityIdentifier = "themeControl"
     }
@@ -58,7 +58,8 @@ private final class ThemeTile: UIControl {
 
     init(theme: PlayfieldTheme) {
         self.theme = theme
-        let background: CachedBackgroundView = theme == .wood
+        let background: CachedBackgroundView =
+            theme == .wood
             ? WoodCrateBackgroundView()
             : NatureBackgroundView(theme: theme)
         // Phone width, so the tile is a miniature of the full background.
@@ -89,7 +90,7 @@ private final class ThemeTile: UIControl {
             stack.leadingAnchor.constraint(equalTo: leadingAnchor),
             stack.trailingAnchor.constraint(equalTo: trailingAnchor),
             thumbnail.heightAnchor.constraint(equalTo: thumbnail.widthAnchor, multiplier: 0.75),
-            thumbnail.heightAnchor.constraint(greaterThanOrEqualToConstant: Theme.minimumTapSize)
+            thumbnail.heightAnchor.constraint(greaterThanOrEqualToConstant: Theme.minimumTapSize),
         ])
 
         isAccessibilityElement = true
@@ -112,7 +113,8 @@ private final class ThemeTile: UIControl {
     }
 
     private func updateAppearance() {
-        thumbnail.layer.borderColor = (isSelected ? Theme.accent : Theme.text.withAlphaComponent(0.2)).cgColor
+        thumbnail.layer.borderColor =
+            (isSelected ? Theme.accent : Theme.text.withAlphaComponent(0.2)).cgColor
         nameLabel.textColor = isSelected ? Theme.accent : Theme.text.withAlphaComponent(0.85)
         accessibilityTraits = isSelected ? [.button, .selected] : .button
     }

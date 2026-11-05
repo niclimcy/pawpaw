@@ -25,16 +25,20 @@ final class WoodCrateBackgroundView: CachedBackgroundView {
 
         let plankCount = Int(ceil(bounds.height / plankHeight))
         for index in 0..<plankCount {
-            let plank = CGRect(x: 0, y: CGFloat(index) * plankHeight, width: bounds.width, height: plankHeight)
+            let plank = CGRect(
+                x: 0, y: CGFloat(index) * plankHeight, width: bounds.width, height: plankHeight)
             drawPlank(plank, width: bounds.width, in: ctx, rng: &rng)
         }
         Self.drawVignette(in: ctx, size: size, darkness: 0.55)
     }
 
-    private func drawPlank(_ plank: CGRect, width: CGFloat, in ctx: CGContext, rng: inout SeededGenerator) {
+    private func drawPlank(
+        _ plank: CGRect, width: CGFloat, in ctx: CGContext, rng: inout SeededGenerator
+    ) {
         let bounds = CGRect(x: 0, y: 0, width: width, height: plank.maxY)
         let shade = CGFloat.random(in: -0.025...0.035, using: &rng)
-        UIColor(red: 0.20 + shade, green: 0.125 + shade * 0.7, blue: 0.075 + shade * 0.4, alpha: 1).setFill()
+        UIColor(red: 0.20 + shade, green: 0.125 + shade * 0.7, blue: 0.075 + shade * 0.4, alpha: 1)
+            .setFill()
         ctx.fill(plank)
 
         for _ in 0..<14 {
@@ -44,11 +48,13 @@ final class WoodCrateBackgroundView: CachedBackgroundView {
             let endX = startX + CGFloat.random(in: bounds.width * 0.3...bounds.width, using: &rng)
             let path = UIBezierPath()
             path.move(to: CGPoint(x: startX, y: y))
-            path.addCurve(to: CGPoint(x: endX, y: y + CGFloat.random(in: -3...3, using: &rng)),
-                          controlPoint1: CGPoint(x: startX + (endX - startX) * 0.3, y: y - amplitude),
-                          controlPoint2: CGPoint(x: startX + (endX - startX) * 0.7, y: y + amplitude))
+            path.addCurve(
+                to: CGPoint(x: endX, y: y + CGFloat.random(in: -3...3, using: &rng)),
+                controlPoint1: CGPoint(x: startX + (endX - startX) * 0.3, y: y - amplitude),
+                controlPoint2: CGPoint(x: startX + (endX - startX) * 0.7, y: y + amplitude))
             path.lineWidth = CGFloat.random(in: 0.6...1.6, using: &rng)
-            UIColor.black.withAlphaComponent(CGFloat.random(in: 0.08...0.22, using: &rng)).setStroke()
+            UIColor.black.withAlphaComponent(CGFloat.random(in: 0.08...0.22, using: &rng))
+                .setStroke()
             path.stroke()
         }
 
@@ -56,9 +62,10 @@ final class WoodCrateBackgroundView: CachedBackgroundView {
         let knots = Int.random(in: 0...1, using: &rng)
         for _ in 0..<(bounds.width > 120 ? knots : 0) {
             let size = CGFloat.random(in: 14...26, using: &rng)
-            let knot = CGRect(x: CGFloat.random(in: 40...(bounds.width - 60), using: &rng),
-                              y: plank.midY - size / 2 + CGFloat.random(in: -10...10, using: &rng),
-                              width: size * 1.6, height: size)
+            let knot = CGRect(
+                x: CGFloat.random(in: 40...(bounds.width - 60), using: &rng),
+                y: plank.midY - size / 2 + CGFloat.random(in: -10...10, using: &rng),
+                width: size * 1.6, height: size)
             UIColor.black.withAlphaComponent(0.28).setFill()
             UIBezierPath(ovalIn: knot).fill()
             UIColor.black.withAlphaComponent(0.18).setStroke()
@@ -77,7 +84,8 @@ final class WoodCrateBackgroundView: CachedBackgroundView {
             UIColor(white: 0.32, alpha: 1).setFill()
             UIBezierPath(ovalIn: nail).fill()
             UIColor(white: 0.6, alpha: 0.8).setFill()
-            UIBezierPath(ovalIn: CGRect(x: nail.minX + 2, y: nail.minY + 2, width: 3, height: 3)).fill()
+            UIBezierPath(ovalIn: CGRect(x: nail.minX + 2, y: nail.minY + 2, width: 3, height: 3))
+                .fill()
         }
     }
 }
@@ -88,7 +96,8 @@ extension UIViewController {
     /// Replaces any previously installed background.
     func installBackground(theme: PlayfieldTheme) {
         view.viewWithTag(Self.backgroundTag)?.removeFromSuperview()
-        let background: UIView = theme == .wood ? WoodCrateBackgroundView() : NatureBackgroundView(theme: theme)
+        let background: UIView =
+            theme == .wood ? WoodCrateBackgroundView() : NatureBackgroundView(theme: theme)
         background.tag = Self.backgroundTag
         background.translatesAutoresizingMaskIntoConstraints = false
         view.insertSubview(background, at: 0)
@@ -96,7 +105,7 @@ extension UIViewController {
             background.topAnchor.constraint(equalTo: view.topAnchor),
             background.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             background.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            background.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            background.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
     }
 }

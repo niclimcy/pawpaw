@@ -32,7 +32,10 @@ final class ProfileEditorView: UIView, UITextFieldDelegate {
     }
 
     // MARK: Showing
-    func present(adding: Bool, name: String, face: CatFace, disabledKinds: Set<TargetKind> = [], canDelete: Bool) {
+    func present(
+        adding: Bool, name: String, face: CatFace, disabledKinds: Set<TargetKind> = [],
+        canDelete: Bool
+    ) {
         isAdding = adding
         titleLabel.text = adding ? "Add a cat" : "Edit cat"
         nameField.text = name
@@ -50,10 +53,12 @@ final class ProfileEditorView: UIView, UITextFieldDelegate {
 
     func dismiss() {
         nameField.resignFirstResponder()
-        UIView.animate(withDuration: 0.2, animations: { self.alpha = 0 }, completion: { _ in
-            self.isHidden = true
-            UIAccessibility.post(notification: .screenChanged, argument: nil)
-        })
+        UIView.animate(
+            withDuration: 0.2, animations: { self.alpha = 0 },
+            completion: { _ in
+                self.isHidden = true
+                UIAccessibility.post(notification: .screenChanged, argument: nil)
+            })
     }
 
     override func accessibilityPerformEscape() -> Bool {
@@ -86,7 +91,8 @@ final class ProfileEditorView: UIView, UITextFieldDelegate {
             let isOn = !disabledKinds.contains(kind)
             button.alpha = isOn ? 1 : 0.35
             button.layer.borderColor = (isOn ? Theme.gold : UIColor.clear).cgColor
-            button.backgroundColor = isOn
+            button.backgroundColor =
+                isOn
                 ? Theme.accent.withAlphaComponent(0.25)
                 : Theme.background.withAlphaComponent(0.5)
             button.accessibilityValue = isOn ? "On" : "Off"
@@ -126,7 +132,10 @@ final class ProfileEditorView: UIView, UITextFieldDelegate {
     }
 
     // MARK: UITextFieldDelegate
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+    func textField(
+        _ textField: UITextField, shouldChangeCharactersIn range: NSRange,
+        replacementString string: String
+    ) -> Bool {
         nameField.shouldChangeCharacters(in: range, replacementString: string)
     }
 

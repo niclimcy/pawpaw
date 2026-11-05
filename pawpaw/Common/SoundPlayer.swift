@@ -102,7 +102,9 @@ final class SoundPlayer {
     }
 
     /// Sine sweep from `start` to `end` Hz.
-    private static func chirp(from start: Double, to end: Double, duration: Double, volume: Float) -> [Float] {
+    private static func chirp(from start: Double, to end: Double, duration: Double, volume: Float)
+        -> [Float]
+    {
         let count = Int(duration * sampleRate)
         var phase = 0.0
         return (0..<count).map { index in
@@ -115,7 +117,9 @@ final class SoundPlayer {
 
     /// High-passed noise pulsing at `burstRate` Hz.
     /// `bright` leans it toward 6–12 kHz, where cats hear best.
-    private static func noiseBursts(duration: Double, burstRate: Double, volume: Float, bright: Bool = false) -> [Float] {
+    private static func noiseBursts(
+        duration: Double, burstRate: Double, volume: Float, bright: Bool = false
+    ) -> [Float] {
         let count = Int(duration * sampleRate)
         // Bright: a steeper high-pass, then a gentle low-pass so the top end doesn't hiss.
         let highPass: Float = bright ? 0.95 : 0.6

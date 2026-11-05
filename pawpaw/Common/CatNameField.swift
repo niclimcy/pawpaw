@@ -25,7 +25,9 @@ final class CatNameField: UITextField {
         autocapitalizationType = .words
         autocorrectionType = .no
         accessibilityIdentifier = "catNameField"
-        heightAnchor.constraint(greaterThanOrEqualToConstant: max(Theme.minimumTapSize, Theme.scaled(52))).isActive = true
+        heightAnchor.constraint(
+            greaterThanOrEqualToConstant: max(Theme.minimumTapSize, Theme.scaled(52))
+        ).isActive = true
     }
 
     required init?(coder: NSCoder) {
@@ -43,7 +45,8 @@ final class CatNameField: UITextField {
         guard room > 0 else { return false }
         let kept = String(string.prefix(room))
         text = current.replacingCharacters(in: swiftRange, with: kept)
-        let caretOffset = current.distance(from: current.startIndex, to: swiftRange.lowerBound) + kept.count
+        let caretOffset =
+            current.distance(from: current.startIndex, to: swiftRange.lowerBound) + kept.count
         if let caret = position(from: beginningOfDocument, offset: caretOffset) {
             selectedTextRange = textRange(from: caret, to: caret)
         }

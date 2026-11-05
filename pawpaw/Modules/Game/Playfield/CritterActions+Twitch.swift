@@ -8,7 +8,9 @@ import SpriteKit
 extension CritterActions {
     /// 1–3 short twitches at random times in a freeze, with stillness before each: a swing out,
     /// back past rest, then settle. Stillness then a sudden twitch is what makes a cat stalk and pounce.
-    static func twitches(during pause: TimeInterval, style: MovementStyle, turns: Bool) -> [(start: TimeInterval, action: SKAction)] {
+    static func twitches(during pause: TimeInterval, style: MovementStyle, turns: Bool) -> [(
+        start: TimeInterval, action: SKAction
+    )] {
         let canJiggle = turns && style.twitchAngle > 0
         let canShuffle = style.twitchShift > 0
         guard canJiggle || canShuffle, pause >= 0.25 else { return [] }
@@ -21,12 +23,17 @@ extension CritterActions {
             let step = duration / 3
             let steps: [SKAction]
             if canJiggle && (!canShuffle || Bool.random()) {
-                let angle = CGFloat(style.twitchAngle * Double.random(in: 0.6...1) * (Bool.random() ? 1 : -1))
+                let angle = CGFloat(
+                    style.twitchAngle * Double.random(in: 0.6...1) * (Bool.random() ? 1 : -1))
                 steps = shape.map { .rotate(byAngle: angle * $0, duration: step) }
             } else {
                 let direction = CGFloat.random(in: 0..<(2 * .pi))
                 let reach = CGFloat(style.twitchShift * Double.random(in: 0.6...1))
-                steps = shape.map { .moveBy(x: cos(direction) * reach * $0, y: sin(direction) * reach * $0, duration: step) }
+                steps = shape.map {
+                    .moveBy(
+                        x: cos(direction) * reach * $0, y: sin(direction) * reach * $0,
+                        duration: step)
+                }
             }
             return (slot * Double(index) + delay, SKAction.sequence(steps))
         }
@@ -34,16 +41,21 @@ extension CritterActions {
 
     /// Turns `amount` one way, then the other, then back to rest.
     static func swing(_ amount: CGFloat, period: TimeInterval, eased: Bool) -> SKAction {
-        let steps = [amount, -2 * amount, amount].map { SKAction.rotate(byAngle: $0, duration: period * TimeInterval(abs($0 / amount)) / 4) }
+        let steps = [amount, -2 * amount, amount].map {
+            SKAction.rotate(byAngle: $0, duration: period * TimeInterval(abs($0 / amount)) / 4)
+        }
         if eased { steps.forEach { $0.timingMode = .easeInEaseOut } }
         return .sequence(steps)
     }
 
     /// Scales the node to 1 plus each of `values`, evenly spaced over `period`.
     /// `scaleX(by:y:)` can't do this: it adds to the scale rather than multiplying it.
-    static func pulse(_ values: [CGFloat], period: TimeInterval, eased: Bool, xOnly: Bool = false) -> SKAction {
+    static func pulse(_ values: [CGFloat], period: TimeInterval, eased: Bool, xOnly: Bool = false)
+        -> SKAction
+    {
         .customAction(withDuration: period) { node, elapsed in
-            let position = min(max(Double(elapsed) / max(period, .ulpOfOne), 0), 1) * Double(values.count - 1)
+            let position =
+                min(max(Double(elapsed) / max(period, .ulpOfOne), 0), 1) * Double(values.count - 1)
             let index = min(Int(position), values.count - 2)
             var t = CGFloat(position) - CGFloat(index)
             // Smoothstep, close to `easeInEaseOut` in each segment.

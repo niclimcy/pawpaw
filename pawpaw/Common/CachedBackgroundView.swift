@@ -44,7 +44,9 @@ class CachedBackgroundView: UIView {
         renderedSize = size
         let zoomOut = max(1, (canvasWidth ?? size.width) / size.width)
         let canvas = CGSize(width: size.width * zoomOut, height: size.height * zoomOut)
-        let key = "\(drawingKey)-\(Int(canvas.width))x\(Int(canvas.height))-\(Int(size.width))" as NSString
+        let key =
+            "\(drawingKey)-\(Int(canvas.width))x\(Int(canvas.height))-\(Int(size.width))"
+            as NSString
         if let cached = Self.cache.object(forKey: key) {
             show(cached)
             return
@@ -65,12 +67,18 @@ class CachedBackgroundView: UIView {
     }
 
     static func drawVignette(in ctx: CGContext, size: CGSize, darkness: CGFloat) {
-        let colors = [UIColor.clear.cgColor, UIColor.black.withAlphaComponent(darkness).cgColor] as CFArray
-        guard let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: colors, locations: [0.45, 1]) else {
+        let colors =
+            [UIColor.clear.cgColor, UIColor.black.withAlphaComponent(darkness).cgColor] as CFArray
+        guard
+            let gradient = CGGradient(
+                colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: colors, locations: [0.45, 1])
+        else {
             return
         }
         let center = CGPoint(x: size.width / 2, y: size.height / 2)
         let radius = hypot(size.width, size.height) / 2
-        ctx.drawRadialGradient(gradient, startCenter: center, startRadius: 0, endCenter: center, endRadius: radius, options: [])
+        ctx.drawRadialGradient(
+            gradient, startCenter: center, startRadius: 0, endCenter: center, endRadius: radius,
+            options: [])
     }
 }

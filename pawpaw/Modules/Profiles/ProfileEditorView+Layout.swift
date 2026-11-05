@@ -25,7 +25,7 @@ extension ProfileEditorView {
         let cancelButton = makeCancelButton()
         let stack = UIStackView(arrangedSubviews: [
             titleLabel, makeNameField(), facePicker, makeCritterPicker(),
-            saveButton, cancelButton, makeDeleteButton()
+            saveButton, cancelButton, makeDeleteButton(),
         ])
         // Required, so fitting the card shrinks the face picker rather than squashing text.
         for view in [titleLabel, saveButton, cancelButton, deleteButton] {
@@ -41,7 +41,7 @@ extension ProfileEditorView {
             stack.topAnchor.constraint(equalTo: card.topAnchor, constant: 24),
             stack.bottomAnchor.constraint(equalTo: card.bottomAnchor, constant: -12),
             stack.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: 24),
-            stack.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -24)
+            stack.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -24),
         ])
         centerInScroll(card, maxWidth: Theme.scaled(380))
     }
@@ -70,11 +70,13 @@ extension ProfileEditorView {
         container.addSubview(card)
 
         // Lower priority so `maxWidth` wins.
-        let fillWidth = card.widthAnchor.constraint(equalTo: container.widthAnchor, constant: -margin * 2)
+        let fillWidth = card.widthAnchor.constraint(
+            equalTo: container.widthAnchor, constant: -margin * 2)
         fillWidth.priority = Self.fillWidthPriority
         // Against the safe area rather than the scroll view, so the keyboard scrolls the card
         // instead of shrinking the faces.
-        let fit = card.heightAnchor.constraint(lessThanOrEqualTo: safeAreaLayoutGuide.heightAnchor, constant: -margin * 2)
+        let fit = card.heightAnchor.constraint(
+            lessThanOrEqualTo: safeAreaLayoutGuide.heightAnchor, constant: -margin * 2)
         fit.priority = Self.fitPriority
         NSLayoutConstraint.activate([
             scroll.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
@@ -87,18 +89,22 @@ extension ProfileEditorView {
             container.leadingAnchor.constraint(equalTo: scroll.contentLayoutGuide.leadingAnchor),
             container.trailingAnchor.constraint(equalTo: scroll.contentLayoutGuide.trailingAnchor),
             container.widthAnchor.constraint(equalTo: scroll.frameLayoutGuide.widthAnchor),
-            container.heightAnchor.constraint(greaterThanOrEqualTo: scroll.frameLayoutGuide.heightAnchor),
+            container.heightAnchor.constraint(
+                greaterThanOrEqualTo: scroll.frameLayoutGuide.heightAnchor),
 
             card.centerXAnchor.constraint(equalTo: container.centerXAnchor),
             card.centerYAnchor.constraint(equalTo: container.centerYAnchor),
             card.topAnchor.constraint(greaterThanOrEqualTo: container.topAnchor, constant: margin),
-            card.bottomAnchor.constraint(lessThanOrEqualTo: container.bottomAnchor, constant: -margin),
+            card.bottomAnchor.constraint(
+                lessThanOrEqualTo: container.bottomAnchor, constant: -margin),
             // Required, so nothing inside can push the card past the screen margins.
-            card.leadingAnchor.constraint(greaterThanOrEqualTo: container.leadingAnchor, constant: margin),
-            card.trailingAnchor.constraint(lessThanOrEqualTo: container.trailingAnchor, constant: -margin),
+            card.leadingAnchor.constraint(
+                greaterThanOrEqualTo: container.leadingAnchor, constant: margin),
+            card.trailingAnchor.constraint(
+                lessThanOrEqualTo: container.trailingAnchor, constant: -margin),
             card.widthAnchor.constraint(lessThanOrEqualToConstant: maxWidth),
             fillWidth,
-            fit
+            fit,
         ])
     }
 }

@@ -37,20 +37,28 @@ enum Theme {
         control.selectedSegmentTintColor = selectedTint
         control.backgroundColor = panel
         applySegmentedFonts(to: control, fontSize: fontSize, selectedText: selectedText)
-        control.heightAnchor.constraint(greaterThanOrEqualToConstant: max(minimumTapSize, scaled(36))).isActive = true
+        control.heightAnchor.constraint(
+            greaterThanOrEqualToConstant: max(minimumTapSize, scaled(36))
+        )
+        .isActive = true
     }
 
     /// Segmented controls don't follow Dynamic Type, so call again when the text size changes.
-    static func applySegmentedFonts(to control: UISegmentedControl, fontSize: CGFloat, selectedText: UIColor = .white) {
+    static func applySegmentedFonts(
+        to control: UISegmentedControl, fontSize: CGFloat, selectedText: UIColor = .white
+    ) {
         let font = roundedFont(size: scaled(fontSize), weight: .bold)
         control.setTitleTextAttributes([.foregroundColor: text, .font: font], for: .normal)
-        control.setTitleTextAttributes([.foregroundColor: selectedText, .font: font], for: .selected)
+        control.setTitleTextAttributes(
+            [.foregroundColor: selectedText, .font: font], for: .selected)
     }
 
     /// Dynamic Type–scaled; set `adjustsFontForContentSizeCategory` on labels to follow changes live.
     static func roundedFont(size: CGFloat, weight: UIFont.Weight = .heavy) -> UIFont {
         let base = UIFont.systemFont(ofSize: size, weight: weight)
-        let rounded = base.fontDescriptor.withDesign(.rounded).map { UIFont(descriptor: $0, size: size) } ?? base
+        let rounded =
+            base.fontDescriptor.withDesign(.rounded).map { UIFont(descriptor: $0, size: size) }
+            ?? base
         return UIFontMetrics.default.scaledFont(for: rounded, maximumPointSize: size * maxTextScale)
     }
 
@@ -97,7 +105,8 @@ enum Theme {
         weight: UIFont.Weight = .bold,
         background: UIColor = accent,
         foreground: UIColor = .white,
-        insets: NSDirectionalEdgeInsets = NSDirectionalEdgeInsets(top: 14, leading: 36, bottom: 14, trailing: 36)
+        insets: NSDirectionalEdgeInsets = NSDirectionalEdgeInsets(
+            top: 14, leading: 36, bottom: 14, trailing: 36)
     ) -> UIButton {
         var config = UIButton.Configuration.filled()
         config.title = title
@@ -124,14 +133,17 @@ enum Theme {
         config.image = image.flatMap { UIImage(systemName: $0) }
         config.imagePadding = 6
         config.baseForegroundColor = foreground
-        config.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
+        config.contentInsets = NSDirectionalEdgeInsets(
+            top: 12, leading: 16, bottom: 12, trailing: 16)
         config.titleTextAttributesTransformer = fontTransformer(size: fontSize, weight: .bold)
         let button = UIButton(configuration: config)
         button.heightAnchor.constraint(greaterThanOrEqualToConstant: minimumTapSize).isActive = true
         return button
     }
 
-    static func fontTransformer(size: CGFloat, weight: UIFont.Weight) -> UIConfigurationTextAttributesTransformer {
+    static func fontTransformer(size: CGFloat, weight: UIFont.Weight)
+        -> UIConfigurationTextAttributesTransformer
+    {
         UIConfigurationTextAttributesTransformer { incoming in
             var outgoing = incoming
             outgoing.font = roundedFont(size: scaled(size), weight: weight)

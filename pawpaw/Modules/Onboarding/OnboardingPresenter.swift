@@ -19,7 +19,8 @@ final class OnboardingPresenter: OnboardingPresenterProtocol {
     static let pages = [
         OnboardingPage(
             title: "A game for your cat",
-            body: "Little critters scurry across the screen, and your cat catches them with a tap of the paw.",
+            body:
+                "Little critters scurry across the screen, and your cat catches them with a tap of the paw.",
             imageNames: ["critter_mouse", "critter_butterfly", "critter_feather"]
         ),
         OnboardingPage(
@@ -32,7 +33,7 @@ final class OnboardingPresenter: OnboardingPresenterProtocol {
             body: "To leave, press and hold the house button. A quick tap from a paw won't do it.",
             imageNames: [],
             symbolName: "house.fill"
-        )
+        ),
     ]
 
     /// The intro pages plus the cat setup.

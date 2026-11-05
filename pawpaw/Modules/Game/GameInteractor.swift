@@ -71,7 +71,8 @@ final class GameInteractor: GameInteractorInputProtocol {
         self.tuning = tuning
         let suited = enabledKinds.filter { $0.canAppear(on: theme) }
         // Only empty for legacy profiles with just single-theme critters enabled; fall back to every suitable critter.
-        self.spawnableKinds = suited.isEmpty ? TargetKind.allCases.filter { $0.canAppear(on: theme) } : suited
+        self.spawnableKinds =
+            suited.isEmpty ? TargetKind.allCases.filter { $0.canAppear(on: theme) } : suited
     }
 
     // MARK: GameInteractorInputProtocol
@@ -175,8 +176,10 @@ final class GameInteractor: GameInteractorInputProtocol {
             lastLureKind = kind
             lureIsFinal = !settings.afterRound.continues(afterAutoRounds: autoRounds)
         }
-        let start = kind.movementStyle.surfaces
-            ? MovementPlanner.lureOpenPoint(from: CGPoint(x: 0.5, y: 0.5), style: kind.movementStyle, avoiding: cover.frame)
+        let start =
+            kind.movementStyle.surfaces
+            ? MovementPlanner.lureOpenPoint(
+                from: CGPoint(x: 0.5, y: 0.5), style: kind.movementStyle, avoiding: cover.frame)
             : MovementPlanner.lureEntryPoint(awayFrom: touch, avoiding: cover.frame)
         moveLure(kind: kind, from: start, leadIn: MovementPlanner.leadIn(for: kind.movementStyle))
     }
@@ -244,12 +247,14 @@ final class GameInteractor: GameInteractorInputProtocol {
         // Scheduled from the main actor, so these fire on the main run loop.
         // A timer outliving the interactor stops itself, as deinit can't reach the timers.
         if mode.duration != nil {
-            clockTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
+            clockTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) {
+                [weak self] timer in
                 guard let self else { return timer.invalidate() }
                 MainActor.assumeIsolated { self.tick() }
             }
         }
-        spawnTimer = Timer.scheduledTimer(withTimeInterval: Self.spawnInterval, repeats: true) { [weak self] timer in
+        spawnTimer = Timer.scheduledTimer(withTimeInterval: Self.spawnInterval, repeats: true) {
+            [weak self] timer in
             guard let self else { return timer.invalidate() }
             MainActor.assumeIsolated { self.spawnTarget() }
         }

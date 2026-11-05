@@ -25,7 +25,9 @@ final class OrientationNavigationController: UINavigationController {
         matchSafeAreaToStatusBar()
     }
 
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(
+        to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator
+    ) {
         super.viewWillTransition(to: size, with: coordinator)
         // The status bar shows or hides as the rotation finishes, which doesn't always lay out again.
         coordinator.animate(alongsideTransition: nil) { [weak self] _ in
@@ -41,7 +43,9 @@ final class OrientationNavigationController: UINavigationController {
         guard let window = view.window else { return }
         // Notched phones and newer iPads always have a bottom inset; their safe area isn't the status bar's.
         let reported = window.safeAreaInsets
-        guard reported.bottom == 0, let statusBar = window.windowScene?.statusBarManager else { return }
+        guard reported.bottom == 0, let statusBar = window.windowScene?.statusBarManager else {
+            return
+        }
         let statusBarHeight = statusBar.isStatusBarHidden ? 0 : statusBar.statusBarFrame.height
         let correction = statusBarHeight - reported.top
         guard additionalSafeAreaInsets.top != correction else { return }
