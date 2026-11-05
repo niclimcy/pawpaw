@@ -1,0 +1,38 @@
+docs/architecture.md
+  h_36695e5767c2ad 13
+docs/game-design.md
+  h_36695e5767c2ad 60-65
+pawpaw/Entities/PlayfieldTuning.swift
+  h_36695e5767c2ad 51-64
+pawpaw/Modules/Onboarding/OnboardingAmbientView.swift
+  h_36695e5767c2ad 1-78
+pawpaw/Modules/Onboarding/OnboardingCountdownView.swift
+  h_36695e5767c2ad 1-144
+pawpaw/Modules/Onboarding/OnboardingHoldPracticeView.swift
+  h_36695e5767c2ad 1-142
+pawpaw/Modules/Onboarding/OnboardingPlayfieldView.swift
+  h_36695e5767c2ad 1-154
+pawpaw/Modules/Onboarding/OnboardingPresenter.swift
+  h_36695e5767c2ad 17,21-23,26-29,32-34,38-64,69-73,77,98,103,105-110,114-143,147-150,154-159,162
+pawpaw/Modules/Onboarding/OnboardingProtocols.swift
+  h_36695e5767c2ad 8-18,22-26,32-33,35-36,38-39,41,56-61
+pawpaw/Modules/Onboarding/OnboardingViewController+Practice.swift
+  h_36695e5767c2ad 1-105
+pawpaw/Modules/Onboarding/OnboardingViewController.swift
+  h_36695e5767c2ad 16,26-32,61,84-85,89-90,92,117,119,121-125,145-156,185,215,362,369-382,415-419,423-446,511-514,524-525,528-529,553-557,563-575,578,580-581,583-584,586,588,599-603,616-630,653-663
+pawpawTests/Onboarding/OnboardingTests.swift
+  h_36695e5767c2ad 55-56,61,102,107-124,135-233
+pawpawTests/Support/StatsOnboardingSpies.swift
+  h_36695e5767c2ad 55,57-59,61-63,65,69-70,72-75,77-80
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "294b67d08ce7101276190fe79813e6cf02f23d8d",
+  "prompts": {},
+  "humans": {
+    "h_36695e5767c2ad": {
+      "author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
