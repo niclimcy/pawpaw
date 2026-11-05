@@ -1,0 +1,62 @@
+docs/app-store/privacy-policy.md
+  h_36695e5767c2ad 43,47
+site/assets/art/critter_feather.svg
+  h_36695e5767c2ad 1-15
+site/privacy.html
+  h_36695e5767c2ad 1-91
+site/assets/art/critter_mouse.svg
+  h_36695e5767c2ad 1-40
+site/assets/art/logo_paw.svg
+  h_36695e5767c2ad 1-20
+site/assets/art/cat_siamese.svg
+  h_36695e5767c2ad 1-27
+site/assets/art/cat_orange.svg
+  h_36695e5767c2ad 1-34
+site/assets/art/critter_laser.svg
+  h_36695e5767c2ad 1-10
+site/assets/art/critter_butterfly.svg
+  h_36695e5767c2ad 1-24
+site/404.html
+  h_36695e5767c2ad 1-24
+site/assets/art/cat_gray.svg
+  h_36695e5767c2ad 1-34
+site/assets/art/critter_fish.svg
+  h_36695e5767c2ad 1-15
+site/assets/art/critter_lizard.svg
+  h_36695e5767c2ad 1-31
+docs/README.md
+  h_36695e5767c2ad 7
+site/assets/art/critter_cricket.svg
+  h_36695e5767c2ad 1-21
+site/assets/art/critter_bug.svg
+  h_36695e5767c2ad 1-47
+site/assets/art/critter_ribbon.svg
+  h_36695e5767c2ad 1-17
+site/index.html
+  h_36695e5767c2ad 1-214
+site/assets/art/cat_black.svg
+  h_36695e5767c2ad 1-23
+site/assets/art/cat_calico.svg
+  h_36695e5767c2ad 1-28
+site/assets/art/critter_bird.svg
+  h_36695e5767c2ad 1-21
+site/assets/art/cat_white.svg
+  h_36695e5767c2ad 1-23
+.github/workflows/pages.yml
+  h_36695e5767c2ad 1-31
+site/styles.css
+  h_36695e5767c2ad 1-237
+site/support.html
+  h_36695e5767c2ad 1-149
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fa5e682d50707c77e780ab416ca5bce2b9981f01",
+  "prompts": {},
+  "humans": {
+    "h_36695e5767c2ad": {
+      "author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
