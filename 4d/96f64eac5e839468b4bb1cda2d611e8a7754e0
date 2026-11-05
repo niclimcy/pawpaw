@@ -1,0 +1,18 @@
+pawpaw.xcodeproj/project.pbxproj
+  h_36695e5767c2ad 224,263
+pawpaw/Common/HoldToConfirm.swift
+  h_36695e5767c2ad 96-140
+pawpaw/Modules/Onboarding/OnboardingViewController.swift
+  h_36695e5767c2ad 72,74,132,449,510-533,580,612,629
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4d96f64eac5e839468b4bb1cda2d611e8a7754e0",
+  "prompts": {},
+  "humans": {
+    "h_36695e5767c2ad": {
+      "author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
