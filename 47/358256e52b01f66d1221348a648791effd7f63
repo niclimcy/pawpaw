@@ -1,0 +1,29 @@
+docs/development.md
+  s_b359d30ef86d55::t_e513fd69de91a0 35-36,40-49
+pawpaw/Entities/PlayfieldTuning.swift
+  s_b359d30ef86d55::t_aa0dc27e8bacf2 11-13,68-71
+pawpaw/Modules/Game/GameInteractor.swift
+  s_b359d30ef86d55::t_e356eabf9da6e2 281-283
+pawpaw/Modules/Game/MovementPlanner.swift
+  s_b359d30ef86d55::t_3bee6100605bda 23-29,40-43,49-58,122,133-136,248,250-264
+pawpaw/Modules/Game/Playfield/PlayfieldGeometry.swift
+  s_b359d30ef86d55::t_5c8ad0dc61fc39 12-22,45-52,54,63,73-78,112,122,143,154-162
+pawpawTests/Game/MovementPlannerTests.swift
+  s_b359d30ef86d55::t_b5051a3f7a7797 42-44,49-72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "47358256e52b01f66d1221348a648791effd7f63",
+  "prompts": {},
+  "sessions": {
+    "s_b359d30ef86d55": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "19401578-0270-4f2e-b94e-681a05db9422",
+        "model": "openrouter/OpenRouter/anthropic/claude-opus-5.5"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}

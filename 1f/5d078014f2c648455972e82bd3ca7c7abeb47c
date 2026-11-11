@@ -1,0 +1,21 @@
+docs/architecture.md
+  s_b359d30ef86d55::t_0b3143d137dbdb 9-10
+pawpaw/Entities/MovementPath.swift
+  s_b359d30ef86d55::t_dd2207211fee86 48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1f5d078014f2c648455972e82bd3ca7c7abeb47c",
+  "prompts": {},
+  "sessions": {
+    "s_b359d30ef86d55": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "19401578-0270-4f2e-b94e-681a05db9422",
+        "model": "openrouter/OpenRouter/anthropic/claude-opus-5.5"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}

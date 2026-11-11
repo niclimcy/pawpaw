@@ -1,0 +1,60 @@
+pawpawTests/Entities/CatProfileTests.swift
+  s_b359d30ef86d55::t_222bfd38619d6e 89-91
+pawpaw/Modules/Profiles/ProfileEditorView+Layout.swift
+  s_b359d30ef86d55::t_0d1ec1f8f9edf8 10
+docs/architecture.md
+  s_b359d30ef86d55::t_de41d971151327 7,12-13
+pawpaw/Common/Theme.swift
+  s_b359d30ef86d55::t_bc1b91ef4e56ac 15-38,59,72,89-99,132,142,164
+pawpaw/Common/CompactLayoutFit+Scroll.swift
+  s_b359d30ef86d55::t_4ef4c2902dac22 1-20
+pawpaw/Modules/Profiles/ProfileEditorView.swift
+  s_b359d30ef86d55::t_0d1ec1f8f9edf8 9-10,12,34-39,43,63,66-67,73,79-90,93,97
+pawpawTests/Stats/StatsTests.swift
+  s_b359d30ef86d55::t_222bfd38619d6e 20-21,40-41,51-64,93-105
+  s_b359d30ef86d55::t_96d1b8969cec3e 106
+pawpaw/Entities/CatProfile.swift
+  s_b359d30ef86d55::t_280a6687b62faf 62-65
+pawpaw/Modules/Home/HomePresenter.swift
+  s_b359d30ef86d55::t_b7803016e5bc39 62
+pawpaw/Modules/Home/HomeViewController.swift
+  s_b359d30ef86d55::t_73ba167e6d5dd6 32,64,97-98,104-105,126,146,231-232,352,354,369,372
+pawpaw/Modules/Home/ThemePickerView.swift
+  s_b359d30ef86d55::t_bf16867f4d680c 117-118
+pawpaw/Modules/Onboarding/OnboardingViewController.swift
+  s_b359d30ef86d55::t_2e849cc1ea3a5f 99
+pawpaw/Modules/Profiles/ProfilesPresenter.swift
+  s_b359d30ef86d55::t_dfda97b6ce194a 16-30,32-35,48-64,67-80,83-108,113-116,118,123,128-129
+pawpaw/Modules/Profiles/ProfilesViewController.swift
+  s_b359d30ef86d55::t_6b270b419d7e6a 25,37-38,40-42,84-111
+pawpaw/Modules/Stats/StatsInteractor.swift
+  s_b359d30ef86d55::t_49d9d5b964179b 17,19-22,26-30
+pawpaw/Modules/Stats/StatsPresenter.swift
+  s_b359d30ef86d55::t_02b45cdc149cb6 8-28,37,40-43,57-60,75-76,80-81,93,96-97,102
+pawpaw/Modules/Stats/StatsProtocols.swift
+  s_b359d30ef86d55::t_935a70c87faee5 35,43,53,62,68
+pawpaw/Modules/Stats/StatsRouter.swift
+  s_b359d30ef86d55::t_05b3ba883edafb 16-17
+pawpaw/Modules/Stats/StatsViewController+Builders.swift
+  s_b359d30ef86d55::t_fedc6436f7b21a 12,17-18,22-24,29,31,38,59,61,70,95,126,136,151,158,160,162
+pawpaw/Modules/Stats/StatsViewController.swift
+  s_b359d30ef86d55::t_0df4a41663fc32 11-12,30,47,74,158,188-192,195,197,207,212,230
+pawpawTests/Profiles/ProfilesTests.swift
+  s_b359d30ef86d55::t_34c1c7d0475df7 13,21,25,34-39,97-115,120,134,145,147-291
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c431e02f8634a8afff9fcfe75e8d33b68836a918",
+  "prompts": {},
+  "sessions": {
+    "s_b359d30ef86d55": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "19401578-0270-4f2e-b94e-681a05db9422",
+        "model": "openrouter/OpenRouter/anthropic/claude-opus-5.5"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
