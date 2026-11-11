@@ -59,7 +59,7 @@ final class HomePresenter: HomePresenterProtocol, HomeInteractorOutputProtocol {
         view?.showProfile(
             name: profile.name,
             face: profile.face,
-            favorite: favorite.map { "Loves \($0.pluralName)" }
+            favorite: favorite.map(CatProfile.lovesText)
         )
     }
 }

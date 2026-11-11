@@ -7,7 +7,6 @@ import UIKit
 
 final class ProfilesViewController: UIViewController, ProfilesViewProtocol {
     var presenter: ProfilesPresenterProtocol?
-    var theme: PlayfieldTheme = .wood
 
     private let listStack: UIStackView = {
         let stack = UIStackView()
@@ -17,17 +16,13 @@ final class ProfilesViewController: UIViewController, ProfilesViewProtocol {
         return stack
     }()
 
-    var canDelete = false
     let editor = ProfileEditorView()
-    private var editingID: UUID?
-    private var usedFaces: Set<CatFace> = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = theme.baseColor
-        installBackground(theme: theme)
         setupLayout()
         setupEditor()
+        presenter?.viewDidLoad()
     }
 
     private func setupEditor() {
@@ -39,32 +34,12 @@ final class ProfilesViewController: UIViewController, ProfilesViewProtocol {
             editor.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             editor.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
-        editor.onSave = { [weak self] name, face, disabledKinds in
-            guard let self else { return }
-            if let id = self.editingID {
-                self.presenter?.didUpdateProfile(
-                    id: id, name: name, face: face, disabledKinds: disabledKinds)
-            } else {
-                self.presenter?.didAddProfile(name: name, face: face, disabledKinds: disabledKinds)
-            }
+        editor.onSave = { [weak self] name, face in
+            self?.presenter?.didTapSave(name: name, face: face)
         }
-        editor.onDelete = { [weak self] in
-            guard let id = self?.editingID else { return }
-            self?.presenter?.didConfirmDelete(id: id)
-        }
-    }
-
-    func showAddCard() {
-        editingID = nil
-        let free = CatFace.allCases.first { face in !usedFaces.contains(face) } ?? .orange
-        editor.present(adding: true, name: "", face: free, canDelete: false)
-    }
-
-    func showEditCard(for row: ProfileRow) {
-        editingID = row.id
-        editor.present(
-            adding: false, name: row.name, face: row.face, disabledKinds: row.disabledKinds,
-            canDelete: canDelete)
+        editor.onCancel = { [weak self] in self?.presenter?.didTapCancel() }
+        editor.onDelete = { [weak self] in self?.presenter?.didConfirmDelete() }
+        editor.onToggleCritter = { [weak self] kind in self?.presenter?.didToggleCritter(kind) }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -106,11 +81,34 @@ final class ProfilesViewController: UIViewController, ProfilesViewProtocol {
     }
 
     // MARK: ProfilesViewProtocol
-    func showProfiles(_ rows: [ProfileRow], canDelete: Bool) {
-        self.canDelete = canDelete
-        usedFaces = Set(rows.map(\.face))
-        listStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        rows.forEach { listStack.addArrangedSubview(makeRow($0)) }
+    func showTheme(_ theme: PlayfieldTheme) {
+        view.backgroundColor = theme.baseColor
+        installBackground(theme: theme)
+    }
+
+    func showProfiles(_ rows: [ProfileRow]) {
+        for subview in listStack.arrangedSubviews { subview.removeFromSuperview() }
+        for row in rows { listStack.addArrangedSubview(makeRow(row)) }
+    }
+
+    func showEditor(_ content: ProfileEditorContent) {
+        editor.present(content)
+    }
+
+    func hideEditor() {
+        editor.dismiss()
+    }
+
+    func showCritters(disabledKinds: Set<TargetKind>) {
+        editor.showCritters(disabledKinds: disabledKinds)
+    }
+
+    func showCritterRefused(_ kind: TargetKind, hint: String) {
+        editor.showCritterRefused(kind, hint: hint)
+    }
+
+    func showNameRequired() {
+        editor.showNameRequired()
     }
 }
 

@@ -16,7 +16,7 @@ extension ProfilesViewController {
                 "checkmark",
                 row.name,
                 font: Theme.roundedFont(size: Theme.scaled(22), weight: .bold),
-                color: .white,
+                color: Theme.onAccent,
                 trailing: true
             )
             config.attributedTitle = try? AttributedString(title, including: \.uiKit)
@@ -25,7 +25,7 @@ extension ProfilesViewController {
         config.image = row.face.image(side: Theme.scaled(52))
         config.imagePadding = 14
         config.baseBackgroundColor = row.isActive ? Theme.accent : Theme.text
-        config.baseForegroundColor = row.isActive ? .white : Theme.text
+        config.baseForegroundColor = row.isActive ? Theme.onAccent : Theme.text
         config.cornerStyle = .large
         config.contentInsets = NSDirectionalEdgeInsets(
             top: 12, leading: 16, bottom: 12, trailing: 16)
@@ -56,7 +56,8 @@ extension ProfilesViewController {
         edit.widthAnchor.constraint(equalToConstant: Theme.minimumTapSize).isActive = true
         edit.accessibilityLabel = "Edit \(row.name)"
         edit.addAction(
-            UIAction { [weak self] _ in self?.showEditCard(for: row) }, for: .touchUpInside)
+            UIAction { [weak self] _ in self?.presenter?.didTapEdit(id: row.id) },
+            for: .touchUpInside)
 
         let stack = UIStackView(arrangedSubviews: [select, edit])
         stack.axis = .horizontal
@@ -75,7 +76,8 @@ extension ProfilesViewController {
             insets: NSDirectionalEdgeInsets(top: 14, leading: 28, bottom: 14, trailing: 28)
         )
         button.accessibilityIdentifier = "addCatButton"
-        button.addAction(UIAction { [weak self] _ in self?.showAddCard() }, for: .touchUpInside)
+        button.addAction(
+            UIAction { [weak self] _ in self?.presenter?.didTapAdd() }, for: .touchUpInside)
         return button
     }
 

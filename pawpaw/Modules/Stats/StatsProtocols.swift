@@ -32,6 +32,7 @@ struct StatsViewModel: Equatable {
     let favoriteImageName: String?
     let favoriteAccessibilityLabel: String
     let critters: [CritterRow]
+    let daysHeading: String
     let days: [DayRow]
     let bestScores: [Metric]
 }
@@ -39,6 +40,7 @@ struct StatsViewModel: Equatable {
 // MARK: - View
 protocol StatsViewProtocol: AnyObject {
     var presenter: StatsPresenterProtocol? { get set }
+    func showTheme(_ theme: PlayfieldTheme)
     func showStats(_ viewModel: StatsViewModel)
 }
 
@@ -48,6 +50,7 @@ protocol StatsPresenterProtocol: AnyObject {
     var interactor: StatsInteractorInputProtocol? { get set }
     var router: StatsRouterProtocol? { get set }
 
+    func viewDidLoad()
     func viewWillAppear()
     func didTapBack()
     func didConfirmReset()
@@ -56,11 +59,13 @@ protocol StatsPresenterProtocol: AnyObject {
 // MARK: - Interactor
 protocol StatsInteractorInputProtocol: AnyObject {
     var presenter: StatsInteractorOutputProtocol? { get set }
+    func fetchTheme()
     func fetchStats()
     func resetStats()
 }
 
 protocol StatsInteractorOutputProtocol: AnyObject {
+    func didFetchTheme(_ theme: PlayfieldTheme)
     func didFetchStats(
         _ stats: PlayStats, bestScores: [(mode: SessionMode, score: Int)], profile: CatProfile)
 }

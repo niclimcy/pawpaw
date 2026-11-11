@@ -59,6 +59,10 @@ struct CatProfile: Codable, Equatable, Identifiable {
         try container.encode(disabledKinds.map(\.rawValue).sorted(), forKey: .disabledKinds)
     }
 
+    static func lovesText(for favorite: TargetKind) -> String {
+        "Loves \(favorite.pluralName)"
+    }
+
     /// Trimmed and length-capped; `nil` if empty.
     static func cleaned(_ name: String) -> String? {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)

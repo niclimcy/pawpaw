@@ -7,9 +7,9 @@ import UIKit
 
 final class StatsViewController: UIViewController, StatsViewProtocol {
     var presenter: StatsPresenterProtocol?
-    var theme: PlayfieldTheme = .wood
 
-    private let titleLabel = StatsViewController.makeLabel(size: Theme.scaled(34))
+    private let titleLabel = Theme.makeLabel(size: 34)
+    private let daysHeader = StatsViewController.makeSectionHeader("")
     private let summaryRow = StatsViewController.makeRow(spacing: 10, alignment: .fill)
     private let crittersStack = StatsViewController.makeCrittersStack()
     private let daysStack = StatsViewController.makeRow(spacing: 4)
@@ -26,9 +26,8 @@ final class StatsViewController: UIViewController, StatsViewProtocol {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = theme.baseColor
-        installBackground(theme: theme)
         setupLayout()
+        presenter?.viewDidLoad()
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(contentSizeChanged),
@@ -45,11 +44,7 @@ final class StatsViewController: UIViewController, StatsViewProtocol {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         guard let scroll = layoutScroll else { return }
-        let overflow =
-            scroll.contentLayoutGuide.layoutFrame.height
-            - scroll.frameLayoutGuide.layoutFrame.height
-        let room = view.safeAreaLayoutGuide.layoutFrame.height
-        if fit.update(needed: room + overflow, room: room) {
+        if fit.update(scroll: scroll) {
             applyMetrics()
         }
     }
@@ -76,7 +71,7 @@ final class StatsViewController: UIViewController, StatsViewProtocol {
             dividers[0],
             Self.makeSectionHeader("Catches by critter"), crittersStack,
             dividers[1],
-            Self.makeSectionHeader("Rounds in the last 7 days"), daysStack,
+            daysHeader, daysStack,
             dividers[2],
             Self.makeSectionHeader("Best scores"), bestScoresRow,
         ] {
@@ -160,7 +155,7 @@ extension StatsViewController {
 
     fileprivate func makeResetButton() -> UIButton {
         let button = Theme.plainButton(
-            title: "Hold to reset stats", foreground: Theme.text.withAlphaComponent(0.75))
+            title: "Hold to reset stats", foreground: Theme.detailText)
         button.accessibilityIdentifier = "statsResetButton"
         button.accessibilityHint = "Press and hold to erase all play statistics"
         button.addHoldToConfirm(self, action: #selector(resetHeld(_:)))
@@ -190,10 +185,16 @@ extension StatsViewController {
 
 // MARK: - StatsViewProtocol
 extension StatsViewController {
+    func showTheme(_ theme: PlayfieldTheme) {
+        view.backgroundColor = theme.baseColor
+        installBackground(theme: theme)
+    }
+
     func showStats(_ viewModel: StatsViewModel) {
         titleLabel.text = viewModel.title
+        daysHeader.text = viewModel.daysHeading
 
-        summaryRow.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        for subview in summaryRow.arrangedSubviews { subview.removeFromSuperview() }
         for metric in [viewModel.rounds, viewModel.catches] {
             summaryRow.addArrangedSubview(Self.makeMetricTile(metric))
         }
@@ -203,12 +204,12 @@ extension StatsViewController {
         favorite.accessibilityLabel = viewModel.favoriteAccessibilityLabel
         summaryRow.addArrangedSubview(favorite)
 
-        bestScoresRow.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        for subview in bestScoresRow.arrangedSubviews { subview.removeFromSuperview() }
         for metric in viewModel.bestScores {
             bestScoresRow.addArrangedSubview(Self.makeMetricTile(metric))
         }
 
-        crittersStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        for subview in crittersStack.arrangedSubviews { subview.removeFromSuperview() }
         let rows = stride(from: 0, to: viewModel.critters.count, by: Self.crittersPerRow).map {
             Array(viewModel.critters[$0..<min($0 + Self.crittersPerRow, viewModel.critters.count)])
         }
@@ -226,7 +227,7 @@ extension StatsViewController {
             crittersStack.addArrangedSubview(row)
         }
 
-        daysStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        for subview in daysStack.arrangedSubviews { subview.removeFromSuperview() }
         let maxRounds = max(viewModel.days.map(\.rounds).max() ?? 0, 1)
         for day in viewModel.days {
             let bar = Self.makeBar(label: day.label, rounds: day.rounds, maxRounds: maxRounds)

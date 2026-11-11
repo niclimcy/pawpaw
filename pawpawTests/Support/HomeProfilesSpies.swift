@@ -85,31 +85,55 @@ final class HomeRouterSpy: HomeRouterProtocol {
 @MainActor
 final class ProfilesViewSpy: ProfilesViewProtocol {
     var presenter: ProfilesPresenterProtocol?
-    private(set) var shown: [(rows: [ProfileRow], canDelete: Bool)] = []
+    private(set) var themes: [PlayfieldTheme] = []
+    private(set) var shown: [[ProfileRow]] = []
+    private(set) var editors: [ProfileEditorContent] = []
+    private(set) var hideEditorCount = 0
+    private(set) var critters: [Set<TargetKind>] = []
+    private(set) var refused: [(kind: TargetKind, hint: String)] = []
+    private(set) var nameRequiredCount = 0
 
-    func showProfiles(_ rows: [ProfileRow], canDelete: Bool) { shown.append((rows, canDelete)) }
+    func showTheme(_ theme: PlayfieldTheme) { themes.append(theme) }
+    func showProfiles(_ rows: [ProfileRow]) { shown.append(rows) }
+    func showEditor(_ content: ProfileEditorContent) { editors.append(content) }
+    func hideEditor() { hideEditorCount += 1 }
+    func showCritters(disabledKinds: Set<TargetKind>) { critters.append(disabledKinds) }
+    func showCritterRefused(_ kind: TargetKind, hint: String) { refused.append((kind, hint)) }
+    func showNameRequired() { nameRequiredCount += 1 }
 }
 
 @MainActor
 final class ProfilesInteractorSpy: ProfilesInteractorInputProtocol {
     var presenter: ProfilesInteractorOutputProtocol?
     private(set) var calls: [String] = []
+    private(set) var added: [(name: String, face: CatFace, disabledKinds: Set<TargetKind>)] = []
+    private(set) var updated:
+        [(id: UUID, name: String, face: CatFace, disabledKinds: Set<TargetKind>)] = []
+    private(set) var deletedIDs: [UUID] = []
 
+    func fetchTheme() { calls.append("fetchTheme") }
     func fetchProfiles() { calls.append("fetchProfiles") }
     func selectProfile(id: UUID) { calls.append("selectProfile") }
     func addProfile(name: String, face: CatFace, disabledKinds: Set<TargetKind>) {
         calls.append("addProfile:\(name)")
+        added.append((name, face, disabledKinds))
     }
     func updateProfile(id: UUID, name: String, face: CatFace, disabledKinds: Set<TargetKind>) {
         calls.append("updateProfile:\(name)")
+        updated.append((id, name, face, disabledKinds))
     }
-    func deleteProfile(id: UUID) { calls.append("deleteProfile") }
+    func deleteProfile(id: UUID) {
+        calls.append("deleteProfile")
+        deletedIDs.append(id)
+    }
 }
 
 @MainActor
 final class ProfilesInteractorOutputSpy: ProfilesInteractorOutputProtocol {
+    private(set) var themes: [PlayfieldTheme] = []
     private(set) var fetched: [(entries: [ProfileEntry], activeID: UUID)] = []
 
+    func didFetchTheme(_ theme: PlayfieldTheme) { themes.append(theme) }
     func didFetchProfiles(_ entries: [ProfileEntry], activeID: UUID) {
         fetched.append((entries, activeID))
     }

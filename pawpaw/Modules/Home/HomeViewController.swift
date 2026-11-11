@@ -29,7 +29,7 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         equalToConstant: Theme.scaled(80))
 
     private let titleLabel: UILabel = {
-        let label = HomeViewController.makeLabel(size: 48)
+        let label = Theme.makeLabel(size: 48)
         label.text = "Paw Paw"
         label.numberOfLines = 1
         label.adjustsFontSizeToFitWidth = true
@@ -61,7 +61,7 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
             incoming in
             var outgoing = incoming
             outgoing.font = Theme.roundedFont(size: Theme.scaled(13), weight: .semibold)
-            outgoing.foregroundColor = Theme.text.withAlphaComponent(0.75)
+            outgoing.foregroundColor = Theme.detailText
             return outgoing
         }
         let button = UIButton(configuration: config)
@@ -94,15 +94,15 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     }()
 
     private let highScoreLabel: UILabel = {
-        let label = HomeViewController.makeLabel(size: 18, weight: .bold)
-        label.textColor = Theme.text.withAlphaComponent(0.85)
+        let label = Theme.makeLabel(size: 18, weight: .bold)
+        label.textColor = Theme.bodyText
         label.isHidden = true
         return label
     }()
 
     private let playfieldNoteLabel: UILabel = {
-        let label = HomeViewController.makeLabel(size: 14, weight: .semibold)
-        label.textColor = Theme.text.withAlphaComponent(0.65)
+        let label = Theme.makeLabel(size: 14, weight: .semibold)
+        label.textColor = Theme.sectionText
         label.isHidden = true
         label.accessibilityIdentifier = "playfieldNoteLabel"
         return label
@@ -123,7 +123,7 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
             selectedTint: HomeViewController.selectedTint,
             selectedText: HomeViewController.selectedText
         )
-        control.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        control.backgroundColor = Theme.controlTrack
         control.accessibilityIdentifier = "modeControl"
         control.accessibilityLabel = "Round length"
         return control
@@ -143,7 +143,7 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
             selectedTint: HomeViewController.selectedTint,
             selectedText: HomeViewController.selectedText
         )
-        control.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        control.backgroundColor = Theme.controlTrack
         control.accessibilityIdentifier = "afterRoundControl"
         control.accessibilityLabel = "After a round"
         control.accessibilityHint =
@@ -166,18 +166,6 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         button.accessibilityIdentifier = "playButton"
         return button
     }()
-
-    private static func makeLabel(size: CGFloat, weight: UIFont.Weight = .heavy)
-        -> UILabel
-    {
-        let label = UILabel()
-        label.font = Theme.roundedFont(size: Theme.scaled(size), weight: weight)
-        label.adjustsFontForContentSizeCategory = true
-        label.textColor = Theme.text
-        label.textAlignment = .center
-        label.numberOfLines = 0
-        return label
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -240,12 +228,8 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        guard let scroll = layoutScroll, let host = scroll.superview else { return }
-        let overflow =
-            scroll.contentLayoutGuide.layoutFrame.height
-            - scroll.frameLayoutGuide.layoutFrame.height
-        let room = host.safeAreaLayoutGuide.layoutFrame.height
-        if fit.update(needed: room + overflow, room: room) {
+        guard let scroll = layoutScroll else { return }
+        if fit.update(scroll: scroll) {
             applyMetrics()
         }
     }
@@ -365,9 +349,9 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
 
         let card = UIView()
         Theme.styleCard(card)
-        card.backgroundColor = Theme.panel.withAlphaComponent(0.85)
+        card.backgroundColor = Theme.translucentPanel
         card.layer.borderWidth = 2
-        card.layer.borderColor = Theme.text.withAlphaComponent(0.15).cgColor
+        card.layer.borderColor = Theme.cardOutline.cgColor
         card.layer.cornerRadius = 24
         card.addSubview(stack)
         // Constants are set in `applyMetrics()`; each is card edge to stack edge, inward.
@@ -382,10 +366,10 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     }
 
     private static func makeSectionLabel(_ text: String) -> UILabel {
-        let label = makeLabel(size: 13, weight: .heavy)
+        let label = Theme.makeLabel(size: 13, weight: .heavy)
         label.text = text
         label.textAlignment = .natural
-        label.textColor = Theme.text.withAlphaComponent(0.65)
+        label.textColor = Theme.sectionText
         label.accessibilityTraits = .header
         return label
     }

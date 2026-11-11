@@ -114,8 +114,8 @@ private final class ThemeTile: UIControl {
 
     private func updateAppearance() {
         thumbnail.layer.borderColor =
-            (isSelected ? Theme.accent : Theme.text.withAlphaComponent(0.2)).cgColor
-        nameLabel.textColor = isSelected ? Theme.accent : Theme.text.withAlphaComponent(0.85)
+            (isSelected ? Theme.accent : Theme.outline).cgColor
+        nameLabel.textColor = isSelected ? Theme.accent : Theme.bodyText
         accessibilityTraits = isSelected ? [.button, .selected] : .button
     }
 }

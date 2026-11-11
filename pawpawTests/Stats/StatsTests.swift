@@ -17,7 +17,8 @@ final class StatsInteractorTests: XCTestCase {
         let profile = CatProfile(name: "Tom")
         let output = StatsInteractorOutputSpy()
         let interactor = StatsInteractor(
-            profile: profile, scoreStorage: scores, statsStorage: stats)
+            profile: profile, scoreStorage: scores, statsStorage: stats,
+            settings: MockSettingsStorage())
         interactor.presenter = output
 
         interactor.fetchStats()
@@ -36,7 +37,8 @@ final class StatsInteractorTests: XCTestCase {
         stats.stats.record(catches: [.bug: 2])
         let output = StatsInteractorOutputSpy()
         let interactor = StatsInteractor(
-            profile: CatProfile(name: "Tom"), scoreStorage: scores, statsStorage: stats)
+            profile: CatProfile(name: "Tom"), scoreStorage: scores, statsStorage: stats,
+            settings: MockSettingsStorage())
         interactor.presenter = output
 
         interactor.resetStats()
@@ -45,6 +47,20 @@ final class StatsInteractorTests: XCTestCase {
         let fetched = try XCTUnwrap(output.fetched.last)
         XCTAssertEqual(fetched.stats, PlayStats())
         XCTAssertEqual(fetched.bestScores.first?.score, 10)
+    }
+
+    func testFetchThemeReadsSettings() {
+        let settings = MockSettingsStorage()
+        settings.selectedTheme = .grass
+        let output = StatsInteractorOutputSpy()
+        let interactor = StatsInteractor(
+            profile: CatProfile(name: "Tom"), scoreStorage: MockScoreStorage(),
+            statsStorage: MockStatsStorage(), settings: settings)
+        interactor.presenter = output
+
+        interactor.fetchTheme()
+
+        XCTAssertEqual(output.themes, [.grass])
     }
 }
 
@@ -72,6 +88,20 @@ final class StatsPresenterTests: XCTestCase {
         presenter.didTapBack()
         XCTAssertEqual(interactor.calls, ["fetchStats", "resetStats"])
         XCTAssertEqual(router.backCount, 1)
+    }
+
+    func testViewDidLoadFetchesThemeAndShowsIt() {
+        presenter.viewDidLoad()
+        presenter.didFetchTheme(.pond)
+        XCTAssertEqual(interactor.calls, ["fetchTheme"])
+        XCTAssertEqual(view.themes, [.pond])
+    }
+
+    func testDaysHeadingNamesTheChartRange() throws {
+        presenter.didFetchStats(PlayStats(), bestScores: [], profile: CatProfile(name: "Tom"))
+        let model = try XCTUnwrap(view.viewModels.last)
+        XCTAssertEqual(model.daysHeading, "Rounds in the last 7 days")
+        XCTAssertEqual(model.days.count, 7)
     }
 
     func testEmptyStats() throws {

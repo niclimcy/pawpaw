@@ -12,8 +12,10 @@ import UIKit
 @MainActor
 final class StatsViewSpy: StatsViewProtocol {
     var presenter: StatsPresenterProtocol?
+    private(set) var themes: [PlayfieldTheme] = []
     private(set) var viewModels: [StatsViewModel] = []
 
+    func showTheme(_ theme: PlayfieldTheme) { themes.append(theme) }
     func showStats(_ viewModel: StatsViewModel) { viewModels.append(viewModel) }
 }
 
@@ -22,15 +24,19 @@ final class StatsInteractorSpy: StatsInteractorInputProtocol {
     var presenter: StatsInteractorOutputProtocol?
     private(set) var calls: [String] = []
 
+    func fetchTheme() { calls.append("fetchTheme") }
     func fetchStats() { calls.append("fetchStats") }
     func resetStats() { calls.append("resetStats") }
 }
 
 @MainActor
 final class StatsInteractorOutputSpy: StatsInteractorOutputProtocol {
+    private(set) var themes: [PlayfieldTheme] = []
     private(set) var fetched:
         [(stats: PlayStats, bestScores: [(mode: SessionMode, score: Int)], profile: CatProfile)] =
             []
+
+    func didFetchTheme(_ theme: PlayfieldTheme) { themes.append(theme) }
 
     func didFetchStats(
         _ stats: PlayStats, bestScores: [(mode: SessionMode, score: Int)], profile: CatProfile

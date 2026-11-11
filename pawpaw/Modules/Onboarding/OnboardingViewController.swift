@@ -96,14 +96,9 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
     private static func makeLabel(size: CGFloat, weight: UIFont.Weight = .heavy)
         -> UILabel
     {
-        let label = UILabel()
+        let label = Theme.makeLabel(size: size, weight: weight)
         // Required, so fitting the card shrinks the art and picker rather than cutting off text.
         label.setContentCompressionResistancePriority(.required, for: .vertical)
-        label.font = Theme.roundedFont(size: Theme.scaled(size), weight: weight)
-        label.adjustsFontForContentSizeCategory = true
-        label.textColor = Theme.text
-        label.textAlignment = .center
-        label.numberOfLines = 0
         return label
     }
 

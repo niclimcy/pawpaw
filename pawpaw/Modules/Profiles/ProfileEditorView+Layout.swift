@@ -7,7 +7,7 @@ import UIKit
 
 extension ProfileEditorView {
     func build() {
-        backgroundColor = UIColor.black.withAlphaComponent(0.55)
+        backgroundColor = Theme.scrim
         isHidden = true
         accessibilityViewIsModal = true
 

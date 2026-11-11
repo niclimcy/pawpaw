@@ -12,11 +12,20 @@ final class ProfilesInteractor: ProfilesInteractorInputProtocol {
     weak var presenter: ProfilesInteractorOutputProtocol?
 
     private let profileStorage: ProfileStorage
+    private let settings: SettingsStorage
     private let makeStatsStorage: (UUID) -> StatsStorage
 
-    init(profileStorage: ProfileStorage, makeStatsStorage: @escaping (UUID) -> StatsStorage) {
+    init(
+        profileStorage: ProfileStorage, settings: SettingsStorage,
+        makeStatsStorage: @escaping (UUID) -> StatsStorage
+    ) {
         self.profileStorage = profileStorage
+        self.settings = settings
         self.makeStatsStorage = makeStatsStorage
+    }
+
+    func fetchTheme() {
+        presenter?.didFetchTheme(settings.selectedTheme)
     }
 
     func fetchProfiles() {

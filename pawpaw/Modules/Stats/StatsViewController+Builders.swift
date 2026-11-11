@@ -9,9 +9,14 @@ extension StatsViewController {
     static var isPad: Bool { Theme.uiScale > 1 }
 
     /// The phone layout is tighter so the whole page fits on screen without scrolling.
-    /// For fonts and artwork: the iPad value is scaled up by `Theme.uiScale`.
+    /// For artwork: the iPad value is scaled up by `Theme.uiScale`.
     static func adaptive(phone: CGFloat, pad: CGFloat) -> CGFloat {
         isPad ? Theme.scaled(pad) : phone
+    }
+
+    /// For fonts: `Theme.makeLabel` does the iPad scaling.
+    static func fontSize(phone: CGFloat, pad: CGFloat) -> CGFloat {
+        isPad ? pad : phone
     }
 
     /// For padding and gaps: used as given on both idioms.
@@ -19,28 +24,18 @@ extension StatsViewController {
         isPad ? pad : phone
     }
 
-    static func makeLabel(size: CGFloat, weight: UIFont.Weight = .heavy) -> UILabel {
-        let label = UILabel()
-        label.font = Theme.roundedFont(size: size, weight: weight)
-        label.adjustsFontForContentSizeCategory = true
-        label.textColor = Theme.text
-        label.textAlignment = .center
-        label.numberOfLines = 0
-        return label
-    }
-
     /// Quiet section heading so the numbers, not the captions, carry the page.
     static func makeSectionHeader(_ text: String) -> UILabel {
-        let label = makeLabel(size: Theme.scaled(14), weight: .bold)
+        let label = Theme.makeLabel(size: 14, weight: .bold)
         label.text = text
-        label.textColor = Theme.text.withAlphaComponent(0.65)
+        label.textColor = Theme.sectionText
         label.accessibilityTraits = .header
         return label
     }
 
     static func makeDivider() -> UIView {
         let line = UIView()
-        line.backgroundColor = Theme.gold.withAlphaComponent(0.25)
+        line.backgroundColor = Theme.divider
         line.heightAnchor.constraint(equalToConstant: 1).isActive = true
         return line
     }
@@ -61,9 +56,9 @@ extension StatsViewController {
     /// Rounded inset tile used for the headline numbers and best scores.
     /// A single accessibility element; the caller sets its label.
     static func makeTile(value: UIView, caption: String) -> UIView {
-        let captionLabel = makeLabel(size: Theme.scaled(13), weight: .semibold)
+        let captionLabel = Theme.makeLabel(size: 13, weight: .semibold)
         captionLabel.text = caption
-        captionLabel.textColor = Theme.text.withAlphaComponent(0.7)
+        captionLabel.textColor = Theme.captionText
 
         let tile = UIStackView(arrangedSubviews: [value, captionLabel])
         tile.axis = .vertical
@@ -72,7 +67,7 @@ extension StatsViewController {
         tile.isLayoutMarginsRelativeArrangement = true
         tile.layoutMargins = UIEdgeInsets(
             top: spacing(phone: 8, pad: 12), left: 8, bottom: spacing(phone: 8, pad: 12), right: 8)
-        tile.backgroundColor = Theme.background.withAlphaComponent(0.45)
+        tile.backgroundColor = Theme.tileFill
         tile.layer.cornerRadius = 16
         tile.isAccessibilityElement = true
         return tile
@@ -97,7 +92,7 @@ extension StatsViewController {
     }
 
     static func makeValueLabel(_ text: String) -> UILabel {
-        let label = makeLabel(size: adaptive(phone: 24, pad: 28), weight: .heavy)
+        let label = Theme.makeLabel(size: fontSize(phone: 24, pad: 28), weight: .heavy)
         label.text = text
         label.adjustsFontSizeToFitWidth = true
         label.minimumScaleFactor = 0.6
@@ -128,7 +123,7 @@ extension StatsViewController {
         imageView.heightAnchor.constraint(equalToConstant: side).isActive = true
         imageView.isAccessibilityElement = false
 
-        let countLabel = makeLabel(size: adaptive(phone: 16, pad: 18), weight: .bold)
+        let countLabel = Theme.makeLabel(size: fontSize(phone: 16, pad: 18), weight: .bold)
         countLabel.text = catches
 
         let tile = UIStackView(arrangedSubviews: [imageView, countLabel])
@@ -138,7 +133,7 @@ extension StatsViewController {
         tile.isLayoutMarginsRelativeArrangement = true
         tile.layoutMargins = UIEdgeInsets(
             top: spacing(phone: 6, pad: 10), left: 2, bottom: spacing(phone: 6, pad: 8), right: 2)
-        tile.backgroundColor = Theme.background.withAlphaComponent(0.45)
+        tile.backgroundColor = Theme.tileFill
         tile.layer.cornerRadius = 14
         tile.isAccessibilityElement = true
         // Dim critters that haven't been caught yet so the ones that have stand out.
@@ -153,18 +148,18 @@ extension StatsViewController {
     static func makeBar(label: String, rounds: Int, maxRounds: Int) -> UIView {
         let maxHeight = adaptive(phone: 56, pad: 80)
         let bar = UIView()
-        bar.backgroundColor = rounds > 0 ? Theme.accent : Theme.text.withAlphaComponent(0.2)
+        bar.backgroundColor = rounds > 0 ? Theme.accent : Theme.outline
         bar.layer.cornerRadius = 6
         bar.translatesAutoresizingMaskIntoConstraints = false
         let height = rounds > 0 ? max(maxHeight * CGFloat(rounds) / CGFloat(maxRounds), 10) : 4
         bar.heightAnchor.constraint(equalToConstant: height).isActive = true
         bar.widthAnchor.constraint(equalToConstant: Theme.scaled(22)).isActive = true
 
-        let count = makeLabel(size: Theme.scaled(14), weight: .bold)
+        let count = Theme.makeLabel(size: 14, weight: .bold)
         count.text = rounds > 0 ? "\(rounds)" : ""
-        let name = makeLabel(size: Theme.scaled(13), weight: .semibold)
+        let name = Theme.makeLabel(size: 13, weight: .semibold)
         name.text = label
-        name.textColor = Theme.text.withAlphaComponent(0.7)
+        name.textColor = Theme.captionText
 
         let column = UIStackView(arrangedSubviews: [count, bar, name])
         column.axis = .vertical

@@ -11,11 +11,11 @@ final class ProfilesRouter: ProfilesRouterProtocol {
         let presenter = ProfilesPresenter()
         let interactor = ProfilesInteractor(
             profileStorage: UserDefaultsProfileStorage(),
+            settings: UserDefaultsSettingsStorage(),
             makeStatsStorage: { UserDefaultsStatsStorage(profileID: $0) }
         )
         let router = ProfilesRouter()
 
-        view.theme = UserDefaultsSettingsStorage().selectedTheme
         view.presenter = presenter
         presenter.view = view
         presenter.interactor = interactor

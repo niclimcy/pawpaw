@@ -14,11 +14,20 @@ final class StatsInteractor: StatsInteractorInputProtocol {
     private let profile: CatProfile
     private let scoreStorage: ScoreStorage
     private let statsStorage: StatsStorage
+    private let settings: SettingsStorage
 
-    init(profile: CatProfile, scoreStorage: ScoreStorage, statsStorage: StatsStorage) {
+    init(
+        profile: CatProfile, scoreStorage: ScoreStorage, statsStorage: StatsStorage,
+        settings: SettingsStorage
+    ) {
         self.profile = profile
         self.scoreStorage = scoreStorage
         self.statsStorage = statsStorage
+        self.settings = settings
+    }
+
+    func fetchTheme() {
+        presenter?.didFetchTheme(settings.selectedTheme)
     }
 
     func fetchStats() {

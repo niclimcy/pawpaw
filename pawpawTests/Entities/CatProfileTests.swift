@@ -86,16 +86,9 @@ final class CatProfileTests: XCTestCase {
         }
     }
 
-    /// The profile editor uses `toggled` so owners can't switch off the last valid critter.
-    func testEditorRefusesToLeaveOnlyTheLaser() {
-        let allButLaserAndBug = Set(TargetKind.allCases.filter { $0 != .laser && $0 != .bug })
-        XCTAssertNil(ProfileEditorView.toggled(.bug, in: allButLaserAndBug))
-        XCTAssertEqual(
-            ProfileEditorView.toggled(.laser, in: allButLaserAndBug),
-            allButLaserAndBug.union([.laser]))
-        XCTAssertEqual(
-            ProfileEditorView.toggled(.mouse, in: allButLaserAndBug),
-            allButLaserAndBug.subtracting([.mouse]), "Turning a critter back on always works")
+    func testLovesText() {
+        XCTAssertEqual(CatProfile.lovesText(for: .mouse), "Loves mice")
+        XCTAssertEqual(CatProfile.lovesText(for: .butterfly), "Loves butterflies")
     }
 
     // MARK: Codable

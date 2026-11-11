@@ -13,11 +13,11 @@ final class StatsRouter: StatsRouterProtocol {
         let interactor = StatsInteractor(
             profile: profile,
             scoreStorage: UserDefaultsScoreStorage(profileID: profile.id),
-            statsStorage: UserDefaultsStatsStorage(profileID: profile.id)
+            statsStorage: UserDefaultsStatsStorage(profileID: profile.id),
+            settings: UserDefaultsSettingsStorage()
         )
         let router = StatsRouter()
 
-        view.theme = UserDefaultsSettingsStorage().selectedTheme
         view.presenter = presenter
         presenter.view = view
         presenter.interactor = interactor

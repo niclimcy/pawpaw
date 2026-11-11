@@ -5,6 +5,27 @@
 
 import Foundation
 
+/// A countable word, so "1 round", "2 rounds" and "no rounds" stay consistent.
+private struct Noun {
+    let singular: String
+    let plural: String
+
+    static let round = Noun(singular: "round", plural: "rounds")
+    static let `catch` = Noun(singular: "catch", plural: "catches")
+
+    func title(for count: Int) -> String {
+        (count == 1 ? singular : plural).capitalized
+    }
+
+    func phrase(for count: Int) -> String {
+        switch count {
+        case 0: return "no \(plural)"
+        case 1: return "1 \(singular)"
+        default: return "\(count) \(plural)"
+        }
+    }
+}
+
 final class StatsPresenter: StatsPresenterProtocol, StatsInteractorOutputProtocol {
     // TODO: To remove after swift bug is resolved.
     nonisolated deinit {}
@@ -13,9 +34,13 @@ final class StatsPresenter: StatsPresenterProtocol, StatsInteractorOutputProtoco
     var interactor: StatsInteractorInputProtocol?
     var router: StatsRouterProtocol?
 
-    private let historyDays = 7
+    private static let historyDays = 7
 
     // MARK: StatsPresenterProtocol
+    func viewDidLoad() {
+        interactor?.fetchTheme()
+    }
+
     func viewWillAppear() {
         interactor?.fetchStats()
     }
@@ -29,6 +54,10 @@ final class StatsPresenter: StatsPresenterProtocol, StatsInteractorOutputProtoco
     }
 
     // MARK: StatsInteractorOutputProtocol
+    func didFetchTheme(_ theme: PlayfieldTheme) {
+        view?.showTheme(theme)
+    }
+
     func didFetchStats(
         _ stats: PlayStats, bestScores: [(mode: SessionMode, score: Int)], profile: CatProfile
     ) {
@@ -43,13 +72,13 @@ final class StatsPresenter: StatsPresenterProtocol, StatsInteractorOutputProtoco
                 title: "\(profile.name)'s Stats",
                 rounds: StatsViewModel.Metric(
                     value: "\(stats.totalRounds)",
-                    caption: stats.totalRounds == 1 ? "Round" : "Rounds",
-                    accessibilityLabel: Self.count(stats.totalRounds, "round", "rounds")
+                    caption: Noun.round.title(for: stats.totalRounds),
+                    accessibilityLabel: Noun.round.phrase(for: stats.totalRounds)
                 ),
                 catches: StatsViewModel.Metric(
                     value: "\(stats.totalCatches)",
-                    caption: stats.totalCatches == 1 ? "Catch" : "Catches",
-                    accessibilityLabel: Self.count(stats.totalCatches, "catch", "catches")
+                    caption: Noun.catch.title(for: stats.totalCatches),
+                    accessibilityLabel: Noun.catch.phrase(for: stats.totalCatches)
                 ),
                 favoriteImageName: favoriteKind?.imageName,
                 favoriteAccessibilityLabel: favoriteKind.map { "Favorite catch: \($0.pluralName)" }
@@ -61,15 +90,16 @@ final class StatsPresenter: StatsPresenterProtocol, StatsInteractorOutputProtoco
                         catches: "\(catches)",
                         isEmpty: catches == 0,
                         accessibilityLabel:
-                            "\(kind.pluralName.capitalized): \(Self.count(catches, "catch", "catches"))"
+                            "\(kind.pluralName.capitalized): \(Noun.catch.phrase(for: catches))"
                     )
                 },
-                days: stats.recentRounds(days: historyDays).map { day in
+                daysHeading: "Rounds in the last \(Self.historyDays) days",
+                days: stats.recentRounds(days: Self.historyDays).map { day in
                     StatsViewModel.DayRow(
                         label: shortDay.string(from: day.date),
                         rounds: day.rounds,
                         accessibilityLabel:
-                            "\(fullDay.string(from: day.date)): \(Self.count(day.rounds, "round", "rounds"))"
+                            "\(fullDay.string(from: day.date)): \(Noun.round.phrase(for: day.rounds))"
                     )
                 },
                 bestScores: bestScores.map {
@@ -80,13 +110,5 @@ final class StatsPresenter: StatsPresenterProtocol, StatsInteractorOutputProtoco
                     )
                 }
             ))
-    }
-
-    private static func count(_ value: Int, _ singular: String, _ plural: String) -> String {
-        switch value {
-        case 0: return "no \(plural)"
-        case 1: return "1 \(singular)"
-        default: return "\(value) \(plural)"
-        }
     }
 }
