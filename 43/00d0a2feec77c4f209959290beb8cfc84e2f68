@@ -1,0 +1,14 @@
+site/index.html
+  h_36695e5767c2ad 29,43,45-46,184,186-188,198
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4300d0a2feec77c4f209959290beb8cfc84e2f68",
+  "prompts": {},
+  "humans": {
+    "h_36695e5767c2ad": {
+      "author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
