@@ -3,7 +3,7 @@ docs/app-store/privacy-policy.md
 site/assets/art/critter_feather.svg
   h_36695e5767c2ad 1-15
 site/privacy.html
-  h_36695e5767c2ad 1-91
+  h_36695e5767c2ad 1-91,1-22,24-74,76-82,84-91
 site/assets/art/critter_mouse.svg
   h_36695e5767c2ad 1-40
 site/assets/art/logo_paw.svg
@@ -17,7 +17,7 @@ site/assets/art/critter_laser.svg
 site/assets/art/critter_butterfly.svg
   h_36695e5767c2ad 1-24
 site/404.html
-  h_36695e5767c2ad 1-24
+  h_36695e5767c2ad 1-24,1-19,21-24
 site/assets/art/cat_gray.svg
   h_36695e5767c2ad 1-34
 site/assets/art/critter_fish.svg
@@ -33,7 +33,7 @@ site/assets/art/critter_bug.svg
 site/assets/art/critter_ribbon.svg
   h_36695e5767c2ad 1-17
 site/index.html
-  h_36695e5767c2ad 1-214
+  h_36695e5767c2ad 1-214,1-28,30-195,197-205,207-214
 site/assets/art/cat_black.svg
   h_36695e5767c2ad 1-23
 site/assets/art/cat_calico.svg
@@ -47,7 +47,7 @@ site/assets/art/cat_white.svg
 site/styles.css
   h_36695e5767c2ad 1-237
 site/support.html
-  h_36695e5767c2ad 1-149
+  h_36695e5767c2ad 1-149,1-5,8-22,24-30,33-35,39-140,142-149
 ---
 {
   "schema_version": "authorship/3.0.0",
