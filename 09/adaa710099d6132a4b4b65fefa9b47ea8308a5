@@ -1,0 +1,21 @@
+pawpaw/Modules/Game/GameInteractor.swift
+  s_4be888e602a31f::t_7ddb4cd1bb99a1 268-269,278
+pawpawTests/Game/GameInteractorTests.swift
+  s_4be888e602a31f::t_318605f47e68f1 161-258
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "09adaa710099d6132a4b4b65fefa9b47ea8308a5",
+  "prompts": {},
+  "sessions": {
+    "s_4be888e602a31f": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "60c92906-74fd-4be6-9f14-40f9e8d2c2f3",
+        "model": "openrouter/OpenRouter/anthropic/claude-opus-5.5"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
