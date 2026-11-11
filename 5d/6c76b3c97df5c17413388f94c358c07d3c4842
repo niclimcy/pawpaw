@@ -21,6 +21,7 @@ pawpaw/Entities/MovementPath.swift
   s_3da41da6e3aa1f::t_2502bed0075064 33,50-54,71,86,96,112,127,143
 pawpaw/Modules/Game/GameAreaView+Movement.swift
   s_3da41da6e3aa1f::t_ad6f18fee1c1f0 26-27,96-100,133-143
+  s_893b6146513f8d::t_844e960ed0dfd0 127-129
 ---
 {
   "schema_version": "authorship/3.0.0",
@@ -32,6 +33,14 @@ pawpaw/Modules/Game/GameAreaView+Movement.swift
       "agent_id": {
         "tool": "claude",
         "id": "0476bc75-adc3-47c7-b30f-61c394b06834",
+        "model": "anthropic/claude-opus-5.5"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    },
+    "s_893b6146513f8d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1e02b70b-531b-4c5f-b559-8933f408d843",
         "model": "anthropic/claude-opus-5.5"
       },
       "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
