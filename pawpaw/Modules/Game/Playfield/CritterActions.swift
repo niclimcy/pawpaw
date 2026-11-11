@@ -7,6 +7,9 @@ import SpriteKit
 
 /// Turns a target's normalized legs into actions for each part of a `CritterNode`.
 enum CritterActions {
+    /// A value reached at `time` seconds after the path started.
+    typealias Keyframe<Value> = (time: TimeInterval, value: Value)
+
     struct Plan {
         let start: CGPoint
         /// SpriteKit radians (anticlockwise), with the artwork facing up at 0.
@@ -31,8 +34,8 @@ enum CritterActions {
         var current = start
         var heading: CGFloat = 0
         var startHeading: CGFloat = 0
-        var positions: [(TimeInterval, CGPoint)] = []
-        var headings: [(TimeInterval, CGFloat)] = []
+        var positions: [Keyframe<CGPoint>] = []
+        var headings: [Keyframe<CGFloat>] = []
         var jiggle = Timeline()
         var body = Timeline()
         var previousPause: TimeInterval = 0
@@ -81,17 +84,14 @@ enum CritterActions {
                     let peek =
                         leg.peek.map { geometry.point(for: $0) }
                         ?? geometry.peekPoint(from: destination)
-                    positions += [
-                        (0.3, peek), (0.45, destination), (0.65, peek), (0.8, destination),
-                    ].map {
-                        (elapsed + pause * $0.0, $0.1)
-                    }
-                } else if style.pecks {
+                    positions += freezeKeys(
+                        [(0.3, peek), (0.45, destination), (0.65, peek), (0.8, destination)],
+                        from: elapsed, over: pause)
+                } else if style.nodsDuringFreeze {
                     let nod = geometry.nodPoint(from: current, to: destination)
-                    positions += [(0.2, nod), (0.35, destination), (0.55, nod), (0.7, destination)]
-                        .map {
-                            (elapsed + pause * $0.0, $0.1)
-                        }
+                    positions += freezeKeys(
+                        [(0.2, nod), (0.35, destination), (0.55, nod), (0.7, destination)],
+                        from: elapsed, over: pause)
                 } else if style.doesPushUps {
                     // The body seems to rise toward the camera.
                     body.add(
@@ -110,8 +110,10 @@ enum CritterActions {
         }
 
         var turn = Timeline()
-        headings.forEach { key in
-            turn.key(at: key.0) { .rotate(toAngle: key.1, duration: $0, shortestUnitArc: false) }
+        for key in headings {
+            turn.key(at: key.time) {
+                .rotate(toAngle: key.value, duration: $0, shortestUnitArc: false)
+            }
         }
         let loops = styleLoops(for: target, total: total)
         return Plan(
@@ -178,14 +180,22 @@ extension CritterActions {
         return angle
     }
 
+    /// Points reached at `fractions` of a freeze that starts `elapsed` seconds into the path.
+    fileprivate static func freezeKeys(
+        _ fractions: [(fraction: Double, point: CGPoint)], from elapsed: TimeInterval,
+        over pause: TimeInterval
+    ) -> [Keyframe<CGPoint>] {
+        fractions.map { (time: elapsed + pause * $0.fraction, value: $0.point) }
+    }
+
     fileprivate static func path(
-        through keys: [(TimeInterval, CGPoint)], from start: CGPoint, smooth: Bool
+        through keys: [Keyframe<CGPoint>], from start: CGPoint, smooth: Bool
     ) -> SKAction {
-        let points = [start] + keys.map(\.1)
+        let points = [start] + keys.map(\.value)
         var timeline = Timeline()
         for (index, key) in keys.enumerated() {
-            timeline.key(at: key.0) { duration in
-                guard smooth else { return .move(to: key.1, duration: duration) }
+            timeline.key(at: key.time) { duration in
+                guard smooth else { return .move(to: key.value, duration: duration) }
                 // Catmull-Rom through the neighbours turns the zigzag legs into S-curves.
                 let a = points[max(index - 1, 0)]
                 let b = points[index]

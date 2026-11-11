@@ -57,7 +57,8 @@ final class GameScene: SKScene {
     private var lureHitSlop: CGFloat {
         tuning.lureHitSlop
     }
-    private let trailSpacing: CGFloat = 36
+    /// Points a paw drags before the next trail ripple.
+    static let trailSpacing: CGFloat = 36
     private var startleRange: CGFloat {
         tuning.startleRange
     }
@@ -116,28 +117,49 @@ final class GameScene: SKScene {
 
     // MARK: Critters
 
-    func add(_ target: GameTarget) {
+    private typealias Preparation = (plan: CritterActions.Plan, artwork: PlayfieldTextures.Critter)
+
+    private func prepare(_ target: GameTarget) -> Preparation? {
         guard let plan = CritterActions.plan(for: target, in: geometry),
             let artwork = PlayfieldTextures.critter(
                 target.kind, variant: target.variant, size: tuning.targetSize)
         else {
+            return nil
+        }
+        return (plan, artwork)
+    }
+
+    private func play(
+        _ critter: CritterNode, target: GameTarget, preparation: Preparation, layer: CGFloat,
+        canTakeCover: Bool, completion: @escaping () -> Void
+    ) {
+        spawnCount += 1
+        critter.play(
+            preparation.plan,
+            artwork: preparation.artwork,
+            caughtArtwork: PlayfieldTextures.critter(
+                target.kind, variant: target.variant, size: tuning.targetSize, style: .caught),
+            layer: layer,
+            canTakeCover: canTakeCover,
+            spawnOrder: spawnCount,
+            completion: completion
+        )
+    }
+
+    func add(_ target: GameTarget) {
+        guard let preparation = prepare(target) else {
             onDiscard?(target.id)
             return
         }
+        let plan = preparation.plan
         let critter = recycledNodes.popLast() ?? CritterNode()
         let canTakeCover =
             !hidingSpotNodes.isEmpty && theme.allowsCover(for: target.kind.movementStyle)
-        spawnCount += 1
         world.addChild(critter)
         targetNodes[target.id] = critter
-        critter.play(
-            plan,
-            artwork: artwork,
-            caughtArtwork: PlayfieldTextures.critter(
-                target.kind, variant: target.variant, size: tuning.targetSize, style: .caught),
-            layer: canTakeCover ? Layer.coveredCritter : Layer.critter,
-            canTakeCover: canTakeCover,
-            spawnOrder: spawnCount
+        play(
+            critter, target: target, preparation: preparation,
+            layer: canTakeCover ? Layer.coveredCritter : Layer.critter, canTakeCover: canTakeCover
         ) { [weak self, weak critter] in
             guard let self, let critter, self.targetNodes[target.id] === critter else { return }
             self.targetNodes[target.id] = nil
@@ -152,6 +174,11 @@ final class GameScene: SKScene {
 
     func caught(id: UUID, points: Int) {
         guard let critter = targetNodes.removeValue(forKey: id) else { return }
+        playCatch(of: critter, points: points)
+    }
+
+    /// `nil` points, for the unscored lure, skips the points label.
+    private func playCatch(of critter: CritterNode, points: Int?) {
         critter.stop()
         let position = critter.center
         playCatchAnimation(on: critter) { [weak self, weak critter] in
@@ -164,7 +191,7 @@ final class GameScene: SKScene {
     }
 
     func removeAllTargets() {
-        targetNodes.values.forEach { recycle($0) }
+        for critter in targetNodes.values { recycle(critter) }
         targetNodes.removeAll()
         removeLure()
     }
@@ -190,26 +217,21 @@ final class GameScene: SKScene {
 
     /// Makes `rect` (in the view's coordinates) the lure's cover.
     func setLureObstacle(viewRect rect: CGRect) -> LureCover {
-        let corners = [CGPoint(x: rect.minX, y: rect.minY), CGPoint(x: rect.maxX, y: rect.maxY)]
-            .map { convertPoint(fromView: $0) }
         let sceneRect = CGRect(
-            x: min(corners[0].x, corners[1].x), y: min(corners[0].y, corners[1].y),
-            width: abs(corners[1].x - corners[0].x), height: abs(corners[1].y - corners[0].y)
-        )
+            spanning: convertPoint(fromView: CGPoint(x: rect.minX, y: rect.minY)),
+            and: convertPoint(fromView: CGPoint(x: rect.maxX, y: rect.maxY)))
         lureObstacle = sceneRect
         return geometry.lureCover(for: sceneRect)
     }
 
     /// Plays one loop of the lure. The same node carries on between loops; a leaving lure is removed when it's gone.
     func showLure(_ target: GameTarget, isLeaving: Bool) {
-        guard let plan = CritterActions.plan(for: target, in: geometry),
-            let artwork = PlayfieldTextures.critter(
-                target.kind, variant: target.variant, size: tuning.targetSize)
-        else {
+        guard let preparation = prepare(target) else {
             removeLure()
             if !isLeaving { onLureDiscard?() }
             return
         }
+        let plan = preparation.plan
         isLureLeaving = isLeaving
         let isNew = lureNode == nil
         let critter = lureNode ?? recycledNodes.popLast() ?? CritterNode()
@@ -219,15 +241,9 @@ final class GameScene: SKScene {
         } else {
             critter.stop()
         }
-        spawnCount += 1
-        critter.play(
-            plan,
-            artwork: artwork,
-            caughtArtwork: PlayfieldTextures.critter(
-                target.kind, variant: target.variant, size: tuning.targetSize, style: .caught),
-            layer: Layer.critter,
-            canTakeCover: false,
-            spawnOrder: spawnCount
+        play(
+            critter, target: target, preparation: preparation, layer: Layer.critter,
+            canTakeCover: false
         ) { [weak self, weak critter] in
             guard let self, let critter, self.lureNode === critter else { return }
             if isLeaving {
@@ -246,15 +262,7 @@ final class GameScene: SKScene {
         guard let critter = lureNode else { return }
         lureNode = nil
         isLureLeaving = false
-        critter.stop()
-        let position = critter.center
-        playCatchAnimation(on: critter) { [weak self, weak critter] in
-            guard let critter else { return }
-            self?.recycle(critter)
-        }
-        playCatchEffects(points: nil, at: position)
-        SoundPlayer.shared.play(.catchPop, pan: geometry.pan(atX: position.x))
-        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        playCatch(of: critter, points: nil)
     }
 
     func removeLure() {
@@ -295,7 +303,7 @@ final class GameScene: SKScene {
 
     /// Normalized (0...1) centers.
     func showHidingSpots(at points: [CGPoint]) {
-        hidingSpotNodes.forEach { $0.removeFromParent() }
+        for spot in hidingSpotNodes { spot.removeFromParent() }
         hidingSpotPoints = points
         let texture = PlayfieldTextures.hidingSpot(for: theme, side: tuning.hidingSpotSize)
         hidingSpotNodes = points.map { _ in
@@ -318,8 +326,7 @@ final class GameScene: SKScene {
         guard critter.canTakeCover else { return false }
         let center = critter.center
         return hidingSpotNodes.contains { spot in
-            hypot(spot.position.x - center.x, spot.position.y - center.y) < tuning.hidingSpotSize
-                * 0.3
+            hypot(spot.position.x - center.x, spot.position.y - center.y) < tuning.coverRadius
         }
     }
 
@@ -332,11 +339,7 @@ final class GameScene: SKScene {
             let location = touch.location(in: self)
             lastRipple[ObjectIdentifier(touch)] = location
             lastTouch = location
-            if lureHit(at: location) {
-                onTapLure?()
-            } else if let id = targetID(at: location) {
-                onTapTarget?(id)
-            } else {
+            if !tapCritter(at: location) {
                 onMiss?()
                 playMissEffect(at: location)
                 startleNearestTarget(from: location)
@@ -344,22 +347,28 @@ final class GameScene: SKScene {
         }
     }
 
+    /// The lure takes a hit before a round's critter. Returns whether anything was hit.
+    private func tapCritter(at location: CGPoint) -> Bool {
+        if lureHit(at: location) {
+            onTapLure?()
+            return true
+        }
+        if let id = targetID(at: location) {
+            onTapTarget?(id)
+            return true
+        }
+        return false
+    }
+
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard !world.isPaused else { return }
         for touch in touches {
             let location = touch.location(in: self)
             lastTouch = location
-            if lureHit(at: location) {
-                onTapLure?()
-                continue
-            }
-            if let id = targetID(at: location) {
-                onTapTarget?(id)
-                continue
-            }
+            if tapCritter(at: location) { continue }
             let key = ObjectIdentifier(touch)
             let last = lastRipple[key] ?? location
-            if hypot(location.x - last.x, location.y - last.y) >= trailSpacing {
+            if hypot(location.x - last.x, location.y - last.y) >= Self.trailSpacing {
                 lastRipple[key] = location
                 playTrailEffect(at: location)
             }
@@ -367,16 +376,17 @@ final class GameScene: SKScene {
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        touches.forEach { lastRipple[ObjectIdentifier($0)] = nil }
+        for touch in touches { lastRipple[ObjectIdentifier(touch)] = nil }
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        touches.forEach { lastRipple[ObjectIdentifier($0)] = nil }
+        for touch in touches { lastRipple[ObjectIdentifier(touch)] = nil }
     }
 
     /// Makes the nearest critter hop away from a missed tap.
     private func startleNearestTarget(from location: CGPoint) {
-        var candidates = targetNodes.values.compactMap { critter -> (CritterNode, CGFloat)? in
+        typealias Candidate = (critter: CritterNode, distance: CGFloat)
+        var candidates = targetNodes.values.compactMap { critter -> Candidate? in
             guard isCatchable(critter) else { return nil }
             let distance = hypot(critter.center.x - location.x, critter.center.y - location.y)
             return distance <= startleRange ? (critter, distance) : nil
@@ -385,7 +395,9 @@ final class GameScene: SKScene {
             let distance = hypot(lure.center.x - location.x, lure.center.y - location.y)
             if distance <= startleRange { candidates.append((lure, distance)) }
         }
-        guard let critter = candidates.min(by: { $0.1 < $1.1 })?.0 else { return }
+        guard let critter = candidates.min(by: { $0.distance < $1.distance })?.critter else {
+            return
+        }
         critter.startle(from: location)
         SoundPlayer.shared.play(.squeak, pan: geometry.pan(atX: critter.center.x))
     }

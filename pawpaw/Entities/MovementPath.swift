@@ -45,7 +45,7 @@ enum MovementStyle {
     }
 
     /// Bobs its head forward during each pause.
-    var pecks: Bool {
+    var nodsDuringFreeze: Bool {
         self == .peck
     }
 

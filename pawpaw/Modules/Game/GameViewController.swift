@@ -132,11 +132,11 @@ final class GameViewController: UIViewController, GameViewProtocol {
     /// Home is portrait-only on iPhone, so re-checking once it's on top turns the screen back.
     private func releaseOrientationLock() {
         guard tuning.prefersLandscape, let navigation = navigationController else { return }
-        let scene = windowScene
+        let lockedScene = windowScene
         let release: @MainActor @Sendable () -> Void = {
             if #available(iOS 16.0, *) {
                 navigation.setNeedsUpdateOfSupportedInterfaceOrientations()
-                scene?.requestGeometryUpdate(.iOS(interfaceOrientations: .menus))
+                lockedScene?.requestGeometryUpdate(.iOS(interfaceOrientations: .menus))
             } else {
                 UIViewController.attemptRotationToDeviceOrientation()
             }
@@ -174,11 +174,11 @@ final class GameViewController: UIViewController, GameViewProtocol {
             gestures.append(navigation.interactiveContentPopGestureRecognizer)
         }
         disabledPopGestures = gestures.compactMap { $0 }.filter(\.isEnabled)
-        disabledPopGestures.forEach { $0.isEnabled = false }
+        for gesture in disabledPopGestures { gesture.isEnabled = false }
     }
 
     private func restoreSwipeBack() {
-        disabledPopGestures.forEach { $0.isEnabled = true }
+        for gesture in disabledPopGestures { gesture.isEnabled = true }
         disabledPopGestures = []
     }
 
