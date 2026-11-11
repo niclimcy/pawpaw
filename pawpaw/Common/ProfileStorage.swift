@@ -24,11 +24,21 @@ final class UserDefaultsProfileStorage: ProfileStorage {
     nonisolated deinit {}
 
     private let defaults: UserDefaults
-    private let profilesKey = "pawpaw.profiles"
-    private let activeKey = "pawpaw.activeProfile"
+    private let makeScoreStorage: (UUID) -> ScoreStorage
+    private let makeStatsStorage: (UUID) -> StatsStorage
+    private let profilesKey = StorageKeys.profiles
+    private let activeKey = StorageKeys.activeProfile
 
-    init(defaults: UserDefaults = .standard) {
+    init(
+        defaults: UserDefaults = .standard,
+        makeScoreStorage: ((UUID) -> ScoreStorage)? = nil,
+        makeStatsStorage: ((UUID) -> StatsStorage)? = nil
+    ) {
         self.defaults = defaults
+        self.makeScoreStorage =
+            makeScoreStorage ?? { UserDefaultsScoreStorage(defaults: defaults, profileID: $0) }
+        self.makeStatsStorage =
+            makeStatsStorage ?? { UserDefaultsStatsStorage(defaults: defaults, profileID: $0) }
         createDefaultProfileIfNeeded()
         repairProfilesIfNeeded()
     }
@@ -62,25 +72,15 @@ final class UserDefaultsProfileStorage: ProfileStorage {
 
     func update(_ id: UUID, name: String, face: CatFace) {
         let cleanName = CatProfile.cleaned(name)
-        save(
-            profiles.map { profile in
-                var copy = profile
-                if copy.id == id {
-                    copy.name = cleanName ?? copy.name
-                    copy.face = face
-                }
-                return copy
-            })
+        modify(id) {
+            $0.name = cleanName ?? $0.name
+            $0.face = face
+        }
     }
 
     func setDisabledKinds(_ kinds: Set<TargetKind>, for id: UUID) {
         guard CatProfile.isPlayable(disabledKinds: kinds) else { return }
-        save(
-            profiles.map { profile in
-                var copy = profile
-                if copy.id == id { copy.disabledKinds = kinds }
-                return copy
-            })
+        modify(id) { $0.disabledKinds = kinds }
     }
 
     func delete(_ id: UUID) {
@@ -90,27 +90,28 @@ final class UserDefaultsProfileStorage: ProfileStorage {
         let remaining = all.filter { $0.id != id }
         save(remaining)
         if wasActive { defaults.set(remaining[0].id.uuidString, forKey: activeKey) }
-        UserDefaultsScoreStorage(defaults: defaults, profileID: id).reset()
-        UserDefaultsStatsStorage(defaults: defaults, profileID: id).reset()
+        makeScoreStorage(id).reset()
+        makeStatsStorage(id).reset()
     }
 
     // MARK: Private
     private func save(_ profiles: [CatProfile]) {
-        do {
-            defaults.set(try JSONEncoder().encode(profiles), forKey: profilesKey)
-        } catch {
-            Log.storageFailure("Couldn't save cat profiles", error: error)
-        }
+        defaults.encode(profiles, forKey: profilesKey, failureMessage: "Couldn't save cat profiles")
+    }
+
+    private func modify(_ id: UUID, _ change: (inout CatProfile) -> Void) {
+        save(
+            profiles.map { profile in
+                guard profile.id == id else { return profile }
+                var copy = profile
+                change(&copy)
+                return copy
+            })
     }
 
     private func storedProfiles() -> [CatProfile]? {
-        guard let data = defaults.data(forKey: profilesKey) else { return nil }
-        do {
-            return try JSONDecoder().decode([CatProfile].self, from: data)
-        } catch {
-            Log.storageFailure("Couldn't read cat profiles", error: error)
-            return nil
-        }
+        defaults.decode(
+            [CatProfile].self, forKey: profilesKey, failureMessage: "Couldn't read cat profiles")
     }
 
     /// Replaces an unreadable or empty list with a fixed-ID cat, so each read doesn't mint a new ID.
@@ -124,18 +125,19 @@ final class UserDefaultsProfileStorage: ProfileStorage {
     /// Migrates pre-profile scores and stats to the first cat. Legacy keys are left in place.
     private func createDefaultProfileIfNeeded() {
         guard defaults.data(forKey: profilesKey) == nil else { return }
+        OnboardingState.recordIfNeeded(in: defaults)
         let first = CatProfile(name: CatProfile.defaultName)
         save([first])
         defaults.set(first.id.uuidString, forKey: activeKey)
 
-        let scores = UserDefaultsScoreStorage(defaults: defaults, profileID: first.id)
+        let scores = makeScoreStorage(first.id)
         for mode in SessionMode.allCases {
-            guard let legacyKey = UserDefaultsScoreStorage.legacyKey(for: mode) else { continue }
+            guard let legacyKey = StorageKeys.legacyHighScore(for: mode) else { continue }
             let legacy = defaults.integer(forKey: legacyKey)
             if legacy > 0 { scores.saveHighScore(legacy, for: mode) }
         }
-        if let legacyStats = defaults.data(forKey: "pawpaw.stats") {
-            defaults.set(legacyStats, forKey: UserDefaultsStatsStorage.key(for: first.id))
+        if let legacyStats = defaults.data(forKey: StorageKeys.legacyStats) {
+            defaults.set(legacyStats, forKey: StorageKeys.stats(for: first.id))
         }
     }
 }

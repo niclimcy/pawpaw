@@ -95,11 +95,12 @@ extension UIButton {
 }
 
 extension UIViewController {
+    private static let holdHintTag = 9_001
+
     /// Owner hint for a plain tap on a hold-to-confirm button. Sits above `anchor` when given,
     /// otherwise near the bottom of the safe area.
     func showHoldHint(_ message: String, above anchor: NSLayoutYAxisAnchor? = nil) {
-        let tag = 9_001
-        view.viewWithTag(tag)?.removeFromSuperview()
+        view.viewWithTag(Self.holdHintTag)?.removeFromSuperview()
 
         let hint = Theme.filledButton(
             title: message,
@@ -109,7 +110,7 @@ extension UIViewController {
             insets: NSDirectionalEdgeInsets(top: 10, leading: 18, bottom: 10, trailing: 18)
         )
         hint.configuration?.titleAlignment = .center
-        hint.tag = tag
+        hint.tag = Self.holdHintTag
         hint.isUserInteractionEnabled = false
         hint.alpha = 0
         hint.translatesAutoresizingMaskIntoConstraints = false

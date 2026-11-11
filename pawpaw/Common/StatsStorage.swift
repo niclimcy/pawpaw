@@ -21,21 +21,13 @@ final class UserDefaultsStatsStorage: StatsStorage {
 
     init(defaults: UserDefaults = .standard, profileID: UUID) {
         self.defaults = defaults
-        self.key = Self.key(for: profileID)
-    }
-
-    static func key(for profileID: UUID) -> String {
-        "pawpaw.\(profileID.uuidString).stats"
+        self.key = StorageKeys.stats(for: profileID)
     }
 
     var stats: PlayStats {
-        guard let data = defaults.data(forKey: key) else { return PlayStats() }
-        do {
-            return try JSONDecoder().decode(PlayStats.self, from: data)
-        } catch {
-            Log.storageFailure("Couldn't read play stats, starting from zero", error: error)
-            return PlayStats()
-        }
+        defaults.decode(
+            PlayStats.self, forKey: key,
+            failureMessage: "Couldn't read play stats, starting from zero") ?? PlayStats()
     }
 
     func record(catches: [TargetKind: Int], isNewRound: Bool) {
@@ -49,10 +41,6 @@ final class UserDefaultsStatsStorage: StatsStorage {
     }
 
     private func save(_ stats: PlayStats) {
-        do {
-            defaults.set(try JSONEncoder().encode(stats), forKey: key)
-        } catch {
-            Log.storageFailure("Couldn't save play stats", error: error)
-        }
+        defaults.encode(stats, forKey: key, failureMessage: "Couldn't save play stats")
     }
 }

@@ -13,11 +13,7 @@ extension UIViewController {
         _ content: UIView, maxWidth: CGFloat, margin: CGFloat = 24, in host: UIView? = nil
     ) -> UIScrollView {
         let host = host ?? view!
-        let scroll = UIScrollView()
-        scroll.showsVerticalScrollIndicator = false
-        scroll.contentInsetAdjustmentBehavior = .never
-        scroll.translatesAutoresizingMaskIntoConstraints = false
-        host.addSubview(scroll)
+        let scroll = Self.makeScrollView(in: host)
 
         let container = UIView()
         container.translatesAutoresizingMaskIntoConstraints = false
@@ -80,11 +76,7 @@ extension UIViewController {
         let area = host.safeAreaLayoutGuide
         let verticalMargin = verticalMargin ?? margin
 
-        let scroll = UIScrollView()
-        scroll.showsVerticalScrollIndicator = false
-        scroll.contentInsetAdjustmentBehavior = .never
-        scroll.translatesAutoresizingMaskIntoConstraints = false
-        host.addSubview(scroll)
+        let scroll = Self.makeScrollView(in: host)
 
         content.translatesAutoresizingMaskIntoConstraints = false
         scroll.addSubview(content)
@@ -135,6 +127,15 @@ extension UIViewController {
             footer.centerXAnchor.constraint(equalTo: area.centerXAnchor),
             footer.widthAnchor.constraint(equalTo: content.widthAnchor),
         ])
+        return scroll
+    }
+
+    private static func makeScrollView(in host: UIView) -> UIScrollView {
+        let scroll = UIScrollView()
+        scroll.showsVerticalScrollIndicator = false
+        scroll.contentInsetAdjustmentBehavior = .never
+        scroll.translatesAutoresizingMaskIntoConstraints = false
+        host.addSubview(scroll)
         return scroll
     }
 }

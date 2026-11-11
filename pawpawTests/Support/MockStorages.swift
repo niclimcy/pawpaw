@@ -10,15 +10,19 @@ import Foundation
 @MainActor
 final class MockScoreStorage: ScoreStorage {
     var scores: [SessionMode: Int] = [:]
-    private(set) var saved: [(score: Int, mode: SessionMode)] = []
+    private(set) var resetCount = 0
 
     func highScore(for mode: SessionMode) -> Int {
         scores[mode] ?? 0
     }
 
     func saveHighScore(_ score: Int, for mode: SessionMode) {
-        saved.append((score, mode))
         scores[mode] = score
+    }
+
+    func reset() {
+        resetCount += 1
+        scores = [:]
     }
 }
 
@@ -53,7 +57,6 @@ final class MockSettingsStorage: SettingsStorage {
 final class MockProfileStorage: ProfileStorage {
     var profiles: [CatProfile]
     var activeID: UUID
-    private(set) var updates: [(id: UUID, name: String, face: CatFace)] = []
 
     init(profiles: [CatProfile] = [CatProfile(name: "Tom")]) {
         self.profiles = profiles
@@ -78,7 +81,6 @@ final class MockProfileStorage: ProfileStorage {
     }
 
     func update(_ id: UUID, name: String, face: CatFace) {
-        updates.append((id, name, face))
         guard let index = profiles.firstIndex(where: { $0.id == id }) else { return }
         profiles[index].name = CatProfile.cleaned(name) ?? profiles[index].name
         profiles[index].face = face

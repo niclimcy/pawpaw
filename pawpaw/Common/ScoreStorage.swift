@@ -8,6 +8,7 @@ import Foundation
 protocol ScoreStorage {
     func highScore(for mode: SessionMode) -> Int
     func saveHighScore(_ score: Int, for mode: SessionMode)
+    func reset()
 }
 
 final class UserDefaultsScoreStorage: ScoreStorage {
@@ -37,12 +38,6 @@ final class UserDefaultsScoreStorage: ScoreStorage {
     }
 
     private func key(for mode: SessionMode) -> String {
-        "pawpaw.\(profileID.uuidString).highScore.\(mode.rawValue)"
-    }
-
-    /// Where pre-profile versions kept the best score for `mode`; `nil` if it never had one.
-    static func legacyKey(for mode: SessionMode) -> String? {
-        guard mode.hasHighScore else { return nil }
-        return mode == .standard ? "pawpaw.highScore" : "pawpaw.highScore.\(mode.rawValue)"
+        StorageKeys.highScore(for: mode, profileID: profileID)
     }
 }

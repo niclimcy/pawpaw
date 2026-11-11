@@ -15,7 +15,10 @@ Each screen is a VIPER module (View, Interactor, Presenter, Entity, Router). Pro
 ## Other folders
 
 - `Entities/`: data models (`TargetKind`, `GameTarget`, `SessionMode`, `PlayfieldTheme`, `PlayfieldTuning`, `CatProfile`, ...).
-- `Common/`: storage (`ProfileStorage`, `SettingsStorage`, `ScoreStorage`, `StatsStorage`), `Theme`, `SoundPlayer`, shared views, drawn backgrounds.
+- `Common/`:
+  - Storage: `ProfileStorage`, `SettingsStorage`, `ScoreStorage`, `StatsStorage`. `StorageKeys` holds every `UserDefaults` key (existing installs depend on the strings), `UserDefaults+Codable` the shared JSON encode/decode, and `OnboardingState` records whether the device is new, so the order the storages are created in doesn't matter.
+  - Shared UI: `Theme`, `ScrollingLayout` (centered, scrolling screen layout), `HoldToConfirm`, `CatFacePicker`, `OrientationNavigationController`, `PassthroughView`, drawn backgrounds.
+  - Other: `SoundPlayer`, `SeededGenerator` (repeatable randomness), `Log`.
 
 ## Device tuning
 

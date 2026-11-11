@@ -8,11 +8,10 @@ import XCTest
 
 extension XCTestCase {
     /// A throwaway `UserDefaults` suite, removed when the test ends, so tests never touch `.standard`.
-    func makeTestDefaults(file: StaticString = #filePath, line: UInt = #line) -> UserDefaults {
+    func makeTestDefaults() -> UserDefaults {
         let suiteName = "pawpawTests.\(UUID().uuidString)"
         guard let defaults = UserDefaults(suiteName: suiteName) else {
-            XCTFail("Couldn't create a UserDefaults suite", file: file, line: line)
-            return .standard
+            fatalError("Couldn't create the UserDefaults suite \(suiteName)")
         }
         addTeardownBlock {
             UserDefaults().removePersistentDomain(forName: suiteName)

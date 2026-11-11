@@ -19,75 +19,62 @@ final class UserDefaultsSettingsStorage: SettingsStorage {
     nonisolated deinit {}
 
     private let defaults: UserDefaults
-    // Legacy keys; keep them so existing saved choices carry over.
-    private let modeKey = "pawpaw.selectedMode"
-    private let themeKey = "pawpaw.selectedTheme"
-    private let holdToExitKey = "pawpaw.hasLearnedHoldToExit"
-    private let onboardingKey = "pawpaw.hasCompletedOnboarding"
-    private let afterRoundKey = "pawpaw.afterRound"
+    private let defaultMode: SessionMode
 
-    /// Create before any `UserDefaultsProfileStorage` on launch: that creates a cat,
-    /// which would make a fresh install look like an existing one.
-    init(defaults: UserDefaults = .standard) {
+    init(
+        defaults: UserDefaults = .standard,
+        defaultMode: SessionMode = PlayfieldTuning.current.defaultMode
+    ) {
         self.defaults = defaults
-        recordOnboardingStateIfNeeded()
+        self.defaultMode = defaultMode
+        OnboardingState.recordIfNeeded(in: defaults)
     }
 
     var selectedMode: SessionMode {
         get {
-            defaults.string(forKey: modeKey).flatMap(SessionMode.init(rawValue:))
-                ?? PlayfieldTuning.current.defaultMode
+            defaults.string(forKey: StorageKeys.selectedMode).flatMap(SessionMode.init(rawValue:))
+                ?? defaultMode
         }
         set {
-            defaults.set(newValue.rawValue, forKey: modeKey)
+            defaults.set(newValue.rawValue, forKey: StorageKeys.selectedMode)
         }
     }
 
     var selectedTheme: PlayfieldTheme {
         get {
-            defaults.string(forKey: themeKey).flatMap(PlayfieldTheme.init(rawValue:)) ?? .wood
+            defaults.string(forKey: StorageKeys.selectedTheme)
+                .flatMap(PlayfieldTheme.init(rawValue:)) ?? .wood
         }
         set {
-            defaults.set(newValue.rawValue, forKey: themeKey)
+            defaults.set(newValue.rawValue, forKey: StorageKeys.selectedTheme)
         }
     }
 
     var afterRound: AfterRoundMode {
         get {
-            defaults.string(forKey: afterRoundKey).flatMap(AfterRoundMode.init(rawValue:))
+            defaults.string(forKey: StorageKeys.afterRound).flatMap(AfterRoundMode.init(rawValue:))
                 ?? .keepPlaying
         }
         set {
-            defaults.set(newValue.rawValue, forKey: afterRoundKey)
+            defaults.set(newValue.rawValue, forKey: StorageKeys.afterRound)
         }
     }
 
     var hasLearnedHoldToExit: Bool {
         get {
-            defaults.bool(forKey: holdToExitKey)
+            defaults.bool(forKey: StorageKeys.hasLearnedHoldToExit)
         }
         set {
-            defaults.set(newValue, forKey: holdToExitKey)
+            defaults.set(newValue, forKey: StorageKeys.hasLearnedHoldToExit)
         }
     }
 
     var hasCompletedOnboarding: Bool {
         get {
-            defaults.bool(forKey: onboardingKey)
+            defaults.bool(forKey: StorageKeys.hasCompletedOnboarding)
         }
         set {
-            defaults.set(newValue, forKey: onboardingKey)
+            defaults.set(newValue, forKey: StorageKeys.hasCompletedOnboarding)
         }
-    }
-
-    /// Saved once so quitting mid-onboarding doesn't skip it next launch. Devices that
-    /// already have cats, scores or stats skip onboarding.
-    private func recordOnboardingStateIfNeeded() {
-        guard defaults.object(forKey: onboardingKey) == nil else { return }
-        let existingKeys =
-            ["pawpaw.profiles", "pawpaw.stats"]
-            + SessionMode.allCases.compactMap(UserDefaultsScoreStorage.legacyKey(for:))
-        let hasExistingData = existingKeys.contains { defaults.object(forKey: $0) != nil }
-        defaults.set(hasExistingData, forKey: onboardingKey)
     }
 }

@@ -93,7 +93,7 @@ final class NatureBackgroundView: CachedBackgroundView {
             )
             UIColor(red: 0.12, green: 0.34, blue: 0.22, alpha: 0.9).setFill()
             UIBezierPath(ovalIn: pad).fill()
-            UIColor(red: 0.04, green: 0.12, blue: 0.20, alpha: 1).setFill()
+            PlayfieldTheme.pond.baseColor.setFill()
             UIBezierPath(
                 rect: CGRect(x: pad.midX, y: pad.midY - 1.5, width: padSize / 2, height: 3)
             )

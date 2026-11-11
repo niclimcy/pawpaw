@@ -67,7 +67,7 @@ final class StorageTests: XCTestCase {
 
     func testCorruptStatsStartFromZero() {
         let id = UUID()
-        defaults.set(Data("garbage".utf8), forKey: UserDefaultsStatsStorage.key(for: id))
+        defaults.set(Data("garbage".utf8), forKey: StorageKeys.stats(for: id))
         let stats = UserDefaultsStatsStorage(defaults: defaults, profileID: id)
         XCTAssertEqual(stats.stats, PlayStats())
         stats.record(catches: [.bug: 1], isNewRound: true)
@@ -77,11 +77,21 @@ final class StorageTests: XCTestCase {
     // MARK: Settings
 
     func testSettingsDefaults() {
-        let settings = UserDefaultsSettingsStorage(defaults: defaults)
-        XCTAssertEqual(settings.selectedMode, PlayfieldTuning.current.defaultMode)
+        let settings = UserDefaultsSettingsStorage(defaults: defaults, defaultMode: .standard)
+        XCTAssertEqual(settings.selectedMode, .standard)
         XCTAssertEqual(settings.selectedTheme, .wood)
         XCTAssertEqual(settings.afterRound, .keepPlaying)
         XCTAssertFalse(settings.hasLearnedHoldToExit)
+    }
+
+    func testSelectedModeDefaultsToTheDeviceDefaultMode() {
+        XCTAssertEqual(PlayfieldTuning.standard.defaultMode, .standard, "iPad")
+        XCTAssertEqual(PlayfieldTuning.pocket.defaultMode, .short, "iPhone")
+        for tuning in [PlayfieldTuning.standard, .pocket] {
+            let settings = UserDefaultsSettingsStorage(
+                defaults: makeTestDefaults(), defaultMode: tuning.defaultMode)
+            XCTAssertEqual(settings.selectedMode, tuning.defaultMode)
+        }
     }
 
     func testSettingsPersist() {
@@ -102,8 +112,8 @@ final class StorageTests: XCTestCase {
         defaults.set("hyper", forKey: "pawpaw.selectedMode")
         defaults.set("lava", forKey: "pawpaw.selectedTheme")
         defaults.set("forever", forKey: "pawpaw.afterRound")
-        let settings = UserDefaultsSettingsStorage(defaults: defaults)
-        XCTAssertEqual(settings.selectedMode, PlayfieldTuning.current.defaultMode)
+        let settings = UserDefaultsSettingsStorage(defaults: defaults, defaultMode: .short)
+        XCTAssertEqual(settings.selectedMode, .short)
         XCTAssertEqual(settings.selectedTheme, .wood)
         XCTAssertEqual(settings.afterRound, .keepPlaying)
     }
@@ -121,6 +131,11 @@ final class StorageTests: XCTestCase {
         XCTAssertFalse(
             UserDefaultsSettingsStorage(defaults: defaults).hasCompletedOnboarding,
             "Quitting mid-onboarding doesn't skip it next launch")
+    }
+
+    func testFreshInstallNeedsOnboardingWhateverTheCreationOrder() {
+        _ = UserDefaultsProfileStorage(defaults: defaults)
+        XCTAssertFalse(UserDefaultsSettingsStorage(defaults: defaults).hasCompletedOnboarding)
     }
 
     func testExistingInstallsSkipOnboarding() {
@@ -144,10 +159,63 @@ final class StorageTests: XCTestCase {
     }
 
     func testLegacyScoreKeys() {
-        XCTAssertEqual(UserDefaultsScoreStorage.legacyKey(for: .standard), "pawpaw.highScore")
-        XCTAssertEqual(UserDefaultsScoreStorage.legacyKey(for: .short), "pawpaw.highScore.short")
-        XCTAssertEqual(UserDefaultsScoreStorage.legacyKey(for: .long), "pawpaw.highScore.long")
-        XCTAssertNil(UserDefaultsScoreStorage.legacyKey(for: .relaxed))
+        XCTAssertEqual(StorageKeys.legacyHighScore(for: .standard), "pawpaw.highScore")
+        XCTAssertEqual(StorageKeys.legacyHighScore(for: .short), "pawpaw.highScore.short")
+        XCTAssertEqual(StorageKeys.legacyHighScore(for: .long), "pawpaw.highScore.long")
+        XCTAssertNil(StorageKeys.legacyHighScore(for: .relaxed))
+    }
+
+    func testKeysKeepTheirStoredFormat() {
+        let id = UUID()
+        XCTAssertEqual(StorageKeys.profiles, "pawpaw.profiles")
+        XCTAssertEqual(StorageKeys.legacyStats, "pawpaw.stats")
+        XCTAssertEqual(StorageKeys.stats(for: id), "pawpaw.\(id.uuidString).stats")
+        XCTAssertEqual(
+            StorageKeys.highScore(for: .short, profileID: id),
+            "pawpaw.\(id.uuidString).highScore.short")
+    }
+
+    // MARK: Profile deletion
+
+    func testDeleteResetsScoresAndStatsThroughInjectedStorages() throws {
+        var scores: [UUID: MockScoreStorage] = [:]
+        var stats: [UUID: MockStatsStorage] = [:]
+        let storage = UserDefaultsProfileStorage(
+            defaults: defaults,
+            makeScoreStorage: { id in
+                let made = scores[id] ?? MockScoreStorage()
+                scores[id] = made
+                return made
+            },
+            makeStatsStorage: { id in
+                let made = stats[id] ?? MockStatsStorage()
+                stats[id] = made
+                return made
+            })
+        let gone = try XCTUnwrap(storage.add(name: "Mochi", face: .gray)).id
+        let keep = storage.activeProfile.id
+
+        storage.delete(gone)
+
+        XCTAssertEqual(scores[gone]?.resetCount, 1)
+        XCTAssertEqual(stats[gone]?.resetCount, 1)
+        XCTAssertEqual(scores[keep]?.resetCount ?? 0, 0, "The other cat's storages aren't touched")
+        XCTAssertEqual(stats[keep]?.resetCount ?? 0, 0)
+    }
+
+    func testRejectedDeleteDoesNotResetAnything() {
+        var scores: [UUID: MockScoreStorage] = [:]
+        let storage = UserDefaultsProfileStorage(
+            defaults: defaults,
+            makeScoreStorage: { id in
+                let made = scores[id] ?? MockScoreStorage()
+                scores[id] = made
+                return made
+            })
+
+        storage.delete(storage.activeProfile.id)
+
+        XCTAssertEqual(scores.values.map(\.resetCount).reduce(0, +), 0, "The last cat stays")
     }
 
     func testUnrelatedKeysDontSkipOnboarding() {
