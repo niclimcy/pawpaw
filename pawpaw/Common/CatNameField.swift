@@ -10,7 +10,7 @@ import UIKit
 final class CatNameField: UITextField {
     override init(frame: CGRect) {
         super.init(frame: frame)
-        font = Theme.roundedFont(size: Theme.scaled(22), weight: .bold)
+        font = Theme.roundedFont(size: 22, weight: .bold)
         adjustsFontForContentSizeCategory = true
         textColor = Theme.text
         tintColor = Theme.gold
@@ -26,7 +26,7 @@ final class CatNameField: UITextField {
         autocorrectionType = .no
         accessibilityIdentifier = "catNameField"
         heightAnchor.constraint(
-            greaterThanOrEqualToConstant: max(Theme.minimumTapSize, Theme.scaled(52))
+            greaterThanOrEqualToConstant: 52
         ).isActive = true
     }
 

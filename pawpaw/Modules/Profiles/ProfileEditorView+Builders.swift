@@ -14,7 +14,7 @@ extension ProfileEditorView {
     func makeCritterPicker() -> UIView {
         let heading = UILabel()
         heading.text = "Critters to play with"
-        heading.font = Theme.roundedFont(size: Theme.scaled(16), weight: .bold)
+        heading.font = Theme.roundedFont(size: 16, weight: .bold)
         heading.adjustsFontForContentSizeCategory = true
         heading.textColor = Theme.text
         heading.textAlignment = .center
@@ -23,7 +23,7 @@ extension ProfileEditorView {
         heading.setContentCompressionResistancePriority(.required, for: .vertical)
 
         critterHintLabel.setContentCompressionResistancePriority(.required, for: .vertical)
-        critterHintLabel.font = Theme.roundedFont(size: Theme.scaled(14), weight: .semibold)
+        critterHintLabel.font = Theme.roundedFont(size: 14, weight: .semibold)
         critterHintLabel.adjustsFontForContentSizeCategory = true
         critterHintLabel.textColor = Theme.gold
         critterHintLabel.textAlignment = .center

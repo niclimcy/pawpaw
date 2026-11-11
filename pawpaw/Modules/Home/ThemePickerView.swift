@@ -9,6 +9,7 @@ final class ThemePickerView: UIView {
     var onSelect: ((PlayfieldTheme) -> Void)?
 
     private var tiles: [ThemeTile] = []
+    private let row = UIStackView()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -17,11 +18,13 @@ final class ThemePickerView: UIView {
             tile.addAction(UIAction { [weak self] _ in self?.tapped(theme) }, for: .touchUpInside)
             return tile
         }
-        let row = UIStackView(arrangedSubviews: tiles)
+        for tile in tiles {
+            row.addArrangedSubview(tile)
+        }
         row.axis = .horizontal
         row.distribution = .fillEqually
         row.alignment = .top
-        row.spacing = Theme.scaled(10)
+        row.spacing = 10
         row.translatesAutoresizingMaskIntoConstraints = false
         addSubview(row)
         NSLayoutConstraint.activate([
@@ -72,7 +75,7 @@ private final class ThemeTile: UIControl {
         thumbnail.clipsToBounds = true
 
         nameLabel.text = theme.title
-        nameLabel.font = Theme.roundedFont(size: Theme.scaled(14), weight: .bold)
+        nameLabel.font = Theme.roundedFont(size: 14, weight: .bold)
         nameLabel.adjustsFontForContentSizeCategory = true
         nameLabel.adjustsFontSizeToFitWidth = true
         nameLabel.minimumScaleFactor = 0.7

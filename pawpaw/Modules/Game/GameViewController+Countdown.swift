@@ -104,11 +104,11 @@ extension GameViewController {
     private func installCountdownLabels(in overlay: UIView) -> UILabel {
         let readyLabel = UILabel()
         readyLabel.text = "Get ready!"
-        readyLabel.font = Theme.roundedFont(size: Theme.scaled(26))
+        readyLabel.font = Theme.roundedFont(size: 26)
         readyLabel.textColor = Theme.text
 
         let numberLabel = UILabel()
-        numberLabel.font = Theme.roundedFont(size: Theme.scaled(110))
+        numberLabel.font = Theme.roundedFont(size: 110)
         numberLabel.textColor = Theme.accent
         numberLabel.isAccessibilityElement = false
 

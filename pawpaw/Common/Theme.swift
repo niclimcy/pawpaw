@@ -44,14 +44,6 @@ enum Theme {
     /// Cap on Dynamic Type growth so layouts don't break.
     static let maxTextScale: CGFloat = 1.5
 
-    static var uiScale: CGFloat {
-        UIDevice.current.userInterfaceIdiom == .pad ? 1.4 : 1
-    }
-
-    static func scaled(_ value: CGFloat) -> CGFloat {
-        value * uiScale
-    }
-
     static func styleSegmented(
         _ control: UISegmentedControl,
         fontSize: CGFloat,
@@ -61,17 +53,15 @@ enum Theme {
         control.selectedSegmentTintColor = selectedTint
         control.backgroundColor = panel
         applySegmentedFonts(to: control, fontSize: fontSize, selectedText: selectedText)
-        control.heightAnchor.constraint(
-            greaterThanOrEqualToConstant: max(minimumTapSize, scaled(36))
-        )
-        .isActive = true
+        control.heightAnchor.constraint(greaterThanOrEqualToConstant: minimumTapSize).isActive =
+            true
     }
 
     /// Segmented controls don't follow Dynamic Type, so call again when the text size changes.
     static func applySegmentedFonts(
         to control: UISegmentedControl, fontSize: CGFloat, selectedText: UIColor = onAccent
     ) {
-        let font = roundedFont(size: scaled(fontSize), weight: .bold)
+        let font = roundedFont(size: fontSize, weight: .bold)
         control.setTitleTextAttributes([.foregroundColor: text, .font: font], for: .normal)
         control.setTitleTextAttributes(
             [.foregroundColor: selectedText, .font: font], for: .selected)
@@ -86,10 +76,10 @@ enum Theme {
         return UIFontMetrics.default.scaledFont(for: rounded, maximumPointSize: size * maxTextScale)
     }
 
-    /// A centered label in `text` colour; `size` is scaled up on iPad.
+    /// A centered, wrapping label in `text` colour.
     static func makeLabel(size: CGFloat, weight: UIFont.Weight = .heavy) -> UILabel {
         let label = UILabel()
-        label.font = roundedFont(size: scaled(size), weight: weight)
+        label.font = roundedFont(size: size, weight: weight)
         label.adjustsFontForContentSizeCategory = true
         label.textColor = text
         label.textAlignment = .center
@@ -179,9 +169,10 @@ enum Theme {
     static func fontTransformer(size: CGFloat, weight: UIFont.Weight)
         -> UIConfigurationTextAttributesTransformer
     {
+        // Built on each update so the title follows text-size changes.
         UIConfigurationTextAttributesTransformer { incoming in
             var outgoing = incoming
-            outgoing.font = roundedFont(size: scaled(size), weight: weight)
+            outgoing.font = roundedFont(size: size, weight: weight)
             return outgoing
         }
     }

@@ -14,7 +14,7 @@ final class OnboardingHoldPracticeView: UIView {
     private let check = UIImageView()
     private let hint: UILabel = {
         let label = UILabel()
-        label.font = Theme.roundedFont(size: Theme.scaled(16), weight: .heavy)
+        label.font = Theme.roundedFont(size: 16, weight: .heavy)
         label.adjustsFontForContentSizeCategory = true
         label.textColor = Theme.gold
         label.textAlignment = .center
@@ -25,7 +25,7 @@ final class OnboardingHoldPracticeView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        let side = max(Theme.minimumTapSize, Theme.scaled(76))
+        let side: CGFloat = 76
         var config = UIButton.Configuration.plain()
         config.image = UIImage(systemName: "house.fill")
         config.baseForegroundColor = Theme.text
@@ -63,7 +63,7 @@ final class OnboardingHoldPracticeView: UIView {
             group.bottomAnchor.constraint(equalTo: hint.bottomAnchor),
             group.centerYAnchor.constraint(equalTo: centerYAnchor),
             group.topAnchor.constraint(greaterThanOrEqualTo: topAnchor),
-            hint.topAnchor.constraint(equalTo: button.bottomAnchor, constant: Theme.scaled(8)),
+            hint.topAnchor.constraint(equalTo: button.bottomAnchor, constant: 8),
             hint.centerXAnchor.constraint(equalTo: centerXAnchor),
 
             button.widthAnchor.constraint(equalToConstant: side),

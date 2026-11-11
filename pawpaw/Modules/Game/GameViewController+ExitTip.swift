@@ -10,7 +10,7 @@ extension GameViewController {
         guard let homeButton = hudHomeButton else { return }
 
         let label = UILabel()
-        let font = Theme.roundedFont(size: Theme.scaled(16), weight: .bold)
+        let font = Theme.roundedFont(size: 16, weight: .bold)
         let text = NSMutableAttributedString(
             string: "Owners: press and hold ", attributes: [.font: font])
         let symbol = UIImage.SymbolConfiguration(font: font)

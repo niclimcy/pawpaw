@@ -15,14 +15,14 @@ extension ProfilesViewController {
             let title = Theme.symbolText(
                 "checkmark",
                 row.name,
-                font: Theme.roundedFont(size: Theme.scaled(22), weight: .bold),
+                font: Theme.roundedFont(size: 22, weight: .bold),
                 color: Theme.onAccent,
                 trailing: true
             )
             config.attributedTitle = try? AttributedString(title, including: \.uiKit)
         }
         config.subtitle = row.subtitle
-        config.image = row.face.image(side: Theme.scaled(52))
+        config.image = row.face.image(side: 52)
         config.imagePadding = 14
         config.baseBackgroundColor = row.isActive ? Theme.accent : Theme.text
         config.baseForegroundColor = row.isActive ? Theme.onAccent : Theme.text

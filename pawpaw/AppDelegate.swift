@@ -13,7 +13,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        true
+        // Starts loading in the background so the first critter of a round isn't silent.
+        _ = SoundPlayer.shared
+        return true
     }
 
     func application(

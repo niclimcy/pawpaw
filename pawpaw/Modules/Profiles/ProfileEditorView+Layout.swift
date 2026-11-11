@@ -14,7 +14,7 @@ extension ProfileEditorView {
         let card = UIView()
         Theme.styleCard(card)
 
-        titleLabel.font = Theme.roundedFont(size: Theme.scaled(30))
+        titleLabel.font = Theme.roundedFont(size: 30)
         titleLabel.adjustsFontForContentSizeCategory = true
         titleLabel.textColor = Theme.text
         titleLabel.textAlignment = .center
@@ -43,7 +43,7 @@ extension ProfileEditorView {
             stack.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: 24),
             stack.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -24),
         ])
-        centerInScroll(card, maxWidth: Theme.scaled(380))
+        centerInScroll(card, maxWidth: 380)
     }
 
     private static let cardMargin: CGFloat = 24

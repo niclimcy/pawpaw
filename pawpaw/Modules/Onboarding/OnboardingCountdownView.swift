@@ -14,12 +14,48 @@ final class OnboardingCountdownView: UIView {
     /// Invalidates pending loop steps on stop.
     private var generation = 0
     private var isRunning = false
-    private let side = Theme.scaled(64)
+    private let side: CGFloat = 64
+    enum DevicePose: Equatable {
+        /// Turns from portrait to landscape, as the game will.
+        case turnsToLandscape
+        /// Held as the device is now; the game plays in any orientation.
+        case portrait
+        case landscape
+    }
+
+    /// Restarts the loop on change, so the symbol matches the screen after a rotation.
+    var pose: DevicePose = .turnsToLandscape {
+        didSet {
+            guard pose != oldValue else { return }
+            if isRunning {
+                stop()
+                start()
+            } else {
+                showStill()
+            }
+        }
+    }
+
+    static func pose(locksLandscape: Bool, size: CGSize) -> DevicePose {
+        let isLandscape = size.width > size.height
+        if locksLandscape && !isLandscape { return .turnsToLandscape }
+        return isLandscape ? .landscape : .portrait
+    }
+
+    private static let landscapeTransform = CGAffineTransform(rotationAngle: -.pi / 2)
+
+    private var restingTransform: CGAffineTransform {
+        pose == .landscape ? Self.landscapeTransform : .identity
+    }
+
+    private var countingTransform: CGAffineTransform {
+        pose == .portrait ? .identity : Self.landscapeTransform
+    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         let symbol = UIImage.SymbolConfiguration(pointSize: side * 0.75, weight: .semibold)
-        // Portrait symbols; the animation turns them to landscape.
+        // Portrait symbols, turned by `pose`.
         let deviceName = UIDevice.current.userInterfaceIdiom == .pad ? "ipad" : "iphone"
         device.image = UIImage(systemName: deviceName, withConfiguration: symbol)
         device.tintColor = Theme.text
@@ -38,7 +74,7 @@ final class OnboardingCountdownView: UIView {
         }
         stack.axis = .horizontal
         stack.alignment = .center
-        stack.spacing = Theme.scaled(16)
+        stack.spacing = 16
         stack.translatesAutoresizingMaskIntoConstraints = false
         addSubview(stack)
         NSLayoutConstraint.activate([
@@ -76,8 +112,8 @@ final class OnboardingCountdownView: UIView {
     }
 
     private func showStill() {
-        device.transform = .identity
-        number.font = Theme.roundedFont(size: Theme.scaled(22), weight: .black)
+        device.transform = restingTransform
+        number.font = Theme.roundedFont(size: 22, weight: .black)
         number.text = "3·2·1"
         number.alpha = 1
         number.transform = .identity
@@ -87,16 +123,17 @@ final class OnboardingCountdownView: UIView {
 
     private func runLoop(generation: Int) {
         guard generation == self.generation else { return }
-        number.font = Theme.roundedFont(size: Theme.scaled(44), weight: .black)
+        number.font = Theme.roundedFont(size: 44, weight: .black)
         number.text = nil
         paw.alpha = 0
-        device.transform = .identity
+        device.transform = restingTransform
         // Rotation only: scaling distorts the symbol and moving it breaks the row's alignment.
         UIView.animate(
             withDuration: 0.6, delay: 0.4, usingSpringWithDamping: 0.7,
             initialSpringVelocity: 0.4, options: []
         ) {
-            self.device.transform = CGAffineTransform(rotationAngle: -.pi / 2)
+            // Animates to the same place when not turning, so the count keeps its timing.
+            self.device.transform = self.countingTransform
         } completion: { _ in
             self.count(3, generation: generation)
         }
@@ -134,7 +171,7 @@ final class OnboardingCountdownView: UIView {
             guard let self, generation == self.generation else { return }
             UIView.animate(withDuration: 0.3) {
                 self.paw.alpha = 0
-                self.device.transform = .identity
+                self.device.transform = self.restingTransform
             } completion: { _ in
                 self.runLoop(generation: generation)
             }

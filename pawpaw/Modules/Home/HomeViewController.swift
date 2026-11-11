@@ -13,9 +13,16 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     private var fit = CompactLayoutFit()
     private weak var layoutScroll: UIScrollView?
     private let mainStack = UIStackView()
+    private let brandStack = UIStackView()
+    private var cardFillsWidth: NSLayoutConstraint?
+    /// Side by side when wide, since stacked doesn't fit a landscape iPhone Duo or iPad.
+    private var isWide = false
+    private var laidOutFor: LayoutEnvironment?
     private let footer = UIStackView()
     private let setupStack = UIStackView()
     private var setupCardInsets: [NSLayoutConstraint] = []
+    private lazy var contentWidthLimit = mainStack.widthAnchor.constraint(
+        lessThanOrEqualToConstant: Self.maxContentWidth)
 
     private let logoView: UIImageView = {
         let view = UIImageView(image: UIImage(named: "logo_paw"))
@@ -25,8 +32,7 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         view.isAccessibilityElement = false
         return view
     }()
-    private lazy var logoHeight = logoView.heightAnchor.constraint(
-        equalToConstant: Theme.scaled(80))
+    private lazy var logoHeight = logoView.heightAnchor.constraint(equalToConstant: 80)
 
     private let titleLabel: UILabel = {
         let label = Theme.makeLabel(size: 48)
@@ -38,6 +44,13 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         return label
     }()
 
+    private static let profileFaceSide: CGFloat = 34
+
+    private let topBar = UIStackView()
+    private var contentBelowTopBar: NSLayoutConstraint?
+    private var contentAtSafeArea: NSLayoutConstraint?
+    private var usesSystemBar = false
+
     private let profileButton: UIButton = {
         var config = UIButton.Configuration.tinted()
         config.title = CatProfile.defaultName
@@ -48,19 +61,11 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         config.baseForegroundColor = Theme.text
         config.cornerStyle = .capsule
         config.contentInsets = NSDirectionalEdgeInsets(
-            top: 8,
-            leading: 12,
-            bottom: 8,
-            trailing: 16
-        )
-        config.titleTextAttributesTransformer = Theme.fontTransformer(
-            size: 18,
-            weight: .bold
-        )
+            top: 8, leading: 12, bottom: 8, trailing: 16)
+        config.titleTextAttributesTransformer = Theme.fontTransformer(size: 18, weight: .bold)
         config.subtitleTextAttributesTransformer = UIConfigurationTextAttributesTransformer {
-            incoming in
-            var outgoing = incoming
-            outgoing.font = Theme.roundedFont(size: Theme.scaled(13), weight: .semibold)
+            var outgoing = $0
+            outgoing.font = Theme.roundedFont(size: 13, weight: .semibold)
             outgoing.foregroundColor = Theme.detailText
             return outgoing
         }
@@ -77,20 +82,47 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         var config = UIButton.Configuration.tinted()
         config.image = UIImage(systemName: "chart.bar.fill")
         config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(
-            pointSize: Theme.scaled(18),
-            weight: .semibold
-        )
+            pointSize: 18, weight: .semibold)
         config.baseBackgroundColor = Theme.text
         config.baseForegroundColor = Theme.text
         config.cornerStyle = .capsule
         let button = UIButton(configuration: config)
-        let side = max(Theme.minimumTapSize, Theme.scaled(48))
+        let side: CGFloat = 48
         button.widthAnchor.constraint(equalToConstant: side).isActive = true
         button.heightAnchor.constraint(equalToConstant: side).isActive = true
         button.accessibilityIdentifier = "statsButton"
         button.accessibilityLabel = "Play stats"
         button.accessibilityHint = "Opens play statistics"
         return button
+    }()
+
+    /// Image only: a vertical bar has no room for the name.
+    private lazy var profileItem: UIBarButtonItem = {
+        let item = UIBarButtonItem(
+            image: nil,
+            style: .plain,
+            target: self,
+            action: #selector(profileTapped)
+        )
+        item.tintColor = Theme.text
+        item.accessibilityIdentifier = "profileButton"
+        item.accessibilityHint = "Opens the list of cats"
+        return item
+    }()
+
+    private lazy var statsItem: UIBarButtonItem = {
+        let item = UIBarButtonItem(
+            image: UIImage(systemName: "chart.bar.fill"),
+            style: .plain,
+            target: self,
+            action: #selector(statsTapped)
+        )
+        item.title = "Play stats"
+        item.tintColor = Theme.text
+        item.accessibilityIdentifier = "statsButton"
+        item.accessibilityLabel = "Play stats"
+        item.accessibilityHint = "Opens play statistics"
+        return item
     }()
 
     private let highScoreLabel: UILabel = {
@@ -109,6 +141,8 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     }()
 
     private static let modeFontSize: CGFloat = 16
+    private static let playFontSize: CGFloat = 34
+    private static let widePlayFontSize: CGFloat = 28
     /// Not orange, so PLAY stands out.
     private static let selectedTint = Theme.text
     private static let selectedText = Theme.background
@@ -131,7 +165,9 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
 
     private let themePicker = ThemePickerView()
 
+    private let roundLengthLabel = HomeViewController.makeSectionLabel("ROUND LENGTH")
     private let afterRoundLabel = HomeViewController.makeSectionLabel("AFTER A ROUND")
+    private let playgroundLabel = HomeViewController.makeSectionLabel("PLAYGROUND")
 
     private let afterRoundControl: UISegmentedControl = {
         let control = UISegmentedControl(
@@ -154,14 +190,9 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     private let playButton: UIButton = {
         let button = Theme.filledButton(
             title: "PLAY",
-            fontSize: 34,
+            fontSize: HomeViewController.playFontSize,
             weight: .heavy,
-            insets: NSDirectionalEdgeInsets(
-                top: Theme.scaled(20),
-                leading: Theme.scaled(56),
-                bottom: Theme.scaled(20),
-                trailing: Theme.scaled(56)
-            )
+            insets: NSDirectionalEdgeInsets(top: 20, leading: 56, bottom: 20, trailing: 56)
         )
         button.accessibilityIdentifier = "playButton"
         return button
@@ -171,6 +202,7 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         super.viewDidLoad()
         view.backgroundColor = Theme.background
         installBackground(theme: .wood)
+        setupNavigationItem()
         setupLayout()
         playButton.addTarget(
             self,
@@ -200,6 +232,7 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         themePicker.onSelect = { [weak self] theme in
             self?.presenter?.didSelectTheme(theme)
         }
+        layOutAgainWhenSizeClassChanges()
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(contentSizeChanged),
@@ -210,7 +243,37 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        updateBarPlacement(animated: animated)
         presenter?.viewWillAppear()
+    }
+
+    /// Every other screen draws its own controls, so the bar is Home's alone.
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+
+    /// Only iPhone Duo places a vertical bar, where a custom top bar would collide with the status bar.
+    static func usesSystemBar(for traits: UITraitCollection) -> Bool {
+        if #available(iOS 27.1, *) {
+            return traits.verticalBarEdge != .unspecified
+        }
+        return false
+    }
+
+    private func updateBarPlacement(animated: Bool = false) {
+        let system = Self.usesSystemBar(for: traitCollection)
+        if system != usesSystemBar {
+            usesSystemBar = system
+            topBar.isHidden = system
+            contentBelowTopBar?.isActive = !system
+            contentAtSafeArea?.isActive = system
+            navigationItem.leftBarButtonItem = system ? profileItem : nil
+            navigationItem.rightBarButtonItem = system ? statsItem : nil
+        }
+        // Only while Home is on top; other screens keep the bar hidden.
+        guard navigationController?.topViewController === self else { return }
+        navigationController?.setNavigationBarHidden(!system, animated: animated)
     }
 
     @objc private func contentSizeChanged() {
@@ -226,41 +289,88 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         applyMetrics()
     }
 
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        let environment = LayoutEnvironment(self)
+        guard environment != laidOutFor else { return }
+        laidOutFor = environment
+        if usesWideLayout != isWide {
+            isWide = usesWideLayout
+            arrangeMainStack()
+        }
+        // Measured in the final size, not whichever step of a fold or rotation was last.
+        fit.reset()
+        applyMetrics()
+    }
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        guard let scroll = layoutScroll else { return }
-        if fit.update(scroll: scroll) {
+        if let scroll = layoutScroll, fit.update(scroll: scroll) {
             applyMetrics()
+            // A layout request made during this pass waits for the next one, such as a tap.
+            view.layoutIfNeeded()
+        }
+        // Folding, rotating or Split View can move the vertical bar in or out.
+        updateBarPlacement()
+    }
+
+    /// Wide puts PLAY under the title, so each column is a whole and PLAY isn't stranded between them.
+    private func arrangeMainStack() {
+        mainStack.axis = isWide ? .horizontal : .vertical
+        cardFillsWidth?.isActive = !isWide
+        let target = isWide ? brandStack : footer
+        for subview in [playButton, playfieldNoteLabel, highScoreLabel]
+        where subview.superview !== target {
+            target.addArrangedSubview(subview)
         }
     }
 
+    private func setupNavigationItem() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        navigationItem.standardAppearance = appearance
+        navigationItem.scrollEdgeAppearance = appearance
+        navigationItem.compactAppearance = appearance
+        navigationItem.compactScrollEdgeAppearance = appearance
+    }
+
     private func setupLayout() {
-        let topBar = makeTopBar()
+        setupTopBar()
         let content = UIView()
         content.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(content)
-        let margin = Theme.scaled(16)
+        contentBelowTopBar = content.topAnchor.constraint(equalTo: topBar.bottomAnchor)
+        contentAtSafeArea = content.topAnchor.constraint(
+            equalTo: view.safeAreaLayoutGuide.topAnchor)
+        contentBelowTopBar?.isActive = true
         NSLayoutConstraint.activate([
             topBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
             topBar.leadingAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: margin),
+                equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             topBar.trailingAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -margin),
-
-            content.topAnchor.constraint(equalTo: topBar.bottomAnchor),
+                equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             content.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             content.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             content.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
 
+        for subview in [logoView, titleLabel] {
+            brandStack.addArrangedSubview(subview)
+        }
+        brandStack.axis = .vertical
+        brandStack.alignment = .center
+        // The card takes the spare width when side by side, so the title isn't squeezed.
+        brandStack.setContentHuggingPriority(.required, for: .horizontal)
+        brandStack.setContentCompressionResistancePriority(.required, for: .horizontal)
+
         let setupCard = makeSetupCard()
-        for subview in [logoView, titleLabel, setupCard] {
+        for subview in [brandStack, setupCard] {
             mainStack.addArrangedSubview(subview)
         }
-        mainStack.axis = .vertical
         mainStack.alignment = .center
         mainStack.isLayoutMarginsRelativeArrangement = true
-        setupCard.widthAnchor.constraint(equalTo: mainStack.widthAnchor).isActive = true
+        cardFillsWidth = setupCard.widthAnchor.constraint(equalTo: mainStack.widthAnchor)
+        arrangeMainStack()
         logoHeight.isActive = true
 
         // PLAY stays on screen; on short screens only the settings above it scroll.
@@ -275,70 +385,86 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         layoutScroll = embedCentered(
             mainStack,
             footer: footer,
-            maxWidth: Self.maxContentWidth,
+            maxWidth: Self.wideMaxContentWidth,
             verticalMargin: 0,
             footerSpacing: 0,
             in: content
         )
+        // Required, so it narrows the content below `embedCentered`'s wide-layout width.
+        contentWidthLimit.isActive = true
         applyMetrics()
+        updateBarPlacement()
     }
 
-    /// Regular sizes, or tighter ones when they don't fit. iPad always has room for the regular ones.
-    private func applyMetrics() {
-        let compact = fit.isCompact
-        logoHeight.constant = Theme.scaled(compact ? 52 : 80)
-        titleLabel.font = Theme.roundedFont(size: Theme.scaled(compact ? 38 : 48), weight: .heavy)
+    private func setupTopBar() {
+        let spacer = UIView()
+        spacer.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        // A long name truncates before the stats button is squeezed.
+        profileButton.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        statsButton.setContentCompressionResistancePriority(.required, for: .horizontal)
+        for subview in [profileButton, spacer, statsButton] {
+            topBar.addArrangedSubview(subview)
+        }
+        topBar.axis = .horizontal
+        topBar.alignment = .center
+        topBar.spacing = 12
+        topBar.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(topBar)
+    }
 
-        mainStack.spacing = Theme.scaled(compact ? 8 : 12)
-        mainStack.setCustomSpacing(Theme.scaled(compact ? 14 : 28), after: titleLabel)
+    private func applyMetrics() {
+        contentWidthLimit.constant = isWide ? Self.wideMaxContentWidth : Self.maxContentWidth
+        let compact = fit.isCompact
+        logoHeight.constant = compact ? 52 : 80
+        titleLabel.font = Theme.roundedFont(size: compact ? 38 : 48, weight: .heavy)
+
+        brandStack.spacing = compact ? 8 : 12
+        mainStack.spacing = isWide ? (compact ? 24 : 40) : (compact ? 14 : 28)
         mainStack.directionalLayoutMargins = NSDirectionalEdgeInsets(
             top: compact ? 12 : 24, leading: 0, bottom: 0, trailing: 0)
 
-        let sectionGap = Theme.scaled(compact ? 12 : 20)
+        let sectionGap: CGFloat = compact ? 12 : 20
         setupStack.setCustomSpacing(sectionGap, after: modeControl)
         setupStack.setCustomSpacing(sectionGap, after: afterRoundControl)
         for inset in setupCardInsets {
-            inset.constant = Theme.scaled(compact ? 14 : 18)
+            inset.constant = compact ? 14 : 18
         }
 
-        footer.spacing = Theme.scaled(compact ? 6 : 12)
-        footer.directionalLayoutMargins = NSDirectionalEdgeInsets(
-            top: Theme.scaled(compact ? 16 : 28),
-            leading: 0,
-            bottom: compact ? 12 : 24,
-            trailing: 0
-        )
-        let playPadding = Theme.scaled(compact ? 14 : 20)
-        playButton.configuration?.contentInsets.top = playPadding
-        playButton.configuration?.contentInsets.bottom = playPadding
+        if isWide {
+            brandStack.setCustomSpacing(compact ? 20 : 32, after: titleLabel)
+            brandStack.setCustomSpacing(8, after: playButton)
+        }
+        footer.spacing = compact ? 6 : 12
+        // Empty when wide, so no margins either or it leaves a gap at the bottom.
+        footer.directionalLayoutMargins =
+            isWide
+            ? .zero
+            : NSDirectionalEdgeInsets(
+                top: compact ? 16 : 28,
+                leading: 0,
+                bottom: compact ? 12 : 24,
+                trailing: 0
+            )
+        // Narrower and shorter beside the title, which it shouldn't outweigh.
+        let playPadding: CGFloat = isWide ? 10 : compact ? 14 : 20
+        let playSidePadding: CGFloat = isWide ? 40 : 56
+        playButton.configuration?.contentInsets = NSDirectionalEdgeInsets(
+            top: playPadding, leading: playSidePadding,
+            bottom: playPadding, trailing: playSidePadding)
+        playButton.configuration?.titleTextAttributesTransformer = Theme.fontTransformer(
+            size: isWide ? Self.widePlayFontSize : Self.playFontSize, weight: .heavy)
         view.setNeedsLayout()
     }
 
-    private static var maxContentWidth: CGFloat {
-        UIDevice.current.userInterfaceIdiom == .pad ? 660 : 520
-    }
-
-    private func makeTopBar() -> UIView {
-        let spacer = UIView()
-        spacer.setContentHuggingPriority(.defaultLow, for: .horizontal)
-        profileButton.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        statsButton.setContentCompressionResistancePriority(.required, for: .horizontal)
-
-        let bar = UIStackView(arrangedSubviews: [profileButton, spacer, statsButton])
-        bar.axis = .horizontal
-        bar.alignment = .center
-        bar.spacing = 12
-        bar.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(bar)
-        return bar
-    }
+    private static let maxContentWidth: CGFloat = 520
+    private static let wideMaxContentWidth: CGFloat = 900
 
     private func makeSetupCard() -> UIView {
         let stack = setupStack
         for subview in [
-            Self.makeSectionLabel("ROUND LENGTH"), modeControl,
+            roundLengthLabel, modeControl,
             afterRoundLabel, afterRoundControl,
-            Self.makeSectionLabel("PLAYGROUND"), themePicker,
+            playgroundLabel, themePicker,
         ] {
             stack.addArrangedSubview(subview)
         }
@@ -444,12 +570,16 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     }
 
     func showProfile(name: String, face: CatFace, favorite: String?) {
+        let image = face.image(side: Self.profileFaceSide)
         profileButton.configuration?.title = name
         profileButton.configuration?.subtitle = favorite
-        profileButton.configuration?.image = face.image(side: Theme.scaled(34))
-        profileButton.accessibilityLabel = [name, face.title, favorite]
+        profileButton.configuration?.image = image
+        profileItem.image = image
+        let label = [name, face.title, favorite]
             .compactMap { $0 }
             .joined(separator: ", ")
+        profileButton.accessibilityLabel = label
+        profileItem.accessibilityLabel = label
     }
 }
 

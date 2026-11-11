@@ -5,7 +5,7 @@
 
 import AVFoundation
 
-enum GameSound: CaseIterable {
+nonisolated enum GameSound: CaseIterable, Sendable {
     case squeak
     case rustle
     case flutter
@@ -21,24 +21,34 @@ enum GameSound: CaseIterable {
 final class SoundPlayer {
     static let shared = SoundPlayer()
 
-    private static let sampleRate = 44_100.0
+    private nonisolated static let sampleRate = 44_100.0
     /// Players per sound, so two critters can make the same sound at different pans.
-    private static let voices = 3
+    private nonisolated static let voices = 3
+    /// Empty until `loadPlayers()` finishes; sounds requested before then are skipped.
     private var players: [GameSound: [AVAudioPlayer]] = [:]
     private var nextVoice: [GameSound: Int] = [:]
 
     private init() {
+        Task { players = await Self.loadPlayers() }
+    }
+
+    /// Activating the session and preparing players block on the audio hardware, and iOS has no
+    /// async activation API (`activate(options:)` is watchOS-only), so this runs off the main thread.
+    @concurrent
+    private nonisolated static func loadPlayers() async -> sending [GameSound: [AVAudioPlayer]] {
         // Ambient: mixes with other audio and respects the silent switch.
         try? AVAudioSession.sharedInstance().setCategory(.ambient, mode: .default)
         try? AVAudioSession.sharedInstance().setActive(true)
+        var players: [GameSound: [AVAudioPlayer]] = [:]
         for sound in GameSound.allCases {
-            let data = Self.wav(from: Self.samples(for: sound))
-            players[sound] = (0..<Self.voices).compactMap { _ -> AVAudioPlayer? in
+            let data = wav(from: samples(for: sound))
+            players[sound] = (0..<voices).compactMap { _ -> AVAudioPlayer? in
                 let player = try? AVAudioPlayer(data: data)
                 player?.prepareToPlay()
                 return player
             }
         }
+        return players
     }
 
     /// `pan` runs from -1 (left) to 1 (right).
@@ -68,7 +78,7 @@ final class SoundPlayer {
     }
 
     // MARK: Synthesis
-    private static func samples(for sound: GameSound) -> [Float] {
+    private nonisolated static func samples(for sound: GameSound) -> [Float] {
         switch sound {
         case .squeak:
             return chirp(from: 3_200, to: 4_800, duration: 0.14, volume: 0.5)
@@ -102,7 +112,9 @@ final class SoundPlayer {
     }
 
     /// Sine sweep from `start` to `end` Hz.
-    private static func chirp(from start: Double, to end: Double, duration: Double, volume: Float)
+    private nonisolated static func chirp(
+        from start: Double, to end: Double, duration: Double, volume: Float
+    )
         -> [Float]
     {
         let count = Int(duration * sampleRate)
@@ -117,7 +129,7 @@ final class SoundPlayer {
 
     /// High-passed noise pulsing at `burstRate` Hz.
     /// `bright` leans it toward 6–12 kHz, where cats hear best.
-    private static func noiseBursts(
+    private nonisolated static func noiseBursts(
         duration: Double, burstRate: Double, volume: Float, bright: Bool = false
     ) -> [Float] {
         let count = Int(duration * sampleRate)
@@ -140,7 +152,7 @@ final class SoundPlayer {
     }
 
     /// 16-bit mono PCM WAV.
-    private static func wav(from samples: [Float]) -> Data {
+    private nonisolated static func wav(from samples: [Float]) -> Data {
         let byteRate = UInt32(sampleRate) * 2
         let dataSize = UInt32(samples.count * 2)
         var data = Data()

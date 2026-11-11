@@ -104,13 +104,17 @@ final class GameViewController: UIViewController, GameViewProtocol {
     }
 
     // MARK: Orientation
+    /// Where the screen follows the device, the game plays in whichever orientation it's held.
+    private var locksLandscape: Bool {
+        tuning.prefersLandscape && !UIInterfaceOrientationMask.followsDevice
+    }
+
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        tuning.prefersLandscape ? .landscape : super.supportedInterfaceOrientations
+        locksLandscape ? .landscape : super.supportedInterfaceOrientations
     }
 
     override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
-        tuning.prefersLandscape
-            ? .landscapeRight : super.preferredInterfaceOrientationForPresentation
+        locksLandscape ? .landscapeRight : super.preferredInterfaceOrientationForPresentation
     }
 
     /// Mid-push, this view isn't in the window yet.
@@ -119,11 +123,13 @@ final class GameViewController: UIViewController, GameViewProtocol {
     }
 
     private func rotateToSupportedOrientation() {
-        guard tuning.prefersLandscape else { return }
+        guard locksLandscape else { return }
         if #available(iOS 16.0, *) {
             setNeedsUpdateOfSupportedInterfaceOrientations()
             navigationController?.setNeedsUpdateOfSupportedInterfaceOrientations()
-            windowScene?.requestGeometryUpdate(.iOS(interfaceOrientations: .landscape))
+            windowScene?.requestGeometryUpdate(.iOS(interfaceOrientations: .landscape)) {
+                Log.layoutNotice("Couldn't turn the game to landscape", error: $0)
+            }
         } else {
             UIViewController.attemptRotationToDeviceOrientation()
         }
@@ -131,12 +137,14 @@ final class GameViewController: UIViewController, GameViewProtocol {
 
     /// Home is portrait-only on iPhone, so re-checking once it's on top turns the screen back.
     private func releaseOrientationLock() {
-        guard tuning.prefersLandscape, let navigation = navigationController else { return }
+        guard locksLandscape, let navigation = navigationController else { return }
         let lockedScene = windowScene
         let release: @MainActor @Sendable () -> Void = {
             if #available(iOS 16.0, *) {
                 navigation.setNeedsUpdateOfSupportedInterfaceOrientations()
-                lockedScene?.requestGeometryUpdate(.iOS(interfaceOrientations: .menus))
+                lockedScene?.requestGeometryUpdate(.iOS(interfaceOrientations: .menus)) {
+                    Log.layoutNotice("Couldn't turn the menus back", error: $0)
+                }
             } else {
                 UIViewController.attemptRotationToDeviceOrientation()
             }

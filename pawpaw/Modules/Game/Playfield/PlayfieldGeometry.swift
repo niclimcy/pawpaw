@@ -37,7 +37,8 @@ struct PlayfieldGeometry {
         CGRect(origin: .zero, size: size)
     }
 
-    /// The part of the scene below the HUD.
+    /// The part of the scene below the HUD. Side safe areas are left in on purpose, so critters use
+    /// the whole screen, even under a side status bar on iPhone Duo.
     var field: CGRect {
         CGRect(x: 0, y: 0, width: size.width, height: max(size.height - topInset, 0))
     }

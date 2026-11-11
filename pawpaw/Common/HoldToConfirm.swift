@@ -120,7 +120,7 @@ extension UIViewController {
             ?? hint.bottomAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -24)
         NSLayoutConstraint.activate([
-            hint.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            hint.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
             bottom,
             hint.leadingAnchor.constraint(
                 greaterThanOrEqualTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),

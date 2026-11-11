@@ -37,12 +37,12 @@ extension OnboardingViewController {
         }
         // Gives way before the text, but not below a usable size.
         let preferred = practiceArea.heightAnchor.constraint(
-            equalToConstant: Theme.scaled(Self.practiceHeight))
+            equalToConstant: Self.practiceHeight)
         preferred.priority = Self.artPriority
         NSLayoutConstraint.activate([
             preferred,
             practiceArea.heightAnchor.constraint(
-                greaterThanOrEqualToConstant: Theme.scaled(Self.minPracticeHeight)),
+                greaterThanOrEqualToConstant: Self.minPracticeHeight),
         ])
     }
 
@@ -82,7 +82,7 @@ extension OnboardingViewController {
 
     func burstPawPrints(from rect: CGRect) {
         let origin = CGPoint(x: rect.midX, y: rect.midY)
-        let symbol = UIImage.SymbolConfiguration(pointSize: Theme.scaled(26), weight: .bold)
+        let symbol = UIImage.SymbolConfiguration(pointSize: 26, weight: .bold)
         for index in 0..<10 {
             let paw = UIImageView(
                 image: UIImage(systemName: "pawprint.fill", withConfiguration: symbol))
@@ -91,7 +91,7 @@ extension OnboardingViewController {
             paw.isUserInteractionEnabled = false
             view.addSubview(paw)
             let angle = CGFloat(index) / 10 * 2 * .pi + .random(in: -0.2...0.2)
-            let distance = Theme.scaled(.random(in: 90...170))
+            let distance = CGFloat.random(in: 90...170)
             let delta = CGPoint(x: cos(angle) * distance, y: sin(angle) * distance)
             paw.transform = CGAffineTransform(scaleX: 0.3, y: 0.3)
             UIView.animate(withDuration: 0.65, delay: 0, options: [.curveEaseOut]) {

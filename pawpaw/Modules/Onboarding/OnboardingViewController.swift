@@ -20,7 +20,7 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
     private let nameField = CatNameField()
     private let facePicker = CatFacePicker(
         perRow: 3,
-        maxSide: Theme.scaled(64),
+        maxSide: 64,
         minSide: Theme.minimumTapSize
     )
     let practiceArea = UIView()
@@ -164,13 +164,13 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
     private func setupLayout() {
         artRow.axis = .horizontal
         artRow.alignment = .center
-        artRow.spacing = Theme.scaled(12)
+        artRow.spacing = 12
         artRow.isAccessibilityElement = false
 
         catFields.addArrangedSubview(nameField)
         catFields.addArrangedSubview(facePicker)
         catFields.axis = .vertical
-        catFields.spacing = Theme.scaled(16)
+        catFields.spacing = 16
 
         setupTextArea()
 
@@ -180,12 +180,12 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
         }
         cardStack.axis = .vertical
         cardStack.alignment = .center
-        cardStack.spacing = Theme.scaled(20)
+        cardStack.spacing = 20
         cardStack.translatesAutoresizingMaskIntoConstraints = false
 
         Theme.styleCard(card)
         card.addSubview(cardStack)
-        let inset = Theme.scaled(24)
+        let inset: CGFloat = 24
         NSLayoutConstraint.activate([
             cardStack.topAnchor.constraint(
                 equalTo: card.topAnchor,
@@ -215,7 +215,7 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
         ])
         controls.axis = .vertical
         controls.alignment = .center
-        controls.spacing = Theme.scaled(8)
+        controls.spacing = 8
         controls.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(controls)
 
@@ -228,7 +228,9 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
                 equalTo: view.safeAreaLayoutGuide.bottomAnchor,
                 constant: -8
             ),
-            controls.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            controls.centerXAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.centerXAnchor
+            ),
 
             cardArea.bottomAnchor.constraint(
                 equalTo: controls.topAnchor,
@@ -239,7 +241,7 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
         ])
         let scroll = embedCentered(
             card,
-            maxWidth: Theme.scaled(440),
+            maxWidth: 440,
             margin: Self.cardMargin,
             in: cardArea
         )
@@ -279,7 +281,7 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
             ),
             backButton.leadingAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.leadingAnchor,
-                constant: Theme.scaled(8)
+                constant: 8
             ),
             // Below Back even when it's hidden, so the card doesn't shift on the first page.
             cardArea.topAnchor.constraint(
@@ -292,6 +294,11 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         updateKeyboardInset()
+        countdown.pose = OnboardingCountdownView.pose(
+            locksLandscape: PlayfieldTuning.current.prefersLandscape
+                && !UIInterfaceOrientationMask.followsDevice,
+            size: view.bounds.size
+        )
     }
 
     /// Lets the card scroll out from under the keyboard instead of moving the layout.
@@ -346,7 +353,7 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
     private func makeTextStack(title: UILabel, body: UILabel) -> UIStackView {
         let stack = UIStackView(arrangedSubviews: [title, body])
         stack.axis = .vertical
-        stack.spacing = Theme.scaled(14)
+        stack.spacing = 14
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }
@@ -356,7 +363,7 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
         artRow.addArrangedSubview(
             makeArtImage(
                 UIImage(named: face.imageName),
-                side: Theme.scaled(Self.artSide * 1.4)
+                side: Self.artSide * 1.4
             )
         )
         artRow.isHidden = false
@@ -422,7 +429,7 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
         }
         let isRightToLeft = view.effectiveUserInterfaceLayoutDirection == .rightToLeft
         let forward: CGFloat = index > previous ? 1 : -1
-        let shift = Theme.scaled(60) * forward * (isRightToLeft ? -1 : 1)
+        let shift = 60 * forward * (isRightToLeft ? -1 : 1)
         UIView.animate(withDuration: 0.14, delay: 0, options: [.curveEaseIn]) {
             self.cardStack.alpha = 0
             self.cardStack.transform = CGAffineTransform(translationX: -shift, y: 0)

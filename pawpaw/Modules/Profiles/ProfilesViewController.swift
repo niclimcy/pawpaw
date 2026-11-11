@@ -51,7 +51,7 @@ final class ProfilesViewController: UIViewController, ProfilesViewProtocol {
     private func setupLayout() {
         let title = UILabel()
         title.text = "Your Cats"
-        title.font = Theme.roundedFont(size: Theme.scaled(34))
+        title.font = Theme.roundedFont(size: 34)
         title.adjustsFontForContentSizeCategory = true
         title.textColor = Theme.text
         title.textAlignment = .center

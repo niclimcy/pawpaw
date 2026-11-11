@@ -33,6 +33,21 @@ final class PlayfieldGeometryTests: XCTestCase {
         XCTAssertEqual(bottomRight.y, inset, accuracy: 1e-9)
     }
 
+    /// iPhone Duo's inner display ignores the landscape lock, so Pocket Hunt can run portrait.
+    func testPocketFieldWorksInPortrait() {
+        let portrait = PlayfieldGeometry(
+            size: CGSize(width: 390, height: 844), topInset: 120, tuning: .pocket)
+        let margin = portrait.targetSize / 2
+        let corners = [
+            CGPoint(x: 0, y: 0), CGPoint(x: 1, y: 0), CGPoint(x: 0, y: 1), CGPoint(x: 1, y: 1),
+        ]
+        for corner in corners {
+            let point = portrait.point(for: corner)
+            XCTAssertTrue(
+                portrait.field.insetBy(dx: margin, dy: margin).contains(point), "\(corner)")
+        }
+    }
+
     func testNormalizedIsInverseOfPoint() {
         for _ in 0..<200 {
             let original = CGPoint(x: .random(in: -0.5...1.5), y: .random(in: -0.5...1.5))

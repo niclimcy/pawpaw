@@ -20,17 +20,33 @@ final class StatsViewController: UIViewController, StatsViewProtocol {
     private weak var layoutScroll: UIScrollView?
     private let page = UIStackView()
     private let footer = UIStackView()
+    /// Side by side in the compact layout, to free a row for the stats.
+    private let footerButtons = UIStackView()
     private let content = UIStackView()
+    private let columnDivider = UIView()
+    private var stackedDivider: NSLayoutConstraint?
+    private var sideBySideDivider: [NSLayoutConstraint] = []
+    private var pageMaxWidth: NSLayoutConstraint?
+    private var isWide = false
+    private var laidOutFor: LayoutEnvironment?
     private var sectionBreaks: [UIView] = []
     private var cardInsets: [NSLayoutConstraint] = []
+    private let topRoom = UIView()
+    /// Below the scroll view's fit, so the room shrinks to nothing before the page would scroll.
+    private lazy var topRoomHeight: NSLayoutConstraint = {
+        let height = topRoom.heightAnchor.constraint(equalToConstant: 0)
+        height.priority = UILayoutPriority(700)
+        return height
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
+        layOutAgainWhenSizeClassChanges()
         presenter?.viewDidLoad()
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(contentSizeChanged),
+            selector: #selector(measureFitOnNextLayout),
             name: UIContentSizeCategory.didChangeNotification,
             object: nil
         )
@@ -41,18 +57,39 @@ final class StatsViewController: UIViewController, StatsViewProtocol {
         presenter?.viewWillAppear()
     }
 
+    override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+        let insets = view.safeAreaInsets
+        let balance = Self.bottomInsetBalance(
+            top: insets.top, bottom: insets.bottom - additionalSafeAreaInsets.bottom)
+        guard additionalSafeAreaInsets.bottom != balance else { return }
+        additionalSafeAreaInsets.bottom = balance
+    }
+
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        let environment = LayoutEnvironment(self)
+        guard environment != laidOutFor else { return }
+        laidOutFor = environment
+        isWide = usesWideLayout
+        // Measured again from the regular layout, so a tighter one chosen partway through a fold
+        // doesn't stick once the screen has room.
+        fit.reset()
+        applyMetrics()
+    }
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        guard let scroll = layoutScroll else { return }
-        if fit.update(scroll: scroll) {
+        if let scroll = layoutScroll, fit.update(scroll: scroll) {
             applyMetrics()
+            // A layout request made during this pass waits for the next one, such as a tap.
+            view.layoutIfNeeded()
         }
     }
 
-    /// The text size changes what fits, so start from the regular layout and measure again.
-    @objc private func contentSizeChanged() {
-        fit.reset()
-        applyMetrics()
+    @objc private func measureFitOnNextLayout() {
+        laidOutFor = nil
+        view.setNeedsLayout()
     }
 
     // MARK: Layout
@@ -65,43 +102,63 @@ final class StatsViewController: UIViewController, StatsViewProtocol {
         Theme.styleCard(card)
         card.translatesAutoresizingMaskIntoConstraints = false
 
-        let dividers = (0..<3).map { _ in Self.makeDivider() }
-        for subview in [
+        let dividers = (0..<2).map { _ in Self.makeDivider() }
+        let leftColumn = UIStackView(arrangedSubviews: [
             summaryRow,
             dividers[0],
             Self.makeSectionHeader("Catches by critter"), crittersStack,
-            dividers[1],
+        ])
+        let rightColumn = UIStackView(arrangedSubviews: [
             daysHeader, daysStack,
-            dividers[2],
+            dividers[1],
             Self.makeSectionHeader("Best scores"), bestScoresRow,
-        ] {
+        ])
+        columnDivider.backgroundColor = Theme.divider
+        for subview in [leftColumn, columnDivider, rightColumn] {
             content.addArrangedSubview(subview)
         }
-        content.axis = .vertical
-        content.alignment = .fill
+        for column in [leftColumn, rightColumn] {
+            column.axis = .vertical
+            column.alignment = .fill
+        }
+        stackedDivider = columnDivider.heightAnchor.constraint(equalToConstant: 1)
+        sideBySideDivider = [
+            columnDivider.widthAnchor.constraint(equalToConstant: 1),
+            columnDivider.heightAnchor.constraint(equalTo: content.heightAnchor),
+        ]
+        leftColumn.widthAnchor.constraint(equalTo: rightColumn.widthAnchor).isActive = true
         // Room around the dividers so each section reads as its own block.
-        sectionBreaks = [summaryRow, crittersStack, daysStack] + dividers
+        sectionBreaks = [summaryRow, daysStack, leftColumn, columnDivider] + dividers
         content.translatesAutoresizingMaskIntoConstraints = false
         card.addSubview(content)
 
-        for subview in [title, card] {
+        topRoom.isAccessibilityElement = false
+        topRoomHeight.isActive = true
+        for subview in [topRoom, title, card] {
             page.addArrangedSubview(subview)
         }
+        page.setCustomSpacing(0, after: topRoom)
         page.axis = .vertical
-        page.alignment = .center
+        page.alignment = .fill
         page.isLayoutMarginsRelativeArrangement = true
 
         // Back stays on screen; on short screens only the stats above it scroll.
-        for subview in [makeBackButton(), makeResetButton()] {
-            footer.addArrangedSubview(subview)
+        let backButton = makeBackButton()
+        // Side by side on a narrow screen, the reset text wraps rather than squeezing Back.
+        backButton.setContentCompressionResistancePriority(.required, for: .horizontal)
+        for subview in [backButton, makeResetButton()] {
+            footerButtons.addArrangedSubview(subview)
         }
+        footerButtons.alignment = .center
+        footer.addArrangedSubview(footerButtons)
         footer.axis = .vertical
         footer.alignment = .center
         footer.isLayoutMarginsRelativeArrangement = true
 
         // Margins live in the stacks so `applyMetrics()` can tighten them.
         layoutScroll = embedCentered(
-            page, footer: footer, maxWidth: 560, verticalMargin: 0, footerSpacing: 0)
+            page, footer: footer, maxWidth: 900, verticalMargin: 0, footerSpacing: 0)
+        pageMaxWidth = page.widthAnchor.constraint(lessThanOrEqualToConstant: 560)
 
         // Constants are set in `applyMetrics()`; each is card edge to content edge, inward.
         cardInsets = [
@@ -110,37 +167,52 @@ final class StatsViewController: UIViewController, StatsViewProtocol {
             content.leadingAnchor.constraint(equalTo: card.leadingAnchor),
             card.trailingAnchor.constraint(equalTo: content.trailingAnchor),
         ]
-        NSLayoutConstraint.activate(
-            cardInsets + [card.widthAnchor.constraint(equalTo: page.widthAnchor)])
+        NSLayoutConstraint.activate(cardInsets)
         applyMetrics()
     }
 
-    /// Regular sizes, or tighter ones when they don't fit. iPad always has room for the regular ones.
     private func applyMetrics() {
         let compact = fit.isCompact
-        titleLabel.font = Theme.roundedFont(size: Theme.scaled(compact ? 28 : 34), weight: .heavy)
+        content.axis = isWide ? .horizontal : .vertical
+        content.alignment = isWide ? .top : .fill
+        stackedDivider?.isActive = !isWide
+        for constraint in sideBySideDivider { constraint.isActive = isWide }
+        pageMaxWidth?.isActive = !isWide
+        titleLabel.font = Theme.roundedFont(size: compact ? 28 : 34, weight: .heavy)
 
-        page.spacing = Self.spacing(phone: compact ? 10 : 16, pad: 24)
+        page.spacing = compact ? 10 : 16
         page.directionalLayoutMargins = NSDirectionalEdgeInsets(
             top: compact ? 12 : 24, leading: 0, bottom: 0, trailing: 0)
+        // Compact is only just too tall, so its spare space goes above the title, not below the footer.
+        topRoomHeight.constant = compact ? 16 : 0
 
-        content.spacing = Self.spacing(phone: compact ? 8 : 10, pad: 14)
+        let itemSpacing: CGFloat = compact ? 8 : 10
+        for stack in [content] + content.arrangedSubviews.compactMap({ $0 as? UIStackView }) {
+            stack.spacing = itemSpacing
+        }
         for section in sectionBreaks {
-            content.setCustomSpacing(
-                Self.spacing(phone: compact ? 10 : 14, pad: 20), after: section)
+            (section.superview as? UIStackView)?.setCustomSpacing(
+                compact ? 8 : 14, after: section)
         }
         for inset in cardInsets {
-            inset.constant = Self.spacing(phone: compact ? 12 : 16, pad: 20)
+            inset.constant = compact ? 12 : 16
         }
 
-        footer.spacing = compact ? 0 : 8
+        footerButtons.axis = compact ? .horizontal : .vertical
+        footerButtons.spacing = compact ? 16 : 8
         footer.directionalLayoutMargins = NSDirectionalEdgeInsets(
-            top: Self.spacing(phone: compact ? 10 : 16, pad: 24),
+            top: compact ? 10 : 16,
             leading: 0,
             bottom: compact ? 4 : 16,
             trailing: 0
         )
         view.setNeedsLayout()
+    }
+
+    /// Folded iPhone Duo has a home indicator inset but no top inset, as its status bar runs down
+    /// the side. Giving half the difference back keeps the page centered on screen.
+    static func bottomInsetBalance(top: CGFloat, bottom: CGFloat) -> CGFloat {
+        -max(bottom - top, 0) / 2
     }
 }
 
@@ -214,9 +286,7 @@ extension StatsViewController {
             Array(viewModel.critters[$0..<min($0 + Self.crittersPerRow, viewModel.critters.count)])
         }
         for rowCritters in rows {
-            let row = Self.makeRow(
-                spacing: Self.isPad ? 8 : 4, alignment: .fill,
-                distribution: Self.isPad ? .fill : .fillEqually)
+            let row = Self.makeRow(spacing: 4, alignment: .fill)
             for critter in rowCritters {
                 let tile = Self.makeCritterTile(
                     imageName: critter.imageName, catches: critter.catches, isEmpty: critter.isEmpty
@@ -234,6 +304,7 @@ extension StatsViewController {
             bar.accessibilityLabel = day.accessibilityLabel
             daysStack.addArrangedSubview(bar)
         }
+        measureFitOnNextLayout()
     }
 }
 

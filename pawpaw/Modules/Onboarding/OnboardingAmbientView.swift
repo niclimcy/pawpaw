@@ -50,7 +50,7 @@ final class OnboardingAmbientView: UIView {
         guard bounds.width > 0, bounds.height > 0 else { return }
         let kind = Self.kinds[kindIndex % Self.kinds.count]
         kindIndex += 1
-        let side = Theme.scaled(44)
+        let side: CGFloat = 44
         let critter = UIImageView(image: UIImage(named: kind.imageName))
         critter.contentMode = .scaleAspectFit
         critter.alpha = 0.22

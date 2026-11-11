@@ -29,7 +29,7 @@ extension GameViewController {
 
             playfieldGuide.topAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.topAnchor,
-                constant: 16 + max(48, Theme.scaled(48))),
+                constant: 16 + 48),
             playfieldGuide.leadingAnchor.constraint(equalTo: gameArea.leadingAnchor),
             playfieldGuide.trailingAnchor.constraint(equalTo: gameArea.trailingAnchor),
             playfieldGuide.bottomAnchor.constraint(equalTo: gameArea.bottomAnchor),
@@ -46,7 +46,7 @@ extension GameViewController {
         homeConfig.image = UIImage(systemName: "house.fill")
         homeConfig.baseForegroundColor = Theme.text
         homeConfig.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(
-            pointSize: Theme.scaled(20), weight: .semibold
+            pointSize: 20, weight: .semibold
         )
         homeConfig.contentInsets = NSDirectionalEdgeInsets(
             top: 10, leading: 10, bottom: 10, trailing: 10)
@@ -56,7 +56,7 @@ extension GameViewController {
         installHoldToExit(on: homeButton)
         hudHomeButton = homeButton
         homeButton.setContentHuggingPriority(.required, for: .horizontal)
-        let side = max(Theme.minimumTapSize, Theme.scaled(48))
+        let side: CGFloat = 48
         homeButton.widthAnchor.constraint(greaterThanOrEqualToConstant: side).isActive = true
         homeButton.heightAnchor.constraint(greaterThanOrEqualToConstant: side).isActive = true
 
@@ -73,7 +73,7 @@ extension GameViewController {
                 equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             hud.trailingAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            hud.heightAnchor.constraint(equalToConstant: max(48, Theme.scaled(48))),
+            hud.heightAnchor.constraint(equalToConstant: 48),
         ])
     }
 
@@ -107,14 +107,14 @@ extension GameViewController {
         resultOverlay.interactiveView = card
         resultCard = card
 
-        resultTitleLabel.font = Theme.roundedFont(size: Theme.scaled(34))
+        resultTitleLabel.font = Theme.roundedFont(size: 34)
         resultTitleLabel.adjustsFontForContentSizeCategory = true
         resultTitleLabel.textColor = Theme.text
         resultTitleLabel.textAlignment = .center
         resultTitleLabel.numberOfLines = 0
         resultTitleLabel.accessibilityTraits = .header
 
-        resultDetailsLabel.font = Theme.roundedFont(size: Theme.scaled(20), weight: .semibold)
+        resultDetailsLabel.font = Theme.roundedFont(size: 20, weight: .semibold)
         resultDetailsLabel.adjustsFontForContentSizeCategory = true
         resultDetailsLabel.textColor = Theme.text
         resultDetailsLabel.textAlignment = .center
@@ -140,7 +140,7 @@ extension GameViewController {
         stack.translatesAutoresizingMaskIntoConstraints = false
         card.addSubview(stack)
 
-        embedCentered(card, maxWidth: Theme.scaled(380), in: resultOverlay)
+        embedCentered(card, maxWidth: 380, in: resultOverlay)
 
         NSLayoutConstraint.activate([
             resultOverlay.topAnchor.constraint(equalTo: view.topAnchor),

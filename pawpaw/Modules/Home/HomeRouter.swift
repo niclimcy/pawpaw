@@ -24,9 +24,7 @@ final class HomeRouter: HomeRouterProtocol {
         presenter.router = router
         interactor.presenter = presenter
 
-        let navigation = OrientationNavigationController(rootViewController: view)
-        navigation.setNavigationBarHidden(true, animated: false)
-        return navigation
+        return OrientationNavigationController(rootViewController: view)
     }
 
     func navigateToGame(from view: HomeViewProtocol?, mode: SessionMode) {
