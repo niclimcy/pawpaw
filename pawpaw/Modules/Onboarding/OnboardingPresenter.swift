@@ -52,6 +52,23 @@ final class OnboardingPresenter: OnboardingPresenterProtocol {
         body: "Only a hold leaves a game."
     )
 
+    static let staticText = OnboardingStaticText(
+        skipTitle: "Hold to Skip",
+        skipHint: "Press and hold to skip",
+        skipAction: "Skip",
+        holdPrompt: "Hold me",
+        countdownDescription: "Lay the device flat. It counts 3, 2, 1, then your cat plays."
+    )
+
+    static let catSetupBody = "Name your cat and pick a face. You can add more cats later."
+    static let nameRequiredAnnouncement = "Add your cat's name, or hold Skip to add one later"
+    static let nextTitle = "Next"
+    static let finishTitle = "Let's go"
+
+    static let practiceKinds: [TargetKind] = [
+        .mouse, .bug, .butterfly, .cricket, .feather, .ribbon,
+    ]
+
     static let unnamedCatTitle = "Who's playing?"
 
     static func catSetupTitle(for name: String) -> String {
@@ -67,19 +84,26 @@ final class OnboardingPresenter: OnboardingPresenterProtocol {
 
     private var index = 0
     private var catchCount = 0
+    private var practiceKindIndex = 0
     private var hasHeldHouse = false
     private var isFinishing = false
-    /// Kept so returning to the cat setup keeps the greeting.
+    /// Kept so returning to the cat setup keeps the greeting and the pick.
     private var catName = ""
+    private var catFace: CatFace?
 
     // MARK: OnboardingPresenterProtocol
     func viewDidLoad() {
+        view?.showStaticText(Self.staticText)
         view?.reserveSpace(for: Self.reservedTexts)
         showCurrentStep()
     }
 
     func didTapNext() {
-        index = min(index + 1, Self.pages.count)
+        guard !isOnCatSetup else {
+            finishWithCat()
+            return
+        }
+        index += 1
         showCurrentStep()
     }
 
@@ -88,36 +112,32 @@ final class OnboardingPresenter: OnboardingPresenterProtocol {
         showCurrentStep()
     }
 
-    /// Skips the intro, not the cat setup.
     func didTapSkip() {
+        guard !isOnCatSetup else {
+            finishWithoutCat()
+            return
+        }
         index = Self.pages.count
         showCurrentStep()
     }
 
-    func didTapDone(name: String, face: CatFace) {
-        guard !isFinishing else { return }
-        guard CatProfile.cleaned(name) != nil else {
-            view?.showNameRequired()
-            return
-        }
-        isFinishing = true
-        interactor?.saveCat(name: name, face: face)
-        interactor?.completeOnboarding()
-        guard let view else {
-            router?.finish()
-            return
-        }
-        view.showFinishCelebration { [weak self] in self?.router?.finish() }
+    func didChangeCatName(_ name: String) {
+        catName = name
+        guard isOnCatSetup else { return }
+        view?.updateCatSetupTitle(Self.catSetupTitle(for: name))
     }
 
-    func didSkipCatSetup() {
-        guard !isFinishing else { return }
-        isFinishing = true
-        interactor?.completeOnboarding()
-        router?.finish()
+    func didSelectFace(_ face: CatFace) {
+        catFace = face
     }
 
     // MARK: Practice
+    func nextPracticeTarget() -> GameTarget? {
+        let kind = Self.practiceKinds[practiceKindIndex % Self.practiceKinds.count]
+        practiceKindIndex += 1
+        return interactor?.makePracticeTarget(kind: kind)
+    }
+
     func didCatchPracticeCritter() {
         guard currentInteraction == .catchCritter else { return }
         let feedback = Self.catchFeedback[catchCount % Self.catchFeedback.count]
@@ -137,29 +157,61 @@ final class OnboardingPresenter: OnboardingPresenterProtocol {
         view?.showPracticeFeedback(Self.holdFeedback, celebrates: true)
     }
 
-    func didChangeCatName(_ name: String) {
-        catName = name
-        guard index == Self.pages.count else { return }
-        view?.updateCatSetupTitle(Self.catSetupTitle(for: name))
-    }
-
     // MARK: Private
+    private var isOnCatSetup: Bool { index == Self.pages.count }
+
     private var currentInteraction: OnboardingInteraction? {
         index < Self.pages.count ? Self.pages[index].interaction : nil
     }
 
+    private var currentFace: CatFace {
+        catFace ?? interactor?.activeProfile.face ?? .orange
+    }
+
+    private var progress: OnboardingProgress {
+        OnboardingProgress(
+            index: index,
+            count: Self.stepCount,
+            stepLabel: "Step \(index + 1) of \(Self.stepCount)",
+            nextTitle: isOnCatSetup ? Self.finishTitle : Self.nextTitle,
+            canSwipeForward: !isOnCatSetup
+        )
+    }
+
     private func showCurrentStep() {
-        guard index < Self.pages.count else {
-            let face = interactor?.activeProfile.face ?? .orange
-            view?.showCatSetup(
-                face: face,
+        guard !isOnCatSetup else {
+            let setup = OnboardingCatSetup(
+                face: currentFace,
                 title: Self.catSetupTitle(for: catName),
-                index: index,
-                count: Self.stepCount
+                body: Self.catSetupBody
             )
+            view?.showCatSetup(setup, progress: progress)
             return
         }
         hasHeldHouse = false
-        view?.showPage(Self.pages[index], index: index, count: Self.stepCount)
+        view?.showPage(Self.pages[index], progress: progress)
+    }
+
+    private func finishWithCat() {
+        guard !isFinishing else { return }
+        guard CatProfile.cleaned(catName) != nil else {
+            view?.showNameRequired(announcement: Self.nameRequiredAnnouncement)
+            return
+        }
+        isFinishing = true
+        interactor?.saveCat(name: catName, face: currentFace)
+        interactor?.completeOnboarding()
+        guard let view else {
+            router?.finish()
+            return
+        }
+        view.showFinishCelebration { [weak self] in self?.router?.finish() }
+    }
+
+    private func finishWithoutCat() {
+        guard !isFinishing else { return }
+        isFinishing = true
+        interactor?.completeOnboarding()
+        router?.finish()
     }
 }

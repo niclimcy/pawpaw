@@ -49,7 +49,6 @@ final class OnboardingCountdownView: UIView {
         ])
 
         isAccessibilityElement = true
-        accessibilityLabel = "Lay the device flat. It counts 3, 2, 1, then your cat plays."
         accessibilityTraits = .image
         showStill()
     }

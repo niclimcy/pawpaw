@@ -3,6 +3,7 @@
 //  pawpaw
 //
 
+import CoreGraphics
 import Foundation
 
 final class OnboardingInteractor: OnboardingInteractorInputProtocol {
@@ -28,5 +29,29 @@ final class OnboardingInteractor: OnboardingInteractorInputProtocol {
 
     func completeOnboarding() {
         settings.hasCompletedOnboarding = true
+    }
+
+    func makePracticeTarget(kind: TargetKind) -> GameTarget {
+        let start = Self.randomEdgePoint()
+        return GameTarget(
+            id: UUID(),
+            kind: kind,
+            start: start,
+            legs: MovementPlanner.legs(
+                from: start,
+                style: kind.movementStyle,
+                duration: PlayfieldTuning.onboarding.lifetime(
+                    for: TimeInterval.random(in: kind.lifetimeRange))
+            ),
+            leadIn: MovementPlanner.leadIn(for: kind.movementStyle)
+        )
+    }
+
+    private static func randomEdgePoint() -> CGPoint {
+        let along = CGFloat.random(in: 0.15...0.85)
+        let edge: CGFloat = Bool.random() ? 0 : 1
+        // Mostly from the sides, since the field is wide.
+        return Double.random(in: 0..<1) < 0.75
+            ? CGPoint(x: edge, y: along) : CGPoint(x: along, y: edge)
     }
 }

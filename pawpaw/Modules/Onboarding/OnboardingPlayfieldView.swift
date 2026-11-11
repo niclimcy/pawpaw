@@ -9,14 +9,11 @@ import UIKit
 /// Practice field running the real `GameScene`, one unscored critter at a time.
 final class OnboardingPlayfieldView: UIView {
     var onCatch: (() -> Void)?
+    var nextTarget: (() -> GameTarget?)?
 
     private let skView = SKView()
     private let scene = GameScene(size: .zero)
-    private static let kinds: [TargetKind] = [
-        .mouse, .bug, .butterfly, .cricket, .feather, .ribbon,
-    ]
     private static let respawnDelay: TimeInterval = 0.6
-    private var kindIndex = 0
     private var currentTarget: GameTarget?
     private var isRunning = false
     private var isSpawnPending = false
@@ -99,21 +96,9 @@ final class OnboardingPlayfieldView: UIView {
     }
 
     private func spawn() {
-        guard isRunning, currentTarget == nil, bounds.width > 0, bounds.height > 0 else { return }
-        let kind = Self.kinds[kindIndex % Self.kinds.count]
-        let tuning = PlayfieldTuning.onboarding
-        let start = Self.randomEdgePoint()
-        let target = GameTarget(
-            id: UUID(),
-            kind: kind,
-            start: start,
-            legs: MovementPlanner.legs(
-                from: start,
-                style: kind.movementStyle,
-                duration: tuning.lifetime(for: TimeInterval.random(in: kind.lifetimeRange))
-            ),
-            leadIn: MovementPlanner.leadIn(for: kind.movementStyle)
-        )
+        guard isRunning, currentTarget == nil, bounds.width > 0, bounds.height > 0,
+            let target = nextTarget?()
+        else { return }
         currentTarget = target
         scene.add(target)
     }
@@ -132,17 +117,8 @@ final class OnboardingPlayfieldView: UIView {
 
     private func nextCritter() {
         currentTarget = nil
-        kindIndex += 1
         guard isRunning else { return }
         scheduleSpawn(after: Self.respawnDelay)
-    }
-
-    private static func randomEdgePoint() -> CGPoint {
-        let along = CGFloat.random(in: 0.15...0.85)
-        let edge: CGFloat = Bool.random() ? 0 : 1
-        // Mostly from the sides, since the field is wide.
-        return Double.random(in: 0..<1) < 0.75
-            ? CGPoint(x: edge, y: along) : CGPoint(x: along, y: edge)
     }
 
     /// VoiceOver can't chase a moving target.

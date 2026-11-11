@@ -25,6 +25,18 @@ final class OnboardingInteractorTests: XCTestCase {
             .completeOnboarding()
         XCTAssertTrue(settings.hasCompletedOnboarding)
     }
+
+    func testPracticeTargetEntersFromAnEdge() {
+        let interactor = OnboardingInteractor(
+            profileStorage: MockProfileStorage(), settings: MockSettingsStorage())
+        for _ in 0..<20 {
+            let target = interactor.makePracticeTarget(kind: .mouse)
+            XCTAssertEqual(target.kind, .mouse)
+            XCTAssertFalse(target.legs.isEmpty)
+            let start = target.start
+            XCTAssertTrue([0, 1].contains(start.x) || [0, 1].contains(start.y), "\(start)")
+        }
+    }
 }
 
 @MainActor
@@ -56,32 +68,51 @@ final class OnboardingPresenterTests: XCTestCase {
             OnboardingPresenter.pages.map(\.interaction), [.catchCritter, .countdown, .holdToLeave])
     }
 
-    func testLoadReservesSpaceAndShowsFirstPage() {
+    func testLoadShowsStaticTextReservesSpaceAndShowsFirstPage() {
         presenter.viewDidLoad()
+        XCTAssertEqual(view.staticTexts, [OnboardingPresenter.staticText])
         XCTAssertEqual(view.reserved, [OnboardingPresenter.reservedTexts])
-        XCTAssertEqual(view.pages.last?.index, 0)
-        XCTAssertEqual(view.pages.last?.count, pageCount + 1)
+        XCTAssertEqual(view.pages.last?.progress.index, 0)
+        XCTAssertEqual(view.pages.last?.progress.count, pageCount + 1)
+    }
+
+    func testProgressCopyAndControls() {
+        presenter.viewDidLoad()
+        let first = view.pages.last?.progress
+        XCTAssertEqual(first?.stepLabel, "Step 1 of \(pageCount + 1)")
+        XCTAssertEqual(first?.nextTitle, OnboardingPresenter.nextTitle)
+        XCTAssertEqual(first?.canGoBack, false)
+        XCTAssertEqual(first?.canSwipeForward, true)
+
+        presenter.didTapSkip()
+        let setup = view.catSetups.last
+        XCTAssertEqual(setup?.progress.stepLabel, "Step \(pageCount + 1) of \(pageCount + 1)")
+        XCTAssertEqual(setup?.progress.nextTitle, OnboardingPresenter.finishTitle)
+        XCTAssertEqual(setup?.progress.canGoBack, true)
+        XCTAssertEqual(setup?.progress.canSwipeForward, false, "Only the button finishes")
+        XCTAssertEqual(setup?.setup.body, OnboardingPresenter.catSetupBody)
     }
 
     func testBackStopsAtFirstPage() {
         presenter.viewDidLoad()
         presenter.didTapBack()
-        XCTAssertEqual(view.pages.map(\.index), [0, 0])
+        XCTAssertEqual(view.pages.map(\.progress.index), [0, 0])
     }
 
-    func testNextWalksPagesThenCatSetupAndStops() {
+    func testNextWalksPagesThenCatSetup() {
         presenter.viewDidLoad()
-        for _ in 0..<(pageCount + 2) { presenter.didTapNext() }
-        XCTAssertEqual(view.pages.map(\.index), Array(0..<pageCount))
-        XCTAssertEqual(view.catSetups.count, 3)
-        XCTAssertEqual(view.catSetups.last?.index, pageCount)
-        XCTAssertEqual(view.catSetups.last?.face, .calico, "Starts from the cat's current face")
+        for _ in 0..<pageCount { presenter.didTapNext() }
+        XCTAssertEqual(view.pages.map(\.progress.index), Array(0..<pageCount))
+        XCTAssertEqual(view.catSetups.count, 1)
+        XCTAssertEqual(view.catSetups.last?.progress.index, pageCount)
+        XCTAssertEqual(
+            view.catSetups.last?.setup.face, .calico, "Starts from the cat's current face")
     }
 
     func testBackFromCatSetupReturnsToLastPage() {
         presenter.didTapSkip()
         presenter.didTapBack()
-        XCTAssertEqual(view.pages.last?.index, pageCount - 1)
+        XCTAssertEqual(view.pages.last?.progress.index, pageCount - 1)
     }
 
     func testSkipGoesToCatSetupNotPastIt() {
@@ -91,16 +122,26 @@ final class OnboardingPresenterTests: XCTestCase {
         XCTAssertEqual(router.finishCount, 0)
     }
 
+    func testCatSetupKeepsTheChosenFace() {
+        presenter.didTapSkip()
+        presenter.didSelectFace(.gray)
+        presenter.didTapBack()
+        presenter.didTapNext()
+        XCTAssertEqual(view.catSetups.last?.setup.face, .gray)
+    }
+
     func testDoneNeedsAName() {
-        presenter.didTapDone(name: "   ", face: .gray)
-        XCTAssertEqual(view.nameRequiredCount, 1)
+        presenter.didTapSkip()
+        presenter.didChangeCatName("   ")
+        presenter.didTapNext()
+        XCTAssertEqual(view.nameRequired, [OnboardingPresenter.nameRequiredAnnouncement])
         XCTAssertTrue(interactor.savedCats.isEmpty)
         XCTAssertEqual(interactor.completeCount, 0)
         XCTAssertEqual(router.finishCount, 0)
     }
 
     func testDoneSavesThenFinishesAfterTheCelebration() {
-        presenter.didTapDone(name: "Mochi", face: .gray)
+        finishWithMochi()
         XCTAssertEqual(interactor.savedCats.map(\.name), ["Mochi"])
         XCTAssertEqual(interactor.savedCats.map(\.face), [.gray])
         XCTAssertEqual(interactor.completeCount, 1)
@@ -110,10 +151,17 @@ final class OnboardingPresenterTests: XCTestCase {
         XCTAssertEqual(router.finishCount, 1)
     }
 
+    func testDoneUsesTheCurrentFaceWhenNoneIsPicked() {
+        presenter.didTapSkip()
+        presenter.didChangeCatName("Mochi")
+        presenter.didTapNext()
+        XCTAssertEqual(interactor.savedCats.map(\.face), [.calico])
+    }
+
     func testDoneOnlyFinishesOnce() {
-        presenter.didTapDone(name: "Mochi", face: .gray)
-        presenter.didTapDone(name: "Mochi", face: .gray)
-        presenter.didSkipCatSetup()
+        finishWithMochi()
+        presenter.didTapNext()
+        presenter.didTapSkip()
         XCTAssertEqual(interactor.savedCats.count, 1)
         XCTAssertEqual(interactor.completeCount, 1)
         XCTAssertEqual(view.celebrationCount, 1)
@@ -121,15 +169,23 @@ final class OnboardingPresenterTests: XCTestCase {
 
     func testDoneFinishesWithoutAView() {
         presenter.view = nil
-        presenter.didTapDone(name: "Mochi", face: .gray)
+        finishWithMochi()
         XCTAssertEqual(router.finishCount, 1)
     }
 
     func testSkippingCatSetupFinishesWithoutSaving() {
-        presenter.didSkipCatSetup()
+        presenter.didTapSkip()
+        presenter.didTapSkip()
         XCTAssertTrue(interactor.savedCats.isEmpty)
         XCTAssertEqual(interactor.completeCount, 1)
         XCTAssertEqual(router.finishCount, 1)
+    }
+
+    private func finishWithMochi() {
+        presenter.didTapSkip()
+        presenter.didChangeCatName("Mochi")
+        presenter.didSelectFace(.gray)
+        presenter.didTapNext()
     }
 }
 
@@ -162,6 +218,15 @@ final class OnboardingPracticeTests: XCTestCase {
         for _ in 0...feedback.count { presenter.didCatchPracticeCritter() }
         XCTAssertEqual(view.feedback.map(\.text), feedback + [feedback[0]])
         XCTAssertTrue(view.feedback.allSatisfy(\.celebrates))
+    }
+
+    func testPracticeTargetsCycleThroughKinds() {
+        let interactor = OnboardingInteractorSpy()
+        presenter.interactor = interactor
+        let kinds = OnboardingPresenter.practiceKinds
+        let targets = (0...kinds.count).compactMap { _ in presenter.nextPracticeTarget() }
+        XCTAssertEqual(targets.map(\.kind), kinds + [kinds[0]])
+        XCTAssertEqual(interactor.practiceKinds, kinds + [kinds[0]])
     }
 
     func testCatchingIsNotNeededToMoveOn() {
@@ -220,11 +285,11 @@ final class OnboardingPracticeTests: XCTestCase {
 
     func testCatSetupKeepsTheGreetingAfterGoingBack() {
         presenter.didTapSkip()
-        XCTAssertEqual(view.catSetups.last?.title, "Who's playing?")
+        XCTAssertEqual(view.catSetups.last?.setup.title, "Who's playing?")
         presenter.didChangeCatName("Mochi")
         presenter.didTapBack()
         presenter.didTapNext()
-        XCTAssertEqual(view.catSetups.last?.title, "Hi, Mochi!")
+        XCTAssertEqual(view.catSetups.last?.setup.title, "Hi, Mochi!")
     }
 
     private func goToHoldPage() {

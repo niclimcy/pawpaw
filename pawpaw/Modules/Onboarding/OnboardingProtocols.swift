@@ -26,18 +26,44 @@ struct OnboardingPage: Equatable {
     }
 }
 
+struct OnboardingProgress: Equatable {
+    let index: Int
+    let count: Int
+    let stepLabel: String
+    let nextTitle: String
+    /// False on the cat setup, which only finishes from its button.
+    let canSwipeForward: Bool
+
+    var canGoBack: Bool { index > 0 }
+}
+
+/// The last step, after the intro pages.
+struct OnboardingCatSetup: Equatable {
+    let face: CatFace
+    let title: String
+    let body: String
+}
+
+struct OnboardingStaticText: Equatable {
+    let skipTitle: String
+    let skipHint: String
+    let skipAction: String
+    let holdPrompt: String
+    let countdownDescription: String
+}
+
 // MARK: - View
 protocol OnboardingViewProtocol: AnyObject {
     var presenter: OnboardingPresenterProtocol? { get set }
+    func showStaticText(_ text: OnboardingStaticText)
     /// Sizes the card for the longest text so its height stays fixed.
     func reserveSpace(for texts: [OnboardingText])
-    func showPage(_ page: OnboardingPage, index: Int, count: Int)
+    func showPage(_ page: OnboardingPage, progress: OnboardingProgress)
     /// `celebrates` is false for hints.
     func showPracticeFeedback(_ text: OnboardingText, celebrates: Bool)
-    /// The last step, after the intro pages.
-    func showCatSetup(face: CatFace, title: String, index: Int, count: Int)
+    func showCatSetup(_ setup: OnboardingCatSetup, progress: OnboardingProgress)
     func updateCatSetupTitle(_ title: String)
-    func showNameRequired()
+    func showNameRequired(announcement: String)
     func showFinishCelebration(completion: @escaping () -> Void)
 }
 
@@ -48,17 +74,19 @@ protocol OnboardingPresenterProtocol: AnyObject {
     var router: OnboardingRouterProtocol? { get set }
 
     func viewDidLoad()
+    /// Moves on a page; on the cat setup, saves the cat and finishes.
     func didTapNext()
     func didTapBack()
+    /// Skips the intro pages; on the cat setup, finishes without saving.
     func didTapSkip()
-    func didTapDone(name: String, face: CatFace)
-    func didSkipCatSetup()
+    func didChangeCatName(_ name: String)
+    func didSelectFace(_ face: CatFace)
 
     // Practice
+    func nextPracticeTarget() -> GameTarget?
     func didCatchPracticeCritter()
     func didTapHousePractice()
     func didCompleteHoldPractice()
-    func didChangeCatName(_ name: String)
 }
 
 // MARK: - Interactor
@@ -66,6 +94,7 @@ protocol OnboardingInteractorInputProtocol: AnyObject {
     var activeProfile: CatProfile { get }
     func saveCat(name: String, face: CatFace)
     func completeOnboarding()
+    func makePracticeTarget(kind: TargetKind) -> GameTarget
 }
 
 // MARK: - Router

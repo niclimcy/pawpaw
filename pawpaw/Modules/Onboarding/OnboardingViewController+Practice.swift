@@ -19,6 +19,7 @@ extension OnboardingViewController {
     }
 
     func setupPractice() {
+        playfield.nextTarget = { [weak self] in self?.presenter?.nextPracticeTarget() }
         playfield.onCatch = { [weak self] in self?.presenter?.didCatchPracticeCritter() }
         holdPractice.onTap = { [weak self] in self?.presenter?.didTapHousePractice() }
         holdPractice.onHold = { [weak self] in self?.presenter?.didCompleteHoldPractice() }

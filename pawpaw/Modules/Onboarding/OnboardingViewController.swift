@@ -30,7 +30,8 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
     let ambient = OnboardingAmbientView()
     var interaction: OnboardingInteraction?
     private var shownIndex: Int?
-    private var isOnCatSetup = false
+    private var progress: OnboardingProgress?
+    private var skipHint = ""
     private weak var cardScroll: UIScrollView?
     /// How much of the card's scroll view the keyboard covers.
     private var keyboardInset: CGFloat = 0
@@ -60,7 +61,7 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
 
     let nextButton: UIButton = {
         let button = Theme.filledButton(
-            title: "Next",
+            title: "",
             fontSize: 22,
             weight: .heavy
         )
@@ -69,9 +70,8 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
     }()
 
     private let skipButton: UIButton = {
-        let button = Theme.plainButton(title: "Hold to Skip")
+        let button = Theme.plainButton(title: "")
         button.accessibilityIdentifier = "onboardingSkipButton"
-        button.accessibilityHint = "Press and hold to skip"
         return button
     }()
 
@@ -123,6 +123,7 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
         facePicker.onSelect = { [weak self] face in
             self?.showCatArt(face)
             self?.bounceCatArt()
+            self?.presenter?.didSelectFace(face)
         }
         nextButton.addTarget(
             self,
@@ -443,32 +444,21 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
         }
     }
 
-    private func showProgress(
-        index: Int,
-        count: Int,
-        next: String
-    ) {
-        pageDots.numberOfPages = count
-        pageDots.currentPage = index
-        pageDots.accessibilityValue = "Step \(index + 1) of \(count)"
-        nextButton.configuration?.title = next
-        let isFirst = index == 0
-        backButton.alpha = isFirst ? 0 : 1
-        backButton.isEnabled = !isFirst
-        backButton.accessibilityElementsHidden = isFirst
+    private func showProgress(_ progress: OnboardingProgress) {
+        self.progress = progress
+        pageDots.numberOfPages = progress.count
+        pageDots.currentPage = progress.index
+        pageDots.accessibilityValue = progress.stepLabel
+        nextButton.configuration?.title = progress.nextTitle
+        backButton.alpha = progress.canGoBack ? 1 : 0
+        backButton.isEnabled = progress.canGoBack
+        backButton.accessibilityElementsHidden = !progress.canGoBack
         UIAccessibility.post(notification: .screenChanged, argument: titleLabel)
     }
 
     // MARK: Actions
     @objc private func nextTapped() {
-        if isOnCatSetup {
-            presenter?.didTapDone(
-                name: nameField.text ?? "",
-                face: facePicker.selectedFace
-            )
-        } else {
-            presenter?.didTapNext()
-        }
+        presenter?.didTapNext()
     }
 
     @objc private func backTapped() {
@@ -491,7 +481,7 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
     /// Moves to the next page; the cat step only finishes from its button, never from a swipe.
     @discardableResult
     private func goForward() -> Bool {
-        guard !isOnCatSetup else { return false }
+        guard progress?.canSwipeForward == true else { return false }
         presenter?.didTapNext()
         return true
     }
@@ -511,34 +501,34 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
     private func installHoldToSkip() {
         skipButton.addHoldToConfirm(self, action: #selector(skipHeld(_:)))
         skipButton.addTarget(self, action: #selector(showSkipHint), for: .touchUpInside)
-        // VoiceOver's double-tap is a plain tap, so offer the skip directly too.
-        skipButton.accessibilityCustomActions = [
-            UIAccessibilityCustomAction(name: "Skip") { [weak self] _ in
-                self?.skip()
-                return true
-            }
-        ]
     }
 
     @objc private func showSkipHint() {
-        showHoldHint("Press and hold to skip", above: pageDots.topAnchor)
+        showHoldHint(skipHint, above: pageDots.topAnchor)
     }
 
     @objc private func skipHeld(_ gesture: UILongPressGestureRecognizer) {
         guard gesture.state == .began else { return }
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        skip()
-    }
-
-    private func skip() {
-        if isOnCatSetup {
-            presenter?.didSkipCatSetup()
-        } else {
-            presenter?.didTapSkip()
-        }
+        presenter?.didTapSkip()
     }
 
     // MARK: OnboardingViewProtocol
+    func showStaticText(_ text: OnboardingStaticText) {
+        skipHint = text.skipHint
+        skipButton.configuration?.title = text.skipTitle
+        skipButton.accessibilityHint = text.skipHint
+        // VoiceOver's double-tap is a plain tap, so offer the skip directly too.
+        skipButton.accessibilityCustomActions = [
+            UIAccessibilityCustomAction(name: text.skipAction) { [weak self] _ in
+                self?.presenter?.didTapSkip()
+                return true
+            }
+        ]
+        holdPractice.prompt = text.holdPrompt
+        countdown.accessibilityLabel = text.countdownDescription
+    }
+
     func reserveSpace(for texts: [OnboardingText]) {
         for text in texts {
             let title = Self.makeLabel(size: 28)
@@ -566,18 +556,17 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
         }
     }
 
-    func showPage(_ page: OnboardingPage, index: Int, count: Int) {
-        isOnCatSetup = false
+    func showPage(_ page: OnboardingPage, progress: OnboardingProgress) {
         stopInteractions()
         interaction = page.interaction
         if page.interaction == .holdToLeave { holdPractice.reset() }
-        transitionCard(to: index) {
+        transitionCard(to: progress.index) {
             self.showPractice(page.interaction)
             self.titleLabel.text = page.title
             self.bodyLabel.text = page.body
             self.catFields.removeFromSuperview()
         }
-        showProgress(index: index, count: count, next: "Next")
+        showProgress(progress)
         startInteraction()
     }
 
@@ -593,24 +582,18 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
             notification: .announcement, argument: "\(text.title) \(text.body)")
     }
 
-    func showCatSetup(face: CatFace, title: String, index: Int, count: Int) {
-        isOnCatSetup = true
+    func showCatSetup(_ setup: OnboardingCatSetup, progress: OnboardingProgress) {
         stopInteractions()
         interaction = nil
-        facePicker.select(face)
-        transitionCard(to: index) {
+        facePicker.select(setup.face)
+        transitionCard(to: progress.index) {
             self.showPractice(nil)
-            self.showCatArt(face)
-            self.titleLabel.text = title
-            self.bodyLabel.text =
-                "Name your cat and pick a face. You can add more cats later."
+            self.showCatArt(setup.face)
+            self.titleLabel.text = setup.title
+            self.bodyLabel.text = setup.body
             self.showCatFields()
         }
-        showProgress(
-            index: index,
-            count: count,
-            next: "Let's go"
-        )
+        showProgress(progress)
     }
 
     func updateCatSetupTitle(_ title: String) {
@@ -618,16 +601,13 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
         titleLabel.text = title
     }
 
-    func showNameRequired() {
+    func showNameRequired(announcement: String) {
         let shake = CAKeyframeAnimation(keyPath: "transform.translation.x")
         shake.values = [0, -8, 8, -5, 5, 0]
         shake.duration = 0.3
         nameField.layer.add(shake, forKey: "shake")
         nameField.becomeFirstResponder()
-        UIAccessibility.post(
-            notification: .announcement,
-            argument: "Add your cat's name, or hold Skip to add one later"
-        )
+        UIAccessibility.post(notification: .announcement, argument: announcement)
     }
 
     func showFinishCelebration(completion: @escaping () -> Void) {

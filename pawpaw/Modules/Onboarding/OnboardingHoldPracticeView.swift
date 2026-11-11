@@ -14,7 +14,6 @@ final class OnboardingHoldPracticeView: UIView {
     private let check = UIImageView()
     private let hint: UILabel = {
         let label = UILabel()
-        label.text = "Hold me"
         label.font = Theme.roundedFont(size: Theme.scaled(16), weight: .heavy)
         label.adjustsFontForContentSizeCategory = true
         label.textColor = Theme.gold
@@ -78,6 +77,11 @@ final class OnboardingHoldPracticeView: UIView {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    var prompt: String? {
+        get { hint.text }
+        set { hint.text = newValue }
     }
 
     /// Layer animations are dropped when the view leaves the window.
