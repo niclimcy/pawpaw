@@ -265,7 +265,8 @@ final class GameInteractor: GameInteractorInputProtocol {
         }
     }
 
-    private func tick() {
+    // Internal rather than private so tests can drive a round without waiting on timers.
+    func tick() {
         guard isPlaying else { return }
         timeRemaining -= 1
         presenter?.didUpdateTimeRemaining(max(timeRemaining, 0))
@@ -274,7 +275,7 @@ final class GameInteractor: GameInteractorInputProtocol {
         }
     }
 
-    private func spawnTarget() {
+    func spawnTarget() {
         guard isPlaying, activeTargets.count < tuning.maxActiveTargets else { return }
         let kind = randomKind()
         let baseLifetime = tuning.lifetime(for: TimeInterval.random(in: kind.lifetimeRange))

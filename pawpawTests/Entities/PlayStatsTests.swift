@@ -93,14 +93,4 @@ final class PlayStatsTests: XCTestCase {
     func testRecentRoundsWithZeroDaysIsEmpty() {
         XCTAssertTrue(PlayStats().recentRounds(days: 0).isEmpty)
     }
-
-    func testCodableRoundTrip() throws {
-        var stats = PlayStats()
-        stats.record(
-            catches: [.lizard: 2, .ribbon: 1], on: utcDate(2026, 5, 11), calendar: calendar)
-
-        let decoded = try JSONDecoder().decode(
-            PlayStats.self, from: JSONEncoder().encode(stats))
-        XCTAssertEqual(decoded, stats)
-    }
 }

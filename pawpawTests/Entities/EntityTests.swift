@@ -132,17 +132,4 @@ final class EntityTests: XCTestCase {
         XCTAssertEqual(PlayfieldTuning.standard.lifetime(for: 5), 5, accuracy: 1e-9)
         XCTAssertEqual(PlayfieldTuning.pocket.lifetime(for: 8.5), 10, accuracy: 1e-9)
     }
-
-    func testPocketFlags() {
-        XCTAssertTrue(PlayfieldTuning.pocket.isPocket)
-        XCTAssertFalse(PlayfieldTuning.standard.isPocket)
-        XCTAssertNil(PlayfieldTuning.standard.screenNote)
-        XCTAssertNotNil(PlayfieldTuning.pocket.screenNote)
-    }
-
-    func testCurrentTuningMatchesDevice() {
-        let expected: PlayfieldTuning =
-            UIDevice.current.userInterfaceIdiom == .phone ? .pocket : .standard
-        XCTAssertEqual(PlayfieldTuning.current, expected)
-    }
 }

@@ -158,6 +158,104 @@ final class GameInteractorTests: XCTestCase {
         XCTAssertEqual(stats.recorded.map(\.isNewRound), [true, true])
     }
 
+    // MARK: Clock and results
+
+    private func runOutClock() {
+        for _ in 0..<(SessionMode.standard.duration ?? 0) { interactor.tick() }
+    }
+
+    func testRoundEndsWhenTheClockRunsOut() {
+        interactor.startGame()
+        for _ in 0..<59 { interactor.tick() }
+        XCTAssertTrue(output.results.isEmpty)
+        interactor.tick()
+        XCTAssertEqual(output.results.count, 1)
+        XCTAssertEqual(output.times.last, 0)
+    }
+
+    func testNoTickingWhilePaused() {
+        interactor.startGame()
+        interactor.pauseGame()
+        runOutClock()
+        XCTAssertTrue(output.results.isEmpty)
+        XCTAssertEqual(output.times, [60])
+    }
+
+    func testBeatingTheBestSavesIt() throws {
+        scores.scores[.standard] = 5
+        interactor.startGame()
+        interactor.catchTarget(id: try XCTUnwrap(output.spawned.last).id)
+        runOutClock()
+
+        XCTAssertEqual(
+            output.results,
+            [GameResult(score: 10, catches: 1, highScore: 10, isNewHighScore: true)])
+        XCTAssertEqual(scores.scores[.standard], 10)
+    }
+
+    func testFallingShortKeepsTheOldBest() throws {
+        scores.scores[.standard] = 50
+        interactor.startGame()
+        interactor.catchTarget(id: try XCTUnwrap(output.spawned.last).id)
+        runOutClock()
+
+        XCTAssertEqual(
+            output.results,
+            [GameResult(score: 10, catches: 1, highScore: 50, isNewHighScore: false)])
+        XCTAssertEqual(scores.scores[.standard], 50)
+    }
+
+    func testFinishedRoundSavesCatchesAndStopsPlay() throws {
+        interactor.startGame()
+        let target = try XCTUnwrap(output.spawned.last)
+        interactor.catchTarget(id: target.id)
+        runOutClock()
+
+        XCTAssertEqual(stats.recorded.map(\.isNewRound), [true])
+        interactor.spawnTarget()
+        XCTAssertEqual(output.spawned.count, 1, "Nothing spawns after the round")
+        interactor.tick()
+        XCTAssertEqual(output.results.count, 1, "The round only finishes once")
+    }
+
+    // MARK: Spawning
+
+    func testSpawnsUpToTheTuningsMaxOnScreen() {
+        interactor.startGame()
+        for _ in 0..<5 { interactor.spawnTarget() }
+        XCTAssertEqual(output.spawned.count, PlayfieldTuning.standard.maxActiveTargets)
+    }
+
+    func testCaughtOrEscapedCrittersFreeASlot() throws {
+        interactor.startGame()
+        interactor.spawnTarget()
+        interactor.catchTarget(id: try XCTUnwrap(output.spawned.first).id)
+        interactor.spawnTarget()
+        interactor.expireTarget(id: try XCTUnwrap(output.spawned.last).id)
+        interactor.spawnTarget()
+        XCTAssertEqual(output.spawned.count, 4)
+    }
+
+    func testCatchStreakGivesTheKindANewLook() throws {
+        interactor.startGame()
+        for _ in 0..<GameInteractor.habituationStreak {
+            interactor.catchTarget(id: try XCTUnwrap(output.spawned.last).id)
+            interactor.spawnTarget()
+        }
+        XCTAssertEqual(
+            output.spawned.map(\.variant), [.standard, .standard, .standard, .pale])
+    }
+
+    func testNewRoundForgetsTheStreak() throws {
+        interactor.startGame()
+        for _ in 0..<GameInteractor.habituationStreak {
+            interactor.catchTarget(id: try XCTUnwrap(output.spawned.last).id)
+            interactor.spawnTarget()
+        }
+        interactor.startGame()
+        XCTAssertEqual(output.spawned.last?.variant, .standard)
+    }
+
     // MARK: Exit tip
 
     func testExitTipUntilLearned() {
