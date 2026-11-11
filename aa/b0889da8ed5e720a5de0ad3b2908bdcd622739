@@ -20,7 +20,7 @@ pawpaw/Modules/Game/Playfield/GameScene.swift
   s_2a803296ab2e1b::t_f13a26849d7745 35,53-55,57-59,61-63,73
   s_2a803296ab2e1b::t_a4e0a0206d43b5 199
   s_2a803296ab2e1b::t_357eb0973fcd09 217
-  h_36695e5767c2ad 118,130
+  h_36695e5767c2ad 35,53-55,57-59,61-63,73,118,130,199,217,288,309
   h_36695e5767c2ad 288,309
 pawpaw/Modules/Home/HomePresenter.swift
   h_36695e5767c2ad 12,55
@@ -35,7 +35,7 @@ pawpaw/Entities/PlayfieldTuning.swift
 pawpaw/Modules/Game/GameViewController.swift
   s_59f2d880168466::t_51e02dc2439ddd 158
   s_277c5e97cacae0::t_502af96dbcfb30 147
-  h_36695e5767c2ad 12,101-139
+  h_36695e5767c2ad 12,62,101-139,101-147,158
   h_36695e5767c2ad 62,140-146
 pawpaw/Modules/Game/Playfield/PlayfieldGeometry.swift
   h_36695e5767c2ad 14-22,35,43,57-59,80,90,102
