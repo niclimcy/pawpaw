@@ -5,7 +5,7 @@ pawpaw/Common/ScrollingLayout.swift
   h_36695e5767c2ad 12-14,30-31,45-46,50-53,55-58,98-99,127-128,133-134,136
   h_36695e5767c2ad 60
 pawpaw/Modules/Stats/StatsViewController.swift
-  h_36695e5767c2ad 48-50,116,119,162-163,183-186
+  h_36695e5767c2ad 48-50,116,119,122,159,162-163,172,183-186
   h_36695e5767c2ad 81,108-109,118,129-130,134-135,200-202,216-218,220-222
 pawpaw/Common/HoldToConfirm.swift
   h_36695e5767c2ad 37-38,62-66,84,87-89
@@ -34,14 +34,14 @@ pawpaw/Modules/Stats/StatsViewController+Builders.swift
   h_36695e5767c2ad 73-74,139-140
   h_36695e5767c2ad 109-111
 pawpaw/Modules/Game/Playfield/CritterActions.swift
-  h_36695e5767c2ad 28-37,73-77,81-88,91-94,97-99,113-114,130-133,135-137,139-145,154-156,160-162,171-173,181-183,190
+  h_36695e5767c2ad 28-37,73-77,81-88,91-94,97-99,113-114,130-133,130,135-137,139-145,154-156,160-162,168,171-173,181-183,190,223
   h_36695e5767c2ad 46-49,115,191-192,208-210
 pawpaw/Common/SoundPlayer.swift
-  h_36695e5767c2ad 105-107,120-122
+  h_36695e5767c2ad 105-107,120-122,140
 pawpaw/Common/SeededGenerator.swift
   h_36695e5767c2ad 17,19-20
 pawpaw/Modules/Onboarding/OnboardingViewController.swift
-  h_36695e5767c2ad 8-11,38-41,55-59,85-87,110-124,132-135,169-184,186,191-193,205-208,211-214,216,218-223,234-236,238-241,244-247,254-261,263-266,280-283,289-292,298-301,316-318,320,340-342,348-353,361-368,374,389-397,403,411-412,421-426,429-434,450-453,465-468,545,551-552,564,570-572
+  h_36695e5767c2ad 8-11,11,38-41,55-59,85-87,110-124,132-135,169-184,186,191-193,205-208,211-214,216,218-223,234-236,238-241,244-247,254-261,263-266,280-283,289-292,298-301,316-318,320,340-342,348-353,361-368,374,389-397,403,411-412,421-426,429-434,450-453,465-468,545,551-552,564,570-572
   h_36695e5767c2ad 21-25,512-514,520-522,544,548-550,553,562-563,565,584-585,591-595
 pawpaw/AppDelegate.swift
   h_36695e5767c2ad 12-15,19-25
@@ -49,16 +49,16 @@ pawpaw/Common/Theme.swift
   h_36695e5767c2ad 40-43,47-49,59-61,108-109,136-137,144-146
   h_36695e5767c2ad 52-53
 pawpaw/Common/CachedBackgroundView.swift
-  h_36695e5767c2ad 70-75,80-81
+  h_36695e5767c2ad 63,70-75,80-81
   h_36695e5767c2ad 47-49,82
 pawpaw/Modules/Game/GamePresenter.swift
   h_36695e5767c2ad 108-109
 pawpaw/Modules/Onboarding/OnboardingPresenter.swift
   h_36695e5767c2ad 22-23,36
 pawpaw/Entities/CatProfile.swift
-  h_36695e5767c2ad 17-20
+  h_36695e5767c2ad 13,16,17-20,26,30,35,39,50,58
 pawpaw/Modules/Game/MovementPlanner.swift
-  h_36695e5767c2ad 32-33,57-58,69-71,79-80,91-97,138-140,144-145,153-161,165-168,259-260,263-266,290-292
+  h_36695e5767c2ad 32-33,57-58,69-71,79-80,91-97,138-140,144-145,153-161,165-168,198,259-260,263-266,288,290-292
   h_36695e5767c2ad 98,103-111,201-203,225-227,235-244
 pawpaw/Modules/Game/Playfield/CritterNode.swift
   s_2a803296ab2e1b::t_c88ef529520155 42-46,85,108
@@ -91,10 +91,10 @@ pawpaw/Modules/Home/HomeViewController.swift
 pawpaw/Modules/Home/HomeRouter.swift
   h_36695e5767c2ad 40-41,46-47
 pawpaw/Common/SettingsStorage.swift
-  h_36695e5767c2ad 35-36
+  h_36695e5767c2ad 35-36,69,79
   h_36695e5767c2ad 54-55
 pawpaw/Common/CatFacePicker.swift
-  h_36695e5767c2ad 31,101-105,119
+  h_36695e5767c2ad 31,37,44,101-105,119
   h_36695e5767c2ad 32,51-52,68,77-79
 pawpaw/Modules/Game/Playfield/PlayfieldGeometry.swift
   h_36695e5767c2ad 38-39,53-55,66-69,71-80,84-88
@@ -103,10 +103,10 @@ pawpaw/Modules/Profiles/ProfilesViewController.swift
 pawpaw/Entities/PlayStats.swift
   h_36695e5767c2ad 31-33,35-37
 pawpaw/Modules/Game/GameViewController+Layout.swift
-  h_36695e5767c2ad 35,51-52,74-76,113-116,119-120,123-126,168-169,173-175,193
+  h_36695e5767c2ad 35,51-52,74-76,113-116,119-120,119,123-126,168-169,173-175,193
   h_36695e5767c2ad 30-32,72-73,111-112,121-122
 pawpaw/Modules/Game/Playfield/PlayfieldTextures.swift
-  h_36695e5767c2ad 58-59,67-69,71,76-78,82-85,87-89,94-96,161,163-164,166
+  h_36695e5767c2ad 58-59,67-69,69,71,76-78,82-85,87-89,94-96,161,163-164,166
   h_36695e5767c2ad 70,118-121,123-125,136-137,151-153,162,165,178-180,182-188,204-206,208-210,215-221,223-224
 pawpaw/Modules/Game/Playfield/GameScene.swift
   s_2a803296ab2e1b::t_f10bf193796a84 97
@@ -119,7 +119,7 @@ pawpaw/Modules/Game/Playfield/GameScene.swift
 pawpaw/Modules/Profiles/ProfilesViewController+Builders.swift
   h_36695e5767c2ad 10-11,30-31,34-35,39-41,45-47,58-59,85-86
 pawpaw/Modules/Game/GameViewController+Countdown.swift
-  h_36695e5767c2ad 34,42-43,83-84,97-101,132
+  h_36695e5767c2ad 34,42-43,83-84,97-101,103,132
 pawpaw/Modules/Profiles/ProfileEditorView+Layout.swift
   h_36695e5767c2ad 28,44,73-74,78-79,92-93,98-99,101-104,107
 pawpaw/Modules/Stats/StatsPresenter.swift
@@ -129,6 +129,8 @@ pawpaw/Modules/Stats/StatsPresenter.swift
   h_36695e5767c2ad 1-75
 pawpaw/Modules/Game/GameViewController.swift
   h_36695e5767c2ad 112-113,267-268
+pawpaw/Modules/Game/GameViewController+Lure.swift
+  h_36695e5767c2ad 80
 ---
 {
   "schema_version": "authorship/3.0.0",
