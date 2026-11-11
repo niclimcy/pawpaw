@@ -8,6 +8,9 @@ import Foundation
 
 /// iPhone plays Pocket Hunt, tuned for the small screen; iPad keeps `standard`.
 struct PlayfieldTuning: Equatable {
+    /// Share of `hidingSpotSize`, from a spot's center, within which it hides a critter.
+    static let coverRadiusFraction: CGFloat = 0.3
+
     let targetSize: CGFloat
     let hidingSpotSize: CGFloat
     let maxActiveTargets: Int
@@ -61,6 +64,10 @@ struct PlayfieldTuning: Equatable {
         prefersLandscape: false,
         defaultMode: .short
     )
+
+    var coverRadius: CGFloat {
+        hidingSpotSize * Self.coverRadiusFraction
+    }
 
     var isPocket: Bool {
         self == .pocket

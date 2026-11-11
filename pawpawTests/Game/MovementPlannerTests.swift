@@ -39,8 +39,34 @@ final class MovementPlannerTests: XCTestCase {
             let spots = MovementPlanner.hidingSpots(count: 2)
             XCTAssertEqual(spots.count, 2)
             for spot in spots {
-                XCTAssertTrue((0.2...0.8).contains(spot.x) && (0.25...0.75).contains(spot.y))
+                XCTAssertTrue(
+                    MovementPlanner.hidingSpotXRange.contains(spot.x)
+                        && MovementPlanner.hidingSpotYRange.contains(spot.y))
             }
+        }
+    }
+
+    func testRandomEdgePointIsOnTheFieldEdge() {
+        for _ in 0..<plannerRuns {
+            let point = MovementPlanner.randomEdgePoint()
+            XCTAssertTrue(isInField(point), "\(point)")
+            XCTAssertTrue(isOnFieldEdge(point), "\(point)")
+        }
+    }
+
+    func testRandomEdgePointReachesEveryEdge() {
+        let points = (0..<plannerRuns).map { _ in MovementPlanner.randomEdgePoint() }
+        XCTAssertTrue(points.contains { $0.x == 0 })
+        XCTAssertTrue(points.contains { $0.x == 1 })
+        XCTAssertTrue(points.contains { $0.y == 0 })
+        XCTAssertTrue(points.contains { $0.y == 1 })
+    }
+
+    func testRandomInnerPointStaysInsideTheInnerRange() {
+        for _ in 0..<plannerRuns {
+            let point = MovementPlanner.randomInnerPoint()
+            XCTAssertTrue(MovementPlanner.innerRange.contains(point.x), "\(point)")
+            XCTAssertTrue(MovementPlanner.innerRange.contains(point.y), "\(point)")
         }
     }
 

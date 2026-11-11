@@ -9,6 +9,11 @@ import SpriteKit
 /// the path, then heading and startle hop (`turn`), twitches and sways (`jiggle`), wingbeats
 /// (`wings`), and body scale and opacity (`sprite`).
 final class CritterNode: SKNode {
+    /// How far a startled critter hops away from a missed tap, in points,
+    /// then how far it recoils back before settling where it started.
+    static let startleDistance: CGFloat = 46
+    static let startleRecoil: CGFloat = 8
+
     let sprite = SKSpriteNode()
     private let turn = SKNode()
     private let jiggle = SKNode()
@@ -55,14 +60,14 @@ final class CritterNode: SKNode {
         turn.zRotation = plan.heading
         run(.sequence([plan.path, .run(completion)]))
         if let heading = plan.turn { turn.run(heading) }
-        plan.jiggle.forEach { jiggle.run($0) }
-        plan.wings.forEach { wings.run($0) }
-        plan.body.forEach { sprite.run($0) }
+        for action in plan.jiggle { jiggle.run(action) }
+        for action in plan.wings { wings.run(action) }
+        for action in plan.body { sprite.run(action) }
     }
 
     func stop() {
         let parts: [SKNode] = [self, turn, jiggle, wings, sprite]
-        parts.forEach { $0.removeAllActions() }
+        for part in parts { part.removeAllActions() }
         // Open the wings, so the catch squash isn't distorted by a half-finished beat.
         wings.setScale(1)
     }
@@ -76,10 +81,12 @@ final class CritterNode: SKNode {
         let distance = max(hypot(center.x - location.x, center.y - location.y), 1)
         let dx = (center.x - location.x) / distance
         let dy = (center.y - location.y) / distance
+        let out = Self.startleDistance
+        let recoil = Self.startleRecoil
         let hop = SKAction.sequence([
-            .moveBy(x: dx * 46, y: dy * 46, duration: 0.105),
-            .moveBy(x: -dx * 8, y: -dy * 8, duration: 0.105),
-            .moveBy(x: -dx * 38, y: -dy * 38, duration: 0.14),
+            .moveBy(x: dx * out, y: dy * out, duration: 0.105),
+            .moveBy(x: -dx * recoil, y: -dy * recoil, duration: 0.105),
+            .moveBy(x: -dx * (out - recoil), y: -dy * (out - recoil), duration: 0.14),
         ])
         let squash = SKAction.sequence([
             .scale(to: 1.18, duration: 0.105), .scale(to: 1, duration: 0.245),

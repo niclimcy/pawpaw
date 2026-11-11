@@ -278,7 +278,9 @@ final class GameInteractor: GameInteractorInputProtocol {
         guard isPlaying, activeTargets.count < tuning.maxActiveTargets else { return }
         let kind = randomKind()
         let baseLifetime = tuning.lifetime(for: TimeInterval.random(in: kind.lifetimeRange))
-        let start = kind.movementStyle.surfaces ? randomInnerPoint() : randomEdgePoint()
+        let start =
+            kind.movementStyle.surfaces
+            ? MovementPlanner.randomInnerPoint() : MovementPlanner.randomEdgePoint()
         let target = GameTarget(
             id: UUID(),
             kind: kind,
@@ -342,16 +344,6 @@ final class GameInteractor: GameInteractorInputProtocol {
             roll -= kind.weight
         }
         return fallback
-    }
-
-    private func randomInnerPoint() -> CGPoint {
-        CGPoint(x: CGFloat.random(in: 0.2...0.8), y: CGFloat.random(in: 0.2...0.8))
-    }
-
-    private func randomEdgePoint() -> CGPoint {
-        let along = CGFloat.random(in: 0...1)
-        let edge: CGFloat = Bool.random() ? 0 : 1
-        return Bool.random() ? CGPoint(x: edge, y: along) : CGPoint(x: along, y: edge)
     }
 
     private func invalidateTimers() {

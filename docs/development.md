@@ -32,9 +32,21 @@ Run on an iPad simulator too, since `PlayfieldTuning.current` depends on the dev
 | Session lengths | `SessionMode.duration` |
 | Background colours | `PlayfieldTheme.baseColor` |
 | Max critters, hiding spots, sizes, hit areas, pace (iPad / iPhone) | `PlayfieldTuning.standard`, `.pocket` |
+| Practice field (onboarding) sizes, hit areas, pace | `PlayfieldTuning.onboarding` |
+| How much of a hiding spot hides a critter | `PlayfieldTuning.coverRadiusFraction` |
 | Spawn rate | `GameInteractor.spawnInterval` |
 | Points, lifetime, spawn odds | `TargetKind.swift` |
 | Look-change streak | `GameInteractor.habituationStreak`, `CritterVariant.swift` |
+| Pace range, speed-up and slow-down steps | `DifficultyTuner.paceRange`, `.catchStep`, `.escapeStep`, `.missStep` |
+| Per-critter path: legs, pause share, step length, turn angle, hide and cover chance, twitch size | `MovementStyle` in `MovementPath.swift` (`legCount`, `pauseFraction`, `distanceRange`, `turnRange`, `hideChance`, `coverChance`, `twitchAngle`, `twitchShift`) |
+| Hide trips, flight, cover pauses, lead-in, early take-off | `MovementPlanner.hideTravel`, `.minimumHidePause`, `.exitTravel`, `.flightTravel`, `.earlyFlightChance`, `.minimumCoverPause`, `.leadInRange` |
+| Hiding spot and surfacing-critter placement | `MovementPlanner.hidingSpotXRange`, `.hidingSpotYRange`, `.hidingSpotSpacing`, `.innerRange` |
+| Lure legs, freezes, cover chance, exit speed | `MovementPlanner.lureLegCount`, `.lurePauseFraction`, `.finalLurePauseFraction`, `.lureCoverChance`, `.lureExitTravel`, `.lureFadeOutTravel` |
+| Lure speed (seconds per leg) | `GameInteractor.lureLegDuration`, `.finalLureLegDuration` |
+| Lure start delay, idle timeout | `GameViewController.lureReadyDelay`, `.lureIdleTimeout` |
+| Rounds a catch can start in a row | `AfterRoundMode.roundLimit` |
+| Field padding, off-screen margin, head-nod reach, lure peek and cover depth | `PlayfieldGeometry.edgePadding`, `.offscreenMarginFraction`, `.nodReach`, `.lureCoverDepthFraction`, `.lurePeekReachFraction` |
+| Startle hop, trail ripple spacing | `CritterNode.startleDistance`, `.startleRecoil`, `GameScene.trailSpacing` |
 | Colours, hold time | `Theme.swift`, `Theme.holdDuration` |
 
 ## Art

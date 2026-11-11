@@ -9,6 +9,17 @@ import CoreGraphics
 /// The scene fills the screen so critters can run off any edge, but the field where they spawn,
 /// stop and hide sits `topInset` below the top, clear of the HUD.
 struct PlayfieldGeometry {
+    /// Points kept between a critter and the field edge, beyond half its size.
+    static let edgePadding: CGFloat = 8
+    /// Share of `targetSize` that critters run past the screen edge to be fully out of sight.
+    static let offscreenMarginFraction: CGFloat = 0.75
+    /// How far a head nod moves forward, in points.
+    static let nodReach: CGFloat = 10
+    /// Share of `targetSize` a critter is tucked under a card edge, at most.
+    static let lureCoverDepthFraction: CGFloat = 0.7
+    /// Share of `targetSize` past a card edge where a critter under it peeks out.
+    static let lurePeekReachFraction: CGFloat = 0.15
+
     var size: CGSize
     var topInset: CGFloat = 0
     var tuning: PlayfieldTuning = .standard
@@ -31,8 +42,16 @@ struct PlayfieldGeometry {
         CGRect(x: 0, y: 0, width: size.width, height: max(size.height - topInset, 0))
     }
 
+    private var fieldInset: CGFloat {
+        targetSize / 2 + Self.edgePadding
+    }
+
+    private var offscreenMargin: CGFloat {
+        targetSize * Self.offscreenMarginFraction
+    }
+
     func point(for normalized: CGPoint) -> CGPoint {
-        let inset = targetSize / 2 + 8
+        let inset = fieldInset
         let width = max(field.width - inset * 2, 0)
         let height = max(field.height - inset * 2, 0)
         return CGPoint(
@@ -41,7 +60,7 @@ struct PlayfieldGeometry {
 
     /// The inverse of `point(for:)`. Points outside the field map outside 0...1.
     func normalized(for point: CGPoint) -> CGPoint {
-        let inset = targetSize / 2 + 8
+        let inset = fieldInset
         let width = max(field.width - inset * 2, 1)
         let height = max(field.height - inset * 2, 1)
         return CGPoint(x: (point.x - inset) / width, y: (field.maxY - inset - point.y) / height)
@@ -50,16 +69,13 @@ struct PlayfieldGeometry {
     /// `rect` (scene points) as cover, with spots along each edge whose peek point is on the field.
     /// A spot hides a critter fully inside the edge, if the card is deep enough, and peeks it just past.
     func lureCover(for rect: CGRect) -> LureCover {
-        let corners = [CGPoint(x: rect.minX, y: rect.maxY), CGPoint(x: rect.maxX, y: rect.minY)]
-            .map(
-                normalized(for:))
         let frame = CGRect(
-            x: min(corners[0].x, corners[1].x), y: min(corners[0].y, corners[1].y),
-            width: abs(corners[1].x - corners[0].x), height: abs(corners[1].y - corners[0].y)
-        )
-        let depthX = min(targetSize * 0.7, rect.width / 2)
-        let depthY = min(targetSize * 0.7, rect.height / 2)
-        let reach = targetSize * 0.15
+            spanning: normalized(for: CGPoint(x: rect.minX, y: rect.maxY)),
+            and: normalized(for: CGPoint(x: rect.maxX, y: rect.minY)))
+        let depth = targetSize * Self.lureCoverDepthFraction
+        let depthX = min(depth, rect.width / 2)
+        let depthY = min(depth, rect.height / 2)
+        let reach = targetSize * Self.lurePeekReachFraction
         var spots: [(hide: CGPoint, peek: CGPoint)] = []
         for fraction in [0.25, 0.75] as [CGFloat] {
             let x = rect.minX + rect.width * fraction
@@ -93,7 +109,7 @@ struct PlayfieldGeometry {
     /// Like `point(for:)`, but border points are pushed fully off-screen, past the HUD at the top.
     func offscreenPoint(for normalized: CGPoint) -> CGPoint {
         var result = point(for: normalized)
-        let margin = targetSize * 0.75
+        let margin = offscreenMargin
         if normalized.x <= 0 { result.x = -margin }
         if normalized.x >= 1 { result.x = size.width + margin }
         if normalized.y <= 0 { result.y = size.height + margin }
@@ -103,7 +119,7 @@ struct PlayfieldGeometry {
 
     /// Picks the field edge nearest `point`, then runs past the screen edge on that side.
     func hideEdgePoint(from point: CGPoint) -> CGPoint {
-        let margin = targetSize * 0.75
+        let margin = offscreenMargin
         let gaps = [point.x, size.width - point.x, point.y, field.maxY - point.y]
         switch gaps.firstIndex(of: gaps.min() ?? 0) {
         case 0: return CGPoint(x: -margin, y: point.y)
@@ -124,7 +140,7 @@ struct PlayfieldGeometry {
         let dx = point.x - previous.x
         let dy = point.y - previous.y
         let length = max(hypot(dx, dy), 1)
-        let reach: CGFloat = 10
+        let reach = Self.nodReach
         return CGPoint(x: point.x + dx / length * reach, y: point.y + dy / length * reach)
     }
 
@@ -133,5 +149,14 @@ struct PlayfieldGeometry {
         guard size.width > 0 else { return 0 }
         let normalized = min(max(x / size.width, 0), 1) * 2 - 1
         return Float(normalized) * 0.8
+    }
+}
+
+extension CGRect {
+    /// The smallest rect with `first` and `second` as opposite corners, in either order.
+    init(spanning first: CGPoint, and second: CGPoint) {
+        self.init(
+            x: min(first.x, second.x), y: min(first.y, second.y),
+            width: abs(second.x - first.x), height: abs(second.y - first.y))
     }
 }

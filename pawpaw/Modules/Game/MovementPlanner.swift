@@ -20,6 +20,13 @@ enum MovementPlanner {
     /// Edge critters wait off-screen this long while their sound plays, then run in.
     static let leadInRange: ClosedRange<TimeInterval> = 0.5...0.8
 
+    /// Where hiding spots are placed, and how far apart they must be, when there's room.
+    static let hidingSpotXRange: ClosedRange<CGFloat> = 0.2...0.8
+    static let hidingSpotYRange: ClosedRange<CGFloat> = 0.25...0.75
+    static let hidingSpotSpacing: CGFloat = 0.35
+    /// Where critters that surface in place appear.
+    static let innerRange: ClosedRange<CGFloat> = 0.2...0.8
+
     static func leadIn(for style: MovementStyle) -> TimeInterval {
         style.surfaces ? 0 : TimeInterval.random(in: leadInRange)
     }
@@ -30,11 +37,23 @@ enum MovementPlanner {
         while spots.count < count, attempts < 50 {
             attempts += 1
             let candidate = CGPoint(
-                x: CGFloat.random(in: 0.2...0.8), y: CGFloat.random(in: 0.25...0.75))
-            let isClear = spots.allSatisfy { hypot($0.x - candidate.x, $0.y - candidate.y) >= 0.35 }
+                x: CGFloat.random(in: hidingSpotXRange), y: CGFloat.random(in: hidingSpotYRange))
+            let isClear = spots.allSatisfy {
+                hypot($0.x - candidate.x, $0.y - candidate.y) >= hidingSpotSpacing
+            }
             if isClear || attempts == 50 { spots.append(candidate) }
         }
         return spots
+    }
+
+    static func randomInnerPoint() -> CGPoint {
+        CGPoint(x: CGFloat.random(in: innerRange), y: CGFloat.random(in: innerRange))
+    }
+
+    static func randomEdgePoint() -> CGPoint {
+        let along = CGFloat.random(in: 0...1)
+        let edge: CGFloat = Bool.random() ? 0 : 1
+        return Bool.random() ? CGPoint(x: edge, y: along) : CGPoint(x: along, y: edge)
     }
 
     static func legs(
@@ -100,15 +119,7 @@ enum MovementPlanner {
         }
         // Surfacing critters fade out in place, fliers fly off and everything else exits via the nearest edge.
         if style.surfaces { return legs }
-        legs.append(
-            PathLeg(
-                destination: style.fliesOff
-                    ? flightEdgePoint(from: current) : nearestEdgePoint(to: current),
-                travel: style.fliesOff ? flightTravel : exitTravel,
-                pause: 0,
-                hides: false,
-                exits: true
-            ))
+        legs.append(exitLeg(from: current, style: style, walkTravel: exitTravel))
         return legs
     }
 
@@ -119,6 +130,10 @@ enum MovementPlanner {
     static let lurePauseFraction = 0.35
     static let finalLurePauseFraction = 0.5
     static let lureCoverChance = 0.6
+    /// A wandering-off lure takes this much longer to leave than a round's critter.
+    static let lureExitTravel: TimeInterval = exitTravel * 1.5
+    /// Surfacing critters fade out in this time when the lure leaves.
+    static let lureFadeOutTravel: TimeInterval = 1.2
     /// Normalized gap kept around the card when choosing open stops.
     private static let lureCoverMargin: CGFloat = 0.04
     private static let lureField = CGRect(x: 0.05, y: 0.05, width: 0.9, height: 0.9)
@@ -230,18 +245,23 @@ enum MovementPlanner {
     /// The lure wandering off when nobody has caught it for a while; surfacing critters fade out in place.
     static func lureExitLegs(from point: CGPoint, style: MovementStyle) -> [PathLeg] {
         if style.surfaces {
-            return [PathLeg(destination: point, travel: 1.2, pause: 0, hides: false)]
+            return [PathLeg(destination: point, travel: lureFadeOutTravel, pause: 0, hides: false)]
         }
-        return [
-            PathLeg(
-                destination: style.fliesOff
-                    ? flightEdgePoint(from: point) : nearestEdgePoint(to: point),
-                travel: style.fliesOff ? flightTravel : exitTravel * 1.5,
-                pause: 0,
-                hides: false,
-                exits: true
-            )
-        ]
+        return [exitLeg(from: point, style: style, walkTravel: lureExitTravel)]
+    }
+
+    /// Fliers take off across the field; everything else takes `walkTravel` to reach the nearest edge.
+    private static func exitLeg(from point: CGPoint, style: MovementStyle, walkTravel: TimeInterval)
+        -> PathLeg
+    {
+        PathLeg(
+            destination: style.fliesOff
+                ? flightEdgePoint(from: point) : nearestEdgePoint(to: point),
+            travel: style.fliesOff ? flightTravel : walkTravel,
+            pause: 0,
+            hides: false,
+            exits: true
+        )
     }
 
     private static func nearestEdgePoint(to point: CGPoint) -> CGPoint {
