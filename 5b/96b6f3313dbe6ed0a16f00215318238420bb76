@@ -1,0 +1,117 @@
+pawpawTests/Common/AdaptiveLayoutTests.swift
+  s_990834d5d5d66f::t_d83319a97697ba 32-33,35-37,40-41,44-45,47-49,51
+  s_990834d5d5d66f::t_b7ae1fa3b333cf 54-67
+  s_990834d5d5d66f::t_2fc9b49e616eb0 31,34,38-39,42-43,46,50
+  s_990834d5d5d66f::t_bc19179ebc12f3 1-30,52-53,68-84
+pawpaw/Common/SoundPlayer.swift
+  s_cf677ac6585044::t_c060f93bfc02c3 8,24,26-27,32-34,37-38,42,44-45,51,81,115
+  s_3bc4f6c5aed8de::t_911cc35e831534 35-36
+  s_cf677ac6585044::t_2087a8726884f2 116-117
+pawpaw/Modules/Stats/StatsViewController.swift
+  s_cf677ac6585044::t_efa4e789c30952 28-34,99-101,104,143
+  s_3bc4f6c5aed8de::t_911cc35e831534 133,142
+  s_990834d5d5d66f::t_9a629adeab5744 21-22,56-59,135
+pawpaw/Modules/Game/GameViewController.swift
+  s_990834d5d5d66f::t_c97a4073af6cbc 107-111,113,117,126,140
+  s_990834d5d5d66f::t_19ddcd8b51590e 130-132,145-147
+pawpaw/Common/HoldToConfirm.swift
+  s_cf677ac6585044::t_d008a73ee46634 123
+pawpaw/Modules/Game/Playfield/PlayfieldGeometry.swift
+  s_990834d5d5d66f::t_3c842ac980c280 40-41
+pawpaw/Modules/Home/ThemePickerView.swift
+  s_990834d5d5d66f::t_f7cf73d3e464ab 12,21-23,49-56,86
+  s_990834d5d5d66f::t_8280efa9b0f007 126-129
+pawpaw/AppDelegate.swift
+  s_cf677ac6585044::t_c060f93bfc02c3 16-18
+pawpaw/Common/Theme.swift
+  s_990834d5d5d66f::t_f7cf73d3e464ab 78,80-81
+  s_990834d5d5d66f::t_c1003640a553a2 65-66,76-77,79,82-85
+  s_990834d5d5d66f::t_64d5e2c06b7230 47-48,50-58
+pawpawTests/Game/PlayfieldGeometryTests.swift
+  s_990834d5d5d66f::t_a7529b5f648366 36-48
+  s_990834d5d5d66f::t_b9abef7f447314 49-50
+pawpaw/Modules/Onboarding/OnboardingCountdownView.swift
+  s_990834d5d5d66f::t_dcd1f54ace1ecb 38,53,59
+  s_990834d5d5d66f::t_2fc9b49e616eb0 39,41
+  s_990834d5d5d66f::t_d83319a97697ba 18-37,40,42-52,58,115,129,135-136,174
+pawpaw/Info.plist
+  s_cf677ac6585044::t_acc456abd3247a 9-10
+pawpaw/Modules/Home/HomeViewController.swift
+  s_3bc4f6c5aed8de::t_911cc35e831534 18,257,357
+  s_cf677ac6585044::t_41a73dc35d0f71 50-55,85-91,101,104-116,207,251-254,355-356,375-381
+  s_990834d5d5d66f::t_fac7ae770033bb 16-17,19,261,274,311-312,315-316,335,358-363,365-367,372-374,404-412,414,419-420,435,465-466,471-473,487,512
+  s_990834d5d5d66f::t_7e0be96519d992 96-97,103,166-167,305,640-642
+  s_990834d5d5d66f::t_fb84e164a0dc46 325-327,339-341,343-344,347-354
+  s_990834d5d5d66f::t_e36b13218af45e 135-136
+  s_990834d5d5d66f::t_061b1385d14a67 500-506
+  s_990834d5d5d66f::t_284d77619169f1 510-511,515
+  s_990834d5d5d66f::t_08933bcb3e4619 23-26,49,318-320,440-441,443-460,464,514
+  s_990834d5d5d66f::t_6d32654869fdf1 159,161-165,263,278,281-288,295,297-304,313-314,317,521,523,550-557,612,623,639
+  s_cf677ac6585044::t_376e8a51cba76f 117
+  s_990834d5d5d66f::t_5014712a716254 262
+  s_990834d5d5d66f::t_05e9cb2a0d3ca4 264-266,271-273
+  s_990834d5d5d66f::t_80bac97ae7a8d4 275-277
+  s_990834d5d5d66f::t_d2094aa18f2216 279
+  s_990834d5d5d66f::t_20553da6ef26ed 323-324
+  s_990834d5d5d66f::t_51d8b0dd1c54d6 328-330,332-334
+  s_990834d5d5d66f::t_045cbf93c9c675 336-338
+  s_990834d5d5d66f::t_dad9aaf402af33 342
+  s_990834d5d5d66f::t_b5e35d6d51b009 345-346
+  s_990834d5d5d66f::t_d51ae983550889 364
+  s_990834d5d5d66f::t_820e32f864ea35 368-371
+  s_990834d5d5d66f::t_ea3a101da43371 484-486
+  s_990834d5d5d66f::t_034537c29e45cb 497-499
+  s_990834d5d5d66f::t_1eb3e63f7a8015 643
+pawpaw/Modules/Home/HomeRouter.swift
+  s_cf677ac6585044::t_acc456abd3247a 27
+pawpaw/Common/Log.swift
+  s_990834d5d5d66f::t_19ddcd8b51590e 13-14,24-27
+  s_990834d5d5d66f::t_6079b19d30a6e8 9-10
+  s_990834d5d5d66f::t_9f06904a79d116 28
+pawpaw/Modules/Onboarding/OnboardingViewController.swift
+  s_990834d5d5d66f::t_2fc9b49e616eb0 298-300
+  s_990834d5d5d66f::t_dcd1f54ace1ecb 301
+  s_cf677ac6585044::t_d008a73ee46634 231-233
+  s_990834d5d5d66f::t_d83319a97697ba 297
+pawpaw/Common/OrientationNavigationController.swift
+  s_990834d5d5d66f::t_2fc9b49e616eb0 9-15,17,29-31,35,38-47
+  s_cf677ac6585044::t_83b66077e368bd 74-75,84
+  s_3bc4f6c5aed8de::t_911cc35e831534 70
+  s_cf677ac6585044::t_75172de9b14bbf 82
+  s_990834d5d5d66f::t_1716ac190e7068 62-65,71-73
+  s_cf677ac6585044::t_14bd5d069ae4bd 76-81
+  s_cf677ac6585044::t_441acbd3001c56 83
+  s_cf677ac6585044::t_9a0d4cd97b2f68 85
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5b96b6f3313dbe6ed0a16f00215318238420bb76",
+  "prompts": {},
+  "sessions": {
+    "s_3bc4f6c5aed8de": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "e15b577b-ace2-402c-a51e-f4b3ac3f8f6b",
+        "model": "openrouter/OpenRouter/anthropic/claude-opus-5.5"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    },
+    "s_990834d5d5d66f": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "f61b268c-c2ee-4174-a84f-3540cb252747",
+        "model": "openrouter/OpenRouter/anthropic/claude-opus-5.5"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    },
+    "s_cf677ac6585044": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "f083b52d-2212-4240-b110-7ae0fbed1672",
+        "model": "anthropic/claude-opus-5.5"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
