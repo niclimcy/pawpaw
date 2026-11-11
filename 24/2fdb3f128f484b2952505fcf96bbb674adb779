@@ -1,0 +1,40 @@
+pawpaw/Modules/Onboarding/OnboardingInteractor.swift
+  s_b359d30ef86d55::t_1da834cdd44b40 33-56
+  s_b359d30ef86d55::t_882e64d6420c47 6
+pawpaw/Modules/Onboarding/OnboardingPlayfieldView.swift
+  s_b359d30ef86d55::t_243607f0020eef 12,99-101
+pawpaw/Modules/Onboarding/OnboardingProtocols.swift
+  s_b359d30ef86d55::t_539de252251590 86
+pawpaw/Modules/Onboarding/OnboardingViewController.swift
+  s_b359d30ef86d55::t_c9a8f03acf46df 33-34,64,73,126,447-455,461,484,507,513,516-529,559,563,569,585,588-589,591-593,596,604,610
+pawpaw/Modules/Onboarding/OnboardingHoldPracticeView.swift
+  s_b359d30ef86d55::t_8dba518d62e776 82-84
+  s_b359d30ef86d55::t_a56e4e89ef4b1f 85-86
+pawpaw/Modules/Onboarding/OnboardingViewController+Practice.swift
+  s_b359d30ef86d55::t_dd17873832b7c9 22
+pawpawTests/Onboarding/OnboardingTests.swift
+  s_b359d30ef86d55::t_b0243930312b13 28-39,71,73,75-93,99,102,104-109,115,125-132,134-137,144,154-160,162-164,172,177-178,183-189,223-231,288,292
+pawpaw/Modules/Onboarding/OnboardingPresenter.swift
+  s_b359d30ef86d55::t_29474db32d6697 55-71,87,90,92,96,102-106,116-119,124-127,130-131,136-140,161-162,167-180,182-184,186,188,192-215
+  s_b359d30ef86d55::t_539de252251590 135
+pawpawTests/Support/StatsOnboardingSpies.swift
+  s_b359d30ef86d55::t_7a350719727494 55,57,59,61,66,68-69,74-75,78,90,94-97
+docs/architecture.md
+  s_b359d30ef86d55::t_d28508c861e821 13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "242fdb3f128f484b2952505fcf96bbb674adb779",
+  "prompts": {},
+  "sessions": {
+    "s_b359d30ef86d55": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "19401578-0270-4f2e-b94e-681a05db9422",
+        "model": "openrouter/OpenRouter/anthropic/claude-opus-5.5"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
