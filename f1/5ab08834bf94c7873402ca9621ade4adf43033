@@ -1,0 +1,91 @@
+pawpaw/Modules/Profiles/ProfileEditorView+Builders.swift
+  s_41017b76e092a9::t_ab6239ef6bac5e 101
+pawpaw/Modules/Onboarding/OnboardingViewController.swift
+  s_41017b76e092a9::t_9ea7689fb57ce8 234-238,612
+pawpaw/Modules/Home/ThemePickerView.swift
+  s_41017b76e092a9::t_26311eed699994 57,61-71,89-90,101,109-110,135-137
+docs/game-design.md
+  s_41017b76e092a9::t_ec4bfe740ce829 60-62,72-75
+  s_41017b76e092a9::t_40df365f7aef19 69-71
+pawpaw/Modules/Game/GameViewController.swift
+  s_41017b76e092a9::t_02a995ec567ce3 10-12,23,33-35,46-48,74-75,109-118,256-257,259,261,268
+  s_41017b76e092a9::t_e1ebc7ce8a12ae 24-29,32,45,258
+pawpaw/Common/Theme.swift
+  s_41017b76e092a9::t_e1ebc7ce8a12ae 71-73,78
+  s_41017b76e092a9::t_c9ff0313cd8763 15-16,44-45
+pawpaw/Modules/Stats/StatsViewController+Builders.swift
+  s_41017b76e092a9::t_a0f2091f73cc00 52-54,127-129,158
+  s_41017b76e092a9::t_7bd6ac20a6409a 105,136
+pawpaw/Modules/Stats/StatsViewController.swift
+  s_41017b76e092a9::t_a0f2091f73cc00 9-11,137-140,188-192,246-248,259-262,314,325
+pawpaw/Modules/Game/Playfield/GameScene.swift
+  s_41017b76e092a9::t_49bfd5aa1c45bd 401
+pawpaw/Entities/PlayfieldTuning.swift
+  s_41017b76e092a9::t_49bfd5aa1c45bd 76-80
+pawpawTests/Common/ThemeContrastTests.swift
+  s_41017b76e092a9::t_1752ffb65fee76 1-63
+  s_41017b76e092a9::t_d08bc530d7f2d1 64-66
+pawpaw/Modules/Game/Playfield/CritterNode.swift
+  s_41017b76e092a9::t_18cfa58fb76c50 94-96
+  s_41017b76e092a9::t_49bfd5aa1c45bd 77,92-93
+  s_41017b76e092a9::t_fc592de644ab97 7
+site/index.html
+  s_41017b76e092a9::t_40df365f7aef19 222
+docs/app-store/description.md
+  s_41017b76e092a9::t_ec4bfe740ce829 46
+pawpaw/Modules/Profiles/ProfileEditorView.swift
+  s_41017b76e092a9::t_ab6239ef6bac5e 9-11,78-79,84,91,106,109-111
+pawpaw/Common/UIView+Shake.swift
+  s_41017b76e092a9::t_6bb94fc11e3e88 1-17
+site/404.html
+  s_41017b76e092a9::t_40df365f7aef19 21
+pawpaw/Modules/Game/Playfield/GameScene+Effects.swift
+  s_41017b76e092a9::t_49bfd5aa1c45bd 32-36,38,42-45,66,71,79,82,92,94,111-120,138-145,156
+  s_41017b76e092a9::t_2679b1b6f6c8ad 157-159
+pawpaw/Common/HoldToConfirm.swift
+  s_41017b76e092a9::t_c9ff0313cd8763 14-16,25-27,79,97-106
+  s_41017b76e092a9::t_0332ca7662b3a1 107
+pawpaw/Modules/Home/HomeViewController.swift
+  s_41017b76e092a9::t_80547b6d987f15 40,161,184,209-210
+pawpaw/Modules/Game/GameViewController+Layout.swift
+  s_41017b76e092a9::t_e1ebc7ce8a12ae 68,118-119
+  s_41017b76e092a9::t_c17d442dbe352c 18-23,30,60-63,67,69-70,89,98-100,145-147
+site/privacy.html
+  s_41017b76e092a9::t_40df365f7aef19 84
+pawpaw/Modules/Onboarding/OnboardingHoldPracticeView.swift
+  s_41017b76e092a9::t_9ea7689fb57ce8 21-23,69,72,138-140
+site/accessibility.html
+  s_41017b76e092a9::t_ec4bfe740ce829 32-33,94-95,97
+  s_41017b76e092a9::t_40df365f7aef19 76
+  s_41017b76e092a9::t_b5b870ca7e5d13 53,75
+  s_41017b76e092a9::t_5ebee957bb0308 1-31,34-52,54-74,77-93,96,98-117
+site/support.html
+  s_41017b76e092a9::t_40df365f7aef19 142
+pawpawTests/Game/GameAccessibilityTests.swift
+  s_41017b76e092a9::t_e1ebc7ce8a12ae 72-79
+  s_41017b76e092a9::t_05ba452877cc37 1-64,80-129
+  s_41017b76e092a9::t_5b7855753b85f3 65-71
+pawpawTests/Home/ThemePickerAccessibilityTests.swift
+  s_41017b76e092a9::t_605540ff2e0429 27,29-31
+  s_41017b76e092a9::t_c5eb5bb0c70092 1-26,28,32-61
+pawpawTests/Profiles/ProfileEditorAccessibilityTests.swift
+  s_41017b76e092a9::t_3527dfc102e287 1-44
+pawpawTests/Stats/StatsAccessibilityTests.swift
+  s_41017b76e092a9::t_5dcaa600476564 1-30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f15ab08834bf94c7873402ca9621ade4adf43033",
+  "prompts": {},
+  "sessions": {
+    "s_41017b76e092a9": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "b9ff1626-12de-4534-b942-f328cb62e774",
+        "model": "openrouter/OpenRouter/anthropic/claude-opus-5.5"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
