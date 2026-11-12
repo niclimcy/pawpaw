@@ -1,0 +1,21 @@
+pawpaw/Common/SoundPlayer.swift
+  s_54205842ce41c1::t_840f421516a223 53
+  s_54205842ce41c1::t_5b2c655db6c6bb 27,30,35
+  s_54205842ce41c1::t_587ed54a8a73d9 54-87
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "25d41d36ef13224277910ebd396c403c07f453f0",
+  "prompts": {},
+  "sessions": {
+    "s_54205842ce41c1": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "f519c8db-e961-4182-a689-adca25981df1",
+        "model": "anthropic/claude-opus-5.5"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
