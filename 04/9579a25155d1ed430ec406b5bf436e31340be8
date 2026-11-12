@@ -1,0 +1,30 @@
+site/styles.css
+  s_728e3f0ed6e356::t_553d9ca548497b 181-189,191-193,195-201,272-273
+  s_728e3f0ed6e356::t_4f5a5d3382fa9e 174-177,180,202-203,268-270
+  s_728e3f0ed6e356::t_b27dc3955558bd 178-179
+  s_728e3f0ed6e356::t_00f4ef9a4a83dd 194,271
+  s_728e3f0ed6e356::t_363500ab1722a0 190
+  s_728e3f0ed6e356::t_ccc6354df71f5d 51
+site/index.html
+  s_728e3f0ed6e356::t_ce4dcdd0c9229a 82
+  s_728e3f0ed6e356::t_4f5a5d3382fa9e 27,68-74,80-81,84-89,228-236,240-251
+  s_728e3f0ed6e356::t_2c1201242a54c0 79,83
+  s_728e3f0ed6e356::t_553d9ca548497b 75,78,237-239
+  s_728e3f0ed6e356::t_00f4ef9a4a83dd 76-77
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "049579a25155d1ed430ec406b5bf436e31340be8",
+  "prompts": {},
+  "sessions": {
+    "s_728e3f0ed6e356": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "93670230-404e-4f2f-bde9-d6ad5dc8df76",
+        "model": "openrouter/OpenRouter/anthropic/claude-opus-5.5"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
