@@ -7,6 +7,9 @@ import SpriteKit
 import UIKit
 
 final class GameViewController: UIViewController, GameViewProtocol {
+    // TODO: To remove after swift bug is resolved.
+    nonisolated deinit {}
+
     var presenter: GamePresenterProtocol?
     var theme: PlayfieldTheme = .wood
     var tuning: PlayfieldTuning = .standard
@@ -17,9 +20,19 @@ final class GameViewController: UIViewController, GameViewProtocol {
     /// The part of `gameArea` below the HUD.
     let playfieldGuide = UILayoutGuide()
 
+    private static let hudFontSize: CGFloat = 24
+    /// The HUD is for owners; growing it would shrink the cat's field. The results card shows
+    /// the same score at full text size.
+    private static func hudFont() -> UIFont {
+        Theme.roundedFont(size: hudFontSize, maxScale: 1.25)
+    }
+
     let scoreLabel: UILabel = {
         let label = UILabel()
-        label.font = Theme.roundedFont(size: 24)
+        label.font = GameViewController.hudFont()
+        label.adjustsFontForContentSizeCategory = true
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.5
         label.textColor = Theme.text
         label.text = "Score: 0"
         return label
@@ -29,7 +42,10 @@ final class GameViewController: UIViewController, GameViewProtocol {
 
     let timeLabel: UILabel = {
         let label = UILabel()
-        label.font = Theme.roundedFont(size: 24)
+        label.font = GameViewController.hudFont()
+        label.adjustsFontForContentSizeCategory = true
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.5
         label.textColor = Theme.text
         label.textAlignment = .right
         // Empty until the round starts; `showTime` adds the timer icon.
@@ -55,6 +71,8 @@ final class GameViewController: UIViewController, GameViewProtocol {
     private var hasStarted = false
     private(set) var isShowingResult = false
     private var disabledPopGestures: [UIGestureRecognizer] = []
+    /// Kept to rebuild the timer icon, which doesn't follow text size changes by itself.
+    private var shownTime: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -86,6 +104,16 @@ final class GameViewController: UIViewController, GameViewProtocol {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         updatePlayfieldInset()
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        guard
+            traitCollection.preferredContentSizeCategory
+                != previousTraitCollection?.preferredContentSizeCategory,
+            let shownTime
+        else { return }
+        showTime(shownTime)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -225,14 +253,19 @@ final class GameViewController: UIViewController, GameViewProtocol {
     }
 
     func showTime(_ text: String) {
+        shownTime = text
+        // A fresh font, since the label's may still be the old size mid trait change.
+        let font = Self.hudFont()
+        timeLabel.font = font
         timeLabel.attributedText = Theme.symbolText(
-            Self.timerSymbol, text, font: timeLabel.font, color: timeLabel.textColor
+            Self.timerSymbol, text, font: font, color: timeLabel.textColor
         )
         timeLabel.accessibilityLabel = "Time: \(text)"
     }
 
     /// Hides the timer until the next round starts counting down.
     func clearTime() {
+        shownTime = nil
         timeLabel.attributedText = nil
         timeLabel.accessibilityLabel = nil
     }

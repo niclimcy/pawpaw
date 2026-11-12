@@ -6,6 +6,9 @@
 import UIKit
 
 final class ProfileEditorView: UIView, UITextFieldDelegate {
+    // TODO: To remove after swift bug is resolved.
+    nonisolated deinit {}
+
     var onSave: ((String, CatFace) -> Void)?
     var onCancel: (() -> Void)?
     var onDelete: (() -> Void)?
@@ -72,19 +75,20 @@ final class ProfileEditorView: UIView, UITextFieldDelegate {
             button.backgroundColor =
                 isOn ? Theme.selectedChoiceFill : Theme.unselectedChoiceFill
             button.accessibilityValue = isOn ? "On" : "Off"
-            button.accessibilityTraits = isOn ? [.button, .selected] : .button
+            // Just `.button`: `.selected` would make VoiceOver say the state twice.
+            button.accessibilityTraits = .button
         }
     }
 
     func showCritterRefused(_ kind: TargetKind, hint: String) {
-        shake(critterButtons[kind])
+        critterButtons[kind]?.shakeHorizontally()
         critterHintLabel.text = hint
         critterHintLabel.isHidden = false
         UIAccessibility.post(notification: .announcement, argument: hint)
     }
 
     func showNameRequired() {
-        shake(nameField)
+        nameField.shakeHorizontally()
         nameField.becomeFirstResponder()
     }
 
@@ -99,15 +103,12 @@ final class ProfileEditorView: UIView, UITextFieldDelegate {
 
     @objc func deleteHeld(_ gesture: UILongPressGestureRecognizer) {
         guard gesture.state == .began else { return }
-        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        onDelete?()
+        confirmDelete()
     }
 
-    private func shake(_ view: UIView?) {
-        let shake = CAKeyframeAnimation(keyPath: "transform.translation.x")
-        shake.values = [0, -8, 8, -5, 5, 0]
-        shake.duration = 0.3
-        view?.layer.add(shake, forKey: "shake")
+    func confirmDelete() {
+        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        onDelete?()
     }
 
     // MARK: UITextFieldDelegate

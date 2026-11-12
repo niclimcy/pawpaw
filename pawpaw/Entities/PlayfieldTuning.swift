@@ -73,6 +73,11 @@ struct PlayfieldTuning: Equatable {
         self == .pocket
     }
 
+    /// The game itself is for the cat; only onboarding's practice field is played by the owner.
+    var isPlayedByOwner: Bool {
+        self == .onboarding
+    }
+
     func lifetime(for base: TimeInterval) -> TimeInterval {
         base / pace
     }

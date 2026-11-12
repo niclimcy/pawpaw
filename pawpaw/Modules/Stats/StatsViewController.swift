@@ -6,6 +6,9 @@
 import UIKit
 
 final class StatsViewController: UIViewController, StatsViewProtocol {
+    // TODO: To remove after swift bug is resolved.
+    nonisolated deinit {}
+
     var presenter: StatsPresenterProtocol?
 
     private let titleLabel = Theme.makeLabel(size: 34)
@@ -131,6 +134,10 @@ final class StatsViewController: UIViewController, StatsViewProtocol {
         sectionBreaks = [summaryRow, daysStack, leftColumn, columnDivider] + dividers
         content.translatesAutoresizingMaskIntoConstraints = false
         card.addSubview(content)
+        // Critter counts and day bars stay small by design, so a long press shows them enlarged.
+        for stack in [crittersStack, daysStack] {
+            stack.addInteraction(UILargeContentViewerInteraction())
+        }
 
         topRoom.isAccessibilityElement = false
         topRoomHeight.isActive = true
@@ -178,6 +185,11 @@ final class StatsViewController: UIViewController, StatsViewProtocol {
         stackedDivider?.isActive = !isWide
         for constraint in sideBySideDivider { constraint.isActive = isWide }
         pageMaxWidth?.isActive = !isWide
+        // Three tiles abreast leave too little width for accessibility text sizes.
+        let stacksTiles = traitCollection.preferredContentSizeCategory.isAccessibilityCategory
+        for row in [summaryRow, bestScoresRow] {
+            row.axis = stacksTiles ? .vertical : .horizontal
+        }
         titleLabel.font = Theme.roundedFont(size: compact ? 28 : 34, weight: .heavy)
 
         page.spacing = compact ? 10 : 16
@@ -231,6 +243,9 @@ extension StatsViewController {
         button.accessibilityIdentifier = "statsResetButton"
         button.accessibilityHint = "Press and hold to erase all play statistics"
         button.addHoldToConfirm(self, action: #selector(resetHeld(_:)))
+        button.setHoldAccessibilityAction("Reset stats") { [weak self] in
+            self?.confirmReset()
+        }
         return button
     }
 
@@ -241,6 +256,10 @@ extension StatsViewController {
     @objc private func resetHeld(_ gesture: UILongPressGestureRecognizer) {
         guard gesture.state == .began else { return }
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        confirmReset()
+    }
+
+    private func confirmReset() {
         let alert = UIAlertController(
             title: "Reset stats?",
             message: "This erases all rounds, catches and play history. Best scores are kept.",
@@ -292,6 +311,7 @@ extension StatsViewController {
                     imageName: critter.imageName, catches: critter.catches, isEmpty: critter.isEmpty
                 )
                 tile.accessibilityLabel = critter.accessibilityLabel
+                tile.largeContentTitle = critter.accessibilityLabel
                 row.addArrangedSubview(tile)
             }
             crittersStack.addArrangedSubview(row)
@@ -302,6 +322,7 @@ extension StatsViewController {
         for day in viewModel.days {
             let bar = Self.makeBar(label: day.label, rounds: day.rounds, maxRounds: maxRounds)
             bar.accessibilityLabel = day.accessibilityLabel
+            bar.largeContentTitle = day.accessibilityLabel
             daysStack.addArrangedSubview(bar)
         }
         measureFitOnNextLayout()

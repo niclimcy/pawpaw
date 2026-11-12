@@ -43,6 +43,7 @@ MADE FOR OWNERS TOO
 • Rounds pause when you're interrupted, and the screen stays awake while your cat plays
 • A profile for every cat, with a name, a face (orange tabby, gray tabby, black, white, calico or Siamese) and its own list of critters
 • Stats for each cat: rounds, catches, catches by critter, rounds in the last 7 days, favorite catch and best scores
+• Menus work with VoiceOver, Voice Control, Larger Text and Reduce Motion
 
 PRIVATE BY DESIGN
 No ads, no accounts, no in-app purchases and no tracking. pawpaw works offline, and everything stays on your device.

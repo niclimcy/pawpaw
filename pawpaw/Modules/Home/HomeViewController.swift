@@ -37,7 +37,7 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
     private let titleLabel: UILabel = {
         let label = Theme.makeLabel(size: 48)
         label.text = "Paw Paw"
-        label.numberOfLines = 1
+        // Wraps at large text sizes; shrinking is only the fallback.
         label.adjustsFontSizeToFitWidth = true
         label.minimumScaleFactor = 0.6
         label.accessibilityTraits = .header
@@ -158,6 +158,7 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
             selectedText: HomeViewController.selectedText
         )
         control.backgroundColor = Theme.controlTrack
+        control.showsLargeContentViewer = true
         control.accessibilityIdentifier = "modeControl"
         control.accessibilityLabel = "Round length"
         return control
@@ -180,6 +181,7 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
             selectedText: HomeViewController.selectedText
         )
         control.backgroundColor = Theme.controlTrack
+        control.showsLargeContentViewer = true
         control.accessibilityIdentifier = "afterRoundControl"
         control.accessibilityLabel = "After a round"
         control.accessibilityHint =
@@ -204,6 +206,8 @@ final class HomeViewController: UIViewController, HomeViewProtocol {
         installBackground(theme: .wood)
         setupNavigationItem()
         setupLayout()
+        // Segment titles can truncate at accessibility sizes; long-press shows them enlarged.
+        view.addInteraction(UILargeContentViewerInteraction())
         playButton.addTarget(
             self,
             action: #selector(playTapped),

@@ -49,6 +49,9 @@ extension StatsViewController {
         let captionLabel = makeTileLabel(size: 13, weight: .semibold)
         captionLabel.text = caption
         captionLabel.textColor = Theme.captionText
+        // Words wrap; only the numbers above shrink to fit.
+        captionLabel.numberOfLines = 0
+        captionLabel.adjustsFontSizeToFitWidth = false
 
         let tile = UIStackView(arrangedSubviews: [value, captionLabel])
         tile.axis = .vertical
@@ -99,7 +102,7 @@ extension StatsViewController {
         return imageView
     }
 
-    /// A single accessibility element; the caller sets its label.
+    /// A single accessibility element; the caller sets its label and large content title.
     static func makeCritterTile(imageName: String, catches: String, isEmpty: Bool) -> UIView {
         let imageView = UIImageView(image: UIImage(named: imageName))
         imageView.contentMode = .scaleAspectFit
@@ -121,13 +124,16 @@ extension StatsViewController {
         tile.backgroundColor = Theme.tileFill
         tile.layer.cornerRadius = 14
         tile.isAccessibilityElement = true
+        tile.showsLargeContentViewer = true
+        tile.largeContentImage = imageView.image
+        tile.scalesLargeContentImage = true
         // Dim critters that haven't been caught yet so the ones that have stand out.
         imageView.alpha = isEmpty ? 0.35 : 1
         countLabel.alpha = isEmpty ? 0.5 : 1
         return tile
     }
 
-    /// A single accessibility element; the caller sets its label.
+    /// A single accessibility element; the caller sets its label and large content title.
     static func makeBar(label: String, rounds: Int, maxRounds: Int) -> UIView {
         let maxHeight: CGFloat = 56
         let bar = UIView()
@@ -149,6 +155,7 @@ extension StatsViewController {
         column.alignment = .center
         column.spacing = 6
         column.isAccessibilityElement = true
+        column.showsLargeContentViewer = true
         return column
     }
 }

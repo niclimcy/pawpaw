@@ -398,7 +398,7 @@ final class GameScene: SKScene {
         guard let critter = candidates.min(by: { $0.distance < $1.distance })?.critter else {
             return
         }
-        critter.startle(from: location)
+        critter.startle(from: location, reducesMotion: reducesMotion)
         SoundPlayer.shared.play(.squeak, pan: geometry.pan(atX: critter.center.x))
     }
 

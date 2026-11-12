@@ -18,6 +18,9 @@ final class OnboardingHoldPracticeView: UIView {
         label.adjustsFontForContentSizeCategory = true
         label.textColor = Theme.gold
         label.textAlignment = .center
+        label.numberOfLines = 0
+        // Grows the practice area rather than clipping the prompt at large text sizes.
+        label.setContentCompressionResistancePriority(.required, for: .vertical)
         // The button's hint already says this.
         label.isAccessibilityElement = false
         return label
@@ -63,8 +66,10 @@ final class OnboardingHoldPracticeView: UIView {
             group.bottomAnchor.constraint(equalTo: hint.bottomAnchor),
             group.centerYAnchor.constraint(equalTo: centerYAnchor),
             group.topAnchor.constraint(greaterThanOrEqualTo: topAnchor),
+            group.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor),
             hint.topAnchor.constraint(equalTo: button.bottomAnchor, constant: 8),
             hint.centerXAnchor.constraint(equalTo: centerXAnchor),
+            hint.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor),
 
             button.widthAnchor.constraint(equalToConstant: side),
             button.heightAnchor.constraint(equalToConstant: side),
@@ -130,7 +135,9 @@ final class OnboardingHoldPracticeView: UIView {
     private func completeHold() {
         UINotificationFeedbackGenerator().notificationOccurred(.success)
         button.configuration?.baseForegroundColor = Theme.gold
-        check.transform = CGAffineTransform(scaleX: 0.2, y: 0.2)
+        if !UIAccessibility.isReduceMotionEnabled {
+            check.transform = CGAffineTransform(scaleX: 0.2, y: 0.2)
+        }
         UIView.animate(
             withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.5,
             initialSpringVelocity: 0.8, options: []

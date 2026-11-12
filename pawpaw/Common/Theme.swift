@@ -12,8 +12,8 @@ enum Theme {
     static let gold = UIColor(red: 1.0, green: 0.84, blue: 0.30, alpha: 1.0)
     static let text = UIColor(red: 1.0, green: 0.94, blue: 0.80, alpha: 1.0)
 
-    /// Text and icons on top of `accent`.
-    static let onAccent = UIColor.white
+    /// Text and icons on top of `accent`. Dark, because white on the orange is only about 2:1.
+    static let onAccent = background
 
     // Quieter shades of `text`, from strongest to faintest.
     static let bodyText = text.withAlphaComponent(0.85)
@@ -41,8 +41,8 @@ enum Theme {
     /// Long enough that a paw can't trigger owner-only actions by accident.
     static let holdDuration: TimeInterval = 1.5
 
-    /// Cap on Dynamic Type growth so layouts don't break.
-    static let maxTextScale: CGFloat = 1.5
+    /// Cap on Dynamic Type growth; 200% is the App Store's Larger Text minimum.
+    static let maxTextScale: CGFloat = 2.0
 
     static func styleSegmented(
         _ control: UISegmentedControl,
@@ -68,12 +68,14 @@ enum Theme {
     }
 
     /// Dynamic Type–scaled; set `adjustsFontForContentSizeCategory` on labels to follow changes live.
-    static func roundedFont(size: CGFloat, weight: UIFont.Weight = .heavy) -> UIFont {
+    static func roundedFont(
+        size: CGFloat, weight: UIFont.Weight = .heavy, maxScale: CGFloat = maxTextScale
+    ) -> UIFont {
         let base = UIFont.systemFont(ofSize: size, weight: weight)
         let rounded =
             base.fontDescriptor.withDesign(.rounded).map { UIFont(descriptor: $0, size: size) }
             ?? base
-        return UIFontMetrics.default.scaledFont(for: rounded, maximumPointSize: size * maxTextScale)
+        return UIFontMetrics.default.scaledFont(for: rounded, maximumPointSize: size * maxScale)
     }
 
     /// A centered, wrapping label in `text` colour.

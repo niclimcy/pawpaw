@@ -54,10 +54,21 @@ final class ThemePickerView: UIView {
     }
 }
 
-private final class ThemeTile: UIControl {
+final class ThemeTile: UIControl {
     let theme: PlayfieldTheme
     private let thumbnail: UIView
     private let nameLabel = UILabel()
+    /// Shows selection without relying on the border colour alone.
+    private let checkmark: UIImageView = {
+        let config = UIImage.SymbolConfiguration(pointSize: 20, weight: .bold)
+            .applying(UIImage.SymbolConfiguration(paletteColors: [Theme.background, Theme.gold]))
+        let view = UIImageView(
+            image: UIImage(systemName: "checkmark.circle.fill", withConfiguration: config))
+        view.isAccessibilityElement = false
+        view.accessibilityIdentifier = "themeCheckmark"
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
 
     init(theme: PlayfieldTheme) {
         self.theme = theme
@@ -71,12 +82,12 @@ private final class ThemeTile: UIControl {
         super.init(frame: .zero)
 
         thumbnail.layer.cornerRadius = 14
-        thumbnail.layer.borderWidth = 3
         thumbnail.clipsToBounds = true
 
         nameLabel.text = theme.title
-        nameLabel.font = Theme.roundedFont(size: 14, weight: .bold)
         nameLabel.adjustsFontForContentSizeCategory = true
+        // Wraps at large text sizes; shrinking is only the fallback.
+        nameLabel.numberOfLines = 2
         nameLabel.adjustsFontSizeToFitWidth = true
         nameLabel.minimumScaleFactor = 0.7
         nameLabel.textAlignment = .center
@@ -87,6 +98,7 @@ private final class ThemeTile: UIControl {
         stack.isUserInteractionEnabled = false
         stack.translatesAutoresizingMaskIntoConstraints = false
         addSubview(stack)
+        addSubview(checkmark)
         NSLayoutConstraint.activate([
             stack.topAnchor.constraint(equalTo: topAnchor),
             stack.bottomAnchor.constraint(equalTo: bottomAnchor),
@@ -94,6 +106,8 @@ private final class ThemeTile: UIControl {
             stack.trailingAnchor.constraint(equalTo: trailingAnchor),
             thumbnail.heightAnchor.constraint(equalTo: thumbnail.widthAnchor, multiplier: 0.75),
             thumbnail.heightAnchor.constraint(greaterThanOrEqualToConstant: Theme.minimumTapSize),
+            checkmark.topAnchor.constraint(equalTo: thumbnail.topAnchor, constant: 6),
+            checkmark.trailingAnchor.constraint(equalTo: thumbnail.trailingAnchor, constant: -6),
         ])
 
         isAccessibilityElement = true
@@ -118,6 +132,9 @@ private final class ThemeTile: UIControl {
     private func updateAppearance() {
         thumbnail.layer.borderColor =
             (isSelected ? Theme.accent : Theme.outline).cgColor
+        thumbnail.layer.borderWidth = isSelected ? 4 : 2
+        checkmark.isHidden = !isSelected
+        nameLabel.font = Theme.roundedFont(size: 14, weight: isSelected ? .heavy : .semibold)
         nameLabel.textColor = isSelected ? Theme.accent : Theme.bodyText
         accessibilityTraits = isSelected ? [.button, .selected] : .button
     }

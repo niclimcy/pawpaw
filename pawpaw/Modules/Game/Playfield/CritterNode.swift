@@ -4,6 +4,7 @@
 //
 
 import SpriteKit
+import UIKit
 
 /// One critter on the field. Each nested node runs its own actions, so their movements add up:
 /// the path, then heading and startle hop (`turn`), twitches and sways (`jiggle`), wingbeats
@@ -73,7 +74,7 @@ final class CritterNode: SKNode {
     }
 
     /// A hop away from `location`, on top of the path. Replaces any hop in progress.
-    func startle(from location: CGPoint) {
+    func startle(from location: CGPoint, reducesMotion: Bool) {
         turn.removeAction(forKey: "startle")
         turn.position = .zero
         turn.setScale(1)
@@ -88,6 +89,11 @@ final class CritterNode: SKNode {
             .moveBy(x: -dx * recoil, y: -dy * recoil, duration: 0.105),
             .moveBy(x: -dx * (out - recoil), y: -dy * (out - recoil), duration: 0.14),
         ])
+        // The hop is how the critter flees, so it stays; only the bounce goes.
+        if reducesMotion {
+            turn.run(hop, withKey: "startle")
+            return
+        }
         let squash = SKAction.sequence([
             .scale(to: 1.18, duration: 0.105), .scale(to: 1, duration: 0.245),
         ])

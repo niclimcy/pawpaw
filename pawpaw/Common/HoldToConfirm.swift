@@ -11,8 +11,9 @@ final class HoldProgressView: UIView {
     private let progress = CAShapeLayer()
     private var isHolding = false
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    /// `onAccent` for buttons filled with `Theme.accent`, where an accent ring wouldn't show.
+    init(onAccent: Bool = false) {
+        super.init(frame: .zero)
         isUserInteractionEnabled = false
         isAccessibilityElement = false
         for shape in [track, progress] {
@@ -21,8 +22,9 @@ final class HoldProgressView: UIView {
             shape.lineCap = .round
             layer.addSublayer(shape)
         }
-        track.strokeColor = Theme.text.withAlphaComponent(0.2).cgColor
-        progress.strokeColor = Theme.accent.cgColor
+        track.strokeColor =
+            (onAccent ? Theme.onAccent.withAlphaComponent(0.25) : Theme.outline).cgColor
+        progress.strokeColor = (onAccent ? Theme.onAccent : Theme.accent).cgColor
         progress.strokeEnd = 0
         alpha = 0
     }
@@ -74,7 +76,7 @@ extension UIButton {
     func addHoldToConfirm(_ target: Any, action: Selector) {
         addGestureRecognizer(UILongPressGestureRecognizer.holdToConfirm(target, action))
 
-        let ring = HoldProgressView()
+        let ring = HoldProgressView(onAccent: configuration?.baseBackgroundColor == Theme.accent)
         ring.translatesAutoresizingMaskIntoConstraints = false
         addSubview(ring)
         NSLayoutConstraint.activate([
@@ -91,6 +93,17 @@ extension UIButton {
             UIAction { [weak ring] _ in ring?.reset() },
             for: [.touchUpInside, .touchUpOutside, .touchCancel, .touchDragExit]
         )
+    }
+
+    /// VoiceOver and Voice Control can't easily hold for `Theme.holdDuration`, so they get the
+    /// confirmed action from the actions rotor or "Show actions" instead.
+    func setHoldAccessibilityAction(_ name: String, handler: @escaping @MainActor () -> Void) {
+        accessibilityCustomActions = [
+            UIAccessibilityCustomAction(name: name) { _ in
+                handler()
+                return true
+            }
+        ]
     }
 }
 

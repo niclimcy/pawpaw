@@ -29,10 +29,20 @@ extension GameScene {
             at: position, color: Theme.text.withAlphaComponent(0.35), endRadius: 18, lineWidth: 1.5)
     }
 
+    /// The owner's Reduce Motion setting is for the owner, so the cat's game keeps its full effects.
+    var reducesMotion: Bool {
+        tuning.isPlayedByOwner && UIAccessibility.isReduceMotionEnabled
+    }
+
     /// Squash, burst with a spin, then shrink away, from wherever the critter was caught.
+    /// With `reducesMotion` it only fades.
     func playCatchAnimation(on critter: CritterNode, completion: @escaping () -> Void) {
         critter.showCaughtGlow()
         let sprite = critter.sprite
+        if reducesMotion {
+            sprite.run(.sequence([.fadeOut(withDuration: 0.25), .run(completion)]))
+            return
+        }
         let baseX = sprite.xScale
         let baseY = sprite.yScale
         let squash = SKAction.scaleX(to: baseX * 0.7, y: baseY * 1.3, duration: 0.1)
@@ -53,10 +63,12 @@ extension GameScene {
     }
 
     /// Scales a cached texture, rather than rebuilding a shape every frame.
+    /// With `reducesMotion` the ring fades at full size instead of growing.
     func emitRing(
         at position: CGPoint, color: UIColor, endRadius: CGFloat, lineWidth: CGFloat,
         delay: TimeInterval = 0
     ) {
+        let reducesMotion = reducesMotion
         let ring = SKSpriteNode(
             texture: PlayfieldTextures.ring(radius: endRadius, lineWidth: lineWidth))
         ring.position = position
@@ -64,10 +76,10 @@ extension GameScene {
         ring.color = color
         ring.colorBlendFactor = 1
         ring.alpha = 0
-        ring.setScale(8 / endRadius)
+        ring.setScale(reducesMotion ? 1 : 8 / endRadius)
         world.addChild(ring)
         let grow = SKAction.group([
-            .scale(to: 1, duration: 0.5),
+            .scale(to: 1, duration: reducesMotion ? 0 : 0.5),
             .sequence([
                 .fadeAlpha(to: color.cgColor.alpha, duration: 0), .fadeOut(withDuration: 0.5),
             ]),
@@ -77,7 +89,9 @@ extension GameScene {
     }
 
     /// Gold and white stars with a few dots, more for the rarer critters.
+    /// With `reducesMotion` they drift out slowly without spinning or falling.
     private func emitSparkles(at position: CGPoint, bigBurst: Bool) {
+        let reducesMotion = reducesMotion
         let cells: [(texture: SKTexture, color: UIColor, count: Int, big: Bool)] = [
             (PlayfieldTextures.star, Theme.gold, bigBurst ? 4 : 2, true),
             (PlayfieldTextures.star, .white, bigBurst ? 4 : 2, true),
@@ -94,15 +108,20 @@ extension GameScene {
             emitter.numParticlesToEmit = cell.count
             emitter.particleLifetime = 1.0
             emitter.particleLifetimeRange = 0.8
-            emitter.particleSpeed = cell.big ? 220 : 140
-            emitter.particleSpeedRange = 180
+            if reducesMotion {
+                emitter.particleSpeed = cell.big ? 50 : 30
+                emitter.particleSpeedRange = 30
+            } else {
+                emitter.particleSpeed = cell.big ? 220 : 140
+                emitter.particleSpeedRange = 180
+                emitter.yAcceleration = -260
+                // SpriteKit has no spin range, so every particle spins at the same speed.
+                emitter.particleRotationSpeed = 3
+            }
             emitter.emissionAngleRange = .pi * 2
-            emitter.yAcceleration = -260
             emitter.particleScale = cell.big ? 0.9 : 0.7
             emitter.particleScaleRange = 0.8
             emitter.particleScaleSpeed = -0.5
-            // SpriteKit has no spin range, so every particle spins at the same speed.
-            emitter.particleRotationSpeed = 3
             emitter.particleAlphaSpeed = -1.1
             emitter.position = position
             emitter.zPosition = Layer.effect
@@ -115,8 +134,15 @@ extension GameScene {
         let glow = SKSpriteNode(texture: PlayfieldTextures.flash)
         glow.position = position
         glow.zPosition = Layer.effect
-        glow.setScale(0.3)
         world.addChild(glow)
+        if reducesMotion {
+            glow.setScale(0.9)
+            let fade = SKAction.fadeOut(withDuration: 0.35)
+            fade.timingMode = .easeOut
+            glow.run(.sequence([fade, .removeFromParent()]))
+            return
+        }
+        glow.setScale(0.3)
         let grow = SKAction.group([.scale(to: 1.4, duration: 0.35), .fadeOut(withDuration: 0.35)])
         grow.timingMode = .easeOut
         glow.run(.sequence([grow, .removeFromParent()]))
@@ -126,8 +152,15 @@ extension GameScene {
         let label = SKSpriteNode(texture: PlayfieldTextures.points(points))
         label.position = position
         label.zPosition = Layer.label
-        label.setScale(0.4)
         world.addChild(label)
+        if reducesMotion {
+            let fade = SKAction.sequence([
+                .wait(forDuration: 0.3), .fadeOut(withDuration: 0.6), .removeFromParent(),
+            ])
+            label.run(fade)
+            return
+        }
+        label.setScale(0.4)
 
         let springDuration: TimeInterval = 0.25
         let pop = SKAction.customAction(withDuration: springDuration) { node, time in

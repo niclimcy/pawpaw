@@ -98,6 +98,7 @@ extension ProfileEditorView {
         button.accessibilityIdentifier = "deleteCatButton"
         button.accessibilityHint = "Press and hold to erase this cat, its best scores and its stats"
         button.addHoldToConfirm(self, action: #selector(deleteHeld(_:)))
+        button.setHoldAccessibilityAction("Delete cat") { [weak self] in self?.confirmDelete() }
         deleteButton = button
         return button
     }

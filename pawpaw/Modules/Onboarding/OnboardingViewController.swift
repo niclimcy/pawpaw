@@ -231,6 +231,11 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
             controls.centerXAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.centerXAnchor
             ),
+            // So button titles wrap at large text sizes instead of running off screen.
+            controls.leadingAnchor.constraint(
+                greaterThanOrEqualTo: view.safeAreaLayoutGuide.leadingAnchor,
+                constant: 16
+            ),
 
             cardArea.bottomAnchor.constraint(
                 equalTo: controls.topAnchor,
@@ -604,10 +609,7 @@ final class OnboardingViewController: UIViewController, OnboardingViewProtocol,
     }
 
     func showNameRequired(announcement: String) {
-        let shake = CAKeyframeAnimation(keyPath: "transform.translation.x")
-        shake.values = [0, -8, 8, -5, 5, 0]
-        shake.duration = 0.3
-        nameField.layer.add(shake, forKey: "shake")
+        nameField.shakeHorizontally()
         nameField.becomeFirstResponder()
         UIAccessibility.post(notification: .announcement, argument: announcement)
     }
