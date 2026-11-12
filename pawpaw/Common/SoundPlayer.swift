@@ -24,42 +24,15 @@ final class SoundPlayer {
     private nonisolated static let sampleRate = 44_100.0
     /// Players per sound, so two critters can make the same sound at different pans.
     private nonisolated static let voices = 3
-    /// Empty until `loadPlayers()` finishes; sounds requested before then are skipped.
-    private var players: [GameSound: [AVAudioPlayer]] = [:]
-    private var nextVoice: [GameSound: Int] = [:]
+    private let mixer = Mixer()
 
     private init() {
-        Task { players = await Self.loadPlayers() }
-    }
-
-    /// Activating the session and preparing players block on the audio hardware, and iOS has no
-    /// async activation API (`activate(options:)` is watchOS-only), so this runs off the main thread.
-    @concurrent
-    private nonisolated static func loadPlayers() async -> sending [GameSound: [AVAudioPlayer]] {
-        // Ambient: mixes with other audio and respects the silent switch.
-        try? AVAudioSession.sharedInstance().setCategory(.ambient, mode: .default)
-        try? AVAudioSession.sharedInstance().setActive(true)
-        var players: [GameSound: [AVAudioPlayer]] = [:]
-        for sound in GameSound.allCases {
-            let data = wav(from: samples(for: sound))
-            players[sound] = (0..<voices).compactMap { _ -> AVAudioPlayer? in
-                let player = try? AVAudioPlayer(data: data)
-                player?.prepareToPlay()
-                return player
-            }
-        }
-        return players
+        mixer.load()
     }
 
     /// `pan` runs from -1 (left) to 1 (right).
     func play(_ sound: GameSound, pan: Float = 0) {
-        guard let pool = players[sound], !pool.isEmpty else { return }
-        let index = nextVoice[sound, default: 0] % pool.count
-        nextVoice[sound] = (index + 1) % pool.count
-        let player = pool[index]
-        player.pan = max(-1, min(1, pan))
-        player.currentTime = 0
-        player.play()
+        mixer.play(sound, pan: max(-1, min(1, pan)))
     }
 
     func playAppear(for kind: TargetKind, pan: Float = 0) {
@@ -74,6 +47,41 @@ final class SoundPlayer {
         case .ribbon: play(.whisper, pan: pan)
         case .bird: play(.tweet, pan: pan)
         case .lizard: play(.skitter, pan: pan)
+        }
+    }
+
+    /// `play()` can reactivate the audio session, which blocks, so all player calls stay off the main thread.
+    private nonisolated final class Mixer: @unchecked Sendable {
+        private let queue = DispatchQueue(label: "pawpaw.sound", qos: .userInitiated)
+        private var players: [GameSound: [AVAudioPlayer]] = [:]
+        private var nextVoice: [GameSound: Int] = [:]
+
+        func load() {
+            queue.async {
+                // Ambient: mixes with other audio and respects the silent switch.
+                try? AVAudioSession.sharedInstance().setCategory(.ambient, mode: .default)
+                try? AVAudioSession.sharedInstance().setActive(true)
+                for sound in GameSound.allCases {
+                    let data = SoundPlayer.wav(from: SoundPlayer.samples(for: sound))
+                    self.players[sound] = (0..<SoundPlayer.voices).compactMap { _ in
+                        let player = try? AVAudioPlayer(data: data)
+                        player?.prepareToPlay()
+                        return player
+                    }
+                }
+            }
+        }
+
+        func play(_ sound: GameSound, pan: Float) {
+            queue.async {
+                guard let pool = self.players[sound], !pool.isEmpty else { return }
+                let index = self.nextVoice[sound, default: 0] % pool.count
+                self.nextVoice[sound] = (index + 1) % pool.count
+                let player = pool[index]
+                player.pan = pan
+                player.currentTime = 0
+                player.play()
+            }
         }
     }
 
