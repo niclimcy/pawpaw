@@ -48,7 +48,7 @@ a:hover { color: var(--gold); }
 
 :focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; border-radius: 6px; }
 
-h1, h2, h3 { line-height: 1.15; margin: 0 0 0.5em; font-weight: 900; letter-spacing: -0.01em; }
+h1, h2, h3 { line-height: 1.15; margin: 0 0 0.5em; font-weight: 900; letter-spacing: -0.01em; text-wrap: balance; }
 h1 { font-size: clamp(2.6rem, 6vw, 4.6rem); }
 h2 { font-size: clamp(1.9rem, 4vw, 2.8rem); }
 h3 { font-size: 1.3rem; }
@@ -171,6 +171,36 @@ section { scroll-margin-top: 20px; }
 .shots figcaption { margin-top: 12px; font-weight: 700; color: var(--text-dim); }
 .subhead { text-align: center; margin-top: 56px; font-size: 1.2rem; color: var(--text-dim); }
 
+/* Real cats: the clips differ in width, so each grows by its own width
+   (--w) to keep both at the same height without cropping. */
+.cat-clips { display: flex; gap: 22px; max-width: 760px; margin-inline: auto; }
+.cat-clips figure { flex: var(--w) 1 0; min-width: 0; margin: 0; text-align: center; }
+/* A ring shadow, not a border, so the frame doesn't skew the widths. */
+.cat-clips video { width: 100%; border-radius: 22px; background: #000; box-shadow: 0 0 0 6px #1b1b1e, 0 14px 30px rgba(0, 0, 0, 0.5); cursor: pointer; }
+.cat-clips figcaption { margin-top: 12px; font-weight: 700; color: var(--text-dim); }
+/* Manhwa-style sound effects for the owner's cheering, which the muted
+   clip can't play. They overlap the frame like lettering on a panel. */
+.cat-clips .cheer { position: relative; }
+.sfx {
+  position: absolute; z-index: 1; pointer-events: none;
+  font-weight: 900; font-style: italic; line-height: 1; white-space: nowrap;
+  font-size: clamp(1.5rem, 3.6vw, 2.4rem); letter-spacing: 0.02em;
+  color: var(--gold); -webkit-text-stroke: 7px #1b1b1e; paint-order: stroke fill;
+  text-shadow: 0 6px 0 rgba(0, 0, 0, 0.35);
+  transform: rotate(var(--tilt));
+  animation: sfx-pop 2.4s ease-in-out infinite;
+}
+.sfx-1 { top: -0.6em; left: -0.5em; --tilt: -14deg; }
+.sfx-2 { bottom: 3.2em; right: -0.7em; --tilt: 8deg; color: var(--accent); animation-delay: 1.2s; }
+.cheer.is-paused .sfx { animation-play-state: paused; }
+@keyframes sfx-pop {
+  0%, 100% { transform: rotate(var(--tilt)) scale(1); }
+  12% { transform: rotate(var(--tilt)) scale(1.18); }
+  24% { transform: rotate(var(--tilt)) scale(1); }
+}
+
+.clip-hint { text-align: center; margin: 22px 0 0; font-size: 0.9rem; color: var(--text-dim); }
+
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
 .checklist { list-style: none; padding: 0; margin: 0; }
 .checklist li { position: relative; padding-left: 34px; margin-bottom: 12px; }
@@ -234,4 +264,10 @@ kbd, .ui { font-family: inherit; font-weight: 800; color: var(--text); backgroun
   .critter-strip img { width: 38px; height: 38px; }
   .site-header .wrap { justify-content: center; }
   .section { padding: 52px 0; }
+}
+@media (max-width: 480px) {
+  .cat-clips { flex-direction: column; max-width: 340px; gap: 32px; }
+  .cat-clips figure { flex: none; }
+  .sfx-1 { left: -0.2em; }
+  .sfx-2 { right: -0.2em; }
 }
