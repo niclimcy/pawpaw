@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Straight wand-toy ribbon, knot facing up, for the game to ripple. Original artwork for Paw Paw. -->
+  <!-- Menus and the site use the curled critter_ribbon instead. -->
+  <!-- One continuous ribbon, narrowing where it twists to show its darker back -->
+  <path d="M89 28 L89 68 C 89 74, 94 77, 94 80 C 94 83, 89 86, 89 92 L89 128 C 89 134, 94 137, 94 140 C 94 143, 89 146, 89 152 L89 176 L111 176 L111 152 C 111 146, 106 143, 106 140 C 106 137, 111 134, 111 128 L111 92 C 111 86, 106 83, 106 80 C 106 77, 111 74, 111 68 L111 28 Z" fill="#f7d23e" stroke="#1d1d24" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M94 80 C 94 83, 89 86, 89 92 L89 128 C 89 134, 94 137, 94 140 L106 140 C 106 137, 111 134, 111 128 L111 92 C 111 86, 106 83, 106 80 Z" fill="#d6a521"/>
+  <path d="M95 80 L105 80 M95 140 L105 140" stroke="#1d1d24" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+  <!-- Blue stripe and satin sheen on the face, a soft fold line on the back -->
+  <g stroke-linecap="round" fill="none">
+    <path d="M100 32 L100 72 M100 148 L100 174" stroke="#3f7fe8" stroke-width="5"/>
+    <path d="M93 34 L93 66 M93 154 L93 172" stroke="#fff3b8" stroke-width="2.5" opacity="0.8"/>
+    <path d="M105 92 L105 128" stroke="#f3c94a" stroke-width="2.5" opacity="0.7"/>
+  </g>
+  <!-- Frayed tail end -->
+  <g stroke="#f7d23e" stroke-width="4" stroke-linecap="round" fill="none">
+    <path d="M94 176 L90 194"/>
+    <path d="M100 176 L100 196"/>
+    <path d="M106 176 L110 194"/>
+  </g>
+  <!-- Knot where the string meets the wand -->
+  <circle cx="100" cy="20" r="13" fill="#3f7fe8" stroke="#1d1d24" stroke-width="4"/>
+  <circle cx="96" cy="16" r="4" fill="#bcd6ff"/>
+</svg>

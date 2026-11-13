@@ -1,21 +1,58 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
-  <!-- Top-down cartoon cricket, facing up. Original artwork for Paw Paw. -->
-  <g stroke="#d9b878" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none">
-    <path d="M88 40 C 80 20, 66 10, 54 12"/>
-    <path d="M112 40 C 120 20, 134 10, 146 12"/>
-    <path d="M72 84 L40 66"/>
-    <path d="M128 84 L160 66"/>
-    <path d="M70 112 L30 116 L24 150"/>
-    <path d="M130 112 L170 116 L176 150"/>
-    <path d="M80 150 L56 190"/>
-    <path d="M120 150 L144 190"/>
+  <!-- Top-down green grasshopper in a soft hand-painted style, facing up. Original artwork for Paw Paw. -->
+  <!-- Yellow-green with cream stripes, so it reads by brightness to cats and stands apart from the grass. -->
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Short thick antennae, front and middle legs -->
+    <g stroke="#2e4419" stroke-width="7">
+      <path d="M93 22 C 90 14, 86 8, 80 4"/>
+      <path d="M107 22 C 110 14, 114 8, 120 4"/>
+      <path d="M84 64 L66 56 L62 42"/>
+      <path d="M116 64 L134 56 L138 42"/>
+      <path d="M84 82 L64 90 L56 104"/>
+      <path d="M116 82 L136 90 L144 104"/>
+    </g>
+    <g stroke="#b7d968" stroke-width="3.5">
+      <path d="M93 22 C 90 14, 86 8, 80 4"/>
+      <path d="M107 22 C 110 14, 114 8, 120 4"/>
+      <path d="M84 64 L66 56 L62 42"/>
+      <path d="M116 64 L134 56 L138 42"/>
+      <path d="M84 82 L64 90 L56 104"/>
+      <path d="M116 82 L136 90 L144 104"/>
+    </g>
+    <!-- Hind shins folded forward along the thighs -->
+    <path d="M62 162 L54 116 L48 108 M138 162 L146 116 L152 108" stroke="#2e4419" stroke-width="7"/>
+    <path d="M62 162 L54 116 L48 108 M138 162 L146 116 L152 108" stroke="#b7d968" stroke-width="3.5"/>
   </g>
-  <ellipse cx="100" cy="132" rx="38" ry="52" fill="#a8803f" stroke="#3a2a18" stroke-width="5"/>
-  <path d="M76 110 C 80 90, 120 90, 124 110 L 120 170 C 110 180, 90 180, 80 170 Z" fill="#cfa862" opacity="0.8"/>
-  <line x1="100" y1="96" x2="100" y2="176" stroke="#3a2a18" stroke-width="4"/>
-  <ellipse cx="100" cy="66" rx="30" ry="32" fill="#8c6a36" stroke="#3a2a18" stroke-width="5"/>
-  <circle cx="87" cy="58" r="8" fill="#fff"/>
-  <circle cx="113" cy="58" r="8" fill="#fff"/>
-  <circle cx="88" cy="59" r="3.5" fill="#1d1d24"/>
-  <circle cx="112" cy="59" r="3.5" fill="#1d1d24"/>
+  <!-- Long folded wings, reaching past the abdomen -->
+  <g stroke="#2e4419" stroke-width="3" stroke-linejoin="round">
+    <path d="M100 84 C 112 86, 116 112, 114 150 C 112 170, 106 182, 100 190 Z" fill="#7d9a3a"/>
+    <path d="M100 84 C 88 86, 84 112, 86 150 C 88 170, 94 182, 100 190 Z" fill="#a3c050"/>
+  </g>
+  <path d="M92 92 C 88 112, 88 140, 92 166 C 92 140, 93 114, 96 94 C 95 90, 93 90, 92 92 Z" fill="#d7eb98" opacity="0.6"/>
+  <g stroke="#5d7a2a" stroke-width="1.6" stroke-linecap="round" fill="none" opacity="0.6">
+    <path d="M95 96 C 91 124, 91 154, 96 182 M106 96 C 110 124, 110 154, 104 182"/>
+  </g>
+  <!-- Big jumping thighs with herringbone muscle marks -->
+  <g stroke="#2e4419" stroke-width="3" stroke-linejoin="round">
+    <path d="M90 92 C 74 100, 62 128, 58 156 C 57 166, 66 168, 68 160 C 72 136, 82 114, 96 102 Z" fill="#8cc63f"/>
+    <path d="M110 92 C 126 100, 138 128, 142 156 C 143 166, 134 168, 132 160 C 128 136, 118 114, 104 102 Z" fill="#8cc63f"/>
+  </g>
+  <path d="M86 98 C 74 108, 66 128, 62 152" stroke="#d2ea8c" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.8"/>
+  <path d="M114 98 C 126 108, 134 128, 138 152" stroke="#5d8f2b" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.5"/>
+  <g stroke="#5d8f2b" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.7">
+    <path d="M82 108 L76 114 M78 120 L71 126 M74 132 L67 138 M71 144 L64 150"/>
+    <path d="M118 108 L124 114 M122 120 L129 126 M126 132 L133 138 M129 144 L136 150"/>
+  </g>
+  <!-- Head with big side eyes -->
+  <path d="M100 14 C 112 14, 119 26, 119 40 C 119 50, 113 56, 100 56 C 87 56, 81 50, 81 40 C 81 26, 88 14, 100 14 Z" fill="#9ccf4a" stroke="#2e4419" stroke-width="3" stroke-linejoin="round"/>
+  <ellipse cx="95" cy="26" rx="7" ry="9" fill="#d2ea8c" opacity="0.7"/>
+  <ellipse cx="84.5" cy="34" rx="5" ry="7.5" fill="#7a5530" stroke="#2e4419" stroke-width="1.5"/>
+  <ellipse cx="115.5" cy="34" rx="5" ry="7.5" fill="#7a5530" stroke="#2e4419" stroke-width="1.5"/>
+  <circle cx="83.5" cy="31" r="1.4" fill="#fff"/>
+  <circle cx="114.5" cy="31" r="1.4" fill="#fff"/>
+  <!-- Saddle over the shoulders, with cream side stripes -->
+  <path d="M80 54 C 84 48, 116 48, 120 54 C 124 68, 123 82, 117 90 C 108 94, 92 94, 83 90 C 77 82, 76 68, 80 54 Z" fill="#8cc63f" stroke="#2e4419" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M88 58 C 92 54, 100 53, 106 54 C 98 60, 93 70, 91 82 C 87 76, 86 66, 88 58 Z" fill="#c5e37a" opacity="0.6"/>
+  <path d="M84 56 C 82 68, 83 80, 87 88 M116 56 C 118 68, 117 80, 113 88" stroke="#eef0c0" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+  <path d="M100 52 L100 92" stroke="#5d8f2b" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
 </svg>

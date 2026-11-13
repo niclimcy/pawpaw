@@ -102,6 +102,60 @@ final class MovementPlannerTests: XCTestCase {
         }
     }
 
+    func testFliersFlyInFromTheEdgeAndOutAgain() throws {
+        for style in allMovementStyles {
+            for _ in 0..<plannerRuns {
+                let legs = MovementPlanner.legs(
+                    from: CGPoint(x: 0, y: 0.4), style: style, duration: 5)
+                let first = try XCTUnwrap(legs.first)
+                if style.flies {
+                    XCTAssertTrue(first.flies, "\(style)")
+                    XCTAssertEqual(first.travel, MovementPlanner.flightEntryTravel)
+                    XCTAssertTrue(
+                        MovementPlanner.innerRange.contains(first.destination.x)
+                            && MovementPlanner.innerRange.contains(first.destination.y),
+                        "\(style) lands inside: \(first.destination)")
+                    XCTAssertFalse(first.hides || first.underCover, "\(style)")
+                    XCTAssertTrue(try XCTUnwrap(legs.last).flies, "\(style) flies out")
+                    XCTAssertEqual(legs.filter(\.flies).count, 2, "\(style)")
+                } else {
+                    XCTAssertFalse(legs.contains(where: \.flies), "\(style)")
+                }
+            }
+        }
+    }
+
+    func testEdgeEntriesAreCalmAndHeadIntoTheField() throws {
+        let start = CGPoint(x: 0, y: 0.3)
+        for style in allMovementStyles where !style.surfaces && !style.flies {
+            for _ in 0..<plannerRuns {
+                let entry = try XCTUnwrap(
+                    MovementPlanner.legs(from: start, style: style, duration: 5).first)
+                XCTAssertGreaterThanOrEqual(
+                    entry.travel, MovementPlanner.minimumEntryTravel, "\(style)")
+                let distance = Double(
+                    hypot(entry.destination.x - start.x, entry.destination.y - start.y))
+                XCTAssertLessThanOrEqual(
+                    distance, MovementPlanner.entryDistance.upperBound + 1e-9, "\(style)")
+                XCTAssertGreaterThan(entry.destination.x, start.x, "\(style) heads inward")
+            }
+        }
+    }
+
+    func testEntryFromInsideKeepsItsStylesPace() throws {
+        for _ in 0..<plannerRuns {
+            let legs = MovementPlanner.legs(
+                from: CGPoint(x: 0.5, y: 0.5), style: .dart, duration: 5)
+            let roaming = legs.filter { !$0.exits }
+            XCTAssertEqual(roaming.reduce(0) { $0 + $1.travel + $1.pause }, 5, accuracy: 1e-9)
+        }
+    }
+
+    func testFliersAlreadyInViewDontFlyIn() throws {
+        let legs = MovementPlanner.legs(from: CGPoint(x: 0.5, y: 0.5), style: .wander, duration: 5)
+        XCTAssertFalse(try XCTUnwrap(legs.first).flies)
+    }
+
     func testLegCountMatchesStyle() {
         for style in allMovementStyles where !style.fliesOff {
             for _ in 0..<plannerRuns {
@@ -112,27 +166,29 @@ final class MovementPlannerTests: XCTestCase {
         }
     }
 
-    /// Fliers may leave early, which only shortens the path.
+    /// Fliers may leave early, which only shortens the path; only the glide in can lengthen it.
     func testFliersNeverOverrunTheirLifetime() {
         for _ in 0..<plannerRuns {
             let legs = MovementPlanner.legs(from: .zero, style: .peck, duration: 6)
             let roaming = legs.filter { !$0.exits }
-            XCTAssertLessThanOrEqual(roaming.reduce(0) { $0 + $1.travel + $1.pause }, 6 + 1e-9)
+            XCTAssertLessThanOrEqual(
+                roaming.reduce(0) { $0 + $1.travel + $1.pause },
+                6 + MovementPlanner.flightEntryTravel + 1e-9)
             XCTAssertGreaterThanOrEqual(roaming.count, 3)
         }
     }
 
-    func testTimeOnFieldMatchesDurationUnlessCoverLengthensIt() {
+    func testTimeOnFieldMatchesDurationUnlessCoverOrACalmEntryLengthensIt() {
+        let entry = max(MovementPlanner.minimumEntryTravel, MovementPlanner.flightEntryTravel)
         for style in allMovementStyles where !style.fliesOff {
             for _ in 0..<plannerRuns {
                 let legs = MovementPlanner.legs(
                     from: .zero, style: style, duration: 5, coverSpots: [CGPoint(x: 0.5, y: 0.5)])
                 let roaming = legs.filter { !$0.exits }
                 let total = roaming.reduce(0) { $0 + $1.travel + $1.pause }
-                if roaming.contains(where: \.underCover) {
-                    XCTAssertGreaterThanOrEqual(total, 5 - 1e-9, "\(style)")
-                } else {
-                    XCTAssertEqual(total, 5, accuracy: 1e-9, "\(style)")
+                XCTAssertGreaterThanOrEqual(total, 5 - 1e-9, "\(style)")
+                if !roaming.contains(where: \.underCover) {
+                    XCTAssertLessThanOrEqual(total, 5 + entry + 1e-9, "\(style)")
                 }
             }
         }

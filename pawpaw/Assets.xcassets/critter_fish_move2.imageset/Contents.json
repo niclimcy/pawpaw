@@ -1,0 +1,15 @@
+{
+  "images" : [
+    {
+      "filename" : "critter_fish_move2.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "properties" : {
+    "preserves-vector-representation" : true
+  }
+}

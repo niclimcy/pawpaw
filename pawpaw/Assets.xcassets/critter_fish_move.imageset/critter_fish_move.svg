@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Swimming pose of critter_fish: tail swept to one side, one side fin pulled in. Original artwork for Paw Paw. -->
+  <g transform="rotate(24 100 146)">
+    <path d="M95 150 C 86 164, 70 176, 64 194 C 80 189, 92 191, 102 198 C 110 190, 124 189, 138 192 C 130 176, 114 164, 105 150 Z" fill="#fff3e2" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round" opacity="0.92"/>
+    <path d="M100 158 C 100 172, 101 184, 102 194 M94 160 C 88 172, 80 182, 72 189 M106 160 C 112 172, 122 182, 130 188" stroke="#f3a25e" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.7"/>
+  </g>
+  <g fill="#fff6ea" stroke="#ffffff" stroke-width="2" stroke-linejoin="round" opacity="0.92">
+    <path d="M70 64 C 54 68, 44 86, 46 108 C 58 102, 68 92, 72 82 Z"/>
+    <path d="M130 64 C 152 56, 172 68, 180 90 C 162 94, 142 90, 129 82 Z"/>
+    <path d="M76 114 C 64 116, 56 126, 56 138 C 68 136, 76 128, 81 120 Z"/>
+    <path d="M124 114 C 136 116, 144 126, 144 138 C 132 136, 124 128, 119 120 Z"/>
+  </g>
+  <path d="M67 72 L50 100 M69 78 L57 98 M134 70 L172 86 M132 76 L160 90" stroke="#f3a25e" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.55"/>
+  <!-- Body -->
+  <path d="M100 16 C 122 18, 136 44, 134 76 C 132 110, 116 138, 105 156 L 95 156 C 84 138, 68 110, 66 76 C 64 44, 78 18, 100 16 Z" fill="#fbf7ef" stroke="#ffffff" stroke-width="3.5" stroke-linejoin="round"/>
+  <path d="M130 62 C 132 96, 120 128, 106 152 C 112 126, 120 96, 122 62 C 124 56, 129 56, 130 62 Z" fill="#d9ccb6" opacity="0.35"/>
+  <!-- Painted orange patches -->
+  <path d="M84 30 C 90 21, 111 21, 117 31 C 123 43, 116 57, 104 59 C 91 61, 79 46, 84 30 Z" fill="#ee7426"/>
+  <path d="M76 82 C 84 76, 98 80, 100 94 C 102 108, 96 122, 86 122 C 76 118, 70 96, 76 82 Z" fill="#ee7426"/>
+  <path d="M106 112 C 116 108, 122 118, 118 130 C 114 140, 106 142, 104 132 C 102 124, 102 116, 106 112 Z" fill="#ee7426"/>
+  <path d="M88 32 C 93 26, 104 25, 110 29 C 100 30, 93 36, 90 46 C 86 42, 86 36, 88 32 Z" fill="#fbb070" opacity="0.7"/>
+  <path d="M78 88 C 82 82, 90 82, 94 86 C 86 88, 82 96, 80 106 C 76 100, 76 93, 78 88 Z" fill="#fbb070" opacity="0.7"/>
+  <!-- Scales and the fin along the back -->
+  <g stroke="#cfc2ab" stroke-width="1.6" stroke-linecap="round" fill="none" opacity="0.6">
+    <path d="M106 70 q 5 5 10 0 M110 84 q 5 5 10 0 M104 98 q 5 5 10 0 M82 132 q 4 4 8 0 M92 142 q 4 4 8 0"/>
+  </g>
+  <path d="M100 66 C 104 88, 104 122, 100 146 C 96 122, 96 88, 100 66 Z" fill="#fffdf8" stroke="#e0d5c2" stroke-width="1.5" opacity="0.9"/>
+  <!-- Whiskers and eyes -->
+  <path d="M93 19 C 88 12, 82 12, 78 17 M107 19 C 112 12, 118 12, 122 17" stroke="#fff6ea" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+  <ellipse cx="80" cy="40" rx="4.6" ry="5.4" fill="#27222a"/>
+  <ellipse cx="120" cy="40" rx="4.6" ry="5.4" fill="#27222a"/>
+  <circle cx="79" cy="38" r="1.5" fill="#fff"/>
+  <circle cx="119" cy="38" r="1.5" fill="#fff"/>
+</svg>

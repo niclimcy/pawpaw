@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Mid-stride pose of critter_bug: three legs reach forward while the other three push back. Original artwork for Paw Paw. -->
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <g stroke="#f3e2b4" stroke-width="9">
+      <path d="M66 84 L46 62 L42 42"/>
+      <path d="M58 114 L32 126 L20 144"/>
+      <path d="M64 146 L40 152 L24 166"/>
+      <path d="M134 84 L158 80 L176 68"/>
+      <path d="M142 114 L168 104 L186 108"/>
+      <path d="M136 146 L150 168 L148 190"/>
+      <path d="M92 30 C 86 22, 76 18, 66 22"/>
+      <path d="M108 30 C 114 18, 124 10, 134 10"/>
+    </g>
+    <g stroke="#4a2f28" stroke-width="4.5">
+      <path d="M66 84 L46 62 L42 42"/>
+      <path d="M58 114 L32 126 L20 144"/>
+      <path d="M64 146 L40 152 L24 166"/>
+      <path d="M134 84 L158 80 L176 68"/>
+      <path d="M142 114 L168 104 L186 108"/>
+      <path d="M136 146 L150 168 L148 190"/>
+      <path d="M92 30 C 86 22, 76 18, 66 22"/>
+      <path d="M108 30 C 114 18, 124 10, 134 10"/>
+    </g>
+  </g>
+  <!-- Small head -->
+  <ellipse cx="100" cy="36" rx="17" ry="11" fill="#33222a" stroke="#f3e2b4" stroke-width="3.5"/>
+  <circle cx="90" cy="31" r="2.6" fill="#f8efd6"/>
+  <circle cx="110" cy="31" r="2.6" fill="#f8efd6"/>
+  <!-- Domed shell -->
+  <path d="M100 50 C 140 50, 160 84, 158 118 C 156 152, 132 178, 100 178 C 68 178, 44 152, 42 118 C 40 84, 60 50, 100 50 Z" fill="#de4f38" stroke="#f6e4b4" stroke-width="4.5" stroke-linejoin="round"/>
+  <!-- Painted light from the upper left, shade at the lower right -->
+  <path d="M62 72 C 72 60, 86 56, 98 56 C 82 78, 76 126, 82 168 C 64 156, 48 132, 47 108 C 46 94, 52 82, 62 72 Z" fill="#f58f6c" opacity="0.6"/>
+  <path d="M152 100 C 156 134, 136 166, 104 175 C 124 160, 140 136, 144 106 C 146 100, 150 96, 152 100 Z" fill="#a8302a" opacity="0.6"/>
+  <line x1="100" y1="54" x2="100" y2="176" stroke="#4a2f28" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- Seven spots -->
+  <g fill="#3a2422">
+    <ellipse cx="100" cy="72" rx="9" ry="10"/>
+    <ellipse cx="70" cy="96" rx="11" ry="12" transform="rotate(-12 70 96)"/>
+    <ellipse cx="130" cy="96" rx="11" ry="12" transform="rotate(12 130 96)"/>
+    <ellipse cx="68" cy="136" rx="9" ry="10" transform="rotate(14 68 136)"/>
+    <ellipse cx="132" cy="136" rx="9" ry="10" transform="rotate(-14 132 136)"/>
+    <ellipse cx="87" cy="158" rx="6" ry="6.5"/>
+    <ellipse cx="113" cy="158" rx="6" ry="6.5"/>
+  </g>
+  <ellipse cx="78" cy="74" rx="10" ry="4.5" fill="#fff6e6" opacity="0.75" transform="rotate(-32 78 74)"/>
+  <ellipse cx="62" cy="92" rx="3" ry="2" fill="#fff6e6" opacity="0.6" transform="rotate(-50 62 92)"/>
+  <!-- Dark collar with two cream patches -->
+  <path d="M68 54 C 68 34, 132 34, 132 54 C 120 62, 80 62, 68 54 Z" fill="#33222a" stroke="#f6e4b4" stroke-width="4" stroke-linejoin="round"/>
+  <ellipse cx="80" cy="48" rx="7" ry="5.5" fill="#f8efd6" transform="rotate(-20 80 48)"/>
+  <ellipse cx="120" cy="48" rx="7" ry="5.5" fill="#f8efd6" transform="rotate(20 120 48)"/>
+</svg>

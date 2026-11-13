@@ -20,6 +20,8 @@ struct PathLeg: Equatable {
     var underCover: Bool = false
     /// Normalized point the critter peeks out to while under cover; `nil` picks one around the spot.
     var peek: CGPoint?
+    /// Travelled in the air, wings spread.
+    var flies: Bool = false
 }
 
 enum MovementStyle {
@@ -57,6 +59,11 @@ enum MovementStyle {
     /// Leaves in a fast straight flight across the field, sometimes before its path is done.
     var fliesOff: Bool {
         self == .peck
+    }
+
+    /// Has wings: flies in from the edge and lands, and flies out again.
+    var flies: Bool {
+        self == .peck || self == .wander
     }
 
     var legCount: ClosedRange<Int> {

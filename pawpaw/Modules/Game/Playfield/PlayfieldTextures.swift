@@ -16,11 +16,24 @@ enum PlayfieldTextures {
         let size: CGSize
         /// Side of the artwork itself, used for hit testing.
         let side: CGFloat
+        /// The moving poses, the same size as `texture`.
+        var poses: [CritterPose: SKTexture] = [:]
+
+        func texture(for pose: CritterPose) -> SKTexture? {
+            pose == .rest ? texture : poses[pose]
+        }
     }
 
     enum CritterStyle {
         case standard
         case caught
+    }
+
+    enum CritterPose: CaseIterable {
+        case rest
+        case moving
+        case movingAlternate
+        case flying
     }
 
     private struct Shadow {
@@ -37,12 +50,12 @@ enum PlayfieldTextures {
     }
 
     private static var critters: [CritterKey: Critter] = [:]
-    private static var tintedArtwork: [CritterKey: UIImage] = [:]
     private static var textures: [String: SKTexture] = [:]
 
     // MARK: Critters
 
-    /// `size` is before the variant's scale.
+    /// `size` is before the variant's scale. Only the standard style has moving poses:
+    /// a caught critter has stopped.
     static func critter(
         _ kind: TargetKind,
         variant: CritterVariant,
@@ -51,15 +64,32 @@ enum PlayfieldTextures {
     ) -> Critter? {
         let key = CritterKey(kind: kind, variant: variant, style: style, size: size)
         if let cached = critters[key] { return cached }
-        guard let artwork = artwork(for: kind, variant: variant, size: size) else { return nil }
+        guard
+            let artwork = artwork(
+                named: kind.fieldImageName, kind: kind, variant: variant, size: size)
+        else { return nil }
 
-        let side = size * variant.scale
+        let contentSize = CGSize(width: size * variant.scale, height: size * variant.scale)
         let shadow = critterShadow(kind: kind, variant: variant, style: style)
-        let image = renderWithShadow(shadow, contentSize: CGSize(width: side, height: side)) {
-            rect in
-            artwork.draw(in: rect)
+        let image = renderWithShadow(shadow, contentSize: contentSize) { artwork.draw(in: $0) }
+        var critter = Critter(
+            texture: SKTexture(image: image), size: image.size, side: contentSize.width)
+        if style == .standard {
+            let names: [CritterPose: String?] = [
+                .moving: kind.movingImageName,
+                .movingAlternate: kind.alternateMovingImageName,
+                .flying: kind.flyingImageName,
+            ]
+            for (pose, name) in names {
+                guard let name,
+                    let posed = self.artwork(named: name, kind: kind, variant: variant, size: size)
+                else { continue }
+                critter.poses[pose] = SKTexture(
+                    image: renderWithShadow(shadow, contentSize: contentSize) {
+                        posed.draw(in: $0)
+                    })
+            }
         }
-        let critter = Critter(texture: SKTexture(image: image), size: image.size, side: side)
         critters[key] = critter
         return critter
     }
@@ -89,27 +119,24 @@ enum PlayfieldTextures {
             offset: CGSize(width: 0, height: 4))
     }
 
-    /// The critter's artwork with the variant's colour washed over it.
+    /// The named artwork with the variant's colour washed over it.
     /// The laser keeps its red dot; only its size and glow change.
-    private static func artwork(for kind: TargetKind, variant: CritterVariant, size: CGFloat)
-        -> UIImage?
-    {
-        guard let artwork = UIImage(named: kind.imageName) else { return nil }
+    /// Not cached: `critter` keeps the textures drawn from it.
+    private static func artwork(
+        named name: String, kind: TargetKind, variant: CritterVariant, size: CGFloat
+    ) -> UIImage? {
+        guard let artwork = UIImage(named: name) else { return nil }
         guard let tint = variant.tint, !kind.glows else { return artwork }
-        let key = CritterKey(kind: kind, variant: variant, style: .standard, size: size)
-        if let cached = tintedArtwork[key] { return cached }
 
         // Rendered at the shown size so the vector art stays sharp.
         let side = size * variant.scale
         let rect = CGRect(x: 0, y: 0, width: side, height: side)
-        let image = UIGraphicsImageRenderer(size: rect.size).image { _ in
+        return UIGraphicsImageRenderer(size: rect.size).image { _ in
             artwork.draw(in: rect)
             UIColor(red: tint.red, green: tint.green, blue: tint.blue, alpha: tint.amount).setFill()
             // Source-atop only colours the artwork's own pixels.
             UIRectFillUsingBlendMode(rect, .sourceAtop)
         }
-        tintedArtwork[key] = image
-        return image
     }
 
     // MARK: Hiding spots

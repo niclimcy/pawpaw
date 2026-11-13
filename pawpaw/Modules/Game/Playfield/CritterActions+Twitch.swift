@@ -44,7 +44,9 @@ extension CritterActions {
         let steps = [amount, -2 * amount, amount].map {
             SKAction.rotate(byAngle: $0, duration: period * TimeInterval(abs($0 / amount)) / 4)
         }
-        if eased { steps.forEach { $0.timingMode = .easeInEaseOut } }
+        if eased {
+            for step in steps { step.timingMode = .easeInEaseOut }
+        }
         return .sequence(steps)
     }
 
@@ -73,6 +75,12 @@ struct Timeline {
 
     var sequence: SKAction {
         .sequence(actions)
+    }
+
+    /// The sequence, or none when nothing was added. An empty sequence run on a node stops the
+    /// actions run after it, such as the butterfly's endless wingbeat.
+    var actionIfAny: [SKAction] {
+        actions.isEmpty ? [] : [sequence]
     }
 
     /// Runs `action` at `time`, or straight after the previous one if that's still going.

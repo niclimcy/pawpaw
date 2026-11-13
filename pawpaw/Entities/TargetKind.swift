@@ -56,6 +56,42 @@ enum TargetKind: String, CaseIterable {
         }
     }
 
+    /// Drawn straight and rippled in the game, like a ribbon on a wand.
+    var wavesAlongBody: Bool {
+        self == .ribbon
+    }
+
+    /// The artwork on the playfield. Menus show `imageName`, which is curled for the ribbon.
+    var fieldImageName: String {
+        wavesAlongBody ? imageName + "_strip" : imageName
+    }
+
+    /// Artwork for a pose shown while it moves along the ground or through water:
+    /// mid-stride, mid-stroke or mid-hop. `nil` when it has none.
+    var movingImageName: String? {
+        switch self {
+        case .mouse, .bug, .cricket, .fish, .lizard: return imageName + "_move"
+        case .butterfly, .feather, .laser, .ribbon, .bird: return nil
+        }
+    }
+
+    /// Artwork for the opposite step to `movingImageName`. Drawn rather than mirrored,
+    /// so markings and shading stay on the same side.
+    var alternateMovingImageName: String? {
+        switch self {
+        case .mouse, .bug, .fish, .lizard: return imageName + "_move2"
+        case .cricket, .butterfly, .feather, .laser, .ribbon, .bird: return nil
+        }
+    }
+
+    /// Artwork with the wings spread, shown as it flies off the field.
+    var flyingImageName: String? {
+        switch self {
+        case .bug, .bird: return imageName + "_fly"
+        case .mouse, .cricket, .fish, .lizard, .butterfly, .feather, .laser, .ribbon: return nil
+        }
+    }
+
     var points: Int {
         switch self {
         case .mouse: return 10

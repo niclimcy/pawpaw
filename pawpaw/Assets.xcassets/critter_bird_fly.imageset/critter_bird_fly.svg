@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Flying pose of critter_bird: wings spread. Original artwork for Paw Paw. -->
+  <g stroke="#3d3340" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Fanned tail -->
+    <path d="M88 140 C 82 160, 76 178, 72 191 Q 100 200, 128 191 C 124 178, 118 160, 112 140 Z" fill="#4f82cf"/>
+    <path d="M100 152 L100 193 M93 154 L84 190 M107 154 L116 190" fill="none" stroke-width="2" opacity="0.45"/>
+    <!-- Plump body, yellow on the back -->
+    <ellipse cx="100" cy="112" rx="37" ry="47" fill="#f0d065"/>
+  </g>
+  <path d="M100 74 C 110 96, 110 130, 100 154 C 90 130, 90 96, 100 74 Z" fill="#cfa93f" opacity="0.55"/>
+  <path d="M92 80 C 88 100, 88 126, 94 146 C 90 126, 90 100, 96 80 Z" fill="#fbeeb0" opacity="0.8"/>
+  <!-- Wings spread for flight, with scalloped flight feathers -->
+  <g stroke="#3d3340" stroke-width="3.5" stroke-linejoin="round">
+    <path d="M78 80 C 58 62, 26 66, 6 94 C 12 100, 15 106, 16 114 C 24 110, 31 114, 33 123 C 41 118, 49 122, 52 131 C 60 126, 68 130, 72 140 C 80 130, 86 112, 86 92 Z" fill="#5a8fdb"/>
+    <path d="M122 80 C 142 62, 174 66, 194 94 C 188 100, 185 106, 184 114 C 176 110, 169 114, 167 123 C 159 118, 151 122, 148 131 C 140 126, 132 130, 128 140 C 120 130, 114 112, 114 92 Z" fill="#5a8fdb"/>
+  </g>
+  <path d="M76 84 C 60 72, 36 74, 18 90 C 34 88, 54 94, 80 104 Z" fill="#8fb6ee" opacity="0.85"/>
+  <path d="M124 84 C 140 72, 164 74, 182 90 C 166 88, 146 94, 120 104 Z" fill="#8fb6ee" opacity="0.55"/>
+  <g stroke="#34599e" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.8">
+    <path d="M30 98 L17 112 M44 100 L33 121 M58 104 L52 129 M72 108 L72 138 M170 98 L183 112 M156 100 L167 121 M142 104 L148 129 M128 108 L128 138"/>
+  </g>
+  <path d="M22 95 C 40 95, 60 99, 80 109 M178 95 C 160 95, 140 99, 120 109" stroke="#faf3e0" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+  <!-- Head: cream cheeks, blue cap, dark eye stripe -->
+  <circle cx="100" cy="58" r="28" fill="#fbf4e2" stroke="#3d3340" stroke-width="3.5"/>
+  <path d="M100 36 C 114 36, 121 48, 118 62 C 110 72, 90 72, 82 62 C 79 48, 86 36, 100 36 Z" fill="#5a8fdb"/>
+  <path d="M90 42 C 95 38, 104 38, 110 41 C 102 42, 95 46, 91 54 C 88 50, 88 45, 90 42 Z" fill="#8fb6ee" opacity="0.85"/>
+  <path d="M92 34 C 82 38, 75 46, 73 56 M108 34 C 118 38, 125 46, 127 56" stroke="#2f3e63" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <circle cx="76" cy="56" r="5" fill="#27222a"/>
+  <circle cx="124" cy="56" r="5" fill="#27222a"/>
+  <circle cx="74.6" cy="54.2" r="1.7" fill="#fff"/>
+  <circle cx="122.6" cy="54.2" r="1.7" fill="#fff"/>
+  <!-- Short beak -->
+  <path d="M93 35 C 95 26, 98 20, 100 16 C 102 20, 105 26, 107 35 Z" fill="#f0a53c" stroke="#3d3340" stroke-width="3" stroke-linejoin="round"/>
+</svg>

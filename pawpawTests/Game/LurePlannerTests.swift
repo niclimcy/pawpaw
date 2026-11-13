@@ -34,6 +34,17 @@ final class LurePlannerTests: XCTestCase {
         }
     }
 
+    func testFlyingLureFliesInOnlyFromOffScreen() throws {
+        for style in allMovementStyles {
+            let entering = MovementPlanner.lureLegs(
+                from: CGPoint(x: 0, y: 0.3), style: style, legDuration: 1.4, cover: cover,
+                isFinal: false)
+            XCTAssertEqual(try XCTUnwrap(entering.first).flies, style.flies, "\(style)")
+            XCTAssertEqual(entering.filter(\.flies).count, style.flies ? 1 : 0, "\(style)")
+            XCTAssertFalse(loop(style).contains(where: \.flies), "\(style) continues on foot")
+        }
+    }
+
     func testCoverIsNeverFirstOrLastStop() throws {
         var tookCover = false
         for _ in 0..<plannerRuns {

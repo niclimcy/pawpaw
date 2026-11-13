@@ -24,6 +24,8 @@ final class CritterNode: SKNode {
     /// Side of the artwork, without the shadow padding.
     private var artworkSide: CGFloat = 0
     private var caughtArtwork: PlayfieldTextures.Critter?
+    /// Kept across the lure's loops, so its ribbon carries on rippling without a jump.
+    private var ribbon: RibbonWave?
 
     override init() {
         super.init()
@@ -64,6 +66,41 @@ final class CritterNode: SKNode {
         for action in plan.jiggle { jiggle.run(action) }
         for action in plan.wings { wings.run(action) }
         for action in plan.body { sprite.run(action) }
+        for action in Self.poseAction(for: plan.poses, artwork: artwork) { sprite.run(action) }
+        if plan.ripples {
+            let wave = ribbon ?? RibbonWave(bodyLength: artwork.side)
+            ribbon = wave
+            wave.restartClock()
+            sprite.run(ripple(with: wave, duration: plan.path.duration))
+        }
+    }
+
+    private func ripple(with wave: RibbonWave, duration: TimeInterval) -> SKAction {
+        .customAction(withDuration: duration) { [weak self] node, elapsed in
+            guard let self, let sprite = node as? SKSpriteNode else { return }
+            sprite.warpGeometry = wave.warp(
+                at: TimeInterval(elapsed), position: self.position,
+                heading: self.turn.zRotation)
+        }
+    }
+
+    /// Cues whose poses the artwork lacks are skipped, leaving the resting pose.
+    private static func poseAction(
+        for cues: [CritterActions.PoseCue], artwork: PlayfieldTextures.Critter
+    ) -> [SKAction] {
+        var timeline = Timeline()
+        for cue in cues {
+            let frames = cue.poses.compactMap { artwork.texture(for: $0) }
+            guard !cue.poses.isEmpty, frames.count == cue.poses.count, cue.frameTime > 0 else {
+                continue
+            }
+            let cycle = SKAction.animate(with: frames, timePerFrame: cue.frameTime)
+            let count = max(1, Int((cue.duration / cycle.duration).rounded()))
+            timeline.add(
+                .sequence([.repeat(cycle, count: count), .setTexture(artwork.texture)]),
+                at: cue.start)
+        }
+        return timeline.actionIfAny
     }
 
     func stop() {
@@ -126,6 +163,8 @@ final class CritterNode: SKNode {
         stop()
         removeFromParent()
         caughtArtwork = nil
+        ribbon = nil
+        sprite.warpGeometry = nil
         sprite.texture = nil
         for node in [turn, jiggle, wings, sprite] as [SKNode] {
             node.position = .zero

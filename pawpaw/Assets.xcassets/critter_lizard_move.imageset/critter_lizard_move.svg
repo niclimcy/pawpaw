@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Mid-stride pose of critter_lizard: head turned left, diagonal legs reaching, tail swung across. Original artwork for Paw Paw. -->
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <g stroke="#3d301c" stroke-width="5">
+      <path d="M66 32 L59 27 M66 32 L64 22 M66 32 L71 23 M140 82 L148 79 M140 82 L148 87 M140 82 L143 91"/>
+      <path d="M56 148 L48 150 M56 148 L51 157 M56 148 L59 158 M148 118 L156 114 M148 118 L157 121 M148 118 L152 127"/>
+    </g>
+    <g stroke="#d9c078" stroke-width="2.4">
+      <path d="M66 32 L59 27 M66 32 L64 22 M66 32 L71 23 M140 82 L148 79 M140 82 L148 87 M140 82 L143 91"/>
+      <path d="M56 148 L48 150 M56 148 L51 157 M56 148 L59 158 M148 118 L156 114 M148 118 L157 121 M148 118 L152 127"/>
+    </g>
+    <path d="M88 62 L70 50 L66 32 M112 62 L134 66 L140 82 M88 124 L66 128 L56 148 M112 124 L134 110 L148 118" stroke="#3d301c" stroke-width="10"/>
+    <path d="M88 62 L70 50 L66 32 M112 62 L134 66 L140 82 M88 124 L66 128 L56 148 M112 124 L134 110 L148 118" stroke="#a88a48" stroke-width="5.5"/>
+  </g>
+  <path d="M112 130 C 110 160, 88 182, 65 196 C 61 199, 57 196, 60 192 C 78 176, 88 156, 88 130 Z" fill="#4f8fe0" stroke="#3d301c" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M103 146 C 98 164, 84 180, 66 192 C 80 178, 90 164, 94 146 Z" fill="#a5cbf5" opacity="0.8"/>
+  <!-- Outlines sit under both fills, so the neck shows no seam -->
+  <g fill="none" stroke="#3d301c" stroke-width="6" stroke-linejoin="round">
+    <path d="M111 50 C 116 64, 119 80, 118 96 C 117 112, 114 126, 110 138 C 106 142, 94 142, 90 138 C 86 126, 83 112, 82 96 C 81 80, 84 64, 89 50 Z"/>
+    <path transform="rotate(-13 100 54)" d="M100 10 C 108 10, 114 20, 114 31 C 114 40, 111 46, 111 52 C 111 64, 89 64, 89 52 C 89 46, 86 40, 86 31 C 86 20, 92 10, 100 10 Z"/>
+  </g>
+  <path d="M111 50 C 116 64, 119 80, 118 96 C 117 112, 114 126, 110 138 C 106 142, 94 142, 90 138 C 86 126, 83 112, 82 96 C 81 80, 84 64, 89 50 Z" fill="#9c7f42"/>
+  <path transform="rotate(-13 100 54)" d="M100 10 C 108 10, 114 20, 114 31 C 114 40, 111 46, 111 52 C 111 64, 89 64, 89 52 C 89 46, 86 40, 86 31 C 86 20, 92 10, 100 10 Z" fill="#9c7f42"/>
+  <path d="M106 54 C 107.5 68, 108 82, 108 96 C 108 114, 105 128, 102 137 L 98 137 C 95 128, 92 114, 92 96 C 92 82, 92.5 68, 94 54 Z" fill="#5c4a24" opacity="0.6"/>
+  <g stroke="#f3e6a4" stroke-width="3.5" stroke-linecap="round" fill="none">
+    <path d="M89.4 54 C 87.5 66, 86.6 82, 87 96 C 88 114, 91 126, 93 135"/>
+    <path d="M110.6 54 C 112.5 66, 113.4 82, 113 96 C 112 114, 109 126, 107 135"/>
+  </g>
+  <path d="M100 54 L100 134" stroke="#d9c078" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.7"/>
+  <g transform="rotate(-13 100 54)">
+    <path d="M100 20 C 102.5 30, 104.5 42, 106 54 L 94 54 C 95.5 42, 97.5 30, 100 20 Z" fill="#5c4a24" opacity="0.6"/>
+    <g stroke="#f3e6a4" stroke-width="3.5" stroke-linecap="round" fill="none">
+      <path d="M92 30 C 91.6 38, 90.6 47, 89.4 54"/>
+      <path d="M108 30 C 108.4 38, 109.4 47, 110.6 54"/>
+    </g>
+    <path d="M100 16 L100 54" stroke="#d9c078" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.7"/>
+    <ellipse cx="89" cy="26" rx="3" ry="3.6" fill="#1f1a16"/>
+    <ellipse cx="111" cy="26" rx="3" ry="3.6" fill="#1f1a16"/>
+    <circle cx="88.2" cy="24.8" r="1" fill="#fff"/>
+    <circle cx="110.2" cy="24.8" r="1" fill="#fff"/>
+  </g>
+</svg>

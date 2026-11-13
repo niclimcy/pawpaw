@@ -4,7 +4,7 @@
 
 | Critter | Points | Behavior |
 |---|---|---|
-| Ladybug | 5 | Slowest, most common |
+| Ladybug | 5 | Slowest, most common; flies in and out |
 | Feather | 5 | Slow drifting curves |
 | Mouse | 10 | Darts and freezes |
 | Ribbon | 10 | Snakes along, never stops |
@@ -12,7 +12,7 @@
 | Fish | 15 | Rises near the surface; **Pond** only |
 | Lizard | 15 | Dashes and freezes; **Grass** only |
 | Butterfly | 20 | Fastest, rare |
-| Bird | 20 | Hops, pecks, flies off |
+| Bird | 20 | Flies in, hops, pecks, flies off |
 | Laser dot | 25 | Silent red dot that streaks and stops |
 
 ## For cats

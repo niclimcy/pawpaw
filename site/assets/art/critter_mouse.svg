@@ -1,40 +1,50 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
-  <!-- Top-down mouse in a soft outlined style, nose facing up. Original artwork for Paw Paw. -->
-  <g stroke="#6b4a3a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
-    <!-- Long thin tail with a little tuft -->
-    <path d="M100 150 C 96 176, 138 170, 130 192" fill="none" stroke-width="7"/>
-    <path d="M100 150 C 96 176, 138 170, 130 192" fill="none" stroke="#c9967a" stroke-width="3.5"/>
-    <path d="M130 192 L122 199 M130 192 L131 200 M130 192 L138 198" fill="none" stroke-width="2.5"/>
-    <!-- Back feet -->
-    <ellipse cx="70" cy="152" rx="10" ry="15" fill="#f1b8a6" transform="rotate(-18 70 152)"/>
-    <ellipse cx="130" cy="152" rx="10" ry="15" fill="#f1b8a6" transform="rotate(18 130 152)"/>
-    <!-- Plump body -->
-    <ellipse cx="100" cy="118" rx="44" ry="52" fill="#d9a877"/>
-    <!-- Front paws tucked beside the head -->
-    <ellipse cx="68" cy="82" rx="8" ry="12" fill="#f1b8a6" transform="rotate(22 68 82)"/>
-    <ellipse cx="132" cy="82" rx="8" ry="12" fill="#f1b8a6" transform="rotate(-22 132 82)"/>
-    <!-- Round ears with pink insides -->
-    <circle cx="68" cy="52" r="18" fill="#d9a877"/>
-    <circle cx="68" cy="52" r="10" fill="#f1b8a6" stroke-width="2.5"/>
-    <circle cx="132" cy="52" r="18" fill="#d9a877"/>
-    <circle cx="132" cy="52" r="10" fill="#f1b8a6" stroke-width="2.5"/>
-    <!-- Head tapering to the nose -->
-    <path d="M100 10 C 120 12, 130 34, 128 56 C 126 76, 114 86, 100 86 C 86 86, 74 76, 72 56 C 70 34, 80 12, 100 10 Z" fill="#e3b787"/>
+  <!-- Top-down mouse with natural proportions in a soft hand-painted style, nose facing up. Original artwork for Paw Paw. -->
+  <!-- White flanks and blaze give contrast by brightness on dark playfields. -->
+  <g stroke="#4f3d35" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Long bare tail -->
+    <path d="M100 152 C 92 172, 128 176, 120 198" fill="none" stroke-width="8"/>
+    <path d="M100 152 C 92 172, 128 176, 120 198" fill="none" stroke="#e6ac9c" stroke-width="4.5"/>
+    <!-- Feet showing past the body -->
+    <g fill="#eebbab" stroke-width="2.5">
+      <ellipse cx="62" cy="141" rx="6" ry="12" transform="rotate(-35 62 141)"/>
+      <ellipse cx="138" cy="141" rx="6" ry="12" transform="rotate(35 138 141)"/>
+      <ellipse cx="70" cy="69" rx="5" ry="9" transform="rotate(32 70 69)"/>
+      <ellipse cx="130" cy="69" rx="5" ry="9" transform="rotate(-32 130 69)"/>
+    </g>
+    <!-- Pointed head flowing into a teardrop body -->
+    <path d="M100 10 C 108 10, 114 22, 119 36 C 123 46, 122 56, 121 62 C 132 74, 139 96, 138 116 C 137 142, 120 158, 100 158 C 80 158, 63 142, 62 116 C 61 96, 68 74, 79 62 C 78 56, 77 46, 81 36 C 86 22, 92 10, 100 10 Z" fill="#a38b78" stroke-width="3"/>
   </g>
-  <!-- Soft lighter patch on the back -->
-  <ellipse cx="100" cy="122" rx="22" ry="34" fill="#e8c297" opacity="0.8"/>
-  <!-- Bead eyes -->
-  <ellipse cx="85" cy="44" rx="4.8" ry="5.8" fill="#3a2a25"/>
-  <ellipse cx="115" cy="44" rx="4.8" ry="5.8" fill="#3a2a25"/>
-  <circle cx="83.6" cy="42" r="1.5" fill="#fff"/>
-  <circle cx="113.6" cy="42" r="1.5" fill="#fff"/>
-  <!-- Thin whiskers -->
-  <g stroke="#6b4a3a" stroke-width="1.6" stroke-linecap="round" opacity="0.85">
-    <line x1="88" y1="26" x2="62" y2="18"/>
-    <line x1="87" y1="31" x2="58" y2="30"/>
-    <line x1="112" y1="26" x2="138" y2="18"/>
-    <line x1="113" y1="31" x2="142" y2="30"/>
+  <!-- White flanks -->
+  <path d="M64 110 C 62 134, 73 152, 95 156 C 81 147, 72 131, 72 107 C 70 103, 65 105, 64 110 Z" fill="#f6efe4" opacity="0.92"/>
+  <path d="M136 110 C 138 134, 127 152, 105 156 C 119 147, 128 131, 128 107 C 130 103, 135 105, 136 110 Z" fill="#f6efe4" opacity="0.92"/>
+  <!-- Painted fur: darker along the spine, lighter on one shoulder -->
+  <path d="M100 44 C 109 70, 113 112, 100 153 C 87 112, 91 70, 100 44 Z" fill="#7a6455" opacity="0.55"/>
+  <path d="M80 78 C 72 94, 71 112, 76 128 C 78 112, 81 94, 87 78 C 85 75, 82 75, 80 78 Z" fill="#c9b29c" opacity="0.6"/>
+  <g stroke="#5f4c40" stroke-width="1.6" stroke-linecap="round" fill="none" opacity="0.4">
+    <path d="M84 100 L83 108 M92 124 L91 132 M110 96 L111 104 M116 120 L117 128 M106 138 L107 145"/>
   </g>
-  <!-- Small nose -->
-  <ellipse cx="100" cy="17" rx="5" ry="4" fill="#c9786f" stroke="#6b4a3a" stroke-width="2"/>
+  <!-- Thin ears set back on the head -->
+  <g stroke="#4f3d35" stroke-width="2.5">
+    <ellipse cx="77" cy="50" rx="10" ry="12" fill="#b89a86" transform="rotate(-30 77 50)"/>
+    <ellipse cx="123" cy="50" rx="10" ry="12" fill="#b89a86" transform="rotate(30 123 50)"/>
+  </g>
+  <ellipse cx="76.5" cy="50" rx="6" ry="8" fill="#e9b7a8" transform="rotate(-30 76.5 50)"/>
+  <ellipse cx="123.5" cy="50" rx="6" ry="8" fill="#e9b7a8" transform="rotate(30 123.5 50)"/>
+  <!-- White blaze down the snout -->
+  <path d="M100 12 C 106 20, 106 36, 100 48 C 94 36, 94 20, 100 12 Z" fill="#f6efe4" opacity="0.95"/>
+  <!-- Small dark eyes -->
+  <ellipse cx="88.5" cy="35" rx="3.6" ry="4.2" fill="#2a2020"/>
+  <ellipse cx="111.5" cy="35" rx="3.6" ry="4.2" fill="#2a2020"/>
+  <circle cx="87.6" cy="33.6" r="1.1" fill="#fff"/>
+  <circle cx="110.6" cy="33.6" r="1.1" fill="#fff"/>
+  <!-- Fine whiskers -->
+  <g stroke="#f3e8da" stroke-width="1.3" stroke-linecap="round" fill="none" opacity="0.85">
+    <path d="M94 18 C 86 14, 78 12, 68 13"/>
+    <path d="M93 22 C 84 21, 75 22, 66 26"/>
+    <path d="M106 18 C 114 14, 122 12, 132 13"/>
+    <path d="M107 22 C 116 21, 125 22, 134 26"/>
+  </g>
+  <!-- Nose -->
+  <ellipse cx="100" cy="12" rx="3.6" ry="3" fill="#d98f86" stroke="#4f3d35" stroke-width="1.5"/>
 </svg>

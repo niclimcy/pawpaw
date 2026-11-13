@@ -40,6 +40,9 @@ Run on an iPad simulator too, since `PlayfieldTuning.current` depends on the dev
 | Pace range, speed-up and slow-down steps | `DifficultyTuner.paceRange`, `.catchStep`, `.escapeStep`, `.missStep` |
 | Per-critter path: legs, pause share, step length, turn angle, hide and cover chance, twitch size | `MovementStyle` in `MovementPath.swift` (`legCount`, `pauseFraction`, `distanceRange`, `turnRange`, `hideChance`, `coverChance`, `twitchAngle`, `twitchShift`) |
 | Hide trips, flight, cover pauses, lead-in, early take-off | `MovementPlanner.hideTravel`, `.minimumHidePause`, `.exitTravel`, `.flightTravel`, `.earlyFlightChance`, `.minimumCoverPause`, `.leadInRange` |
+| Entry from the edge: run-in time and distance, glide-in time, landing spot | `MovementPlanner.minimumEntryTravel`, `.entryDistance`, `.entrySpread`, `.flightEntryTravel`, `.flightLandingDistance` |
+| Step pace against ground speed, wingbeats | `CritterActions.strideSlowdown`, `.wingbeat` |
+| Ribbon ripple: width and speed at rest and running, tail swing on turns | `RibbonWave` |
 | Hiding spot and surfacing-critter placement | `MovementPlanner.hidingSpotXRange`, `.hidingSpotYRange`, `.hidingSpotSpacing`, `.innerRange` |
 | Lure legs, freezes, cover chance, exit speed | `MovementPlanner.lureLegCount`, `.lurePauseFraction`, `.finalLurePauseFraction`, `.lureCoverChance`, `.lureExitTravel`, `.lureFadeOutTravel` |
 | Lure speed (seconds per leg) | `GameInteractor.lureLegDuration`, `.finalLureLegDuration` |
@@ -52,6 +55,17 @@ Run on an iPad simulator too, since `PlayfieldTuning.current` depends on the dev
 ## Art
 
 Critter and cat SVGs are original. To replace one, swap the SVG in its `.imageset` folder, keeping the filename. Backgrounds are drawn in code.
+
+Critters are drawn from above, facing up. The animals have extra poses, named in `TargetKind`:
+
+| Asset | Pose | Critters |
+|---|---|---|
+| `critter_<name>_move` | Mid-stride, mid-stroke or mid-hop | Mouse, ladybug, lizard, fish, cricket |
+| `critter_<name>_move2` | The opposite step | Mouse, ladybug, lizard, fish |
+| `critter_<name>_fly` | Wings spread, for flying off the field | Ladybug, bird |
+| `critter_ribbon_strip` | Straight, for the game to ripple; menus keep the curled `critter_ribbon` | Ribbon |
+
+Draw the opposite step rather than flipping the whole picture, so markings and shading stay on the same side. `CritterActions.poseCycle` sets which poses play and how fast.
 
 ## Limitations
 

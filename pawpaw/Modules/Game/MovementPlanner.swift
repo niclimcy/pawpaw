@@ -14,6 +14,16 @@ enum MovementPlanner {
     static let exitTravel: TimeInterval = 0.9
     /// Fliers cross most of the field in this time.
     static let flightTravel: TimeInterval = 0.6
+    /// How far into the field a flier lands after flying in.
+    static let flightLandingDistance: ClosedRange<Double> = 0.3...0.45
+    /// Fliers glide in more slowly than they leave.
+    static let flightEntryTravel: TimeInterval = 1.3
+    /// Critters come on calmly, a short way in, before moving in their own style.
+    /// A slow entry can make the critter's time on the field this much longer.
+    static let minimumEntryTravel: TimeInterval = 1.1
+    static let entryDistance: ClosedRange<Double> = 0.12...0.28
+    /// Radians either side of the field's centre that an entry heads.
+    static let entrySpread = 0.6
     static let earlyFlightChance = 0.4
     /// Long enough to peek out twice.
     static let minimumCoverPause: TimeInterval = 1.6
@@ -71,6 +81,7 @@ enum MovementPlanner {
         var current = start
         var heading = Double.random(in: 0..<(2 * .pi))
         var hasTakenCover = false
+        let entersFromEdge = !style.surfaces && isOnEdge(start)
         let firstTurn: Double = Bool.random() ? 1 : -1
         // Fliers sometimes take off early, which shortens the path.
         let lastIndex =
@@ -81,11 +92,25 @@ enum MovementPlanner {
             let hasPause = index < pauses.count
             var pause = hasPause ? pauses[index] : 0
             let longFreeze = pause >= minimumHidePause
+            let isEntry = index == 0 && entersFromEdge
+            let fliesIn = isEntry && style.flies
             // Land critters only take cover during a long freeze; a fish can glide under a lily pad on any hover.
-            let mayTakeCover = hasPause && !hasTakenCover && (longFreeze || style.surfaces)
+            let mayTakeCover =
+                hasPause && !hasTakenCover && !fliesIn && (longFreeze || style.surfaces)
             let destination: CGPoint
             let underCover: Bool
-            if mayTakeCover, let spot = coverSpots.randomElement(),
+            let travel =
+                fliesIn
+                ? flightEntryTravel
+                : isEntry ? max(travels[index], minimumEntryTravel) : travels[index]
+            if fliesIn {
+                // Any time the flight saves is spent sitting still after landing.
+                pause += max(travels[index] - travel, 0)
+                destination = flightLandingPoint(from: current)
+                underCover = false
+                heading = atan2(
+                    Double(destination.y - current.y), Double(destination.x - current.x))
+            } else if mayTakeCover, let spot = coverSpots.randomElement(),
                 Double.random(in: 0..<1) < style.coverChance
             {
                 destination = spot
@@ -94,6 +119,13 @@ enum MovementPlanner {
                 // May lengthen the journey slightly.
                 pause = max(pause, minimumCoverPause)
                 heading = atan2(Double(spot.y - current.y), Double(spot.x - current.x))
+            } else if isEntry {
+                heading = entryHeading(from: current)
+                let distance = min(
+                    max(Double.random(in: style.distanceRange), entryDistance.lowerBound),
+                    entryDistance.upperBound)
+                destination = nextPoint(from: current, heading: &heading, distance: distance)
+                underCover = false
             } else {
                 let turn: Double =
                     style.slithers
@@ -110,10 +142,13 @@ enum MovementPlanner {
             legs.append(
                 PathLeg(
                     destination: destination,
-                    travel: travels[index],
+                    travel: travel,
                     pause: pause,
-                    hides: !underCover && longFreeze && Double.random(in: 0..<1) < style.hideChance,
-                    underCover: underCover
+                    // Never straight back off the edge it just landed by.
+                    hides: !underCover && !fliesIn && longFreeze
+                        && Double.random(in: 0..<1) < style.hideChance,
+                    underCover: underCover,
+                    flies: fliesIn
                 ))
             current = destination
         }
@@ -164,7 +199,16 @@ enum MovementPlanner {
         var legs: [PathLeg] = []
         var current = start
         for index in 0..<count {
-            if index == coverIndex, let spot = spots.randomElement() {
+            if index == 0, !style.surfaces, isOnEdge(start) {
+                current = lureOpenPoint(from: current, style: style, avoiding: cover?.frame)
+                let travel =
+                    style.flies ? flightEntryTravel : max(travels[index], minimumEntryTravel)
+                legs.append(
+                    PathLeg(
+                        destination: current, travel: travel,
+                        pause: pauses[index] + max(travels[index] - travel, 0), hides: false,
+                        flies: style.flies))
+            } else if index == coverIndex, let spot = spots.randomElement() {
                 legs.append(
                     PathLeg(
                         destination: spot.hide,
@@ -260,8 +304,32 @@ enum MovementPlanner {
             travel: style.fliesOff ? flightTravel : walkTravel,
             pause: 0,
             hides: false,
-            exits: true
+            exits: true,
+            flies: style.flies
         )
+    }
+
+    /// Starts on the border are off-screen entries; points inside are already in view.
+    static func isOnEdge(_ point: CGPoint) -> Bool {
+        point.x <= 0 || point.x >= 1 || point.y <= 0 || point.y >= 1
+    }
+
+    /// Roughly toward the middle of the field, so entries never skim along an edge.
+    private static func entryHeading(from point: CGPoint) -> Double {
+        atan2(0.5 - Double(point.y), 0.5 - Double(point.x))
+            + Double.random(in: -entrySpread...entrySpread)
+    }
+
+    /// Where a flier entering at `point` lands: well into the field, roughly toward the middle.
+    private static func flightLandingPoint(from point: CGPoint) -> CGPoint {
+        let heading = entryHeading(from: point)
+        let distance = Double.random(in: flightLandingDistance)
+        func inner(_ value: CGFloat) -> CGFloat {
+            min(max(value, innerRange.lowerBound), innerRange.upperBound)
+        }
+        return CGPoint(
+            x: inner(point.x + CGFloat(cos(heading) * distance)),
+            y: inner(point.y + CGFloat(sin(heading) * distance)))
     }
 
     private static func nearestEdgePoint(to point: CGPoint) -> CGPoint {
