@@ -1,0 +1,19 @@
+site/styles.css
+  s_7ab8525b63b9c4::t_1a86ffb5542cac 249
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "29284403e305af17a4d9ba41045de9b69be0d2db",
+  "prompts": {},
+  "sessions": {
+    "s_7ab8525b63b9c4": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "36fa4c2b-37fc-486b-a8cb-0523d0b2e04d",
+        "model": "openrouter/OpenRouter/anthropic/claude-opus-5.5"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
