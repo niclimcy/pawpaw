@@ -1,0 +1,41 @@
+site/assets/art/cat_white.svg
+  s_f3998f6a1cee69::t_7df23e433d197c 2-24
+pawpaw/Assets.xcassets/cat_black.imageset/cat_black.svg
+  s_f3998f6a1cee69::t_7df23e433d197c 2-28
+site/assets/art/cat_orange.svg
+  s_f3998f6a1cee69::t_7df23e433d197c 2-29
+pawpaw/Assets.xcassets/cat_siamese.imageset/cat_siamese.svg
+  s_f3998f6a1cee69::t_7df23e433d197c 2-26
+pawpaw/Assets.xcassets/cat_white.imageset/cat_white.svg
+  s_f3998f6a1cee69::t_7df23e433d197c 2-24
+pawpaw/Assets.xcassets/cat_orange.imageset/cat_orange.svg
+  s_f3998f6a1cee69::t_7df23e433d197c 2-29
+site/assets/art/cat_black.svg
+  s_f3998f6a1cee69::t_7df23e433d197c 2-28
+site/assets/art/cat_gray.svg
+  s_f3998f6a1cee69::t_7df23e433d197c 2-26
+site/assets/art/cat_siamese.svg
+  s_f3998f6a1cee69::t_7df23e433d197c 2-26
+pawpaw/Assets.xcassets/cat_calico.imageset/cat_calico.svg
+  s_f3998f6a1cee69::t_7df23e433d197c 2-29
+pawpaw/Assets.xcassets/cat_gray.imageset/cat_gray.svg
+  s_f3998f6a1cee69::t_7df23e433d197c 2-26
+site/assets/art/cat_calico.svg
+  s_f3998f6a1cee69::t_7df23e433d197c 2-29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3fa78115460e94d3044bb225bf7e2af06e4a9720",
+  "prompts": {},
+  "sessions": {
+    "s_f3998f6a1cee69": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "ab41ee8c-1de4-4234-82a2-75c4cee21577",
+        "model": "openrouter/OpenRouter/anthropic/claude-fable-5.2"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
