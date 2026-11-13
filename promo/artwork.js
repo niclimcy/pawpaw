@@ -152,10 +152,15 @@ const CRITTERS = [
   { image: 'critter_butterfly', dx: 0.6, y: 0.2, size: 195, rotation: 0.45 },
   { image: 'critter_cricket', dx: 0.88, y: 0.45, size: 125, rotation: -0.35 },
   { image: 'critter_bug', dx: 0.56, y: 0.47, size: 140, rotation: -2.3 },
-  { image: 'critter_laser', dx: 0.32, y: 0.9, size: 90, rotation: 0, laser: true },
+  { image: 'critter_laser', offset: 270, y: 0.9, size: 90, rotation: 0, laser: true },
 ];
 
 const at = (dx, y) => ({ x: W / 2 + dx * (W / 2), y: y * H });
+
+// The App Store crops wide artwork towards the centre, so the cats sit a fixed
+// distance from it (in design units) instead of fanning out with the width.
+const CAT_OFFSET = 520;
+const nearCentre = (side, y) => ({ x: W / 2 + side * Math.min(CAT_OFFSET, W * 0.4), y: y * H });
 
 function drawMotionLines(x, y, rotation, size) {
   // Short speed streaks trailing behind the critter (it faces up in its art).
@@ -175,7 +180,7 @@ function drawMotionLines(x, y, rotation, size) {
 }
 
 function drawCritter(c) {
-  const p = at(c.dx, c.y);
+  const p = c.offset === undefined ? at(c.dx, c.y) : { x: W / 2 + c.offset, y: c.y * H };
   if (c.laser) {
     const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, c.size * 1.1);
     glow.addColorStop(0, 'rgba(255,60,40,0.55)');
@@ -197,7 +202,7 @@ function drawCritter(c) {
 // A gray tabby paw pouncing up from the bottom edge, like drawPaw in promo.js.
 function drawPaw() {
   const coat = { fur: '#9ea5b0', edge: '#535b70' };
-  const tip = at(-0.74, 0.8);
+  const tip = nearCentre(-1, 0.8);
   const base = { x: tip.x - 70, y: H + 260 };
   const angle = Math.atan2(tip.y - base.y, tip.x - base.x);
   const k = 2.1; // promo.js draws this paw at 1/2.1 of this size
@@ -236,7 +241,7 @@ function drawPaw() {
 // Mochi, the orange tabby, peeking up over the bottom edge.
 function drawPeekingCat() {
   const s = 330;
-  const p = at(0.82, 1);
+  const p = nearCentre(1, 1);
   ctx.save();
   ctx.translate(p.x, p.y - s * 0.78);
   ctx.rotate(-0.12);

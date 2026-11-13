@@ -75,10 +75,24 @@ p { margin: 0 0 1em; }
 
 .nav { display: flex; gap: 6px; flex-wrap: wrap; }
 .nav a {
+  position: relative; overflow: hidden;
   color: var(--text); text-decoration: none; font-weight: 700;
   padding: 8px 16px; border-radius: 999px;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease;
 }
-.nav a:hover { background: var(--panel-soft); color: var(--text); }
+/* A text tint rather than --panel-soft, which matches the orange glow
+   behind the middle of the header and hid the pill on "How To Play".
+   Gated on hover so a tap doesn't leave a stuck pill on touch screens. */
+@media (hover: hover) {
+  .nav a:hover { background: rgba(255, 240, 204, 0.12); color: var(--text); }
+}
+.nav .ripple {
+  position: absolute; border-radius: 50%; pointer-events: none;
+  background: rgba(255, 240, 204, 0.3);
+  transform: scale(0); animation: ripple 0.5s ease-out forwards;
+}
+@keyframes ripple { to { transform: scale(1); opacity: 0; } }
 .nav a[aria-current="page"] { background: var(--text); color: var(--background); }
 
 /* ---------------------------------------------------------------- buttons */
@@ -162,20 +176,33 @@ section { scroll-margin-top: 20px; }
 /* Screenshots */
 .shots { display: grid; gap: 22px; }
 .shots.ipad { grid-template-columns: repeat(4, 1fr); }
-.shots.iphone { grid-template-columns: repeat(4, 1fr); max-width: 760px; margin: 22px auto 0; }
+/* Gameplay on iPhone is landscape: each shot grows by its pixel width at a
+   shared height (--w). */
+.shots.iphone { display: flex; align-items: flex-start; max-width: 1000px; margin: 22px auto 0; }
+.shots.iphone figure { flex: var(--w) 1 0; min-width: 0; }
 .shots figure { margin: 0; text-align: center; }
 .shots img { width: 100%; border-radius: 22px; border: 6px solid #1b1b1e; box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5); }
 .shots.iphone img { border-radius: 26px; }
 .shots figcaption { margin-top: 12px; font-weight: 700; color: var(--text-dim); }
 .subhead { text-align: center; margin-top: 56px; font-size: 1.2rem; color: var(--text-dim); }
 
-/* Real cats: the clips differ in width, so each grows by its own width
-   (--w) to keep both at the same height without cropping. */
-.cat-clips { display: flex; gap: 22px; max-width: 760px; margin-inline: auto; }
-.cat-clips figure { flex: var(--w) 1 0; min-width: 0; margin: 0; text-align: center; }
+/* Real cats: the source clips differ in width (608 vs 512), so both are
+   shown at the narrower one's ratio and the wider one is cropped at the sides. */
+.cat-clips { display: flex; gap: 22px; max-width: 700px; margin-inline: auto; }
+.cat-clips figure { position: relative; flex: 1 1 0; min-width: 0; margin: 0; text-align: center; }
 /* A ring shadow, not a border, so the frame doesn't skew the widths. */
-.cat-clips video { width: 100%; border-radius: 22px; background: #000; box-shadow: 0 0 0 6px #1b1b1e, 0 14px 30px rgba(0, 0, 0, 0.5); cursor: pointer; }
+.cat-clips video { display: block; width: 100%; height: auto; aspect-ratio: 512 / 848; object-fit: cover; border-radius: 22px; background: #000; box-shadow: 0 0 0 6px #1b1b1e, 0 14px 30px rgba(0, 0, 0, 0.5); cursor: pointer; }
 .cat-clips figcaption { margin-top: 12px; font-weight: 700; color: var(--text-dim); }
+.clip-toggle {
+  position: absolute; top: 12px; right: 12px; z-index: 2;
+  display: grid; place-items: center; width: 36px; height: 36px; padding: 0;
+  border: 0; border-radius: 50%; background: rgba(0, 0, 0, 0.55); color: #fff; cursor: pointer;
+}
+.clip-toggle:hover { background: rgba(0, 0, 0, 0.75); }
+.clip-toggle:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.clip-toggle svg { width: 16px; height: 16px; }
+.clip-toggle .icon-play, .is-paused .clip-toggle .icon-pause { display: none; }
+.is-paused .clip-toggle .icon-play { display: block; }
 /* Manhwa-style sound effects for the owner's cheering, which the muted
    clip can't play. They overlap the frame like lettering on a panel. */
 .cat-clips .cheer { position: relative; }
@@ -197,7 +224,6 @@ section { scroll-margin-top: 20px; }
   24% { transform: rotate(var(--tilt)) scale(1); }
 }
 
-.clip-hint { text-align: center; margin: 22px 0 0; font-size: 0.9rem; color: var(--text-dim); }
 
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
 .checklist { list-style: none; padding: 0; margin: 0; }
@@ -254,7 +280,9 @@ kbd, .ui { font-family: inherit; font-weight: 800; color: var(--text); backgroun
 @media (max-width: 600px) {
   body { font-size: 17px; }
   .features { grid-template-columns: 1fr; }
-  .shots.iphone { grid-template-columns: 1fr 1fr; }
+  .shots.iphone { flex-wrap: wrap; justify-content: center; }
+  .shots.iphone figure { flex: 0 0 calc(33.333% - 15px); }
+  .shots.iphone figure.wide { flex-basis: 100%; order: 1; }
   .hero-media .critter { width: 64px; }
   .hero-media .critter.mouse { left: -8px; }
   .critter-strip { grid-template-columns: repeat(5, 1fr); gap: 8px; }

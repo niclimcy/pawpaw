@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paw Paw: Demo</title>
+<style>
+  :root {
+    --bg: #291a0f;
+    --panel: #452b1a;
+    --accent: #ff9e33;
+    --gold: #ffd64d;
+    --text: #fff0cc;
+    --dim: rgba(255, 240, 204, 0.72);
+    --line: rgba(255, 214, 77, 0.35);
+    --pink: #f5989b;
+    --font: ui-rounded, "SF Pro Rounded", "Nunito", system-ui, -apple-system, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; }
+  body {
+    font-family: var(--font);
+    color: var(--text);
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(255, 158, 51, 0.16), transparent 60%),
+      var(--bg);
+  }
+  .slide {
+    position: absolute; inset: 0;
+    display: none;
+    flex-direction: column; justify-content: center;
+    padding: 6vh 8vw;
+  }
+  .slide.active { display: flex; animation: in 0.35s ease-out; }
+  @keyframes in { from { opacity: 0; transform: translateY(12px); } }
+  @media (prefers-reduced-motion: reduce) { .slide.active { animation: none; } }
+
+  h1 { font-size: clamp(48px, 8vw, 110px); margin: 0; color: var(--gold); line-height: 1; }
+  h2 { font-size: clamp(32px, 4.4vw, 60px); margin: 0 0 3vh; color: var(--gold); }
+  h3 { margin: 0 0 8px; color: var(--accent); font-size: clamp(20px, 2vw, 28px); }
+  p, li { font-size: clamp(18px, 2vw, 28px); line-height: 1.45; }
+  p { margin: 0 0 2vh; }
+  ul { margin: 0; padding-left: 1.1em; }
+  li { margin: 0.4em 0; }
+  li::marker { color: var(--accent); }
+  .dim { color: var(--dim); }
+  .kicker { color: var(--accent); text-transform: uppercase; letter-spacing: 0.15em; font-weight: 700; font-size: clamp(14px, 1.4vw, 20px); margin-bottom: 2vh; }
+  code { background: rgba(0, 0, 0, 0.3); padding: 0.05em 0.35em; border-radius: 6px; font-size: 0.9em; }
+
+  .cols { display: grid; grid-template-columns: 1.2fr 1fr; gap: 5vw; align-items: center; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2vw; }
+  .card {
+    background: rgba(69, 43, 26, 0.72);
+    border: 2px solid var(--line);
+    border-radius: 24px;
+    padding: 2.4vh 1.6vw;
+  }
+  .card p { font-size: clamp(16px, 1.5vw, 22px); margin: 0; color: var(--dim); }
+  .icon { width: 1em; height: 1em; fill: currentColor; vertical-align: -0.15em; flex: none; }
+  .card .icon { display: block; width: 44px; height: 44px; margin-bottom: 12px; color: var(--accent); }
+  .paw { width: 1.1em; height: 1em; vertical-align: -0.08em; }
+
+  .shots { display: flex; gap: 2vw; justify-content: center; align-items: center; height: 62vh; }
+  .shots img, .shots video { height: 100%; border-radius: 20px; border: 3px solid var(--line); object-fit: contain; }
+  .shot { max-height: 70vh; max-width: 100%; border-radius: 20px; border: 3px solid var(--line); }
+
+  .layers { display: flex; flex-direction: column; gap: 10px; }
+  .layer { border-radius: 16px; padding: 14px 20px; font-size: clamp(16px, 1.6vw, 24px); border: 2px solid var(--line); }
+  .layer b { color: var(--gold); }
+  .layer.ui { background: rgba(255, 158, 51, 0.18); }
+  .layer.sk { background: rgba(80, 140, 220, 0.22); }
+  .layer.app { background: rgba(255, 255, 255, 0.06); }
+
+  .nested { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: clamp(16px, 1.6vw, 24px); }
+  .nested span { display: inline-flex; align-items: center; gap: 10px; background: var(--panel); border: 2px solid var(--line); border-radius: 14px; padding: 10px 16px; }
+  .nested .icon { color: var(--accent); }
+  .nested i { color: var(--accent); font-style: normal; }
+
+  .map { border-collapse: collapse; width: 100%; font-size: clamp(16px, 1.7vw, 25px); }
+  .map th { text-align: left; color: var(--accent); font-size: 0.75em; text-transform: uppercase; letter-spacing: 0.12em; padding: 0 16px 10px; }
+  .map td { padding: 12px 16px; border-top: 2px solid var(--line); }
+  .map td:first-child { color: var(--dim); }
+  .map td:nth-child(2) { color: var(--gold); font-weight: 700; }
+  .map td code { font-weight: 400; }
+
+  .map.who td:nth-child(2) { white-space: nowrap; }
+  .map.who td:first-child { color: var(--text); font-weight: 700; }
+  .map .icon { color: var(--accent); margin-right: 8px; }
+
+  .steps .card { position: relative; }
+  .step { position: absolute; top: 14px; right: 18px; color: var(--line); font-size: 40px; font-weight: 800; line-height: 1; }
+
+  .layer:has(> .icon) { display: grid; grid-template-columns: auto 1fr; column-gap: 12px; align-items: center; }
+  .layer .icon { color: var(--accent); }
+  .layer > span { min-width: 0; }
+
+  .devices { display: flex; gap: 2.5vw; align-items: flex-end; justify-content: center; height: 64vh; }
+  .devices figure { margin: 0; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; }
+  .devices img { min-height: 0; flex: 1; object-fit: contain; object-position: bottom; border-radius: 16px; }
+  .devices figure:not(.wide) img { max-width: 22vw; }
+  .devices .wide img { max-width: 44vw; }
+  .devices figcaption {
+    display: grid; grid-template-columns: auto 1fr; column-gap: 10px; align-content: start;
+    margin-top: 12px; min-height: 4.2em; color: var(--dim); font-size: clamp(14px, 1.3vw, 19px); max-width: 22vw;
+  }
+  .devices .wide figcaption { max-width: 44vw; }
+  .devices figcaption b { color: var(--gold); font-size: 1.15em; }
+  .devices figcaption .icon { grid-row: span 2; color: var(--accent); width: 1.6em; height: 1.6em; margin-top: 0.2em; }
+
+  .center { text-align: center; align-items: center; }
+  .notes { display: none; }
+  body.show-notes .notes {
+    display: block; position: fixed; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.85); color: var(--text);
+    padding: 16px 8vw; font-size: 18px; line-height: 1.5;
+    border-top: 2px solid var(--accent);
+  }
+
+  #bar { position: fixed; left: 0; bottom: 0; height: 5px; background: var(--accent); transition: width 0.25s; }
+  #count { position: fixed; right: 20px; bottom: 14px; color: var(--dim); font-size: 14px; }
+  #help { position: fixed; left: 20px; bottom: 14px; color: var(--dim); font-size: 13px; opacity: 0.6; }
+
+  /* One slide per 16:9 page; vw/vh follow the page size when printing. */
+  @page { size: 1280px 720px; margin: 0; }
+  @media print {
+    html, body { height: auto; overflow: visible; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .slide, .slide.active {
+      display: flex; position: relative; width: 1280px; height: 720px;
+      animation: none; break-after: page; overflow: hidden;
+      background: radial-gradient(ellipse at 50% 0%, rgba(255, 158, 51, 0.16), transparent 60%), var(--bg);
+    }
+    .slide:last-of-type { break-after: auto; }
+    .notes, #bar, #count, #help { display: none !important; }
+  }
+</style>
+</head>
+<body>
+<!-- Generated by slides/render-icons.swift; edit the list there and re-run it. -->
+<!-- icons:start -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none">
+<symbol id="sf-person.fill" viewBox="0 0 105.9 113.42"><path d="M11.6 113.42L94.25 113.42C101.54 113.42 105.9 109.94 105.9 104.17C105.9 88.13 85.35 66.11 52.93 66.11C20.56 66.11 0 88.13 0 104.17C0 109.94 4.37 113.42 11.6 113.42ZM52.95 55.1C66.8 55.1 78.33 42.9 78.33 27.22C78.33 11.94 66.73 0 52.95 0C39.22 0 27.61 12.13 27.61 27.32C27.61 42.9 39.14 55.1 52.95 55.1Z"/></symbol>
+<symbol id="sf-pawprint.fill" viewBox="0 0 136.61 132.68"><path d="M0 60.29C0 73.24 7.03 83.37 16.06 83.37C25.16 83.37 32.23 73.22 32.23 60.29C32.23 47.43 25.16 37.28 16.06 37.28C7.03 37.28 0 47.43 0 60.29ZM31.22 23.03C31.22 35.89 38.32 46.04 47.35 46.04C56.46 46.04 63.52 35.88 63.52 23.03C63.52 10.1 56.47 0 47.35 0C38.3 0 31.22 10.09 31.22 23.03ZM73.09 23.03C73.09 35.88 80.2 46.04 89.25 46.04C98.29 46.04 105.39 35.89 105.39 23.03C105.39 10.09 98.31 0 89.25 0C80.14 0 73.09 10.1 73.09 23.03ZM104.38 60.29C104.38 73.22 111.49 83.37 120.55 83.37C129.58 83.37 136.61 73.24 136.61 60.29C136.61 47.43 129.58 37.28 120.55 37.28C111.49 37.28 104.38 47.43 104.38 60.29ZM19.89 109.69C19.89 123.16 28.88 132.68 42.05 132.68C48.46 132.68 53.18 130.88 57.52 129.39C61.02 128.18 64.29 127.08 68.29 127.08C72.3 127.08 75.57 128.18 79.07 129.39C83.41 130.88 88.12 132.68 94.54 132.68C107.71 132.68 116.7 123.16 116.7 109.69C116.7 98.52 109.97 92.75 103.75 87.68C100.31 84.9 97 82.27 94.71 78.83C92.94 76.12 91.4 73.13 89.94 70.01C85.33 60.26 81.69 50.81 68.29 50.81C54.89 50.81 51.2 60.27 46.66 70C45.19 73.11 43.68 76.08 41.9 78.78C39.62 82.23 36.29 84.89 32.84 87.68C26.61 92.75 19.89 98.54 19.89 109.69Z"/></symbol>
+<symbol id="sf-hand.tap.fill" viewBox="0 0 127.82 145.61"><path d="M35 0C15.68 0 0 15.63 0 34.88C0 42.46 2.6 50.27 6.92 55.97C8.25 57.84 10.03 58.59 11.73 58.59C15.97 58.59 19.09 53.93 16.04 49.79C12.91 45.79 10.93 40.46 10.93 34.88C10.93 21.66 21.67 10.97 34.98 10.97C47.37 10.97 57.71 20.56 58.67 32.95C58.69 33.3 58.71 33.65 58.74 34.18C59.09 37.25 61.07 39.09 63.89 39.09C67.03 39.09 69.41 36.99 69.5 34.01C69.55 33.43 69.5 32.54 69.41 31.65C67.87 13.68 52.84 0 35 0ZM97.93 142.29C124.85 132.49 134.06 110.09 123.64 81.42L119.26 69.49C115.36 58.67 107.56 53.53 101.22 55.83C99.6 56.43 98.99 57.7 99.57 59.27L101.43 64.35C102.18 66.53 101.57 68.01 100.28 68.47C98.93 68.93 97.52 68.28 96.7 66.08L95.5 62.73C93.15 56.19 87.29 53.31 81.47 55.41C78.71 56.42 77.82 58.18 78.67 60.61L81.2 67.56C82.01 69.76 81.37 71.17 80.12 71.68C78.74 72.14 77.33 71.52 76.53 69.29L74.2 62.85C71.53 55.63 66.04 53.41 60.23 55.5C57.61 56.43 56.6 58.32 57.4 60.68L62.43 74.41C63.23 76.6 62.57 78.03 61.34 78.47C59.98 79 58.56 78.28 57.74 76.14L41.33 30.94C39.58 26.14 35.21 24.03 31.03 25.57C26.62 27.17 24.69 31.54 26.45 36.33L50.21 101.63C50.73 103.08 50.18 104.12 49.27 104.44C48.45 104.77 47.57 104.48 46.51 103.35L30.68 86.29C28.07 83.5 25.12 82.41 21.74 83.67C17.16 85.32 15.18 89.58 16.7 93.7C17.22 95.14 17.97 96.33 18.72 97.27L39.92 123.52C57.49 145.15 77.54 149.73 97.93 142.29Z"/></symbol>
+<symbol id="sf-timer" viewBox="0 0 130.36 130.3"><path d="M65.15 130.3C101.15 130.3 130.36 101.15 130.36 65.15C130.36 29.15 101.15 0 65.2 0C61.01 0 58.49 2.49 58.49 6.53L58.49 25.26C58.49 28.76 60.95 31.46 64.42 31.46C67.92 31.46 70.35 28.76 70.35 25.26L70.35 14.63C94.06 16.82 116.02 37.04 116.02 65.15C116.02 93.26 93.27 116.01 65.15 116.01C37.04 116.01 14.33 93.26 14.33 65.2C14.33 53 18.58 42.13 25.47 33.53C28.11 29.76 28.55 25.93 25.46 22.94C22.43 19.95 17.49 20.31 14.4 24.46C5.45 35.57 0 49.71 0 65.15C0 101.15 29.21 130.3 65.15 130.3ZM65.15 76.04C71.18 76.04 76.04 71.18 76.04 65.15C76.04 61.52 74.27 58.13 71.16 56.1L42.28 36.37C38.23 33.69 34.39 37.6 36.94 41.69L55.65 70.49C57.79 73.87 61.22 76.04 65.15 76.04Z"/></symbol>
+<symbol id="sf-house.fill" viewBox="0 0 155.19 135.74"><path d="M60.56 122.29L60.56 86.76C60.56 83.81 62.56 81.89 65.5 81.89L89.7 81.89C92.7 81.89 94.57 83.81 94.57 86.76L94.57 122.29ZM20.76 120.92C20.76 130.1 26.69 135.74 36.26 135.74L118.86 135.74C128.42 135.74 134.36 130.1 134.36 120.92L134.36 74.53L81.49 30.2C79.03 28.12 76.06 28.17 73.65 30.2L20.76 74.51ZM7.19 70.74C9.27 70.74 11.23 69.69 12.89 68.3L74.58 16.52C75.53 15.69 76.6 15.29 77.6 15.29C78.59 15.29 79.6 15.69 80.56 16.52L142.29 68.3C143.96 69.69 145.91 70.74 147.99 70.74C152.42 70.74 155.19 67.75 155.19 64.01C155.19 62.05 154.21 59.94 152.39 58.4L87.26 3.75C84.26 1.25 80.91 0 77.6 0C74.27 0 70.88 1.25 67.91 3.75L2.8 58.4C0.96 59.94 0 62.05 0 64.01C0 67.75 2.77 70.74 7.19 70.74ZM116.44 32.18L135.64 48.28L135.64 18.03C135.64 15.17 133.77 13.35 130.92 13.35L121.17 13.35C118.37 13.35 116.44 15.17 116.44 18.03Z"/></symbol>
+<symbol id="sf-cat.fill" viewBox="0 0 171.98 149.18"><path d="M34.09 149.18L41.56 149.18C48.98 149.18 53.55 145.53 53.55 138.87C53.55 134.23 49.57 130.32 43.4 129.27L43.4 115.15C43.4 108.73 44.38 104.79 47.42 99.53C57.66 103.46 65.79 104.87 75.21 104.87C85.48 104.87 96.15 103.43 102.51 101.68C103.82 105.98 104.99 111.22 104.99 116.56C104.99 124.21 104.12 131.16 104.12 137.85C104.12 145.3 108.16 149.18 115.95 149.18L123.5 149.18C130.73 149.18 135.48 145.33 135.48 138.87C135.48 133.8 132.09 130.23 126.56 129.44L126.56 122.08C126.56 87.32 151.16 98.84 152.17 55.07C163.82 53.85 171.98 46.39 171.98 40.5C171.98 32.07 163.12 23.42 153.67 16.52C151.41 8.87 147.23 3.09 144.26 3.09C141.28 3.09 136.62 8.78 134.04 16.59C128.87 21.07 124.11 28.02 120.94 33.77L118.69 37.64C116.38 41.89 114.29 44.36 111.32 44.36C86.64 44.36 77.49 40.87 53.74 40.87C42.63 40.87 35.54 44.47 30.98 49.49C28.57 52.15 26.8 52.97 22.87 51.21C15.82 48.21 10.97 41.13 10.97 32.03C10.97 19.54 20.76 10.98 35.14 10.98C40.58 10.98 46.08 12.08 52.68 14.75C60.25 17.75 64.1 7.48 56.95 4.48C49.11 1.37 41.69 0 35.14 0C14.5 0 0 13.21 0 32.03C0 45.92 7.13 56.79 18.31 61.38C21.72 62.78 23.02 65.49 22.94 68.62C22.84 72.25 22.84 74.9 22.84 76.74C22.84 97.37 13.64 100.03 16.31 110.11L24.25 140.53C25.86 146.54 28.92 149.18 34.09 149.18ZM151.56 36.31C149.4 36.31 147.66 34.66 147.66 32.48C147.66 30.37 149.4 28.7 151.56 28.7C153.66 28.7 155.3 30.37 155.3 32.48C155.3 34.66 153.66 36.31 151.56 36.31Z"/></symbol>
+<symbol id="sf-pause.fill" viewBox="0 0 82.47 109.25"><path d="M9.42 109.25L24.38 109.25C30.56 109.25 33.75 106.05 33.75 99.83L33.75 9.42C33.75 3.1 30.56 0 24.38 0L9.42 0C3.19 0 0 3.2 0 9.42L0 99.83C0 106.05 3.12 109.25 9.42 109.25ZM58.14 109.25L73.09 109.25C79.27 109.25 82.47 106.05 82.47 99.83L82.47 9.42C82.47 3.1 79.27 0 73.09 0L58.14 0C51.91 0 48.72 3.2 48.72 9.42L48.72 99.83C48.72 106.05 51.84 109.25 58.14 109.25Z"/></symbol>
+<symbol id="sf-figure.walk.motion" viewBox="0 0 159.52 147.12"><path d="M29.94 27.27L66.44 27.27C68.85 27.27 70.76 25.17 70.76 22.71C70.76 20.22 68.85 18.16 66.44 18.16L29.94 18.16C27.5 18.16 25.6 20.22 25.6 22.71C25.6 25.17 27.5 27.27 29.94 27.27ZM4.25 59.12L50.02 59.12C52.43 59.12 54.34 57.06 54.34 54.57C54.34 52.06 52.43 50.02 50.02 50.02L4.25 50.02C1.88 50.02 0 52.11 0 54.57C0 57.01 1.88 59.12 4.25 59.12ZM25.49 90.97L50.49 90.97C52.9 90.97 54.81 88.92 54.81 86.42C54.81 83.91 52.84 81.87 50.49 81.87L25.49 81.87C23.06 81.87 21.11 83.92 21.11 86.42C21.11 88.92 23.06 90.97 25.49 90.97ZM7.16 122.54L42.05 122.54C44.46 122.54 46.37 120.49 46.37 117.98C46.37 115.53 44.45 113.47 42.05 113.47L7.16 113.47C4.71 113.47 2.77 115.54 2.77 117.98C2.77 120.49 4.71 122.54 7.16 122.54ZM80.37 144.66L100.51 120.68C102.51 118.32 102.77 117.67 103.61 115.27L104.88 111.53L93.51 97.28L90.35 111.96L70.55 135.48C63.78 143.39 74.77 151.24 80.37 144.66ZM128.74 142.6C133.11 151.4 146.19 145.97 141.45 136.42L127.82 108.7C126.79 106.64 125.33 104.44 123.98 102.5L115.45 90.33L115.98 88.73C118.22 81.74 119.17 77.53 119.63 70.66L121 51.29C121.67 41.72 115.99 34.65 106.42 34.65C99.24 34.65 94.33 38.36 87.82 44.72L77.52 54.81C74.18 58.07 73.02 60.9 72.68 65.37L71.47 81.25C71.12 85.46 73.54 88.44 77.41 88.59C81.38 88.87 83.85 86.46 84.24 82.03L85.69 64.82L90.22 60.75C91.78 59.35 93.92 60.24 93.76 62L92.72 76.14C92.17 83.49 93.81 87.16 99.09 93.78L112.64 110.79C113.96 112.44 114.14 113.07 114.71 114.2ZM152.41 60.84L137.13 60.84L127.63 50.38L126.51 67.67L129.62 70.71C131.95 72.93 133.91 73.68 138 73.68L152.41 73.68C156.67 73.68 159.52 71.2 159.52 67.25C159.52 63.4 156.6 60.84 152.41 60.84ZM114.35 28.8C122.28 28.8 128.72 22.35 128.72 14.42C128.72 6.46 122.28 0 114.35 0C106.37 0 99.93 6.46 99.93 14.42C99.93 22.35 106.37 28.8 114.35 28.8Z"/></symbol>
+<symbol id="sf-point.topleft.down.to.point.bottomright.curvepath.fill" viewBox="0 0 114.76 140.8"><path d="M15.25 45.06C15.25 59.05 23.58 68.59 39.56 72.72L71.22 81.02C80.93 83.65 85.91 88.64 85.91 95.75L85.91 100.3C85.91 104.02 88.98 107.08 92.74 107.08C96.42 107.08 99.49 104.02 99.49 100.3L99.49 95.75C99.49 81.75 91.15 72.23 75.17 68.13L43.49 59.78C33.85 57.26 28.76 52.17 28.76 45.06L28.76 40.52C28.76 36.79 25.74 33.77 22.01 33.77C18.31 33.77 15.25 36.79 15.25 40.52ZM92.74 96.67C80.51 96.67 70.61 106.56 70.61 118.8C70.61 130.92 80.51 140.8 92.74 140.8C104.86 140.8 114.76 130.92 114.76 118.8C114.76 106.56 104.86 96.67 92.74 96.67ZM22.01 44.15C34.24 44.15 44.15 34.25 44.15 22.06C44.15 9.89 34.24 0 22.01 0C9.9 0 0 9.89 0 22.06C0 34.25 9.9 44.15 22.01 44.15ZM92.74 96.67C80.51 96.67 70.61 106.56 70.61 118.8C70.61 130.92 80.51 140.8 92.74 140.8C104.86 140.8 114.76 130.92 114.76 118.8C114.76 106.56 104.86 96.67 92.74 96.67ZM22.01 44.15C34.24 44.15 44.15 34.25 44.15 22.06C44.15 9.89 34.24 0 22.01 0C9.9 0 0 9.89 0 22.06C0 34.25 9.9 44.15 22.01 44.15Z"/></symbol>
+<symbol id="sf-waveform.path" viewBox="0 1.54 157.63 148.04"><path d="M5.53 87.47L24.09 87.47C26.51 87.47 28.59 86.39 29.46 84.28L33.28 72.61L28.57 72.61L37.93 117.23C39.05 122.55 47.1 122.56 47.89 117.22L54.15 75.65L62.02 145.01C62.73 151.14 71.53 151.09 72.08 145.01L79.04 65.53L86.03 144.98C86.52 151.12 95.33 151.13 96.03 144.98L103.89 75.65L110.22 117.25C110.95 122.57 119.01 122.57 120.13 117.25L129.45 72.85L125.24 72.9L128.53 83.4C129.67 86.2 131.96 87.47 134.61 87.47L152.09 87.47C155.15 87.47 157.63 85.03 157.63 82.03C157.63 78.99 155.15 76.5 152.09 76.5L137.03 76.5L132.13 57.48C130.79 52.11 123.39 52.12 122.32 57.49L115.93 87.69L108.16 36.01C107.26 30.06 98.81 30.1 98.18 36.02L91.64 93.02L84.12 6.17C83.58 0 74.48 0 73.99 6.17L66.4 93.02L59.93 36.02C59.24 30.05 50.8 30.05 49.9 36.01L42.11 87.69L35.78 57.51C34.7 52.32 27.26 52.32 25.91 57.51L21.08 76.5L5.53 76.5C2.48 76.5 0 78.99 0 82.03C0 85.03 2.48 87.47 5.53 87.47Z"/></symbol>
+<symbol id="sf-shippingbox.fill" viewBox="0 0 128.55 137.04"><path d="M69.06 137.04C69.82 136.89 70.53 136.57 71.26 136.17L119.24 109.5C125.5 106 128.55 102.28 128.55 93.43L128.55 42.71C128.55 41.28 128.44 40.05 128.19 38.94L69.06 72.03ZM59.49 137.04L59.49 72.03L0.37 38.94C0.1 40.05 0 41.28 0 42.71L0 93.43C0 102.28 3.05 106 9.32 109.5L57.29 136.17C58.02 136.57 58.78 136.89 59.49 137.04ZM64.28 63.46L90.73 48.77L30.86 15.23L8.6 27.63C7.03 28.49 5.77 29.33 4.67 30.38ZM100.91 43.21L123.9 30.38C122.85 29.33 121.55 28.49 119.98 27.63L76.42 3.36C72.45 1.15 68.37 0 64.3 0C60.26 0 56.13 1.15 52.19 3.36L40.71 9.78Z"/></symbol>
+<symbol id="sf-speaker.wave.3.fill" viewBox="0 0.95 179.95 127.46"><path d="M152.88 127.34C156.04 129.36 160.15 128.45 162.24 125.1C173.36 108.18 179.95 87.39 179.95 64.68C179.95 41.97 173.22 21.23 162.24 4.26C160.15 0.87 156.04 0 152.88 2.03C149.54 4.13 149.01 8.28 151.34 12.01C160.8 26.71 166.62 44.81 166.62 64.68C166.62 84.51 160.8 102.7 151.34 117.36C149.01 121.09 149.54 125.23 152.88 127.34ZM126.48 110.17C129.66 112.11 133.57 111.4 135.7 108.17C143.94 96.31 148.7 80.71 148.7 64.61C148.7 48.51 143.98 32.82 135.7 21.06C133.57 17.83 129.66 17.12 126.48 19.05C123.04 21.13 122.57 25.33 125.01 29.11C131.59 38.89 135.3 51.51 135.3 64.61C135.3 77.72 131.5 90.29 125.01 100.11C122.61 103.9 123.04 108.09 126.48 110.17ZM100.09 93.19C103.11 95.1 106.99 94.43 109.07 91.46C114.25 84.44 117.34 74.74 117.34 64.61C117.34 54.48 114.25 44.83 109.07 37.74C106.99 34.8 103.11 34.12 100.09 36.08C96.73 38.26 96.01 42.32 98.75 46.55C102.1 51.38 103.92 57.84 103.92 64.61C103.92 71.38 102.04 77.8 98.75 82.68C96.06 86.95 96.73 90.97 100.09 93.19ZM69.15 121.17C74.18 121.17 77.95 117.41 77.95 112.36L77.95 17.24C77.95 12.24 74.18 8.2 69.05 8.2C65.7 8.2 63.18 9.57 59.6 12.96L33.81 37.05C33.45 37.38 33.01 37.6 32.49 37.6L14.92 37.6C5.27 37.6 0 42.98 0 53.17L0 76.33C0 86.48 5.27 91.9 14.92 91.9L32.47 91.9C32.99 91.9 33.43 92.04 33.78 92.37L59.6 116.68C62.95 119.79 65.7 121.17 69.15 121.17Z"/></symbol>
+<symbol id="sf-iphone" viewBox="0 0 88.25 140.01"><path d="M18.72 140.01L69.97 140.01C80.91 140.01 88.25 132.83 88.25 122.05L88.25 17.96C88.25 7.18 80.91 0 69.97 0L18.72 0C7.49 0 0 7.18 0 17.94L0 122.07C0 132.83 7.49 140.01 18.72 140.01ZM21.42 125.49C16.71 125.49 13.91 122.92 13.91 118.31L13.91 21.7C13.91 17.09 16.71 14.51 21.42 14.51L66.82 14.51C71.56 14.51 74.3 17.14 74.3 21.72L74.3 118.29C74.3 122.87 71.56 125.49 66.82 125.49ZM30.53 120.39L57.78 120.39C59.69 120.39 61.1 119.06 61.1 117.05C61.1 115.04 59.69 113.71 57.78 113.71L30.53 113.71C28.57 113.71 27.2 115.04 27.2 117.05C27.2 119.06 28.57 120.39 30.53 120.39ZM36.04 29.5L52.23 29.5C55.08 29.5 57.28 27.29 57.28 24.38C57.28 21.52 55.06 19.3 52.23 19.3L36.04 19.3C33.16 19.3 30.93 21.52 30.93 24.38C30.93 27.29 33.14 29.5 36.04 29.5Z"/></symbol>
+<symbol id="sf-rectangle.split.2x1" viewBox="0 0 148.47 117.89"><path d="M67.54 114.54L80.97 114.54L80.97 3.39L67.54 3.39ZM21.17 117.89L127.3 117.89C141.15 117.89 148.47 110.56 148.47 96.87L148.47 21.03C148.47 7.34 141.15 0 127.3 0L21.17 0C7.36 0 0 7.32 0 21.03L0 96.87C0 110.57 7.36 117.89 21.17 117.89ZM22.35 103.93C16.87 103.93 13.91 101.16 13.91 95.44L13.91 22.45C13.91 16.69 16.87 13.96 22.35 13.96L126.11 13.96C131.56 13.96 134.56 16.69 134.56 22.45L134.56 95.44C134.56 101.16 131.56 103.93 126.11 103.93Z"/></symbol>
+<symbol id="sf-ipad.landscape" viewBox="0 0 150.42 117.89"><path d="M51 98.85L99.5 98.85C101.35 98.85 102.67 97.62 102.67 95.68C102.67 93.7 101.35 92.44 99.5 92.44L51 92.44C49.15 92.44 47.77 93.7 47.77 95.68C47.77 97.62 49.15 98.85 51 98.85ZM21.2 117.89L129.25 117.89C143.11 117.89 150.42 110.53 150.42 96.84L150.42 21.02C150.42 7.34 143.11 0 129.25 0L21.17 0C7.36 0 0 7.32 0 21.02L0 96.84C0 110.55 7.39 117.89 21.2 117.89ZM22.38 103.93C16.9 103.93 13.93 101.2 13.93 95.44L13.93 22.45C13.93 16.73 16.87 13.96 22.35 13.96L128.07 13.96C133.51 13.96 136.51 16.73 136.51 22.45L136.51 95.44C136.51 101.2 133.51 103.93 128.07 103.93Z"/></symbol>
+<symbol id="sf-accessibility" viewBox="0 0 130.36 130.3"><path d="M65.15 130.3C101.15 130.3 130.36 101.15 130.36 65.15C130.36 29.15 101.15 0 65.15 0C29.21 0 0 29.15 0 65.15C0 101.15 29.21 130.3 65.15 130.3ZM65.15 116.01C37.04 116.01 14.33 93.26 14.33 65.15C14.33 37.04 37.04 14.29 65.15 14.29C93.27 14.29 116.02 37.04 116.02 65.15C116.02 93.26 93.27 116.01 65.15 116.01ZM65.09 44.65C56.52 44.65 44.26 43.22 38.41 42.29C37.88 42.21 37.32 42.08 36.77 42.08C35.23 42.08 33.67 43.32 33.67 45.51C33.67 47.15 34.66 48.55 36.24 48.95C38.17 49.52 51.99 51.17 53.7 51.49C55.42 51.81 56.44 53.28 56.52 55.37C56.58 58.51 56.52 68.57 55.74 73.15C55.01 77.69 49.73 99.66 49.49 100.6C48.83 102.94 50.27 105.03 52.63 105.03C54.34 105.03 55.5 104.09 56.12 101.84C57.2 97.4 60.97 82.22 62.2 78.54C62.96 75.9 63.61 74.95 65.09 74.95C66.57 74.95 67.21 75.89 68.07 78.54C69.2 82.19 73.09 97.39 74.13 101.84C74.71 104.09 75.9 105.03 77.61 105.03C79.98 105.03 81.36 102.94 80.75 100.6C80.56 99.66 75.2 77.69 74.5 73.15C73.8 68.57 73.8 58.51 73.8 55.37C73.8 53.28 74.82 51.86 76.54 51.49C78.26 51.11 92.06 49.56 93.99 48.95C95.58 48.51 96.57 47.15 96.57 45.51C96.57 43.32 94.93 42.08 93.46 42.08C92.91 42.08 92.36 42.21 91.82 42.29C85.98 43.22 73.8 44.65 65.09 44.65ZM65.09 40.66C69.46 40.66 73.02 37.07 73.02 32.77C73.02 28.42 69.46 24.92 65.09 24.92C60.73 24.92 57.22 28.42 57.22 32.77C57.22 37.07 60.73 40.66 65.09 40.66Z"/></symbol>
+<symbol id="sf-textformat.size" viewBox="0 0 153.63 94.81"><path d="M80.22 94.81C85.09 94.81 87.67 92.75 89.15 87.64L112.54 17.53L112.98 17.53L136.16 87.64C137.63 92.75 140.23 94.81 145.09 94.81C150.25 94.81 153.63 91.68 153.63 86.86C153.63 85.05 153.34 83.51 152.65 81.54L126.24 9.38C124.01 3.05 119.68 0 112.76 0C106.08 0 101.84 3.06 99.63 9.38L72.94 82.06C72.33 83.91 72.01 85.47 72.01 87.05C72.01 91.84 75.15 94.81 80.22 94.81ZM91.79 70.18L133.61 70.18C137.25 70.18 140.17 67.25 140.17 63.62C140.17 59.95 137.25 57.05 133.61 57.05L91.79 57.05C88.12 57.05 85.2 59.95 85.2 63.62C85.2 67.25 88.12 70.18 91.79 70.18ZM7.29 94.81C11.06 94.81 13.35 92.84 14.65 88.22L18.58 76.33L42.77 76.33L46.7 88.34C48.02 92.98 50.31 94.81 54.25 94.81C58.48 94.81 61.49 92.01 61.49 87.97C61.49 86.28 61.1 84.76 60.47 82.88L41.94 32.98C39.83 27.26 36.22 24.56 30.58 24.56C25.19 24.56 21.64 27.24 19.56 32.98L1.03 82.88C0.38 84.6 0 86.41 0 87.97C0 92.19 2.8 94.81 7.29 94.81ZM21.81 65.32L29.94 39.29L31.15 39.29L39.46 65.32Z"/></symbol>
+<symbol id="art-logo_paw" viewBox="100 95 825 690"><g fill="#fdf5e6"><ellipse cx="222" cy="385" rx="104" ry="132" transform="rotate(-30 222 385)"/><ellipse cx="802" cy="385" rx="104" ry="132" transform="rotate(30 802 385)"/><ellipse cx="396" cy="253" rx="106" ry="145"/><ellipse cx="628" cy="253" rx="106" ry="145"/><path d="M250 640 C250 520 380 425 512 425 C644 425 774 520 774 640 C774 730 650 773 512 773 C374 773 250 730 250 640 Z"/></g><g fill="#f5989b"><ellipse cx="222" cy="392" rx="64" ry="80" transform="rotate(-30 222 392)"/><ellipse cx="802" cy="392" rx="64" ry="80" transform="rotate(30 802 392)"/><ellipse cx="396" cy="262" rx="65" ry="87"/><ellipse cx="628" cy="262" rx="65" ry="87"/><ellipse cx="512" cy="598" rx="189" ry="108"/></g></symbol>
+<symbol id="art-critter_mouse" viewBox="45 0 110 200"><g stroke="#4f3d35" stroke-linecap="round" stroke-linejoin="round"><path d="M100 152 C 92 172, 128 176, 120 198" fill="none" stroke-width="8"/><path d="M100 152 C 92 172, 128 176, 120 198" fill="none" stroke="#e6ac9c" stroke-width="4.5"/><g fill="#eebbab" stroke-width="2.5"><ellipse cx="62" cy="141" rx="6" ry="12" transform="rotate(-35 62 141)"/><ellipse cx="138" cy="141" rx="6" ry="12" transform="rotate(35 138 141)"/><ellipse cx="70" cy="69" rx="5" ry="9" transform="rotate(32 70 69)"/><ellipse cx="130" cy="69" rx="5" ry="9" transform="rotate(-32 130 69)"/></g><path d="M100 10 C 108 10, 114 22, 119 36 C 123 46, 122 56, 121 62 C 132 74, 139 96, 138 116 C 137 142, 120 158, 100 158 C 80 158, 63 142, 62 116 C 61 96, 68 74, 79 62 C 78 56, 77 46, 81 36 C 86 22, 92 10, 100 10 Z" fill="#a38b78" stroke-width="3"/></g><path d="M64 110 C 62 134, 73 152, 95 156 C 81 147, 72 131, 72 107 C 70 103, 65 105, 64 110 Z" fill="#f6efe4" opacity="0.92"/><path d="M136 110 C 138 134, 127 152, 105 156 C 119 147, 128 131, 128 107 C 130 103, 135 105, 136 110 Z" fill="#f6efe4" opacity="0.92"/><path d="M100 44 C 109 70, 113 112, 100 153 C 87 112, 91 70, 100 44 Z" fill="#7a6455" opacity="0.55"/><path d="M80 78 C 72 94, 71 112, 76 128 C 78 112, 81 94, 87 78 C 85 75, 82 75, 80 78 Z" fill="#c9b29c" opacity="0.6"/><g stroke="#5f4c40" stroke-width="1.6" stroke-linecap="round" fill="none" opacity="0.4"><path d="M84 100 L83 108 M92 124 L91 132 M110 96 L111 104 M116 120 L117 128 M106 138 L107 145"/></g><g stroke="#4f3d35" stroke-width="2.5"><ellipse cx="77" cy="50" rx="10" ry="12" fill="#b89a86" transform="rotate(-30 77 50)"/><ellipse cx="123" cy="50" rx="10" ry="12" fill="#b89a86" transform="rotate(30 123 50)"/></g><ellipse cx="76.5" cy="50" rx="6" ry="8" fill="#e9b7a8" transform="rotate(-30 76.5 50)"/><ellipse cx="123.5" cy="50" rx="6" ry="8" fill="#e9b7a8" transform="rotate(30 123.5 50)"/><path d="M100 12 C 106 20, 106 36, 100 48 C 94 36, 94 20, 100 12 Z" fill="#f6efe4" opacity="0.95"/><ellipse cx="88.5" cy="35" rx="3.6" ry="4.2" fill="#2a2020"/><ellipse cx="111.5" cy="35" rx="3.6" ry="4.2" fill="#2a2020"/><circle cx="87.6" cy="33.6" r="1.1" fill="#fff"/><circle cx="110.6" cy="33.6" r="1.1" fill="#fff"/><g stroke="#f3e8da" stroke-width="1.3" stroke-linecap="round" fill="none" opacity="0.85"><path d="M94 18 C 86 14, 78 12, 68 13"/><path d="M93 22 C 84 21, 75 22, 66 26"/><path d="M106 18 C 114 14, 122 12, 132 13"/><path d="M107 22 C 116 21, 125 22, 134 26"/></g><ellipse cx="100" cy="12" rx="3.6" ry="3" fill="#d98f86" stroke="#4f3d35" stroke-width="1.5"/></symbol>
+</svg>
+<!-- icons:end -->
+<!-- 1. Title -->
+<section class="slide center">
+  <svg class="paw" style="width: 180px; height: 150px; margin-bottom: 4vh;" aria-hidden="true"><use href="#art-logo_paw"/></svg>
+  <h1>Paw Paw</h1>
+  <p class="dim" style="margin-top: 2vh;">An iPhone and iPad game made for cats</p>
+  <aside class="notes">Hi! Plan: how I designed it, a live demo, then the one big technical choice: SpriteKit.</aside>
+</section>
+
+<!-- 2. The idea -->
+<section class="slide">
+  <div class="kicker">The idea</div>
+  <div class="cols">
+    <div>
+      <h2>One app, two players</h2>
+      <ul>
+        <li><b>The cat</b> plays: critters run across the screen, a paw catches them.</li>
+        <li><b>The owner</b> sets things up: round length, playground, cat profiles, stats.</li>
+        <li>Neither of them can do the other's job, and that drove most of the design.</li>
+      </ul>
+    </div>
+    <img class="shot" src="../previews/ipad-gameplay.png" alt="Paw Paw gameplay on iPad: a fish and a beetle on a dark pond with lily pads">
+  </div>
+  <aside class="notes">The cat can't read or press Back. The owner isn't always watching. Every screen had to answer: who is holding this?</aside>
+</section>
+
+<!-- 3. Who is each screen for? -->
+<section class="slide">
+  <div class="kicker">Design thinking</div>
+  <h2>Who is each screen for?</h2>
+  <table class="map who">
+    <thead><tr><th>Screen</th><th>Who</th><th>So it…</th></tr></thead>
+    <tbody>
+      <tr><td>Home, Stats, Profiles</td><td><svg class="icon" aria-hidden="true"><use href="#sf-person.fill"/></svg>Owner</td><td>Uses normal controls and follows the owner's text size and motion settings</td></tr>
+      <tr><td>First launch</td><td><svg class="icon" aria-hidden="true"><use href="#sf-person.fill"/></svg>New owner</td><td>Teaches by doing, not by reading</td></tr>
+      <tr><td>The game</td><td><svg class="icon" aria-hidden="true"><use href="#sf-pawprint.fill"/></svg>Cat</td><td>Needs no reading, has big targets, and is hard to leave by accident</td></tr>
+      <tr><td>Between rounds</td><td><svg class="icon" aria-hidden="true"><use href="#sf-pawprint.fill"/></svg>Cat, then <svg class="icon" aria-hidden="true"><use href="#sf-person.fill"/></svg>owner</td><td>Lets the cat ask for more; the owner decides when to stop</td></tr>
+    </tbody>
+  </table>
+  <aside class="notes">Example: the Home button in the game needs a 1.5 second hold, because a paw taps but doesn't hold. The owner learns that in onboarding.</aside>
+</section>
+
+<!-- 4. Onboarding -->
+<section class="slide">
+  <div class="kicker">Design thinking</div>
+  <h2>Onboarding: learn by doing</h2>
+  <p>The owner will hand the device to a cat, so they need to know how it works before that.</p>
+  <div class="grid steps">
+    <div class="card"><span class="step">1</span><svg class="icon" aria-hidden="true"><use href="#sf-hand.tap.fill"/></svg><h3>Catch</h3><p>Try catching real critters on a small live field.</p></div>
+    <div class="card"><span class="step">2</span><svg class="icon" aria-hidden="true"><use href="#sf-timer"/></svg><h3>Countdown</h3><p>Lay the device flat, 3‑2‑1, let the cat go.</p></div>
+    <div class="card"><span class="step">3</span><svg class="icon" aria-hidden="true"><use href="#sf-house.fill"/></svg><h3>Hold to leave</h3><p>Practise the hold. A tap only shows a hint.</p></div>
+    <div class="card"><span class="step">4</span><svg class="icon" aria-hidden="true"><use href="#sf-cat.fill"/></svg><h3>Your cat</h3><p>Pick a face and a name. The title greets the cat as you type.</p></div>
+  </div>
+  <aside class="notes">Every step is optional and you can skip the whole thing, but trying it once makes the hold-to-leave obvious later. Faint critters drift behind the card, so it already feels like the game.</aside>
+</section>
+
+<!-- 5. Play again -->
+<section class="slide">
+  <div class="kicker">Design thinking</div>
+  <h2>How does a cat say "again"?</h2>
+  <div class="cols">
+    <div>
+      <p class="dim">The problem: a timed round ends, the cat is still hunting, and the owner may not be watching.</p>
+      <ul>
+        <li>One critter, the <b>lure</b>, keeps roaming around the results card.</li>
+        <li>It hides under the card and peeks out from the edges.</li>
+        <li><b>Catching it starts the next round.</b></li>
+        <li>The owner picks: <i>Keep going</i>, <i>3 rounds</i> or <i>Stop</i>.</li>
+      </ul>
+    </div>
+    <div class="layers">
+      <div class="layer app"><svg class="icon" aria-hidden="true"><use href="#sf-pause.fill"/></svg><span>Ignores taps for 1 s, so a late pounce doesn't count</span></div>
+      <div class="layer app"><svg class="icon" aria-hidden="true"><use href="#sf-figure.walk.motion"/></svg><span>Wanders off after 45 s without a touch</span></div>
+      <div class="layer app"><svg class="icon" aria-hidden="true"><use href="#sf-person.fill"/></svg><span>Owners hold <b>Play Again</b> on the card</span></div>
+    </div>
+  </div>
+  <aside class="notes">The hunt never ends on a miss: in "3 rounds" and "Stop", the last lure is slower and never hides, so the cat always finishes on a catch. Lure catches don't score.</aside>
+</section>
+
+<!-- 6. Critters -->
+<section class="slide">
+  <div class="kicker">Design thinking</div>
+  <h2>Moving like real prey</h2>
+  <div class="cols" style="grid-template-columns: 1.6fr 1fr;">
+    <div class="grid" style="grid-template-columns: 1fr 1fr;">
+      <div class="card"><svg class="icon" aria-hidden="true"><use href="#sf-point.topleft.down.to.point.bottomright.curvepath.fill"/></svg><h3>Dart and freeze</h3><p>Each critter has its own style. Mice dart, crickets hop, feathers drift.</p></div>
+      <div class="card"><svg class="icon" aria-hidden="true"><use href="#sf-waveform.path"/></svg><h3>Twitch while still</h3><p>Small twitches during a freeze keep the cat's eyes on it.</p></div>
+      <div class="card"><svg class="icon" aria-hidden="true"><use href="#sf-shippingbox.fill"/></svg><h3>Hide and peek</h3><p>Boxes and leaf piles hide critters, so the cat waits and pounces.</p></div>
+      <div class="card"><svg class="icon" aria-hidden="true"><use href="#sf-speaker.wave.3.fill"/></svg><h3>Heard first</h3><p>Critters enter from off screen, with a sound from that side.</p></div>
+    </div>
+    <svg class="icon" style="width: 100%; height: 50vh; color: inherit;" role="img" aria-label="Mouse critter"><use href="#art-critter_mouse"/></svg>
+  </div>
+  <aside class="notes">Also: at most two critters at once, dark backgrounds with colours cats see well, and a missed tap scares the nearest critter away. Speed adapts to how well the cat is doing.</aside>
+</section>
+
+<!-- 7. Layouts -->
+<section class="slide">
+  <div class="kicker">Design thinking</div>
+  <h2>One layout per screen shape</h2>
+  <div class="devices">
+    <figure>
+      <img src="../previews/iphone-home.png" alt="Home screen on iPhone, stacked">
+      <figcaption><svg class="icon" aria-hidden="true"><use href="#sf-iphone"/></svg><b>iPhone</b>Menus portrait, game landscape, one critter at a time</figcaption>
+    </figure>
+    <figure>
+      <img src="../previews/iphone-duo-home.png" alt="Home screen on iPhone Duo folded, stacked">
+      <figcaption><svg class="icon" aria-hidden="true"><use href="#sf-rectangle.split.2x1"/></svg><b>iPhone Duo, folded</b>Same stacked layout as a phone</figcaption>
+    </figure>
+    <figure class="wide">
+      <img src="../previews/iphone-duo-home-unfolded.png" alt="Home screen on iPhone Duo unfolded, side by side">
+      <figcaption><svg class="icon" aria-hidden="true"><use href="#sf-ipad.landscape"/></svg><b>iPad &amp; Duo, unfolded</b>Side by side in landscape, any orientation</figcaption>
+    </figure>
+  </div>
+  <aside class="notes">The rule is based on the space you actually have, not the device name: wide and tall enough means side by side. On the Duo it re-lays out mid-fold, because the size and the size class arrive in separate steps.</aside>
+</section>
+
+<!-- 8. Accessibility -->
+<section class="slide">
+  <div class="kicker">Accessibility, from class</div>
+  <h2>Whose settings apply?</h2>
+  <p>The menus follow the <b>owner's</b> settings. The game is for the <b>cat</b>, so it only changes enough for the cat to keep playing and the owner to still get out.</p>
+  <div class="grid" style="margin-top: 2vh; grid-template-columns: 1fr 1fr;">
+    <div class="card"><svg class="icon" aria-hidden="true"><use href="#sf-accessibility"/></svg><h3>VoiceOver</h3><p>Every hold gesture is also a simple action: "Leave game", "Play again", "Delete cat", "Reset stats".</p></div>
+    <div class="card"><svg class="icon" aria-hidden="true"><use href="#sf-pawprint.fill"/></svg><h3>Direct touch</h3><p>With VoiceOver on, the play field still takes taps right away, so the cat can play.</p></div>
+    <div class="card"><svg class="icon" aria-hidden="true"><use href="#sf-textformat.size"/></svg><h3>Dynamic Type</h3><p>Menu text grows up to 200% and screens scroll. The game's score and timer stop at 125%.</p></div>
+    <div class="card"><svg class="icon" aria-hidden="true"><use href="#sf-figure.walk.motion"/></svg><h3>Reduce Motion</h3><p>Calms the menus and intro, but not the cat's game.</p></div>
+  </div>
+  <aside class="notes">The same tools we covered in class: labels, hints, traits, custom actions, announcements. The twist is deciding whose settings apply. An owner with Reduce Motion on still wants their cat to see critters move.</aside>
+</section>
+
+<!-- 9. Demo -->
+<section class="slide">
+  <div class="kicker">Live demo</div>
+  <div class="cols">
+    <div>
+      <h2>Let's play</h2>
+      <ul>
+        <li>First launch: onboarding and cat setup</li>
+        <li>Home: round length, after a round, playground</li>
+        <li>A round: critters, hiding spots, hold to leave</li>
+        <li>Between rounds: the lure</li>
+        <li>Stats and cat profiles</li>
+      </ul>
+    </div>
+    <div class="shots" style="height: 60vh;">
+      <video src="../previews/pawpaw-preview-ipad.mp4" poster="../site/assets/preview-poster.jpg" muted loop playsinline controls></video>
+    </div>
+  </div>
+  <aside class="notes">Switch to the device or simulator now. The video is a backup if the live demo misbehaves.</aside>
+</section>
+
+<!-- 10. Why not just UIKit? -->
+<section class="slide">
+  <div class="kicker">Building it</div>
+  <div class="cols">
+    <div>
+      <h2>Why not just UIKit?</h2>
+      <ul>
+        <li>UIKit redraws when something <b>changes</b>: great for buttons, lists and forms.</li>
+        <li>A game changes <b>every frame</b>: up to 120 times a second, with critters moving, hiding and being caught.</li>
+        <li>So I kept UIKit for everything the owner touches, and used <b>SpriteKit</b>, Apple's built-in 2D game framework, for the playfield.</li>
+      </ul>
+    </div>
+    <div class="layers">
+      <div class="layer ui"><b>UIKit</b>: score, timer, Home button</div>
+      <div class="layer sk"><b>SpriteKit</b>: critters, hiding spots, effects</div>
+      <div class="layer app"><b>UIKit</b>: drawn background (pond, grass, snow)</div>
+    </div>
+  </div>
+  <aside class="notes">The SpriteKit view is transparent and sits between two UIKit layers. Every other screen is plain UIKit with VIPER modules.</aside>
+</section>
+
+<!-- 11. SpriteKit -->
+<section class="slide">
+  <div class="kicker">SpriteKit</div>
+  <h2>If you know UIKit, you know SpriteKit</h2>
+  <table class="map">
+    <thead><tr><th>UIKit</th><th>SpriteKit</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td><code>UIView</code></td><td><code>SKNode</code></td><td>Something on screen, inside a tree of parents and children</td></tr>
+      <tr><td><code>UIImageView</code></td><td><code>SKSpriteNode</code></td><td>Shows a picture, like a mouse or a beetle</td></tr>
+      <tr><td><code>UIView.animate</code></td><td><code>SKAction</code></td><td>"Move here over 1 second", without writing the frames yourself</td></tr>
+      <tr><td><code>touchesBegan</code></td><td><code>touchesBegan</code></td><td>The same method, because nodes are UIKit responders too</td></tr>
+    </tbody>
+  </table>
+  <p class="dim" style="margin-top: 3vh;"><code>SKView</code> is a <code>UIView</code>, so the whole game sits inside a normal view controller.</p>
+  <aside class="notes">One nice trick: a critter is nested nodes (path, facing, twitch, body), each running its own action, and SpriteKit adds them up. All critters sit under one "world" node, so pausing it freezes the round. For Unity folks: SKScene is a Scene, SKNode a GameObject with its Transform, SKSpriteNode a SpriteRenderer, update(_:) is Update(), and SKAction is like a tween.</aside>
+</section>
+
+<!-- 12. Takeaways -->
+<section class="slide">
+  <div class="kicker">Takeaways</div>
+  <h2>What I learned</h2>
+  <ul>
+    <li>Start with <i>who is holding the device</i>, screen by screen.</li>
+    <li>When a user can't read, the design has to show, not tell.</li>
+    <li>Lay out for the space you have, not the device name.</li>
+    <li>UIKit for the app, SpriteKit for the action, and they fit together.</li>
+  </ul>
+  <aside class="notes">Wrap up and hand over to questions.</aside>
+</section>
+
+<!-- 13. Thanks -->
+<section class="slide center">
+  <svg class="paw" style="width: 120px; height: 100px; margin-bottom: 3vh;" aria-hidden="true"><use href="#art-logo_paw"/></svg>
+  <h1>Thanks!</h1>
+  <p class="dim" style="margin-top: 3vh;">Questions?</p>
+</section>
+
+<div id="bar"></div>
+<div id="count"></div>
+<div id="help">← → to move · N for notes · F for fullscreen</div>
+
+<script>
+  const slides = [...document.querySelectorAll('.slide')];
+  const bar = document.getElementById('bar');
+  const count = document.getElementById('count');
+  let index = Math.min(Math.max(parseInt(location.hash.slice(1), 10) - 1 || 0, 0), slides.length - 1);
+
+  function show(i) {
+    index = Math.min(Math.max(i, 0), slides.length - 1);
+    slides.forEach((s, n) => s.classList.toggle('active', n === index));
+    slides.forEach((s, n) => s.querySelectorAll('video').forEach(v => n === index ? v.play().catch(() => {}) : v.pause()));
+    bar.style.width = `${((index + 1) / slides.length) * 100}%`;
+    count.textContent = `${index + 1} / ${slides.length}`;
+    history.replaceState(null, '', `#${index + 1}`);
+  }
+
+  document.addEventListener('keydown', e => {
+    if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(e.key)) show(index + 1);
+    else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) show(index - 1);
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(slides.length - 1);
+    else if (e.key.toLowerCase() === 'n') document.body.classList.toggle('show-notes');
+    else if (e.key.toLowerCase() === 'f') document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+    else return;
+    e.preventDefault();
+  });
+  document.addEventListener('click', e => {
+    if (e.target.closest('video, a')) return;
+    show(e.clientX > innerWidth / 3 ? index + 1 : index - 1);
+  });
+
+  addEventListener('hashchange', () => show(parseInt(location.hash.slice(1), 10) - 1 || 0));
+
+  show(index);
+</script>
+</body>
+</html>

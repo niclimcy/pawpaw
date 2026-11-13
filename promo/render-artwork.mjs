@@ -15,6 +15,9 @@ import { chromium } from 'playwright-core';
 const root = dirname(fileURLToPath(import.meta.url));
 const assetCatalog = resolve(root, '../pawpaw/Assets.xcassets');
 
+// Bump whenever the artwork changes, so uploads don't clash with older files.
+export const VERSION = 2;
+
 export const ARTWORK = {
   header: [[5244, 2950], [3840, 1646]],
   search: [[5244, 2950], [3840, 2560], [1920, 1280]],
@@ -59,7 +62,7 @@ for (const [kind, sizes] of Object.entries(ARTWORK)) {
       await page.goto(`${base}?kind=${kind}&w=${w}&h=${h}&text=${text ? 1 : 0}`);
       await page.evaluate(() => window.artwork.ready);
       const b64 = await page.evaluate(() => window.artwork.png());
-      const file = join(outDir, `pawpaw-${kind}-${w}x${h}${text ? '' : '-notext'}.png`);
+      const file = join(outDir, `pawpaw-${kind}-${w}x${h}${text ? '' : '-notext'}-v${VERSION}.png`);
       writeFileSync(file, Buffer.from(b64, 'base64'));
       // App Store artwork must be opaque RGB.
       execFileSync('magick', [file, '-background', '#291a0f', '-alpha', 'remove', '-alpha', 'off', '-colorspace', 'sRGB', '-strip', `PNG24:${file}`]);

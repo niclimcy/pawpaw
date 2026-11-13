@@ -16,6 +16,7 @@
   <meta property="og:image" content="https://niclimcy.github.io/pawpaw/assets/og-image.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="stylesheet" href="styles.css">
+  <script src="nav.js" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -65,18 +66,17 @@
         <p>Once one cat starts, the others want in.</p>
       </div>
       <div class="cat-clips">
-        <figure class="cheer" style="--w: 608">
+        <figure class="cheer">
           <span class="sfx sfx-1" aria-hidden="true">WOW!!</span>
           <span class="sfx sfx-2" aria-hidden="true">PAWPAW!!</span>
           <video src="assets/cat-user-1.mp4" poster="assets/cat-user-1-poster.jpg" width="608" height="848" autoplay muted loop playsinline preload="metadata" aria-label="An orange cat taps critters on an iPad on the floor while its owner cheers and a black cat watches"></video>
           <figcaption>One cat starts the hunt</figcaption>
         </figure>
-        <figure style="--w: 512">
+        <figure>
           <video src="assets/cat-user-2.mp4" poster="assets/cat-user-2-poster.jpg" width="512" height="848" autoplay muted loop playsinline preload="metadata" aria-label="The black cat walks over and joins the orange cat at the iPad"></video>
           <figcaption>Then the other joins in</figcaption>
         </figure>
       </div>
-      <p class="clip-hint">Tap a video to pause it.</p>
     </div>
   </section>
 
@@ -141,17 +141,17 @@
         <p>Crate, Grass, Pond and Snow. Fish only swim in the Pond, and lizards only live on Grass.</p>
       </div>
       <div class="shots ipad">
-        <figure><img src="assets/screens/ipad-home.webp" alt="pawpaw home screen on iPad with round length and playground pickers" loading="lazy" width="1100" height="1467"><figcaption>Pick a round and a playground</figcaption></figure>
-        <figure><img src="assets/screens/ipad-gameplay.webp" alt="A beetle and a bird among lily pads in the Pond playground on iPad" loading="lazy" width="1100" height="1467"><figcaption>Your cat hunts</figcaption></figure>
-        <figure><img src="assets/screens/ipad-stats.webp" alt="Play stats on iPad: rounds, catches by critter and best scores" loading="lazy" width="1100" height="1467"><figcaption>Stats for every cat</figcaption></figure>
-        <figure><img src="assets/screens/ipad-profiles.webp" alt="The Your Cats list on iPad with three cat profiles" loading="lazy" width="1100" height="1467"><figcaption>A profile per cat</figcaption></figure>
+        <figure><img src="assets/screens/ipad-home.webp" alt="pawpaw home screen on iPad over the Crate playground, with round length and playground pickers" loading="lazy" width="1100" height="1467"><figcaption>Pick a round and a playground</figcaption></figure>
+        <figure><img src="assets/screens/ipad-gameplay.webp" alt="A ladybug and a koi among lily pads in the Pond playground on iPad" loading="lazy" width="1100" height="1467"><figcaption>Your cat hunts</figcaption></figure>
+        <figure><img src="assets/screens/ipad-stats.webp" alt="Play stats on iPad over the Grass playground: rounds, catches by critter and best scores" loading="lazy" width="1100" height="1467"><figcaption>Stats for every cat</figcaption></figure>
+        <figure><img src="assets/screens/ipad-profiles.webp" alt="The Your Cats list on iPad over the Snow playground, with three cat profiles" loading="lazy" width="1100" height="1467"><figcaption>A profile per cat</figcaption></figure>
       </div>
       <p class="subhead">Also on iPhone, with a simpler hunt: one critter at a time, in landscape.</p>
       <div class="shots iphone">
-        <figure><img src="assets/screens/iphone-home.webp" alt="pawpaw home screen on iPhone" loading="lazy" width="600" height="1304"></figure>
-        <figure><img src="assets/screens/iphone-gameplay.webp" alt="A ladybug and a mouse near two boxes on iPhone" loading="lazy" width="600" height="1304"></figure>
-        <figure><img src="assets/screens/iphone-stats.webp" alt="Mochi's play stats on iPhone" loading="lazy" width="600" height="1304"></figure>
-        <figure><img src="assets/screens/iphone-profiles.webp" alt="Your Cats list on iPhone" loading="lazy" width="600" height="1304"></figure>
+        <figure style="--w: 600"><img src="assets/screens/iphone-home.webp" alt="pawpaw home screen on iPhone" loading="lazy" width="600" height="1304"></figure>
+        <figure class="wide" style="--w: 2834"><img src="assets/screens/iphone-gameplay.webp" alt="A ladybug taking off from a box in the Crate playground on iPhone, in landscape" loading="lazy" width="1304" height="600"></figure>
+        <figure style="--w: 600"><img src="assets/screens/iphone-stats.webp" alt="Mochi's play stats on iPhone" loading="lazy" width="600" height="1304"></figure>
+        <figure style="--w: 600"><img src="assets/screens/iphone-profiles.webp" alt="Your Cats list on iPhone" loading="lazy" width="600" height="1304"></figure>
       </div>
     </div>
   </section>
@@ -225,18 +225,24 @@
   const clips = document.querySelectorAll(".cat-clips video");
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
   const toggle = (video) => (video.paused ? video.play() : video.pause());
+  const syncs = [];
   clips.forEach((video) => {
-    video.tabIndex = 0;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "clip-toggle";
+    button.innerHTML =
+      '<svg class="icon-pause" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M3 2h3.5v12H3zM9.5 2H13v12H9.5z"/></svg>' +
+      '<svg class="icon-play" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M4 2l10 6-10 6z"/></svg>';
+    video.after(button);
+    button.addEventListener("click", () => toggle(video));
     video.addEventListener("click", () => toggle(video));
-    const syncPaused = () => video.parentElement.classList.toggle("is-paused", video.paused);
+    const syncPaused = () => {
+      video.parentElement.classList.toggle("is-paused", video.paused);
+      button.setAttribute("aria-label", video.paused ? "Play video" : "Pause video");
+    };
     video.addEventListener("play", syncPaused);
     video.addEventListener("pause", syncPaused);
-    video.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        toggle(video);
-      }
-    });
+    syncs.push(syncPaused);
   });
   if (reduceMotion.matches) {
     document.querySelectorAll("video[autoplay]").forEach((video) => {
@@ -244,6 +250,8 @@
       video.pause();
     });
   }
+  // pause() on a clip that never started fires no event, so set the first state here.
+  syncs.forEach((sync) => sync());
 </script>
 </body>
 </html>

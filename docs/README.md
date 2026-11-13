@@ -4,4 +4,5 @@
 - [Architecture](architecture.md): VIPER modules and project layout
 - [Development](development.md): build, tuning, art, limitations
 - [App Store](app-store/): [listing](app-store/description.md) and [privacy policy](app-store/privacy-policy.md)
+- [Slides](../slides/README.md): class talk on the design and SpriteKit, as one HTML file with a PDF export
 - [Website](../site/): marketing, help (FAQ) and privacy pages, published to https://niclimcy.github.io/pawpaw/ by `.github/workflows/pages.yml`. Plain HTML and CSS, no build step; preview with `python3 -m http.server -d site`.
