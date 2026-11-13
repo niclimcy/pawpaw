@@ -122,8 +122,6 @@ a.store-badge:hover { color: #fff; border-color: #fff; }
 .hero .lede { font-size: 1.3rem; color: var(--text-dim); max-width: 34ch; margin-bottom: 1.4em; }
 .hero .lede strong { color: var(--text); }
 
-.pills { list-style: none; padding: 0; margin: 28px 0 0; display: flex; flex-wrap: wrap; gap: 10px; }
-.pills li { background: var(--panel-soft); border: 1.5px solid var(--line); border-radius: 999px; padding: 6px 14px; font-weight: 700; font-size: 0.95rem; }
 
 /* An iPad-shaped frame around the app preview video. */
 .ipad-frame {
@@ -248,7 +246,7 @@ kbd, .ui { font-family: inherit; font-weight: 800; color: var(--text); backgroun
 @media (max-width: 900px) {
   .hero .wrap { grid-template-columns: 1fr; gap: 48px; text-align: center; }
   .hero .lede { margin-inline: auto; }
-  .hero .cta-row, .pills { justify-content: center; }
+  .hero .cta-row { justify-content: center; }
   .features { grid-template-columns: 1fr 1fr; }
   .shots.ipad { grid-template-columns: 1fr 1fr; }
   .split { grid-template-columns: 1fr; }
