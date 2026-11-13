@@ -1,0 +1,100 @@
+site/privacy.html
+  s_764bba83b7a62b::t_859fce944e17d9 13
+docs/README.md
+  s_8c4016012b3570::t_1aa0c212f503fa 7
+previews/README.md
+  s_91a9a072eb7be8::t_3211bdfc6386a2 1-37,39-131
+  s_91a9a072eb7be8::t_7410acb10b36b9 38
+site/index.html
+  s_764bba83b7a62b::t_859fce944e17d9 19
+  s_9d398fd281e286::t_9ed9d22985323b 228,230-237,239-242,245,253-254
+  s_91a9a072eb7be8::t_ecda77e257affe 144-147,151-154
+  s_9d398fd281e286::t_a309535f177985 69,75
+previews/seed-screenshots.sh
+  s_91a9a072eb7be8::t_c318ddd3c430ad 4
+  s_91a9a072eb7be8::t_76612fceec72d6 1-3
+  s_91a9a072eb7be8::t_b92377e1c05115 5-7
+  s_91a9a072eb7be8::t_18d0ee475cd131 8-10
+site/support.html
+  s_764bba83b7a62b::t_859fce944e17d9 13
+site/accessibility.html
+  s_764bba83b7a62b::t_859fce944e17d9 13
+slides/README.md
+  s_8c4016012b3570::t_bad363e2fbdba3 1-46
+site/nav.js
+  s_764bba83b7a62b::t_1f3ac1e6fb27d5 1,5
+  s_764bba83b7a62b::t_87e825947ce850 3-4,7-21
+  s_764bba83b7a62b::t_6ce46ad911fbdc 2
+  s_764bba83b7a62b::t_23897d6cf7d4ad 6
+slides/index.html
+  s_8c4016012b3570::t_77dea3081c436c 167,175,177,179,184-200,203,205-212,214,217,219-220,223,225-228,231,237,240-251,253,256,258-272,274,277,279-305,307-314,317,319-321,325-326,330,333,343,346-347,355-358
+  s_8c4016012b3570::t_fb77d2fe49d27b 79-85
+  s_8c4016012b3570::t_13fd5395244590 138,164-165
+  s_8c4016012b3570::t_dbfc5bc004e80b 75-76
+  s_8c4016012b3570::t_2e5e071b51ed00 232-234
+  s_8c4016012b3570::t_6703587f4735e9 93-95
+  s_8c4016012b3570::t_661d32b0060aa0 139-140,158,160-161
+  s_8c4016012b3570::t_93cb5124204b84 122-134,306
+  s_8c4016012b3570::t_b54560300384f7 1-58,62-74,77-78,110-121,135-137,162-163,166,168-174,176,178,180-183,201-202,204,213,215-216,218,221-222,224,229-230,235-236,238-239,252,254-255,257,273,275-276,278,315-316,318,322-324,327-329,331-332,348-354,359-364,367-382,384-403,406-409
+  s_8c4016012b3570::t_9f8e98915b747c 383
+  s_8c4016012b3570::t_684ced515d4303 334-342,344-345
+  s_8c4016012b3570::t_691cf520930b84 59-61
+  s_8c4016012b3570::t_891051e5fe372a 141-144,146-148,151-155
+  s_8c4016012b3570::t_42ef790cc53f28 86-92,96-101,106,109
+  s_8c4016012b3570::t_70b573072037b5 365-366
+  s_8c4016012b3570::t_50024138dcf919 102-105,107-108
+  s_8c4016012b3570::t_8a774b6875ec61 159
+  s_8c4016012b3570::t_82a3e013793de1 404-405
+  s_8c4016012b3570::t_d809c070bab61f 145,149-150,156-157
+slides/render-icons.swift
+  s_8c4016012b3570::t_ad3e4530e9d205 1-10,15,19-20,26-28,34-78,80,82-99,101-114
+  s_8c4016012b3570::t_57d75ccde9861d 11-14,16-18,21-25
+  s_8c4016012b3570::t_e3908d066d1ba5 79,81,100
+  s_8c4016012b3570::t_549f26d58f1e17 29-33
+site/styles.css
+  s_764bba83b7a62b::t_75b09373d9f961 78,81-82,84-95
+  s_9d398fd281e286::t_9837397f4c7259 180
+  s_91a9a072eb7be8::t_4b4bc237d582b9 179,181-182,283-285
+  s_9d398fd281e286::t_a309535f177985 189-191,194
+  s_9d398fd281e286::t_9ed9d22985323b 192,196-205
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7179707930389f1dceff67462123b3c44d1bdceb",
+  "prompts": {},
+  "sessions": {
+    "s_764bba83b7a62b": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "2b112eae-a01e-4fb3-bd70-e6f517af7539",
+        "model": "openrouter/OpenRouter/anthropic/claude-opus-5.5"
+      },
+      "human_author": null
+    },
+    "s_8c4016012b3570": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "dec0ed3a-95cb-4a53-9a02-ccd44a53a185",
+        "model": "openrouter/OpenRouter/anthropic/claude-opus-5.5"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    },
+    "s_91a9a072eb7be8": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "c5c5595e-f57d-4a49-861f-0136a1b6a076",
+        "model": "anthropic/claude-opus-5.5"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    },
+    "s_9d398fd281e286": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "5750c563-0ab2-4eda-a6ad-dce7de1d1f45",
+        "model": "anthropic/claude-opus-5.5"
+      },
+      "human_author": "Nicholas Lim <nic.lim@foodpanda.com>"
+    }
+  }
+}
