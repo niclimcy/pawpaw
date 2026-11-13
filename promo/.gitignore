@@ -1,0 +1,8 @@
+node_modules/
+# Rendered videos, stills and soundtrack (node render.mjs / render-artwork.mjs)
+out/
+frames/
+# Copied in on every render: art from pawpaw/Assets.xcassets, and the
+# system SF Rounded font, which Apple doesn't allow redistributing.
+assets/
+font/

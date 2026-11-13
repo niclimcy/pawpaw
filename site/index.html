@@ -58,7 +58,7 @@
       <div class="hero-media">
         <img class="critter butterfly" src="assets/art/critter_butterfly.svg" alt="">
         <div class="ipad-frame">
-          <video src="assets/preview-ipad.mp4" poster="assets/preview-poster.jpg" controls playsinline muted loop preload="metadata" aria-label="pawpaw app preview on iPad"></video>
+          <video src="assets/preview-ipad.mp4" poster="assets/preview-poster.jpg" controls autoplay playsinline muted loop preload="metadata" aria-label="pawpaw app preview on iPad"></video>
         </div>
         <img class="critter mouse" src="assets/art/critter_mouse.svg" alt="">
       </div>
@@ -244,11 +244,13 @@
         toggle(video);
       }
     });
-    if (reduceMotion.matches) {
+  });
+  if (reduceMotion.matches) {
+    document.querySelectorAll("video[autoplay]").forEach((video) => {
       video.removeAttribute("autoplay");
       video.pause();
-    }
-  });
+    });
+  }
 </script>
 </body>
 </html>
